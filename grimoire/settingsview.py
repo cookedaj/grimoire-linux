@@ -944,7 +944,8 @@ class SettingsPage(QWidget):
         root.setSpacing(0)
         nav = QFrame()
         nav.setObjectName("SubNav")
-        nav.setFixedWidth(210)
+        nav.setMinimumWidth(210)                     # grows for longer section names in other languages
+        nav.setMaximumWidth(300)
         nl = QVBoxLayout(nav)
         nl.setContentsMargins(12, 26, 12, 16)
         nl.setSpacing(2)
