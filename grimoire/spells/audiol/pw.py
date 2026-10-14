@@ -56,8 +56,28 @@ def _check(r: subprocess.CompletedProcess, what: str) -> str:
 def dump() -> list[dict]:
     r = _run("pw-dump", timeout=10)
     if r.returncode:
-        raise RuntimeError((r.stderr or "pw-dump failed").strip().splitlines()[-1])
-    return json.loads(r.stdout or "[]")
+        raise RuntimeError(((r.stderr or "").strip() or "pw-dump failed").splitlines()[-1])
+    objs = json.loads(r.stdout or "[]")
+    return [o for o in objs if isinstance(o, dict)] if isinstance(objs, list) else []
+
+
+def _str(v, default="") -> str:
+    """A property as text. pw-dump prints any value that looks like a number or a boolean bare, so an app named
+    "2048" arrives as the number 2048; anything else (lists, objects) counts as missing."""
+    if isinstance(v, bool):
+        return "true" if v else "false"
+    return str(v) if isinstance(v, (str, int, float)) else default
+
+
+def _int(v, default=None):
+    try:
+        return int(v)
+    except (TypeError, ValueError):
+        return default
+
+
+def _dict(v) -> dict:
+    return v if isinstance(v, dict) else {}
 
 
 def _truthy(v) -> bool:
@@ -66,14 +86,20 @@ def _truthy(v) -> bool:
 
 def _volume(params: dict) -> tuple[int, bool, int]:
     """(percent on the cubic scale, muted, channels) from a node's Props."""
-    props = (params.get("Props") or [{}])[0] or {}
-    vols = props.get("channelVolumes") or []
+    props = params.get("Props") if isinstance(params.get("Props"), list) else []
+    props = _dict(props[0]) if props else {}
+    vols = [v for v in props.get("channelVolumes") or [] if isinstance(v, (int, float))] \
+        if isinstance(props.get("channelVolumes"), list) else []
     lin = max(vols) if vols else props.get("volume", 1.0)
-    return round(max(0.0, float(lin)) ** (1 / 3) * 100), bool(props.get("mute", False)), len(vols)
+    try:
+        pct = round(max(0.0, float(lin)) ** (1 / 3) * 100)
+    except (TypeError, ValueError, OverflowError):
+        pct = 0
+    return min(pct, 1000), props.get("mute") is True, len(vols)
 
 
 def _label(p: dict) -> str:
-    return p.get("node.description") or p.get("node.nick") or p.get("node.name") or "?"
+    return _str(p.get("node.description")) or _str(p.get("node.nick")) or _str(p.get("node.name")) or "?"
 
 
 def parse(objs: list[dict]) -> dict:
@@ -81,20 +107,21 @@ def parse(objs: list[dict]) -> dict:
     defaults = {}
     nodes, cards, links = {}, [], []
     for o in objs:
-        kind = o.get("type", "")
-        if kind.endswith(":Metadata") and (o.get("props") or {}).get("metadata.name") == "default":
-            for m in o.get("metadata") or []:
-                val = m.get("value")
-                if m.get("key") in ("default.audio.sink", "default.audio.source") and isinstance(val, dict):
-                    defaults[m["key"]] = val.get("name", "")
+        if not isinstance(o, dict) or _int(o.get("id")) is None:
+            continue
+        kind = _str(o.get("type"))
+        info = _dict(o.get("info"))
+        if kind.endswith(":Metadata") and _dict(o.get("props")).get("metadata.name") == "default":
+            for m in o.get("metadata") if isinstance(o.get("metadata"), list) else []:
+                val = _dict(m).get("value")
+                if _dict(m).get("key") in ("default.audio.sink", "default.audio.source") and isinstance(val, dict):
+                    defaults[m["key"]] = _str(val.get("name"))
         elif kind.endswith(":Link"):
-            info = o.get("info") or {}
             links.append((info.get("output-node-id"), info.get("input-node-id")))
-        elif kind.endswith(":Node") and o.get("info"):
-            nodes[o["id"]] = o
-        elif kind.endswith(":Device") and o.get("info"):
-            p = o["info"].get("props") or {}
-            if p.get("media.class") == "Audio/Device":
+        elif kind.endswith(":Node") and info:
+            nodes[int(o["id"])] = o
+        elif kind.endswith(":Device") and info:
+            if _dict(info.get("props")).get("media.class") == "Audio/Device":
                 cards.append(_card(o))
 
     out = {"outputs": [], "inputs": [], "playing": [], "recording": [], "cards": cards,
@@ -105,14 +132,15 @@ def parse(objs: list[dict]) -> dict:
         linked.setdefault(a, []).append(b)
         linked.setdefault(b, []).append(a)
     for nid, o in nodes.items():
-        p = o["info"].get("props") or {}
-        cls = p.get("media.class", "")
-        pct, mute, chans = _volume(o["info"].get("params") or {})
-        base = {"id": nid, "serial": p.get("object.serial", nid), "name": p.get("node.name", ""), "volume": pct,
-                "mute": mute, "channels": chans, "state": o["info"].get("state", "")}
+        p = _dict(o["info"].get("props"))
+        cls = _str(p.get("media.class"))
+        pct, mute, chans = _volume(_dict(o["info"].get("params")))
+        name = _str(p.get("node.name"))
+        base = {"id": nid, "serial": _int(p.get("object.serial"), nid), "name": name, "volume": pct,
+                "mute": mute, "channels": chans, "state": _str(o["info"].get("state"))}
         if cls in ("Audio/Sink", "Audio/Source", "Audio/Source/Virtual", "Audio/Duplex"):
-            dev = {**base, "label": _label(p), "card": p.get("device.id"), "virtual": p.get("device.id") is None,
-                   "eq": p.get("node.name") == EQ_NODE}
+            dev = {**base, "label": _label(p), "card": _int(p.get("device.id")), "virtual": p.get("device.id") is None,
+                   "eq": name == EQ_NODE}
             if cls == "Audio/Sink":
                 dev["default"] = dev["name"] == out["default_output"]
                 out["outputs"].append(dev)
@@ -120,13 +148,12 @@ def parse(objs: list[dict]) -> dict:
                 dev["default"] = dev["name"] == out["default_input"]
                 out["inputs"].append(dev)
         elif cls in ("Stream/Output/Audio", "Stream/Input/Audio"):
-            if p.get("node.name", "").startswith(OWN_PREFIX) or _truthy(p.get("node.passive")) \
-                    or p.get("node.name", "").startswith(EQ_NODE):
+            if name.startswith(OWN_PREFIX) or _truthy(p.get("node.passive")) or name.startswith(EQ_NODE):
                 continue                          # our meters, filter-chain internals (the EQ's own playback)
-            app = p.get("application.name") or p.get("node.name") or "?"
+            app = _str(p.get("application.name")) or name or "?"
             out["playing" if cls == "Stream/Output/Audio" else "recording"].append(
-                {**base, "app": app, "media": p.get("media.name", ""), "icon": p.get("application.icon-name", ""),
-                 "binary": p.get("application.process.binary", ""), "pid": p.get("application.process.id"),
+                {**base, "app": app, "media": _str(p.get("media.name")), "icon": _str(p.get("application.icon-name")),
+                 "binary": _str(p.get("application.process.binary")), "pid": _int(p.get("application.process.id")),
                  "peers": linked.get(nid, [])})
     devs = {d["id"]: d for d in out["outputs"] + out["inputs"]}
     for s in out["playing"] + out["recording"]:
@@ -140,15 +167,18 @@ def parse(objs: list[dict]) -> dict:
 
 def _card(o: dict) -> dict:
     info = o["info"]
-    p, params = info.get("props") or {}, info.get("params") or {}
-    active = (params.get("Profile") or [{}])[0] or {}
-    profiles = [{"index": x.get("index"), "name": x.get("name", ""), "label": x.get("description") or x.get("name", ""),
-                 "available": x.get("available", "unknown") != "no", "priority": x.get("priority", 0)}
-                for x in params.get("EnumProfile") or [] if isinstance(x, dict)]
-    return {"id": o["id"], "name": p.get("device.name", ""),
-            "label": p.get("device.description") or p.get("device.nick") or p.get("device.name", "?"),
-            "bus": p.get("device.bus", ""), "form": p.get("device.form-factor", ""),
-            "profile": active.get("index"), "profile_name": active.get("name", ""), "profiles": profiles}
+    p, params = _dict(info.get("props")), _dict(info.get("params"))
+    active = params.get("Profile") if isinstance(params.get("Profile"), list) else []
+    active = _dict(active[0]) if active else {}
+    enum = params.get("EnumProfile") if isinstance(params.get("EnumProfile"), list) else []
+    profiles = [{"index": _int(x.get("index")), "name": _str(x.get("name")),
+                 "label": _str(x.get("description")) or _str(x.get("name")),
+                 "available": x.get("available", "unknown") != "no", "priority": _int(x.get("priority"), 0)}
+                for x in enum if isinstance(x, dict) and _int(x.get("index")) is not None]
+    return {"id": int(o["id"]), "name": _str(p.get("device.name")),
+            "label": _str(p.get("device.description")) or _str(p.get("device.nick")) or _str(p.get("device.name"))
+            or "?", "bus": _str(p.get("device.bus")), "form": _str(p.get("device.form-factor")),
+            "profile": _int(active.get("index")), "profile_name": _str(active.get("name")), "profiles": profiles}
 
 
 def snapshot() -> dict:
@@ -195,10 +225,11 @@ def set_profile(card_id: int, index: int) -> str:
 
 
 def move_stream(stream: dict, device: dict, playing=True) -> str:
-    """Send one app's stream to another output (or a recording to another input)."""
+    """Send one app's stream to another output (or a recording to another input). Devices go by serial (pactl's
+    index too), never by name: a name like "42" or "-x" would read as another index or an option."""
     if shutil.which("pactl"):
         verb = "move-sink-input" if playing else "move-source-output"
-        return _check(_run("pactl", verb, str(int(stream["serial"])), device["name"]), "move")
+        return _check(_run("pactl", verb, str(int(stream["serial"])), str(int(device["serial"]))), "move")
     return _check(_run("pw-metadata", "-n", "default", str(int(stream["id"])), "target.object",
                        str(int(device["serial"]))), "move")
 

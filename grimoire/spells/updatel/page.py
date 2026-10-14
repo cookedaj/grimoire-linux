@@ -481,6 +481,10 @@ class UpdateLPage(QWidget):
         self._toast_timer = QTimer(self, singleShot=True, interval=8000, timeout=self.toast.hide)
         root.addLayout(right, 1)
 
+        # these carry package/device names, vendor text and apt's messages: never read them as rich text
+        for lab in (self.updates.banner_text, self.updates.summary, self.updates.note_title, self.activity.state,
+                    self.schedule.held, self.schedule.srcs, self.schedule.reboot, self.foot):
+            lab.setTextFormat(Qt.TextFormat.PlainText)
         self.sig.checked.connect(self._checked)
         self.sig.simulated.connect(self._simulated)
         self.sig.line.connect(self.activity.add)
@@ -535,7 +539,14 @@ class UpdateLPage(QWidget):
             return
         self.set_busy(True)
         self.updates.summary.setText(tr("grimoire.spells.updatel.page", "Checking…"))
-        POOL.start(Job(daily.check, self.sig.checked.emit))
+        before = self.state
+
+        def work():
+            try:
+                return daily.check()
+            except Exception as e:                     # e.g. the cache can't be written: answer, so busy clears
+                return {**before, "items": before.get("items", []), "failed": str(e)}
+        POOL.start(Job(work, self.sig.checked.emit))
 
     def _checked(self, state):
         self.set_busy(False)
@@ -548,6 +559,8 @@ class UpdateLPage(QWidget):
         if errs:
             msg += " " + tr("grimoire.spells.updatel.page", "Couldn't read: {names}.").format(
                 names=isolate(", ".join(sources.name(s) for s in errs)))
+        if state.get("failed"):
+            msg = tr("grimoire.spells.updatel.page", "The check failed: {err}").format(err=isolate(state["failed"]))
         if self._after:                                # how the run went comes first
             msg, self._after = self._after + " " + msg, ""
         self.say(msg)

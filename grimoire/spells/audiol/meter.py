@@ -27,6 +27,7 @@ def peak_db(data: bytes) -> float:
 
 
 def command(target: str, output: bool) -> list[str]:
+    """pw-record on target (a node's object.serial), as AudioL's own hidden meter stream."""
     props = "{ node.name = %s-meter node.dont-reconnect = true %s}" % (
         pw.OWN_PREFIX, "stream.capture.sink = true " if output else "")
     return ["pw-record", "--target", target, "-P", props, "--rate", str(RATE), "--channels", "1",
@@ -52,6 +53,7 @@ class LevelReader(QObject):
         self.target = target
         self.proc = QProcess(self)
         self.proc.setProcessChannelMode(QProcess.ProcessChannelMode.SeparateChannels)
+        self.proc.setStandardErrorFile(QProcess.nullDevice())   # never read: don't let it pile up in memory
         self.proc.readyReadStandardOutput.connect(self._read)
         args = command(target, output)
         self.proc.start(args[0], args[1:])

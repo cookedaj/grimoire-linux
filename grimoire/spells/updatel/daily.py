@@ -60,9 +60,21 @@ def _write(path, data):
     tmp.replace(path)
 
 
+# what each item needs (by source) for the page and a plan; a cache from an older or broken run is cut to those
+_NEEDS = {"apt": ("name",), "flatpak": ("name", "ref", "scope"), "snap": ("name",), "fwupd": ("name", "device")}
+
+
+def _usable(i) -> bool:
+    return (isinstance(i, dict) and i.get("source") in _NEEDS
+            and all(isinstance(i.get(k), str) for k in ("key", "title", "current", "new", *_NEEDS[i["source"]])))
+
+
 def load() -> dict:
     s = _read(STATE, {})
-    return s if isinstance(s, dict) and isinstance(s.get("items"), list) else {}
+    if not (isinstance(s, dict) and isinstance(s.get("items"), list)):
+        return {}
+    s["items"] = [i for i in s["items"] if _usable(i)]
+    return s
 
 
 def settings() -> dict:

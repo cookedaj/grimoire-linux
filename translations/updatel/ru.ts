@@ -426,6 +426,11 @@
     </message>
     <message>
         <location filename="../../grimoire/spells/updatel/page.py"/>
+        <source>The check failed: {err}</source>
+        <translation>Проверка не удалась: {err}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/updatel/page.py"/>
         <source>Refreshing the package lists…</source>
         <translation>Обновление списков пакетов…</translation>
     </message>

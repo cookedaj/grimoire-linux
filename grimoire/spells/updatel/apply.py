@@ -108,9 +108,10 @@ def parse_status(line: str) -> tuple[float, str] | None:
 
 
 def stream(cmd: list[str], on_line, env=None) -> int:
-    """Run cmd, feeding each output line (stdout and stderr together) to on_line; the exit code."""
+    """Run cmd, feeding each output line (stdout and stderr together) to on_line; the exit code. The child keeps
+    Python's ignored SIGPIPE (restore_signals=False): if the app closes mid-update, flatpak isn't killed halfway."""
     with subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, bufsize=1,
-                          errors="replace", env=env, stdin=subprocess.DEVNULL) as proc:
+                          errors="replace", env=env, stdin=subprocess.DEVNULL, restore_signals=False) as proc:
         for line in proc.stdout:
             on_line(line.rstrip("\n").replace("\r", ""))
         return proc.wait()

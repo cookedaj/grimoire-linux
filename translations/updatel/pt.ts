@@ -417,6 +417,11 @@
     </message>
     <message>
         <location filename="../../grimoire/spells/updatel/page.py"/>
+        <source>The check failed: {err}</source>
+        <translation>A verificação falhou: {err}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/updatel/page.py"/>
         <source>Refreshing the package lists…</source>
         <translation>Atualizando as listas de pacotes…</translation>
     </message>

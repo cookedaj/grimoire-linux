@@ -14,16 +14,21 @@
 # Testing: UPDATEL_DRY=1 checks and simulates as usual but only prints the commands that would change something
 # (pkexec clears the environment, so this can't be passed through it).
 set -euo pipefail
+# if UpdateL closes mid-run its end of our output pipe goes away: the commands below write into relay(), which then
+# drains into /dev/null, so apt-get and dpkg never get SIGPIPE or EPIPE halfway through unpacking packages
+trap '' PIPE
 
 export DEBIAN_FRONTEND=noninteractive LC_ALL=C.UTF-8
 APT_OPTS=(-o Dpkg::Options::=--force-confdef -o Dpkg::Options::=--force-confold -o DPkg::Lock::Timeout=300
           -o APT::Status-Fd=1 -o Dpkg::Use-Pty=0)
-PKG_RE='^[a-z0-9][a-z0-9+.-]{0,99}(:[a-z0-9-]{1,20})?$'
+# a name never ends in "-": "apt-get install foo-" means REMOVE foo (also after an :arch)
+PKG_RE='^[a-z0-9]([a-z0-9+.-]{0,98}[a-z0-9+.])?(:[a-z0-9]([a-z0-9-]{0,18}[a-z0-9])?)?$'
 REF_RE='^[A-Za-z][A-Za-z0-9_.-]{0,254}(/[A-Za-z0-9_]{0,20}(/[A-Za-z0-9_.-]{0,100})?)?$'
 SNAP_RE='^[a-z0-9][a-z0-9-]{0,39}$'
 DEV_RE='^[0-9a-f]{40}$'
 
-run() { if [[ -n "${UPDATEL_DRY:-}" ]]; then echo "would run: $*"; else "$@"; fi; }
+relay() { cat || cat >/dev/null; }
+run() { if [[ -n "${UPDATEL_DRY:-}" ]]; then echo "would run: $*"; else "$@" 2>&1 | relay; fi; }
 die() { echo "$2" >&2; exit "$1"; }
 
 # check ONE step's arguments (no side effects)
@@ -105,7 +110,7 @@ for a in "$@"; do
         (( ${#cur[@]} )) || die 2 "empty step"
         steps+=("$(IFS=$'\x1f'; echo "${cur[*]}")"); cur=()
     else
-        [[ "$a" != *$'\x1f'* ]] || die 2 "bad argument"
+        [[ "$a" != *$'\x1f'* && "$a" != *$'\n'* ]] || die 2 "bad argument"
         cur+=("$a")
     fi
 done

@@ -18,6 +18,7 @@ import json
 import math
 import os
 import shutil
+import threading
 from pathlib import Path
 
 from grimoire.fsutil import free_name
@@ -49,6 +50,12 @@ DEFAULTS = {"on": False, "gains": [0.0] * 10, "preamp": 0.0, "preset": "Flat", "
 
 
 # ---------------------------------------------------------------- settings
+def _tag() -> str:
+    """Scratch-file suffix per process AND thread: the page saves on the UI thread while Apply and live updates save
+    and rewrite the drop-in on pool threads, and a shared name lets one replace or delete the other's file."""
+    return f"{os.getpid()}-{threading.get_ident()}"
+
+
 def _clamp(v, lo=-LIMIT, hi=LIMIT) -> float:
     try:
         v = float(v)
@@ -92,7 +99,7 @@ def save(s: dict):
         whole = {}
     whole["eq"] = s
     SETTINGS.parent.mkdir(parents=True, exist_ok=True)
-    tmp = SETTINGS.with_suffix(f".{os.getpid()}.tmp")
+    tmp = SETTINGS.with_suffix(f".{_tag()}.tmp")
     tmp.write_text(json.dumps(whole, indent=1))
     tmp.replace(SETTINGS)
 
@@ -197,7 +204,7 @@ def validate(text: str, scratch: Path | None = None) -> dict:
     if shutil.which("spa-json-dump"):
         scratch = scratch or ASIDE
         scratch.mkdir(parents=True, exist_ok=True)
-        tmp = scratch / f".check-{os.getpid()}.conf"
+        tmp = scratch / f".check-{_tag()}.conf"
         tmp.write_text(text)
         try:
             r = pw._run("spa-json-dump", str(tmp), timeout=10)
@@ -346,7 +353,7 @@ def write(s: dict, path: Path | None = None) -> Path:
     if (path.exists() or path.is_symlink()) and not installed(path):
         ASIDE.mkdir(parents=True, exist_ok=True)        # someone else's file of that name: keep it, out of the way
         shutil.move(str(path), free_name(ASIDE / f"{FILE}.yours"))
-    tmp = path.with_name(f".{FILE}.{os.getpid()}.tmp")
+    tmp = path.with_name(f".{FILE}.{_tag()}.tmp")
     tmp.write_text(text)
     tmp.replace(path)
     return path

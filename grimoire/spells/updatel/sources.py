@@ -24,7 +24,7 @@ from grimoire.i18n import tr, tr_noop
 REBOOT = Path("/var/run/reboot-required")
 # what may reach the root helper; the helper has the same patterns
 VALID = {
-    "apt": re.compile(r"[a-z0-9][a-z0-9+.-]{0,99}(:[a-z0-9-]{1,20})?"),
+    "apt": re.compile(r"[a-z0-9]([a-z0-9+.-]{0,98}[a-z0-9+.])?(:[a-z0-9]([a-z0-9-]{0,18}[a-z0-9])?)?"),  # no "x-"
     "flatpak": re.compile(r"[A-Za-z][A-Za-z0-9_.-]{0,254}(/[A-Za-z0-9_]{0,20}(/[A-Za-z0-9_.-]{0,100})?)?"),
     "snap": re.compile(r"[a-z0-9][a-z0-9-]{0,39}"),
     "fwupd": re.compile(r"[0-9a-f]{40}"),
@@ -85,14 +85,20 @@ def parse_size(text: str) -> int | None:
 _APT_LINE = re.compile(r"^(\S+?)/(\S+)\s+(\S+)\s+(\S+)\s+\[upgradable from: ([^\]]+)\]")
 
 
-def parse_apt_list(text: str) -> list[dict]:
-    """`apt list --upgradable`: 'curl/resolute-security,resolute-updates 8.18 amd64 [upgradable from: 8.17]'."""
+def parse_apt_list(text: str, native: str = "") -> list[dict]:
+    """`apt list --upgradable`: 'curl/resolute-security,resolute-updates 8.18 amd64 [upgradable from: 8.17]'.
+    A foreign-architecture copy (libc6 i386 next to libc6 amd64, e.g. for Steam) is listed as "libc6:i386", so it
+    has its own row and key and `apt-get install --only-upgrade` upgrades that copy."""
     out = []
     for line in text.splitlines():
         m = _APT_LINE.match(line.strip())
-        if not m or not valid("apt", m.group(1)):
+        if not m:
             continue
         name, suites, new, arch, old = m.groups()
+        if native and arch not in (native, "all") and ":" not in name:
+            name = f"{name}:{arch}"
+        if not valid("apt", name):
+            continue
         out.append({"key": f"apt:{name}", "source": "apt", "name": name, "title": name, "current": old,
                     "new": new, "size": None, "security": "-security" in suites, "scope": "system",
                     "notes": suites if suites != "unknown" else ""})
@@ -120,9 +126,19 @@ def _apt_sizes(names: list[str]) -> dict[str, int]:
 APT_SIZES = _apt_sizes
 
 
+def native_arch() -> str:
+    """dpkg's own architecture (amd64), "" when it can't be read."""
+    try:
+        r = RUN(["dpkg", "--print-architecture"], timeout=10)
+    except (OSError, subprocess.SubprocessError):
+        return ""
+    arch = (r.stdout or "").strip()
+    return arch if r.returncode == 0 and re.fullmatch(r"[a-z0-9-]{1,20}", arch) else ""
+
+
 def apt_updates() -> list[dict]:
     r = RUN(["apt", "list", "--upgradable"])
-    items = parse_apt_list(r.stdout)
+    items = parse_apt_list(r.stdout, native_arch())
     sizes = APT_SIZES([i["name"] for i in items]) if items else {}
     for i in items:
         i["size"] = sizes.get(i["name"])
@@ -328,6 +344,8 @@ def parse_fwupd(text: str) -> list[dict]:
         return []
     out = []
     for d in data.get("Devices", []) if isinstance(data, dict) else []:
+        if not isinstance(d, dict) or not isinstance(d.get("Releases") or [], list):
+            continue
         rel = (d.get("Releases") or [None])[0]
         dev = str(d.get("DeviceId", ""))
         if not isinstance(rel, dict) or not valid("fwupd", dev):
@@ -361,8 +379,8 @@ def check() -> dict:
             continue
         try:
             items += READERS[src]()
-        except (OSError, subprocess.SubprocessError, ValueError) as e:
-            errors[src] = str(e)
+        except Exception as e:                  # odd output from one tool only empties its own list
+            errors[src] = str(e) or type(e).__name__
     try:
         hold = held()
     except (OSError, subprocess.SubprocessError):
