@@ -106,3 +106,14 @@ SIGTERM/INT/HUP; the page and CLI steer it through `focusl-control.json`), `guar
 org.freedesktop.Notifications, auto-released by Plasma if we die), crosshair, app blocking, sites via its
 `root-helper.sh` (marked block in /etc/hosts; test with `FOCUSL_ROOT=<sandbox>`), `dial.py` ring + bars, `page.py`.
 Test with `FOCUSL_DRY=1` (logs DND/notify/kill/crosshair, hosts helper on a sandbox copy) and a sandbox HOME.
+
+## Share setup
+Settings → Share setup: `grimoire/sharesetup.py` (Qt-free at import; schema built lazily from MuraL's tab modules)
+exports the look as `.grimoire-setup` (zip: manifest + `setup.json` + `preview.png` + optional `wallpapers/`) or a
+`GS1-` code (zlib + base64, ≤2 KB); `scrub()` refuses home path/user/host/email; `inspect()`/`from_code()` validate
+like `backup.inspect()` and `clean()` rebuilds every field (never TerminalL `commands`); `apply()` = safety backup →
+wallpapers into the library (`free`-style names) → a MuraL saved look + sightc/terminall/tray files; `apply_look()`
+(user click only) runs `looks.restore` + LaunchL `write_order`; store refs install via `store.fetch()`+`install()`.
+`shareview.py` is the panel + preview dialog. Test with two sandbox HOMEs (export on one, import on the other) and
+stub `looks.restore`/`panel.write_order`; never apply a look to the live desktop.
+

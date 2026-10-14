@@ -120,6 +120,12 @@ Meta opens it. **Replace launcher** records your Kickoff first, so **Restore Kic
   service, conflicts refused); **Backup & restore** of all settings in one `.grimoire-backup` file, with a preview
   of what would change and a safety backup first; **GitHub** sign-in to keep that backup in a secret gist and
   restore it on another PC; open at login and update checks.
+- **Share setup** (Settings → Share setup): your whole look in one `.grimoire-setup` file or a short `GS1-` code:
+  MuraL's screens and wallpaper playlist (pictures optional), your crosshair and its profiles, terminal profiles,
+  LaunchL's favorites order and the tray meter. Community themes travel as store links you download on click. It
+  refuses to save anything personal (your home path, user name, computer name, emails) and never includes accounts,
+  tidy rules, history or terminal commands. Opening one shows what would change, spell by spell, keeps a safety
+  backup, saves the look under MuraL → Looks and only changes your desktop when you press **Apply the look now**.
 - **Self-update**: Grimoire checks GitHub every few hours. When there's something new, **What's new** lists the
   changes, **Update now** installs them and **Restart now** reloads. Or run `grimoire update`.
 

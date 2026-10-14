@@ -1,5 +1,6 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
-"""The hub's Settings page (the gear at the foot of the rail): hotkeys, backup & restore, GitHub account, general.
+"""The hub's Settings page (the gear at the foot of the rail): hotkeys, backup & restore, GitHub account, general,
+share setup (shareview.py).
 
 The work lives in Qt-free modules (hotkeys.py, backup.py, github.py, keystore.py, prefs.py); this file only lays it
 out and runs every slow or networked call off the UI thread.
@@ -19,7 +20,7 @@ from grimoire.jobs import POOL, Job
 from grimoire.widgets import Switch
 
 SECTIONS = [("hotkeys", "Hotkeys", "keyboard"), ("backup", "Backup & restore", "archive"),
-            ("account", "GitHub", "login"), ("general", "General", "sliders")]
+            ("account", "GitHub", "login"), ("general", "General", "sliders"), ("share", "Share setup", "share")]
 
 
 def _label(text="", name="", wrap=True):
@@ -859,6 +860,8 @@ class SettingsPage(QWidget):
         self.stack = QStackedWidget()
         self.panels = {"hotkeys": HotkeysPanel(), "backup": BackupPanel(), "account": AccountPanel(),
                        "general": GeneralPanel(updater, whats_new)}
+        from grimoire.shareview import SharePanel        # imports this module's helpers
+        self.panels["share"] = SharePanel()
         self.scrolls = {k: _scroll(p) for k, p in self.panels.items()}
         for s in self.scrolls.values():
             self.stack.addWidget(s)

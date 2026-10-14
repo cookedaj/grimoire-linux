@@ -264,6 +264,11 @@ def _draw(name: str, p: QPainter):
         for y, x in ((7, 9), (12, 15.5), (17, 11)):
             p.drawLine(QPointF(4, y), QPointF(x - 2, y)); p.drawLine(QPointF(x + 2, y), QPointF(20, y))
             p.drawEllipse(QPointF(x, y), 2, 2)
+    elif name == "share":                                  # three linked nodes: passing a setup on
+        for a, b in (((8.2, 10.6), (15.8, 6.9)), ((8.2, 13.4), (15.8, 17.1))):
+            p.drawLine(QPointF(*a), QPointF(*b))
+        for c in ((6, 12), (18, 5.8), (18, 18.2)):
+            p.drawEllipse(QPointF(*c), 2.4, 2.4)
 
 
 def _pixmap(name: str, color: str, size: int) -> QPixmap:
