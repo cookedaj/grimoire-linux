@@ -12,13 +12,13 @@ from PIL import Image, ImageFilter, ImageOps
 from PySide6.QtCore import QDateTime, QLocale, QRect, Qt
 from PySide6.QtGui import QColor, QFont, QImage, QPainter
 from PySide6.QtSvg import QSvgRenderer
-from PySide6.QtWidgets import QCheckBox, QGridLayout, QLabel
+from PySide6.QtWidgets import QGridLayout, QLabel
 
 from grimoire.i18n import tr, tr_noop
 from grimoire.paths import ASSETS, DATA
 from grimoire.spells.mural import library
 from grimoire.spells.mural.kde import kwrite
-from grimoire.spells.mural.screens import Design, ScreenTab
+from grimoire.spells.mural.screens import Design, ScreenTab, WrapCheck
 from grimoire.widgets import Slider
 
 OUT = DATA / "mural" / "screens"
@@ -103,9 +103,9 @@ class LockTab(ScreenTab):
         grid.addWidget(QLabel(tr("grimoire.spells.mural.lock", "Blur")), 1, 0)
         grid.addWidget(self.blur, 1, 1)
         lay.addLayout(grid)
-        self.clock = QCheckBox(tr("grimoire.spells.mural.lock", "Always show the clock"))
-        self.clock_idle = QCheckBox(tr("grimoire.spells.mural.lock", "Hide clock when idle"))
-        self.media = QCheckBox(tr("grimoire.spells.mural.lock", "Show media controls"))
+        self.clock = WrapCheck(tr("grimoire.spells.mural.lock", "Always show the clock"))
+        self.clock_idle = WrapCheck(tr("grimoire.spells.mural.lock", "Hide clock when idle"))
+        self.media = WrapCheck(tr("grimoire.spells.mural.lock", "Show media controls"))
         for c in (self.clock, self.clock_idle, self.media):
             c.toggled.connect(self.changed)
             lay.addWidget(c)

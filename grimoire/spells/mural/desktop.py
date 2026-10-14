@@ -8,13 +8,13 @@ from pathlib import Path
 
 from PySide6.QtCore import QSize, Qt, QTimer
 from PySide6.QtGui import QColor, QIcon, QPixmap
-from PySide6.QtWidgets import (QAbstractItemView, QCheckBox, QComboBox, QDoubleSpinBox, QFileDialog, QFormLayout,
+from PySide6.QtWidgets import (QAbstractItemView, QComboBox, QDoubleSpinBox, QFileDialog, QFormLayout,
                                QFrame, QHBoxLayout, QLabel, QListWidget, QListWidgetItem, QMenu, QPushButton,
                                QSpinBox, QStackedWidget, QVBoxLayout, QWidget)
 
 from grimoire.i18n import tr
 from grimoire.spells.mural import library, plasma
-from grimoire.spells.mural.screens import Choice
+from grimoire.spells.mural.screens import Choice, WrapCheck
 from grimoire.spells.mural.storeview import StoreView
 
 PATH_ROLE = Qt.ItemDataRole.UserRole
@@ -147,8 +147,8 @@ class DesktopTab(QWidget):
         form.addRow(tr("grimoire.spells.mural.desktop", "Fill"), self.fill)
         lay.addLayout(form)
 
-        self.pause = QCheckBox(tr("grimoire.spells.mural.desktop", "Pause when a window is\nfullscreen or maximized"))
-        self.mute = QCheckBox(tr("grimoire.spells.mural.desktop", "Mute videos"))
+        self.pause = WrapCheck(tr("grimoire.spells.mural.desktop", "Pause when a window is\nfullscreen or maximized"))
+        self.mute = WrapCheck(tr("grimoire.spells.mural.desktop", "Mute videos"))
         lay.addWidget(self.pause)
         lay.addWidget(self.mute)
         lay.addStretch(1)
@@ -156,6 +156,7 @@ class DesktopTab(QWidget):
         self.status = QLabel()
         self.status.setObjectName("Muted")
         self.status.setWordWrap(True)
+        self.status.setTextFormat(Qt.TextFormat.PlainText)
         lay.addWidget(self.status)
         self.apply_btn = QPushButton(tr("grimoire.spells.mural.desktop", "Apply to desktop"))
         self.apply_btn.setObjectName("Primary")

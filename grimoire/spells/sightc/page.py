@@ -412,6 +412,8 @@ class SightCPage(QWidget):
         self.off_y = Slider(*LIMITS["offset_y"], " px", ch)
         for s in (self.off_x, self.off_y):
             s.v.setFixedWidth(58)
+            # a position on screen: dragging right moves the crosshair right, also in right-to-left languages
+            s.s.setLayoutDirection(Qt.LayoutDirection.LeftToRight)
         pos.addWidget(QLabel(tr("grimoire.spells.sightc.page", "Offset X")), 0, 0)
         pos.addWidget(self.off_x, 0, 1)
         pos.addWidget(QLabel(tr("grimoire.spells.sightc.page", "Offset Y")), 1, 0)

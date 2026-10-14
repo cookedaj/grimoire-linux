@@ -11,14 +11,15 @@ from pathlib import Path
 from PIL import Image, ImageDraw
 from PySide6.QtCore import QRectF, Qt
 from PySide6.QtGui import QColor, QFont, QMovie, QPainter
-from PySide6.QtWidgets import QCheckBox, QGridLayout, QLabel, QPushButton
+from PySide6.QtWidgets import QGridLayout, QLabel
 
 from grimoire.i18n import tr, tr_noop
 
 from grimoire.paths import CACHE
 from grimoire.spells.mural.lock import _clover_mask, to_qimage
 from grimoire.spells.mural.kde import run_root
-from grimoire.spells.mural.screens import Choice, Design, ScreenTab, community_designs, community_entry
+from grimoire.spells.mural.screens import (Choice, Design, ScreenTab, WrapButton, WrapCheck, community_designs,
+                                           community_entry)
 
 WORK = CACHE / "boot"
 FRAMES = 48                                   # two-step loops the throbber; ~1.6 s at 30 fps
@@ -168,14 +169,14 @@ class BootTab(ScreenTab):
         grid.addWidget(QLabel(tr("grimoire.spells.mural.boot", "Position")), 1, 0)
         grid.addWidget(self.position, 1, 1)
         lay.addLayout(grid)
-        self.firmware = QCheckBox(tr("grimoire.spells.mural.boot", "Keep the motherboard logo"))
+        self.firmware = WrapCheck(tr("grimoire.spells.mural.boot", "Keep the motherboard logo"))
         self.firmware.toggled.connect(self.changed)
         lay.addWidget(self.firmware)
         lay.addSpacing(6)
-        play = QPushButton(tr("grimoire.spells.mural.boot", "Play animation"))
+        play = WrapButton(tr("grimoire.spells.mural.boot", "Play animation"))
         play.clicked.connect(self._play)
         lay.addWidget(play)
-        restore = QPushButton(tr("grimoire.spells.mural.boot", "Restore previous boot screen"))
+        restore = WrapButton(tr("grimoire.spells.mural.boot", "Restore previous boot screen"))
         restore.clicked.connect(self._restore)
         lay.addWidget(restore)
 

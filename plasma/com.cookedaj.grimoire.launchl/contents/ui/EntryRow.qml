@@ -62,6 +62,8 @@ Item {
             Text {
                 Layout.fillWidth: true
                 text: row.title
+                // set, not left to each name's script: a Latin name in an Arabic list lines up with the others
+                horizontalAlignment: Text.AlignLeft
                 elide: Text.ElideRight
                 textFormat: Text.PlainText
                 color: mouse.pressed ? launchl.ink.bg : launchl.ink.text
@@ -72,6 +74,7 @@ Item {
                 Layout.fillWidth: true
                 visible: row.subtitle !== ""
                 text: row.subtitle
+                horizontalAlignment: Text.AlignLeft
                 elide: Text.ElideMiddle
                 textFormat: Text.PlainText
                 color: mouse.pressed ? "#333333" : launchl.ink.muted

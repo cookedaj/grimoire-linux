@@ -42,7 +42,9 @@ Rectangle {
             anchors.top: track.bottom; anchors.topMargin: 22
             text: @TAGLINE@
             color: "#8c8c8c"
-            font.family: "IBM Plex Sans"; font.pixelSize: 12; font.letterSpacing: 6
+            font.family: "IBM Plex Sans"; font.pixelSize: 12
+            // spaced-out capitals, but joined scripts (Arabic, Devanagari, Bengali…) stay joined
+            font.letterSpacing: /[\u0600-\u08FF\u0900-\u0DFF\uFB50-\uFDFF\uFE70-\uFEFF]/.test(text) ? 0 : 6
         }
     }
     onStageChanged: if (stage >= 6) fadeOut.start()

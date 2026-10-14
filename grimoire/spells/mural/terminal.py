@@ -10,12 +10,13 @@ import subprocess
 
 from PySide6.QtCore import QRectF, Qt
 from PySide6.QtGui import QColor, QFont, QFontMetricsF, QImage, QPainter, QPainterPath
-from PySide6.QtWidgets import QCheckBox, QGridLayout, QLabel, QPushButton
+from PySide6.QtWidgets import QGridLayout, QLabel
 
 from grimoire.i18n import tr, tr_noop
 from grimoire.paths import HOME
 from grimoire.spells.mural.kde import kwrite
-from grimoire.spells.mural.screens import Choice, Design, ScreenTab, community_designs, community_entry
+from grimoire.spells.mural.screens import (Choice, Design, ScreenTab, WrapButton, WrapCheck, community_designs,
+                                           community_entry)
 from grimoire.spells.mural.backdrop import wallpaper as _wallpaper
 from grimoire.widgets import Slider
 
@@ -237,11 +238,11 @@ class TerminalTab(ScreenTab):
             grid.addWidget(QLabel(name), r, 0)
             grid.addWidget(wdg, r, 1)
         lay.addLayout(grid)
-        self.blur = QCheckBox(tr("grimoire.spells.mural.terminal", "Blur behind when transparent"))
+        self.blur = WrapCheck(tr("grimoire.spells.mural.terminal", "Blur behind when transparent"))
         self.blur.toggled.connect(self.changed)
         lay.addWidget(self.blur)
         lay.addSpacing(6)
-        test = QPushButton(tr("grimoire.spells.mural.terminal", "Open a Konsole window"))
+        test = WrapButton(tr("grimoire.spells.mural.terminal", "Open a Konsole window"))
         test.clicked.connect(lambda: subprocess.Popen(["konsole", "--profile", "Grimoire"],
                                                       start_new_session=True))
         lay.addWidget(test)

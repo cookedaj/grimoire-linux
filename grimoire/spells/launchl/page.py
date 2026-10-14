@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 """LaunchL's page in Grimoire: install or update the widget, swap it in for Kickoff and back."""
-from PySide6.QtCore import QObject, Signal
+from PySide6.QtCore import QObject, Qt, Signal
 from PySide6.QtWidgets import QHBoxLayout, QLabel, QMessageBox, QPushButton, QVBoxLayout, QWidget
 
 from grimoire.i18n import tr, tr_noop
@@ -43,7 +43,8 @@ class LaunchLPage(QWidget):
         lay = QVBoxLayout(self)
         lay.setContentsMargins(56, 48, 56, 40)
         lay.setSpacing(6)
-        lay.addWidget(_label("LaunchL", "PageHeading"))
+        # aligned by the layout, which mirrors: a full-width label aligns Latin text left even right to left
+        lay.addWidget(_label("LaunchL", "PageHeading", wrap=False), 0, Qt.AlignmentFlag.AlignLeft)
         lay.addWidget(_label(tr("grimoire.spells.launchl.page",
                                 "Your app launcher in the panel, in black and white: favorites, every app by "
                                 "category, places and recent files, search that also finds files, does sums and unit "

@@ -82,6 +82,7 @@ class StoreView(QWidget):
         bar.addStretch(1)
         self.count = QLabel()
         self.count.setObjectName("Muted")
+        self.count.setTextFormat(Qt.TextFormat.PlainText)
         bar.addWidget(self.count)
         lay.addLayout(bar)
         self._search_timer = QTimer(self, singleShot=True, interval=450, timeout=self.refresh)
@@ -113,6 +114,8 @@ class StoreView(QWidget):
         self.d_meta = QLabel()
         self.d_meta.setObjectName("Muted")
         self.d_meta.setWordWrap(True)
+        for lab in (self.d_name, self.d_meta):    # names and authors come from the store: never as HTML
+            lab.setTextFormat(Qt.TextFormat.PlainText)
         info.addWidget(self.d_name)
         info.addWidget(self.d_meta)
         dl.addLayout(info, 1)

@@ -14,14 +14,14 @@ import sys
 from pathlib import Path
 
 from PySide6.QtGui import QImage
-from PySide6.QtWidgets import QCheckBox, QGridLayout, QLabel, QPushButton
+from PySide6.QtWidgets import QGridLayout, QLabel
 
 from grimoire.i18n import tr, tr_noop
 from grimoire.paths import ASSETS, CACHE
 from grimoire.spells.mural import library
 from grimoire.spells.mural.kde import run_root
-from grimoire.spells.mural.screens import (Choice, Design, ScreenTab, community_designs, community_entry,
-                                           render_lock)
+from grimoire.spells.mural.screens import (Choice, Design, ScreenTab, WrapButton, WrapCheck, community_designs,
+                                           community_entry, render_lock)
 from grimoire.widgets import Slider
 
 THEME = Path(__file__).with_name("sddm_theme")
@@ -110,13 +110,13 @@ class LoginTab(ScreenTab):
         grid.addWidget(QLabel(tr("grimoire.spells.mural.login", "Dim")), 1, 0)
         grid.addWidget(self.dim, 1, 1)
         lay.addLayout(grid)
-        self.clock24 = QCheckBox(tr("grimoire.spells.mural.login", "24-hour clock"))
-        self.power = QCheckBox(tr("grimoire.spells.mural.login", "Show sleep / restart / shut down"))
+        self.clock24 = WrapCheck(tr("grimoire.spells.mural.login", "24-hour clock"))
+        self.power = WrapCheck(tr("grimoire.spells.mural.login", "Show sleep / restart / shut down"))
         for c in (self.clock24, self.power):
             c.toggled.connect(self.changed)
             lay.addWidget(c)
         lay.addSpacing(6)
-        restore = QPushButton(tr("grimoire.spells.mural.login", "Restore previous login screen"))
+        restore = WrapButton(tr("grimoire.spells.mural.login", "Restore previous login screen"))
         restore.clicked.connect(self._restore)
         lay.addWidget(restore)
 
