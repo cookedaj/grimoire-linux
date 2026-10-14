@@ -7,7 +7,9 @@ from PySide6.QtGui import QIcon
 from PySide6.QtWidgets import (QDialog, QFrame, QHBoxLayout, QLabel, QLineEdit, QPushButton, QScrollArea, QSizePolicy,
                                QStackedWidget, QVBoxLayout, QWidget)
 
+from grimoire import i18n
 from grimoire.glyphs import glyph
+from grimoire.i18n import tr, tr_noop
 from grimoire.jobs import POOL, Job
 from grimoire.spells.optimizel import profiles, tweaks
 from grimoire.spells.optimizel.benchview import BenchView
@@ -29,7 +31,14 @@ QLabel#ProfileCount { font-family: "IBM Plex Mono"; font-size: 11px; color: #8c8
 QLineEdit#Search { padding: 8px 10px; }
 QDialog#Plan { background: #0b0b0b; }
 """
-FILTERS = ("All", "Safe", "Aggressive", "On", "Off")
+# Arabic/Urdu words drawn through IBM Plex Mono's fallback are measured narrower than they paint, so a wrapped
+# "now … → …" line overflows its label; in a right-to-left language the readings use the sans font instead
+RTL_QSS = 'QLabel#Value { font-family: "IBM Plex Sans"; }'
+FILTERS = {"All": tr_noop("grimoire.spells.optimizel.page", "All"),                   # id → label (shown through tr)
+           "Safe": tr_noop("grimoire.spells.optimizel.page", "Safe"),
+           "Aggressive": tr_noop("grimoire.spells.optimizel.page", "Aggressive"),
+           "On": tr_noop("grimoire.spells.optimizel.page", "On"),
+           "Off": tr_noop("grimoire.spells.optimizel.page", "Off")}
 
 
 class _Signals(QObject):
@@ -70,7 +79,7 @@ class Row(QFrame):
         text.setSpacing(5)
         top = QHBoxLayout()
         top.setSpacing(8)
-        self.title = _label(t.title, "RowTitle")
+        self.title = _label(t.text("title"), "RowTitle")
         top.addWidget(self.title)
         holder = QWidget()                 # in a narrow window badges get clipped, never the switch
         holder.setSizePolicy(QSizePolicy.Policy.Ignored, QSizePolicy.Policy.Preferred)
@@ -80,11 +89,13 @@ class Row(QFrame):
         self.badges.addStretch(1)
         top.addWidget(holder, 1)
         text.addLayout(top)
-        text.addWidget(_label(t.why, "Muted", wrap=True))
+        text.addWidget(_label(t.text("why"), "Muted", wrap=True))
         if t.gain:
-            text.addWidget(_label("Gain: " + t.gain, "Gain", wrap=True))
+            text.addWidget(_label(tr("grimoire.spells.optimizel.page",
+                                     "Gain: {text}").format(text=t.text("gain")), "Gain", wrap=True))
         if t.risk:
-            text.addWidget(_label("Can go wrong: " + t.risk, "Risk", wrap=True))
+            text.addWidget(_label(tr("grimoire.spells.optimizel.page",
+                                     "Can go wrong: {text}").format(text=t.text("risk")), "Risk", wrap=True))
         self.value = _label("", "Value", wrap=True)
         self.value.setTextInteractionFlags(Qt.TextInteractionFlag.TextSelectableByMouse)
         text.addWidget(self.value)
@@ -96,7 +107,8 @@ class Row(QFrame):
         self.done.setObjectName("Done")
         lay.addWidget(self.switch, 0, Qt.AlignmentFlag.AlignVCenter)
         lay.addWidget(self.done, 0, Qt.AlignmentFlag.AlignVCenter)
-        self.haystack = " ".join((t.id, t.group, t.title, t.why, t.gain, t.risk, t.target, t.tier)).lower()
+        fields = ("group", "title", "why", "gain", "risk", "target", "tier")     # English and translated both match
+        self.haystack = " ".join([t.id] + [getattr(t, f) for f in fields] + [t.text(f) for f in fields]).lower()
 
     def show_state(self, info: dict, pending: bool | None):
         """info is one scan result; pending is the staged on/off, or None when nothing is staged."""
@@ -104,42 +116,45 @@ class Row(QFrame):
         on = self.state == "on"
         while self.badges.count() > 1:      # keep the trailing stretch
             self.badges.takeAt(0).widget().deleteLater()
-        badges = [_badge(self.t.tier, "strong" if self.t.tier == "Aggressive" else "")]
+        badges = [_badge(self.t.text("tier"), "strong" if self.t.tier == "Aggressive" else "")]
         if info["note"]:
             badges.insert(0, _badge(info["note"], "solid"))
         if self.state in ("on", "off"):
             if self.t.when != "now":
-                badges.append(_badge(tweaks.WHEN[self.t.when]))
+                badges.append(_badge(tr("grimoire.spells.optimizel.kinds", tweaks.WHEN[self.t.when])))
             if self.t.root:
-                badges.append(_badge("Password"))
+                badges.append(_badge(tr("grimoire.spells.optimizel.page", "Password")))
             if self.t.installs and self.state == "off":
-                b = _badge("Installs a package")
-                b.setToolTip(f"Turning this on installs {self.t.installs} from Ubuntu's archive")
+                b = _badge(tr("grimoire.spells.optimizel.page", "Installs a package"))
+                b.setToolTip(tr("grimoire.spells.optimizel.page",
+                                "Turning this on installs {package} from Ubuntu's archive").format(
+                    package=self.t.installs))
                 badges.append(b)
             if self.t.recommended and self.t.tier == "Safe" and self.state == "off":
-                badges.append(_badge("Recommended"))
+                badges.append(_badge(tr("grimoire.spells.optimizel.page", "Recommended")))
         for i, b in enumerate(badges):
             self.badges.insertWidget(i, b)
 
         live = info["current"]
-        goal = info.get("goal") or self.t.target
+        # a catalog text, or a reading (which tr() leaves as it is)
+        goal = tr("grimoire.spells.optimizel.tweaks", info.get("goal") or self.t.target)
         if self.state == "na":
             self.value.setText(info["reason"])
         elif self.state == "native":
-            self.value.setText(f"now  {live}" if live else "")
+            self.value.setText(_now_line(live) if live else "")
         elif pending is not None:
-            self.value.setText(f"now  {live}   →   {goal if pending else 'back to how it was'}")
+            self.value.setText(_change_line(live, goal if pending else None))
         else:
-            self.value.setText(f"now  {live}" if on else f"now  {live}   →   {goal}")
+            self.value.setText(_now_line(live) if on else _change_line(live, goal))
         self.haystack_live = (live or "").lower()
 
         switchable = self.state in ("on", "off")
         self.switch.setVisible(switchable)
         self.done.setVisible(not switchable)
         if self.state == "native":
-            self.done.setText("Already set")
+            self.done.setText(tr("grimoire.spells.optimizel.page", "Already set"))
         elif self.state == "na":
-            self.done.setText("Not needed")
+            self.done.setText(tr("grimoire.spells.optimizel.page", "Not needed"))
         self.switch.blockSignals(True)
         self.switch.setChecked(on if pending is None else pending)
         self.switch.blockSignals(False)
@@ -169,7 +184,7 @@ class NavItem(QPushButton):
         self.setMinimumHeight(34)
         lay = QHBoxLayout(self)
         lay.setContentsMargins(10, 0, 10, 0)
-        self.name = _label(name, "NavName")
+        self.name = _label(tr("grimoire.spells.optimizel.tweaks", name), "NavName")
         self.count = _label("", "NavCount")
         for w in (self.name, self.count):
             w.setAttribute(Qt.WidgetAttribute.WA_TransparentForMouseEvents)
@@ -194,13 +209,13 @@ class ProfileButton(QPushButton):
         lay.setContentsMargins(16, 12, 16, 12)
         lay.setSpacing(3)
         top = QHBoxLayout()
-        self.name = _label(p.name, "ProfileName")
+        self.name = _label(tr("grimoire.spells.optimizel.profiles", p.name), "ProfileName")
         self.count = _label("", "ProfileCount")
         top.addWidget(self.name)
         top.addStretch(1)
         top.addWidget(self.count)
         lay.addLayout(top)
-        lay.addWidget(_label(p.blurb, "Muted", wrap=True))
+        lay.addWidget(_label(tr("grimoire.spells.optimizel.profiles", p.blurb), "Muted", wrap=True))
         for w in self.findChildren(QLabel):
             w.setAttribute(Qt.WidgetAttribute.WA_TransparentForMouseEvents)
 
@@ -211,13 +226,13 @@ class PlanDialog(QDialog):
     def __init__(self, parent, p: profiles.Profile, changes: dict, info: dict):
         super().__init__(parent)
         self.setObjectName("Plan")
-        self.setWindowTitle(p.name)
+        self.setWindowTitle(tr("grimoire.spells.optimizel.profiles", p.name))
         self.setMinimumWidth(640)
         lay = QVBoxLayout(self)
         lay.setContentsMargins(24, 22, 24, 18)
         lay.setSpacing(10)
-        lay.addWidget(_label(p.name, "SectionTitle"))
-        lay.addWidget(_label(p.blurb, "Muted", wrap=True))
+        lay.addWidget(_label(tr("grimoire.spells.optimizel.profiles", p.name), "SectionTitle"))
+        lay.addWidget(_label(tr("grimoire.spells.optimizel.profiles", p.blurb), "Muted", wrap=True))
         scroll = QScrollArea()
         scroll.setWidgetResizable(True)
         inner = QWidget()
@@ -234,39 +249,35 @@ class PlanDialog(QDialog):
             rl.setSpacing(3)
             top = QHBoxLayout()
             top.setSpacing(8)
-            top.addWidget(_label(("Turn on  ·  " if on else "Turn off  ·  ") + t.title, "RowTitle"))
+            head = tr("grimoire.spells.optimizel.page", "Turn on  ·  {tweak}") if on \
+                else tr("grimoire.spells.optimizel.page", "Turn off  ·  {tweak}")
+            top.addWidget(_label(head.format(tweak=t.text("title")), "RowTitle"))
             top.addStretch(1)
-            top.addWidget(_badge(t.tier, "strong" if t.tier == "Aggressive" else ""))
+            top.addWidget(_badge(t.text("tier"), "strong" if t.tier == "Aggressive" else ""))
             if t.when != "now":
-                top.addWidget(_badge(tweaks.WHEN[t.when]))
+                top.addWidget(_badge(tr("grimoire.spells.optimizel.kinds", tweaks.WHEN[t.when])))
             rl.addLayout(top)
-            goal = info[tid].get("goal") or t.target
-            rl.addWidget(_label(f"now  {info[tid]['current']}   →   {goal if on else 'back to how it was'}", "Value",
-                                wrap=True))
+            goal = tr("grimoire.spells.optimizel.tweaks", info[tid].get("goal") or t.target)
+            rl.addWidget(_label(_change_line(info[tid]["current"], goal if on else None), "Value", wrap=True))
             if on and t.risk:
-                rl.addWidget(_label("Can go wrong: " + t.risk, "Risk", wrap=True))
+                rl.addWidget(_label(tr("grimoire.spells.optimizel.page",
+                                       "Can go wrong: {text}").format(text=t.text("risk")), "Risk", wrap=True))
             col.addWidget(row)
         col.addStretch(1)
         scroll.setWidget(inner)
         scroll.setMinimumHeight(min(520, 90 + 74 * len(changes)))
         lay.addWidget(scroll, 1)
-        notes = []
-        if any(tweaks.BY_ID[t].root for t in changes):
-            notes.append("Asks for your password once")
-        if any(tweaks.BY_ID[t].when == "restart" for t in changes):
-            notes.append("some finish after a restart")
-        elif any(tweaks.BY_ID[t].when == "logout" for t in changes):
-            notes.append("some finish after you log out")
+        notes = [tr("grimoire.spells.optimizel.page", "%n switch(es).", n=len(changes))]
         aggressive = sum(tweaks.BY_ID[t].tier == "Aggressive" and on for t, on in changes.items())
         if aggressive:
-            notes.append(f"{aggressive} Aggressive")
-        lay.addWidget(_label(f"{len(changes)} switch(es). " + (", ".join(notes).capitalize() + "." if notes else ""),
-                             "Muted", wrap=True))
+            notes.append(tr("grimoire.spells.optimizel.page", "%n of them Aggressive.", n=aggressive))
+        notes += _later_notes(changes)
+        lay.addWidget(_label(" ".join(notes), "Muted", wrap=True))
         btns = QHBoxLayout()
         btns.addStretch(1)
-        cancel = QPushButton("Cancel")
+        cancel = QPushButton(tr("grimoire.spells.optimizel.page", "Cancel"))
         cancel.clicked.connect(self.reject)
-        ok = QPushButton(f"Apply {len(changes)} change{'s' if len(changes) != 1 else ''}")
+        ok = QPushButton(tr("grimoire.spells.optimizel.page", "Apply %n change(s)", n=len(changes)))
         ok.setObjectName("Primary")
         ok.setMinimumWidth(160)
         ok.clicked.connect(self.accept)
@@ -279,7 +290,7 @@ class OptimizeLPage(QWidget):
     def __init__(self):
         super().__init__()
         self.setObjectName("Page")
-        self.setStyleSheet(QSS)
+        self.setStyleSheet(i18n.qss(QSS) + (RTL_QSS if i18n.rtl() else ""))
         self.info: dict[str, dict] = {}
         self.pending: dict[str, bool] = {}
         self.busy = False
@@ -296,11 +307,12 @@ class OptimizeLPage(QWidget):
         titles = QVBoxLayout()
         titles.setSpacing(2)
         titles.addWidget(_label("OptimizeL", "Title"))
-        titles.addWidget(_label("Tunes this PC for speed. Every switch shows what it changes and what you gain, stays "
-                                "put through restarts, and turning it off puts back exactly what was there.",
+        titles.addWidget(_label(tr("grimoire.spells.optimizel.page",
+                                   "Tunes this PC for speed. Every switch shows what it changes and what you gain, "
+                                   "stays put through restarts, and turning it off puts back exactly what was there."),
                                 "Subtitle", wrap=True))
         head.addLayout(titles, 1)
-        self.rescan_btn = QPushButton("Rescan")
+        self.rescan_btn = QPushButton(tr("grimoire.spells.optimizel.page", "Rescan"))
         self.rescan_btn.clicked.connect(self.scan)
         head.addWidget(self.rescan_btn, 0, Qt.AlignmentFlag.AlignTop)
         root.addLayout(head)
@@ -308,7 +320,8 @@ class OptimizeLPage(QWidget):
         tabs = QHBoxLayout()
         tabs.setSpacing(4)
         self.tabs = []
-        for i, name in enumerate(("Tweaks", "Benchmark")):
+        for i, name in enumerate((tr("grimoire.spells.optimizel.page", "Tweaks"),
+                                  tr("grimoire.spells.optimizel.page", "Benchmark"))):
             b = QPushButton(name)
             b.setObjectName("Tab")
             b.setCheckable(True)
@@ -333,9 +346,9 @@ class OptimizeLPage(QWidget):
         self.bar_text = _label("", "PendingText")
         self.bar_text.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred)
         bl.addWidget(self.bar_text, 1)
-        self.discard_btn = QPushButton("Discard")
+        self.discard_btn = QPushButton(tr("grimoire.spells.optimizel.page", "Discard"))
         self.discard_btn.clicked.connect(self._discard)
-        self.apply_btn = QPushButton("Apply changes")
+        self.apply_btn = QPushButton(tr("grimoire.spells.optimizel.page", "Apply changes"))
         self.apply_btn.setObjectName("Primary")
         self.apply_btn.setMinimumWidth(150)
         self.apply_btn.clicked.connect(self._apply)
@@ -373,8 +386,10 @@ class OptimizeLPage(QWidget):
         stats = QHBoxLayout()
         stats.setSpacing(12)
         self.stats = {}
-        for key, label in (("on", "On"), ("left", "Recommended left"), ("native", "Already optimal"),
-                           ("finish", "Waiting on restart")):
+        for key, label in (("on", tr("grimoire.spells.optimizel.page", "On")),
+                           ("left", tr("grimoire.spells.optimizel.page", "Recommended left")),
+                           ("native", tr("grimoire.spells.optimizel.page", "Already optimal")),
+                           ("finish", tr("grimoire.spells.optimizel.page", "Waiting on restart"))):
             tile = QFrame()
             tile.setObjectName("Stat")
             tl = QVBoxLayout(tile)
@@ -391,15 +406,16 @@ class OptimizeLPage(QWidget):
         frow.setSpacing(0)
         self.search = QLineEdit()
         self.search.setObjectName("Search")
-        self.search.setPlaceholderText("Search tweaks: gpu, boot, swap, latency…")
+        self.search.setPlaceholderText(tr("grimoire.spells.optimizel.page",
+                                          "Search tweaks: gpu, boot, swap, latency…"))
         self.search.setClearButtonEnabled(True)
         self.search.addAction(glyph("search", 16), QLineEdit.ActionPosition.LeadingPosition)
         self.search.textChanged.connect(self._apply_filter)
         frow.addWidget(self.search, 1)
         frow.addSpacing(14)
         self.seg = {}
-        for i, name in enumerate(FILTERS):
-            b = QPushButton(name)
+        for i, (name, label) in enumerate(FILTERS.items()):
+            b = QPushButton(tr("grimoire.spells.optimizel.page", label))
             b.setObjectName("Segment")
             b.setCheckable(True)
             b.setProperty("pos", "first" if i == 0 else "last" if i == len(FILTERS) - 1 else "mid")
@@ -413,7 +429,7 @@ class OptimizeLPage(QWidget):
         body.setSpacing(28)
         nav = QVBoxLayout()
         nav.setSpacing(2)
-        nav.addWidget(_label("GROUPS", "NavSection"))
+        nav.addWidget(_label(tr("grimoire.spells.optimizel.page", "GROUPS"), "NavSection"))
         self.nav: dict[str, NavItem] = {}
         for g in tweaks.GROUPS:
             item = NavItem(g)
@@ -442,7 +458,7 @@ class OptimizeLPage(QWidget):
             head_row = QWidget()
             hl = QHBoxLayout(head_row)
             hl.setContentsMargins(2, 18 if self.sections else 0, 2, 4)
-            hl.addWidget(_label(g, "SectionTitle"))
+            hl.addWidget(_label(tr("grimoire.spells.optimizel.tweaks", g), "SectionTitle"))
             hl.addStretch(1)
             cnt = _label("", "Muted")
             hl.addWidget(cnt)
@@ -460,7 +476,7 @@ class OptimizeLPage(QWidget):
             gl.setSpacing(2)
             col.addWidget(good)
             self.good_boxes[g] = good
-        self.empty = _label("No tweak matches.", "Muted")
+        self.empty = _label(tr("grimoire.spells.optimizel.page", "No tweak matches."), "Muted")
         self.empty.hide()
         col.addWidget(self.empty)
         col.addStretch(1)
@@ -479,12 +495,12 @@ class OptimizeLPage(QWidget):
     def scan(self):
         if self.busy:
             return
-        self.rescan_btn.setText("Scanning…")
+        self.rescan_btn.setText(tr("grimoire.spells.optimizel.page", "Scanning…"))
         sig = self._sig
         POOL.start(Job(_scan, sig.scanned.emit))
 
     def _on_scanned(self, result):
-        self.rescan_btn.setText("Rescan")
+        self.rescan_btn.setText(tr("grimoire.spells.optimizel.page", "Rescan"))
         self.info = result["tweaks"]
         # drop staged flips that the system already matches (e.g. changed elsewhere)
         self.pending = {k: v for k, v in self.pending.items() if (self.info[k]["state"] == "on") != v}
@@ -516,10 +532,13 @@ class OptimizeLPage(QWidget):
             live = [i for i in ids if states.get(i) in ("on", "off")]
             on = sum(states.get(i) == "on" for i in live)
             self.nav[g].count.setText(f"{on}/{len(live)}" if live else "✓")
-            self.section_counts[g].setText(f"{on} of {len(live)} on" if live else "Nothing to change")
+            self.section_counts[g].setText(tr("grimoire.spells.optimizel.page",
+                                              "{on} of {total} on").format(on=on, total=len(live)) if live
+                                           else tr("grimoire.spells.optimizel.page", "Nothing to change"))
         for pid, b in self.profile_btns.items():
             n = len(profiles.plan(pid, states))
-            b.count.setText(f"{n} change{'s' if n != 1 else ''}" if n else "nothing to do")
+            b.count.setText(tr("grimoire.spells.optimizel.page", "%n change(s)", n=n) if n
+                            else tr("grimoire.spells.optimizel.page", "nothing to do"))
             b.setEnabled(bool(n) and not self.busy)
             _repolish(b.name)
 
@@ -565,22 +584,19 @@ class OptimizeLPage(QWidget):
         n = len(self.pending)
         self.bar.setVisible(bool(n) or self.busy)
         if self.busy:
-            self.bar_text.setText("Applying… if a password prompt opens, it's for the system changes.")
+            self.bar_text.setText(tr("grimoire.spells.optimizel.page",
+                                     "Applying… if a password prompt opens, it's for the system changes."))
             return
         ons = sum(self.pending.values())
         offs = n - ons
-        parts = [f"{ons} to turn on" if ons else "", f"{offs} to turn off" if offs else ""]
-        roots = sum(tweaks.BY_ID[t].root for t in self.pending)
-        later = {tweaks.BY_ID[t].when for t in self.pending} - {"now"}
-        tail = []
-        if roots:
-            tail.append("asks for your password once")
-        if "restart" in later:
-            tail.append("some finish after a restart")
-        elif "logout" in later:
-            tail.append("some finish after you log out")
-        self.bar_text.setText(" and ".join(p for p in parts if p) + (".   " + ", ".join(tail).capitalize() + "."
-                                                                    if tail else "."))
+        if ons and offs:
+            text = tr("grimoire.spells.optimizel.page",
+                      "{on} to turn on and {off} to turn off.").format(on=ons, off=offs)
+        elif ons:
+            text = tr("grimoire.spells.optimizel.page", "%n to turn on.", n=ons)
+        else:
+            text = tr("grimoire.spells.optimizel.page", "%n to turn off.", n=offs)
+        self.bar_text.setText("   ".join([text] + _later_notes(self.pending)) if n else "")
 
     def _jump(self, g):
         self.scroll.verticalScrollBar().setValue(self.sections[g].y())
@@ -630,19 +646,27 @@ class OptimizeLPage(QWidget):
         for row in self.rows.values():
             row.switch.setEnabled(True)
         self.pending.clear()
-        cancelled = "You cancelled the password prompt" in problems
-        root_failed = cancelled or any(p.startswith("System changes:") for p in problems)
+        cancelled = getattr(problems, "cancelled", "")             # tweaks.Problems says what went wrong as data
+        root_failed = getattr(problems, "root_failed", False)
         done = {t: on for t, on in changes.items() if not (root_failed and tweaks.BY_ID[t].root)}
         ons = sum(done.values())
-        parts = [f"turned on {ons}" if ons else "", f"turned off {len(done) - ons}" if len(done) - ons else ""]
-        text = " and ".join(p for p in parts if p).capitalize() + "." if done else "Nothing changed."
+        offs = len(done) - ons
+        if ons and offs:
+            text = tr("grimoire.spells.optimizel.page", "Turned on {on} and turned off {off}.").format(on=ons, off=offs)
+        elif ons:
+            text = tr("grimoire.spells.optimizel.page", "Turned on %n.", n=ons)
+        elif offs:
+            text = tr("grimoire.spells.optimizel.page", "Turned off %n.", n=offs)
+        else:
+            text = tr("grimoire.spells.optimizel.page", "Nothing changed.")
         if any(tweaks.BY_ID[t].when == "restart" for t in done):
-            text += " Restart to finish the ones marked so."
+            text += " " + tr("grimoire.spells.optimizel.page", "Restart to finish the ones marked so.")
         if cancelled:
-            text += " System changes were skipped because the password prompt was cancelled."
-        others = [p for p in problems if p != "You cancelled the password prompt"]
+            text += " " + tr("grimoire.spells.optimizel.page",
+                             "System changes were skipped because the password prompt was cancelled.")
+        others = [p for p in problems if p != cancelled]
         if others:
-            text += " Problems: " + "; ".join(others)
+            text += " " + tr("grimoire.spells.optimizel.page", "Problems: {list}").format(list="; ".join(others))
         self.toast.setText(text)
         self.toast.show()
         self._toast_timer.start()
@@ -654,7 +678,38 @@ def _apply_safely(changes: dict) -> list[str]:
     try:
         return tweaks.apply(changes)
     except Exception as e:
-        return [f"Couldn't apply: {e}"]
+        return [tr("grimoire.spells.optimizel.page", "Couldn't apply: {error}").format(error=e)]
+
+
+def _iso(text: str) -> str:
+    """A reading or target kept in one piece inside a right-to-left line (a first-strong isolate: "swappiness 60"
+    stays left to right, a translated phrase keeps its own direction)."""
+    return f"\u2068{text}\u2069" if i18n.rtl() and text else text
+
+
+def _now_line(live: str) -> str:
+    return tr("grimoire.spells.optimizel.page", "now  {value}").format(value=_iso(live))
+
+
+def _change_line(live: str, goal: str | None) -> str:
+    """"now <value> → <target>"; goal None means turning it off."""
+    if goal is None:
+        return tr("grimoire.spells.optimizel.page", "now  {value}   →   back to how it was").format(value=_iso(live))
+    return tr("grimoire.spells.optimizel.page", "now  {value}   →   {target}").format(value=_iso(live),
+                                                                                       target=_iso(goal))
+
+
+def _later_notes(changes) -> list[str]:
+    """Sentences about a batch of switches: the password prompt, and when they finish."""
+    notes = []
+    if any(tweaks.BY_ID[t].root for t in changes):
+        notes.append(tr("grimoire.spells.optimizel.page", "Asks for your password once."))
+    whens = {tweaks.BY_ID[t].when for t in changes}
+    if "restart" in whens:
+        notes.append(tr("grimoire.spells.optimizel.page", "Some finish after a restart."))
+    elif "logout" in whens:
+        notes.append(tr("grimoire.spells.optimizel.page", "Some finish after you log out."))
+    return notes
 
 
 def _good_line(text: str) -> QWidget:
@@ -679,7 +734,8 @@ def _scan() -> dict:
             out[t.id] = {"state": state, "current": t.current(), "goal": t.goal(),
                          "reason": t.reason() if state == "na" else "", "note": tweaks.pending_note(t, saved)}
         except Exception as e:          # one odd setting must never hide the rest
-            out[t.id] = {"state": "na", "current": "", "goal": "", "reason": f"Couldn't read this: {e}", "note": ""}
+            out[t.id] = {"state": "na", "current": "", "goal": "", "note": "",
+                         "reason": tr("grimoire.spells.optimizel.page", "Couldn't read this: {error}").format(error=e)}
     try:
         checks = tweaks.checks()
     except Exception:

@@ -11,12 +11,14 @@ import fcntl
 import hashlib
 import json
 import os
+import re
 import shutil
 import time
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
 
 from grimoire.fsutil import free_name, trash
+from grimoire.i18n import tr, tr_noop
 from grimoire.paths import CONFIG, DATA, HOME
 
 SETTINGS = CONFIG / "vaultl.json"
@@ -37,21 +39,29 @@ class Rule:
 
 
 def default_rules() -> list[Rule]:
+    """The names are ids in vaultl.json (English); the UI shows them through label()."""
     return [
-        Rule("Images", ["png", "jpg", "jpeg", "gif", "webp", "bmp", "svg", "heic", "avif", "tif", "tiff"],
+        Rule(tr_noop("grimoire.spells.vaultl.tidy", "Images"),
+             ["png", "jpg", "jpeg", "gif", "webp", "bmp", "svg", "heic", "avif", "tif", "tiff"],
              "~/Pictures/Downloaded"),
-        Rule("Videos", ["mp4", "mkv", "webm", "mov", "avi", "m4v", "flv"], "~/Videos"),
-        Rule("Audio", ["mp3", "wav", "flac", "ogg", "m4a", "aac", "opus"], "~/Music"),
-        Rule("Documents", ["pdf", "doc", "docx", "odt", "txt", "md", "rtf", "xls", "xlsx", "ods", "csv",
-                           "ppt", "pptx", "odp", "epub"], "~/Documents"),
-        Rule("Disk images", ["iso", "img"], "~/Documents/ISOs"),
-        Rule("Roblox", ["rbxl", "rbxlx", "rbxm", "rbxmx"], "~/Documents/Roblox"),
-        Rule("3D models", ["fbx", "blend", "obj", "glb", "gltf", "stl", "dae"], "~/Documents/3D"),
-        Rule("Fonts", ["ttf", "otf", "woff", "woff2"], "~/Downloads/Fonts"),
-        Rule("Installers", ["deb", "rpm", "appimage", "run", "flatpakref", "flatpak", "snap", "exe", "msi"],
-             "~/Downloads/Installers", clean_days=14),
-        Rule("Archives", ["zip", "7z", "rar", "tar", "gz", "tgz", "xz", "bz2", "zst"], "~/Downloads/Archives",
+        Rule(tr_noop("grimoire.spells.vaultl.tidy", "Videos"),
+             ["mp4", "mkv", "webm", "mov", "avi", "m4v", "flv"], "~/Videos"),
+        Rule(tr_noop("grimoire.spells.vaultl.tidy", "Audio"),
+             ["mp3", "wav", "flac", "ogg", "m4a", "aac", "opus"], "~/Music"),
+        Rule(tr_noop("grimoire.spells.vaultl.tidy", "Documents"),
+             ["pdf", "doc", "docx", "odt", "txt", "md", "rtf", "xls", "xlsx", "ods", "csv", "ppt", "pptx", "odp",
+              "epub"], "~/Documents"),
+        Rule(tr_noop("grimoire.spells.vaultl.tidy", "Disk images"), ["iso", "img"], "~/Documents/ISOs"),
+        Rule(tr_noop("grimoire.spells.vaultl.tidy", "Roblox"),
+             ["rbxl", "rbxlx", "rbxm", "rbxmx"], "~/Documents/Roblox"),
+        Rule(tr_noop("grimoire.spells.vaultl.tidy", "3D models"),
+             ["fbx", "blend", "obj", "glb", "gltf", "stl", "dae"], "~/Documents/3D"),
+        Rule(tr_noop("grimoire.spells.vaultl.tidy", "Fonts"), ["ttf", "otf", "woff", "woff2"], "~/Downloads/Fonts"),
+        Rule(tr_noop("grimoire.spells.vaultl.tidy", "Installers"),
+             ["deb", "rpm", "appimage", "run", "flatpakref", "flatpak", "snap", "exe", "msi"], "~/Downloads/Installers",
              clean_days=14),
+        Rule(tr_noop("grimoire.spells.vaultl.tidy", "Archives"),
+             ["zip", "7z", "rar", "tar", "gz", "tgz", "xz", "bz2", "zst"], "~/Downloads/Archives", clean_days=14),
     ]
 
 
@@ -104,7 +114,8 @@ def edit(change) -> Settings:
         fcntl.flock(lock, fcntl.LOCK_EX)
         s = Settings.load()
         if s.broken:
-            raise ValueError(f"{SETTINGS} can't be read; fix or remove it first")
+            raise ValueError(tr("grimoire.spells.vaultl.tidy",
+                                "{path} can't be read; fix or remove it first").format(path=SETTINGS))
         change(s)
         s.save()
         return s
@@ -152,6 +163,22 @@ def history(limit=200) -> list[dict]:
         except ValueError:
             continue
     return out
+
+
+# the rule and reason logged for files trashed by hand (the log keeps the English; label() translates)
+BIG = tr_noop("grimoire.spells.vaultl.tidy", "Big files")
+DUPES = tr_noop("grimoire.spells.vaultl.tidy", "Duplicates")
+CHOSEN = tr_noop("grimoire.spells.vaultl.tidy", "you chose it")
+COPY = tr_noop("grimoire.spells.vaultl.tidy", "duplicate copy")
+
+
+def label(text: str) -> str:
+    """A rule name or cleanup reason from the settings or the log, in the UI's language when it's one of ours
+    (rules you named yourself stay as typed)."""
+    m = re.fullmatch(r"older than (\d+) days", text)
+    if m:
+        return tr("grimoire.spells.vaultl.tidy", "older than %n day(s)", n=int(m.group(1)))
+    return tr("grimoire.spells.vaultl.tidy", text)
 
 
 def trash_by_hand(path: Path, rule: str, reason: str):
@@ -229,7 +256,7 @@ def cleanup_plan(s: Settings) -> list[tuple[Path, str, str]]:
             except OSError:
                 continue
             if stale:
-                out.append((f, rule.name, f"older than {rule.clean_days} days"))
+                out.append((f, rule.name, f"older than {rule.clean_days} days"))     # logged; label() shows it
     return out
 
 
@@ -245,7 +272,8 @@ def preview(s: Settings | None = None) -> Preview:
     """Dry run: the planned moves and cleanups, touching nothing."""
     s = s or Settings.load()
     if s.broken:
-        return Preview(error=f"{SETTINGS} can't be read; nothing would be done")
+        return Preview(error=tr("grimoire.spells.vaultl.tidy",
+                                "{path} can't be read; nothing would be done").format(path=SETTINGS))
     return Preview(plan(s), cleanup_plan(s))
 
 
@@ -255,7 +283,8 @@ def run(s: Settings | None = None, approved: Preview | None = None) -> dict:
     still planned now: nothing the user didn't see moves, and nothing that stopped qualifying does."""
     s = s or Settings.load()
     if s.broken:
-        return {"moved": 0, "cleaned": 0, "errors": [f"{SETTINGS} can't be read; nothing done"]}
+        error = tr("grimoire.spells.vaultl.tidy", "{path} can't be read; nothing done").format(path=SETTINGS)
+        return {"moved": 0, "cleaned": 0, "errors": [error]}
     ok_moves = None if approved is None else {str(f) for f, _, _ in approved.moves}
     ok_clean = None if approved is None else {str(f) for f, _, _ in approved.cleanups}
     batch = f"{time.time():.0f}"

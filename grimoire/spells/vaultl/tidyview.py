@@ -5,24 +5,36 @@ Tidy now always shows its preview first: nothing moves until the user has seen (
 import copy
 import subprocess
 from dataclasses import asdict
-from datetime import datetime
 from pathlib import Path
 
-from PySide6.QtCore import QFileSystemWatcher, QObject, Qt, QTimer, Signal
+from PySide6.QtCore import QDateTime, QFileSystemWatcher, QLocale, QObject, Qt, QTimer, Signal
 from PySide6.QtWidgets import (QAbstractItemView, QCheckBox, QDialog, QFileDialog, QHBoxLayout, QHeaderView, QLabel,
                                QListWidget, QListWidgetItem, QMessageBox, QPushButton, QSpinBox, QStackedWidget,
                                QTableWidget, QTableWidgetItem, QTreeWidget, QTreeWidgetItem, QVBoxLayout, QWidget)
 
 from grimoire.fsutil import human, tilde
+from grimoire import i18n
+from grimoire.i18n import tr, tr_noop
 from grimoire.jobs import POOL, Job
 from grimoire.paths import HOME
 from grimoire.spells.vaultl import cli, tidy
 
 # (sidebar label, glyph, panel title, what the panel is for)
-PANELS = [("Rules", "tidy", "Auto-sort rules", "Where each kind of download goes, and when stale ones go to the Trash."),
-          ("Activity", "clock", "Activity", "Everything VaultL sorted or trashed. Undo puts the last tidy back."),
-          ("Big files", "bigfile", "Big files", "The largest files in your home folder."),
-          ("Duplicates", "copies", "Duplicates", "Identical copies taking up space twice.")]
+# (translated where shown: tr("grimoire.spells.vaultl.tidyview", text))
+PANELS = [(tr_noop("grimoire.spells.vaultl.tidyview", "Rules"), "tidy",
+           tr_noop("grimoire.spells.vaultl.tidyview", "Auto-sort rules"),
+           tr_noop("grimoire.spells.vaultl.tidyview",
+                   "Where each kind of download goes, and when stale ones go to the Trash.")),
+          (tr_noop("grimoire.spells.vaultl.tidyview", "Activity"), "clock",
+           tr_noop("grimoire.spells.vaultl.tidyview", "Activity"),
+           tr_noop("grimoire.spells.vaultl.tidyview",
+                   "Everything VaultL sorted or trashed. Undo puts the last tidy back.")),
+          (tr_noop("grimoire.spells.vaultl.tidyview", "Big files"), "bigfile",
+           tr_noop("grimoire.spells.vaultl.tidyview", "Big files"),
+           tr_noop("grimoire.spells.vaultl.tidyview", "The largest files in your home folder.")),
+          (tr_noop("grimoire.spells.vaultl.tidyview", "Duplicates"), "copies",
+           tr_noop("grimoire.spells.vaultl.tidyview", "Duplicates"),
+           tr_noop("grimoire.spells.vaultl.tidyview", "Identical copies taking up space twice."))]
 
 
 class _Signals(QObject):
@@ -37,6 +49,19 @@ def _size(p: Path) -> int | None:
         return None
 
 
+def ltr(text) -> str:
+    """A path, size or file name that keeps reading left to right inside a right-to-left line (a Unicode isolate,
+    so "~/Downloads" doesn't turn into "Downloads/~")."""
+    return f"\u2066{text}\u2069" if i18n.rtl() else str(text)
+
+
+def when(ts: float) -> str:
+    """A time in the UI's language (short date and time), kept in one piece inside a line of the other direction
+    (a first-strong isolate: Urdu dates read "1:31 PM" left to right, Arabic ones right to left)."""
+    text = QLocale().toString(QDateTime.fromSecsSinceEpoch(int(ts)), QLocale.FormatType.ShortFormat)
+    return f"\u2068{text}\u2069" if i18n.rtl() else text
+
+
 def _rules(s: tidy.Settings) -> list[dict]:
     return [asdict(r) for r in s.rules]
 
@@ -44,24 +69,26 @@ def _rules(s: tidy.Settings) -> list[dict]:
 class PreviewDialog(QDialog):
     """Tidy now's dry run: every planned move and cleanup, each with a tick box (untick to leave it alone this
     time) and an "Always skip" box (remember it in settings so tidy never touches that file)."""
-    COLS = ["File", "Goes to", "Rule", "Always skip"]
-
     def __init__(self, p: tidy.Preview, parent=None):
         super().__init__(parent)
-        self.setWindowTitle("Tidy preview")
+        self.setWindowTitle(tr("grimoire.spells.vaultl.tidyview", "Tidy preview"))
         self.resize(940, 560)
         lay = QVBoxLayout(self)
         lay.setContentsMargins(22, 18, 22, 16)
         lay.setSpacing(10)
-        title = QLabel("Tidy preview")
+        title = QLabel(tr("grimoire.spells.vaultl.tidyview", "Tidy preview"))
         title.setObjectName("Title")
         lay.addWidget(title)
-        sub = QLabel("Nothing has moved yet. Untick anything you want left alone this time.")
+        sub = QLabel(tr("grimoire.spells.vaultl.tidyview",
+                        "Nothing has moved yet. Untick anything you want left alone this time."))
         sub.setObjectName("Subtitle")
         lay.addWidget(sub)
 
         self.tree = QTreeWidget()
-        self.tree.setHeaderLabels(self.COLS)
+        self.tree.setHeaderLabels([tr("grimoire.spells.vaultl.tidyview", "File"),
+                                   tr("grimoire.spells.vaultl.tidyview", "Goes to"),
+                                   tr("grimoire.spells.vaultl.tidyview", "Rule"),
+                                   tr("grimoire.spells.vaultl.tidyview", "Always skip")])
         self.tree.setRootIsDecorated(False)
         self.tree.setSelectionMode(QAbstractItemView.SelectionMode.NoSelection)
         hh = self.tree.header()
@@ -69,10 +96,14 @@ class PreviewDialog(QDialog):
         hh.setSectionResizeMode(0, QHeaderView.ResizeMode.Stretch)
         for c, width in ((1, 300), (2, 110), (3, 100)):
             self.tree.setColumnWidth(c, width)
-        self.moves = self._group(f"Would move {cli.plural(len(p.moves), 'file')}",
-                                 [(f, (tilde(dest.parent), rule)) for f, dest, rule in p.moves], p.moves)
-        self.cleanups = self._group(f"Would send {cli.plural(len(p.cleanups), 'file')} to the Trash",
-                                    [(f, (f"Trash · {reason}", rule)) for f, rule, reason in p.cleanups], p.cleanups)
+        self.moves = self._group(tr("grimoire.spells.vaultl.tidyview", "Would move %n file(s)", n=len(p.moves)),
+                                 [(f, (ltr(tilde(dest.parent)), tidy.label(rule))) for f, dest, rule in p.moves],
+                                 p.moves)
+        self.cleanups = self._group(tr("grimoire.spells.vaultl.tidyview",
+                                       "Would send %n file(s) to the Trash", n=len(p.cleanups)),
+                                    [(f, (tr("grimoire.spells.vaultl.tidyview",
+                                             "Trash · {reason}").format(reason=tidy.label(reason)),
+                                          tidy.label(rule))) for f, rule, reason in p.cleanups], p.cleanups)
         self._syncing = False
         self.tree.itemChanged.connect(self._changed)
         lay.addWidget(self.tree, 1)
@@ -80,10 +111,11 @@ class PreviewDialog(QDialog):
         foot = QHBoxLayout()
         self.count = QLabel()
         self.count.setObjectName("Muted")
+        self.count.setWordWrap(True)
         foot.addWidget(self.count, 1)
-        cancel = QPushButton("Cancel")
+        cancel = QPushButton(tr("grimoire.spells.vaultl.tidyview", "Cancel"))
         cancel.clicked.connect(self.reject)
-        self.run_btn = QPushButton("Run")
+        self.run_btn = QPushButton(tr("grimoire.spells.vaultl.tidyview", "Run"))
         self.run_btn.setObjectName("Primary")
         self.run_btn.setMinimumWidth(110)
         self.run_btn.clicked.connect(self.accept)
@@ -103,7 +135,7 @@ class PreviewDialog(QDialog):
         top.setFont(0, f)
         self.tree.addTopLevelItem(top)
         for (path, (where, rule)), entry in zip(rows, entries):
-            item = QTreeWidgetItem([path.name, where, rule, ""])
+            item = QTreeWidgetItem([ltr(path.name), where, rule, ""])
             item.setFlags(Qt.ItemFlag.ItemIsEnabled | Qt.ItemFlag.ItemIsUserCheckable)
             item.setCheckState(0, Qt.CheckState.Checked)
             item.setCheckState(3, Qt.CheckState.Unchecked)
@@ -138,8 +170,12 @@ class PreviewDialog(QDialog):
             self._syncing = False
         ticked = self.chosen()[0]
         a, cl = ticked.moves, ticked.cleanups
-        self.count.setText(f"{cli.plural(len(a), 'move')} and {cli.plural(len(cl), 'file')} to the Trash ticked. "
-                           "Moves can be undone; trashed files can be restored from the Trash.")
+        self.count.setText(tr("grimoire.spells.vaultl.tidyview",
+                              "Ticked: {moves}, {trash}. Moves can be undone; trashed files can be restored "
+                              "from the Trash.").format(moves=tr("grimoire.spells.vaultl.tidyview",
+                                                                 "%n move(s)", n=len(a)),
+                                                        trash=tr("grimoire.spells.vaultl.tidyview",
+                                                                 "%n file(s) to the Trash", n=len(cl))))
         self.run_btn.setEnabled(bool(a or cl))
 
     def chosen(self) -> tuple[tidy.Preview, list[Path]]:
@@ -174,17 +210,19 @@ class TidyPanel(QWidget):
         titles.setSpacing(2)
         self.title = QLabel()
         self.title.setObjectName("Title")
+        self.title.setWordWrap(True)
         self.subtitle = QLabel()
         self.subtitle.setObjectName("Subtitle")
         self.subtitle.setWordWrap(True)
         titles.addWidget(self.title)
         titles.addWidget(self.subtitle)
         head.addLayout(titles, 1)
-        self.undo_btn = QPushButton("Undo last tidy")
+        self.undo_btn = QPushButton(tr("grimoire.spells.vaultl.tidyview", "Undo last tidy"))
         self.undo_btn.clicked.connect(self.undo)
-        self.now_btn = QPushButton("Tidy now")
+        self.now_btn = QPushButton(tr("grimoire.spells.vaultl.tidyview", "Tidy now"))
         self.now_btn.clicked.connect(self.tidy_now)
         self.auto_btn = QPushButton()
+        self.auto_on = False                          # what the button shows (never read back from its text)
         self.auto_btn.setObjectName("Primary")
         self.auto_btn.setMinimumSize(170, 40)
         self.auto_btn.clicked.connect(self._toggle_auto)
@@ -194,6 +232,7 @@ class TidyPanel(QWidget):
 
         self.status = QLabel()
         self.status.setObjectName("Muted")
+        self.status.setWordWrap(True)                 # long in some languages: wrap, never widen the window
         lay.addWidget(self.status)
         self.next_line = QLabel()                     # live dry run, on the Rules and Activity panels
         self.next_line.setWordWrap(True)
@@ -234,7 +273,8 @@ class TidyPanel(QWidget):
         try:
             self.settings = tidy.edit(change)
         except (OSError, ValueError) as e:
-            self.status.setText(f"Couldn't save the tidy settings: {e}")
+            self.status.setText(tr("grimoire.spells.vaultl.tidyview",
+                                   "Couldn't save the tidy settings: {error}").format(error=e))
             self.settings = tidy.Settings.load()
             self._settings_changed()
             return False
@@ -245,8 +285,8 @@ class TidyPanel(QWidget):
     def show_panel(self, i):
         self.views.setCurrentIndex(i)
         _, _, title, sub = PANELS[i]
-        self.title.setText(title)
-        self.subtitle.setText(sub)
+        self.title.setText(tr("grimoire.spells.vaultl.tidyview", title))
+        self.subtitle.setText(tr("grimoire.spells.vaultl.tidyview", sub))
         if i == 1:
             self._refresh_activity()
         self.next_line.setVisible(i in (0, 1))
@@ -271,16 +311,27 @@ class TidyPanel(QWidget):
         if p.error:
             self.next_line.setText(p.error)
             return
-        on = self.auto_btn.text().endswith("ON")
+        on = self.auto_on
         if not (p.moves or p.cleanups):
-            self.next_line.setText("Next auto-tidy has nothing to do right now." if on
-                                   else "Auto-tidy is paused. Nothing to tidy right now.")
+            self.next_line.setText(tr("grimoire.spells.vaultl.tidyview",
+                                      "Next auto-tidy has nothing to do right now.") if on
+                                   else tr("grimoire.spells.vaultl.tidyview",
+                                           "Auto-tidy is paused. Nothing to tidy right now."))
             return
-        what = f"move {cli.plural(len(p.moves), 'file')}"
-        if p.cleanups:
-            what += f" and send {cli.plural(len(p.cleanups), 'file')} to the Trash"
-        lead = "Next auto-tidy will" if on else "Auto-tidy is paused; Tidy now would"
-        self.next_line.setText(f"{lead} {what}. Tidy now shows the list first.")
+        moves = tr("grimoire.spells.vaultl.tidyview", "%n file(s)", n=len(p.moves))
+        trash = tr("grimoire.spells.vaultl.tidyview", "%n file(s)", n=len(p.cleanups))
+        if on and p.cleanups:
+            text = tr("grimoire.spells.vaultl.tidyview",
+                      "Next auto-tidy will move {moves} and send {trash} to the Trash.")
+        elif on:
+            text = tr("grimoire.spells.vaultl.tidyview", "Next auto-tidy will move {moves}.")
+        elif p.cleanups:
+            text = tr("grimoire.spells.vaultl.tidyview",
+                      "Auto-tidy is paused; Tidy now would move {moves} and send {trash} to the Trash.")
+        else:
+            text = tr("grimoire.spells.vaultl.tidyview", "Auto-tidy is paused; Tidy now would move {moves}.")
+        tail = tr("grimoire.spells.vaultl.tidyview", "Tidy now shows the list first.")
+        self.next_line.setText(text.format(moves=moves, trash=trash) + " " + tail)
 
     def watch_dir(self) -> Path:
         return tidy.expand(self.settings.watch)
@@ -288,14 +339,18 @@ class TidyPanel(QWidget):
     def summary(self) -> str:
         """One line on auto-tidy, for the header and the Downloads bar."""
         last = next((e for e in tidy.history(50) if e["action"] in ("move", "trash")), None)
-        when = datetime.fromtimestamp(last["time"]).strftime("%b %-d, %-I:%M %p") if last else "never"
-        on = cli.timer_active()
-        return (f"Auto-tidy sorts {tilde(self.watch_dir())} every 10 minutes. " if on else "Auto-tidy is paused. ") \
-            + f"Last change: {when}. Nothing is ever deleted: cleanup goes to the Trash and moves can be undone."
+        at = when(last["time"]) if last else tr("grimoire.spells.vaultl.tidyview", "never")
+        lead = tr("grimoire.spells.vaultl.tidyview",
+                  "Auto-tidy sorts {folder} every 10 minutes.").format(folder=ltr(tilde(self.watch_dir()))) \
+            if cli.timer_active() else tr("grimoire.spells.vaultl.tidyview", "Auto-tidy is paused.")
+        return lead + " " + tr("grimoire.spells.vaultl.tidyview",
+                               "Last change: {when}. Nothing is ever deleted: cleanup goes to the Trash and "
+                               "moves can be undone.").format(when=at)
 
     def refresh_auto(self):
-        on = cli.timer_active()
-        self.auto_btn.setText("Auto-tidy: ON" if on else "Auto-tidy: OFF")
+        self.auto_on = on = cli.timer_active()
+        self.auto_btn.setText(tr("grimoire.spells.vaultl.tidyview", "Auto-tidy: ON") if on
+                              else tr("grimoire.spells.vaultl.tidyview", "Auto-tidy: OFF"))
         self.status.setText(self.summary())
         self.refresh_next()
 
@@ -303,7 +358,8 @@ class TidyPanel(QWidget):
         try:
             cli.set_auto(not cli.timer_active())
         except (OSError, subprocess.CalledProcessError) as e:      # OSError: no systemctl, or a settings write
-            QMessageBox.warning(self, "VaultL", f"Couldn't change the background timer: {e}")
+            QMessageBox.warning(self, "VaultL", tr("grimoire.spells.vaultl.tidyview",
+                                                   "Couldn't change the background timer: {error}").format(error=e))
         self.refresh_auto()
         self.changed.emit()
 
@@ -312,14 +368,15 @@ class TidyPanel(QWidget):
         self.reload()
         p = tidy.preview(self.settings)
         if p.error or not (p.moves or p.cleanups):
-            msg = p.error or "Nothing to tidy right now."
+            msg = p.error or tr("grimoire.spells.vaultl.tidyview", "Nothing to tidy right now.")
             self.status.setText(msg)
             self.refresh_next()
             return msg
         d = PreviewDialog(p, self)
         if d.exec() != QDialog.DialogCode.Accepted:
-            self.status.setText("Tidy cancelled. Nothing moved.")
-            return "Tidy cancelled. Nothing moved."
+            msg = tr("grimoire.spells.vaultl.tidyview", "Tidy cancelled. Nothing moved.")
+            self.status.setText(msg)
+            return msg
         approved, skip = d.chosen()
         return self._run(approved, skip)
 
@@ -329,9 +386,12 @@ class TidyPanel(QWidget):
         else:
             self.reload()                             # run with the ignore list as it is on disk now
         r = tidy.run(self.settings, approved)
-        msg = f"Sorted {r['moved']} file(s), cleaned {r['cleaned']} stale file(s)."
+        msg = tr("grimoire.spells.vaultl.tidyview", "Sorted {files}, cleaned {stale}.").format(
+            files=tr("grimoire.spells.vaultl.tidyview", "%n file(s)", n=r["moved"]),
+            stale=tr("grimoire.spells.vaultl.tidyview", "%n stale file(s)", n=r["cleaned"]))
         if r["errors"]:
-            msg += "  Problems: " + "; ".join(r["errors"][:3])
+            msg += "  " + tr("grimoire.spells.vaultl.tidyview",
+                             "Problems: {list}").format(list="; ".join(r["errors"][:3]))
         self.status.setText(msg)
         self._refresh_activity()
         self.refresh_next()
@@ -340,7 +400,8 @@ class TidyPanel(QWidget):
 
     def undo(self) -> str:
         n = tidy.undo_last()
-        msg = f"Moved {n} file(s) back." if n else "Nothing to undo."
+        msg = tr("grimoire.spells.vaultl.tidyview", "Moved %n file(s) back.", n=n) if n \
+            else tr("grimoire.spells.vaultl.tidyview", "Nothing to undo.")
         self.status.setText(msg)
         self._refresh_activity()
         self.refresh_next()
@@ -353,7 +414,11 @@ class TidyPanel(QWidget):
         v = QVBoxLayout(w)
         v.setContentsMargins(0, 0, 0, 0)
         self.table = QTableWidget(0, 5)
-        self.table.setHorizontalHeaderLabels(["On", "Type", "Extensions", "Goes to", "Trash after"])
+        self.table.setHorizontalHeaderLabels([tr("grimoire.spells.vaultl.tidyview", "On"),
+                                              tr("grimoire.spells.vaultl.tidyview", "Type"),
+                                              tr("grimoire.spells.vaultl.tidyview", "Extensions"),
+                                              tr("grimoire.spells.vaultl.tidyview", "Goes to"),
+                                              tr("grimoire.spells.vaultl.tidyview", "Trash after")])
         self.table.verticalHeader().setVisible(False)
         self.table.setSelectionMode(QAbstractItemView.SelectionMode.NoSelection)
         self.table.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
@@ -364,16 +429,19 @@ class TidyPanel(QWidget):
             self.table.setColumnWidth(c, width)
         self._fill_rules()
         v.addWidget(self.table)
-        note = QLabel("Only loose files directly in Downloads are sorted; folders, hidden files and downloads still "
-                      "in progress are never touched. \"Trash after\" applies to files sitting in that rule's folder.")
+        note = QLabel(tr("grimoire.spells.vaultl.tidyview",
+                         "Only loose files directly in Downloads are sorted; folders, hidden files and downloads "
+                         "still in progress are never touched. \"Trash after\" applies to files sitting in that "
+                         "rule's folder."))
         note.setObjectName("Muted")
         note.setWordWrap(True)
         v.addWidget(note)
         row = QHBoxLayout()
         self.skipped = QLabel()
         self.skipped.setObjectName("Muted")
+        self.skipped.setWordWrap(True)
         row.addWidget(self.skipped, 1)
-        self.forget_btn = QPushButton("Stop skipping them")
+        self.forget_btn = QPushButton(tr("grimoire.spells.vaultl.tidyview", "Stop skipping them"))
         self.forget_btn.clicked.connect(self._forget_skipped)
         row.addWidget(self.forget_btn)
         v.addLayout(row)
@@ -392,27 +460,29 @@ class TidyPanel(QWidget):
             cl.setContentsMargins(14, 0, 0, 0)
             cl.addWidget(box)
             self.table.setCellWidget(r, 0, cell)
-            self.table.setItem(r, 1, QTableWidgetItem(rule.name))
-            ext = QTableWidgetItem("  ".join("." + e for e in rule.extensions))
+            self.table.setItem(r, 1, QTableWidgetItem(tidy.label(rule.name)))
+            ext = QTableWidgetItem(ltr("  ".join("." + e for e in rule.extensions)))
             ext.setForeground(Qt.GlobalColor.gray)
             self.table.setItem(r, 2, ext)
-            dest = QPushButton(rule.dest)
+            dest = QPushButton(ltr(rule.dest))
             dest.setObjectName("Link")
             dest.clicked.connect(lambda _=False, name=rule.name: self._pick_dest(name))
             self.table.setCellWidget(r, 3, dest)
             days = QSpinBox()
             days.setRange(0, 365)
-            days.setSpecialValueText("never")
-            days.setSuffix(" days")
+            days.setSpecialValueText(tr("grimoire.spells.vaultl.tidyview", "never"))
+            days.valueChanged.connect(lambda d, box=days: _day_unit(box, d))
             days.setValue(rule.clean_days)
+            _day_unit(days, rule.clean_days)
             days.valueChanged.connect(lambda d, name=rule.name: self._set(name, "clean_days", d))
             self.table.setCellWidget(r, 4, days)
             self.table.setRowHeight(r, 44)
 
     def _refresh_skipped(self):
         n = len(self.settings.ignore)
-        self.skipped.setText(f"{cli.plural(n, 'file')} you chose to always skip: "
-                             + ", ".join(Path(p).name for p in self.settings.ignore[:4]) + ("…" if n > 4 else ""))
+        names = ", ".join(Path(p).name for p in self.settings.ignore[:4]) + ("…" if n > 4 else "")
+        self.skipped.setText(tr("grimoire.spells.vaultl.tidyview",
+                                "%n file(s) you chose to always skip: {names}", n=n).format(names=names))
         self.skipped.setToolTip("\n".join(tilde(p) for p in self.settings.ignore))
         for w in (self.skipped, self.forget_btn):
             w.setVisible(bool(n))
@@ -431,7 +501,8 @@ class TidyPanel(QWidget):
         if not rule:
             return
         start = str(tidy.expand(rule.dest)) if tidy.expand(rule.dest).exists() else str(HOME)
-        d = QFileDialog.getExistingDirectory(self, f"Where should {name.lower()} go?", start)
+        d = QFileDialog.getExistingDirectory(self, tr("grimoire.spells.vaultl.tidyview",
+                                                      "Folder for {rule}").format(rule=tidy.label(name)), start)
         if d:
             self._set(name, "dest", tilde(d), rebuild=True)          # the button shows the new folder
 
@@ -445,17 +516,23 @@ class TidyPanel(QWidget):
         self.activity.clear()
         undone = tidy.undone_batches()
         for e in tidy.history(300):
-            when = datetime.fromtimestamp(e["time"]).strftime("%b %-d  %-I:%M %p")
+            at = when(e["time"])
             if e["action"] == "move":
-                tail = "   (undone)" if e["batch"] in undone else ""
-                text = f"{when}    {e['rule']:<12}  {Path(e['from']).name}  →  {tilde(Path(e['to']).parent)}{tail}"
+                text = (tr("grimoire.spells.vaultl.tidyview",
+                           "{when}    {rule}    {file}  →  {folder}   (undone)") if e["batch"] in undone
+                        else tr("grimoire.spells.vaultl.tidyview", "{when}    {rule}    {file}  →  {folder}")).format(
+                    when=at, rule=tidy.label(e["rule"]), file=ltr(Path(e["from"]).name),
+                    folder=ltr(tilde(Path(e["to"]).parent)))
             elif e["action"] == "trash":
-                text = f"{when}    Trash         {Path(e['from']).name}  ({e['reason']})"
+                text = tr("grimoire.spells.vaultl.tidyview", "{when}    Trash    {file}  ({reason})").format(
+                    when=at, file=ltr(Path(e["from"]).name), reason=tidy.label(e["reason"]))
             else:
-                text = f"{when}    Undo          moved {e['count']} file(s) back"
+                text = tr("grimoire.spells.vaultl.tidyview",
+                          "{when}    Undo    moved %n file(s) back", n=e["count"]).format(when=at)
             self.activity.addItem(QListWidgetItem(text))
         if not self.activity.count():
-            self.activity.addItem("Nothing yet. Files you download will show up here as VaultL sorts them.")
+            self.activity.addItem(tr("grimoire.spells.vaultl.tidyview",
+                                     "Nothing yet. Files you download will show up here as VaultL sorts them."))
 
     # ------------------------------------------------------------------ big files
     def _big_view(self) -> QWidget:
@@ -463,25 +540,29 @@ class TidyPanel(QWidget):
         v = QVBoxLayout(w)
         v.setContentsMargins(0, 0, 0, 0)
         row = QHBoxLayout()
-        scan = QPushButton("Scan home folder")
+        scan = QPushButton(tr("grimoire.spells.vaultl.tidyview", "Scan home folder"))
         scan.clicked.connect(lambda: self._scan("big"))
-        self.big_note = QLabel("Files over 50 MB anywhere in your home (system caches and app data skipped).")
+        self.big_note = QLabel(tr("grimoire.spells.vaultl.tidyview",
+                                  "Files over 50 MB anywhere in your home (system caches and app data skipped)."))
         self.big_note.setObjectName("Muted")
+        self.big_note.setWordWrap(True)
         row.addWidget(scan)
         row.addWidget(self.big_note, 1)
-        self.big_trash = QPushButton("Move selected to Trash")
+        self.big_trash = QPushButton(tr("grimoire.spells.vaultl.tidyview", "Move selected to Trash"))
         self.big_trash.clicked.connect(self._trash_big)
         row.addWidget(self.big_trash)
         v.addLayout(row)
         self.big = QTableWidget(0, 2)
-        self.big.setHorizontalHeaderLabels(["Size", "File"])
+        self.big.setHorizontalHeaderLabels([tr("grimoire.spells.vaultl.tidyview", "Size"),
+                                            tr("grimoire.spells.vaultl.tidyview", "File")])
         self.big.verticalHeader().setVisible(False)
         self.big.setShowGrid(False)
         self.big.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
         self.big.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
         self.big.horizontalHeader().setSectionResizeMode(1, QHeaderView.ResizeMode.Stretch)
         self.big.setColumnWidth(0, 110)
-        self.big.cellDoubleClicked.connect(lambda r, _: self.reveal.emit(self.big.item(r, 1).data(Qt.ItemDataRole.UserRole)))
+        self.big.cellDoubleClicked.connect(
+            lambda r, _: self.reveal.emit(self.big.item(r, 1).data(Qt.ItemDataRole.UserRole)))
         v.addWidget(self.big, 1)
         return w
 
@@ -491,13 +572,15 @@ class TidyPanel(QWidget):
         if not paths:
             return
         listing = "\n".join(tilde(p) for p in paths[:12]) + ("\n…" if len(paths) > 12 else "")
-        if QMessageBox.question(self, "Move to Trash?",
-                                f"Move {len(paths)} file(s) to the Trash?\n\n{listing}\n\n"
-                                "You can restore them from the Trash in the sidebar.") != QMessageBox.StandardButton.Yes:
+        if QMessageBox.question(self, tr("grimoire.spells.vaultl.tidyview", "Move to Trash?"),
+                                tr("grimoire.spells.vaultl.tidyview",
+                                   "Move %n file(s) to the Trash?\n\n{list}\n\nYou can restore them from the Trash "
+                                   "in the sidebar.", n=len(paths)).format(list=listing)) \
+                != QMessageBox.StandardButton.Yes:
             return
         for r, p in sorted(zip(rows, paths), reverse=True):
             try:
-                tidy.trash_by_hand(p, "Big files", "you chose it")
+                tidy.trash_by_hand(p, tidy.BIG, tidy.CHOSEN)
                 self.big.removeRow(r)
             except OSError as e:
                 QMessageBox.warning(self, "VaultL", str(e))
@@ -508,19 +591,22 @@ class TidyPanel(QWidget):
         v = QVBoxLayout(w)
         v.setContentsMargins(0, 0, 0, 0)
         row = QHBoxLayout()
-        scan = QPushButton("Find duplicates")
+        scan = QPushButton(tr("grimoire.spells.vaultl.tidyview", "Find duplicates"))
         scan.clicked.connect(lambda: self._scan("dupes"))
-        self.dupe_note = QLabel("Identical files in Downloads, Documents, Pictures, Videos, Music and Desktop "
-                                "(your Repo projects are left out).")
+        self.dupe_note = QLabel(tr("grimoire.spells.vaultl.tidyview",
+                                   "Identical files in Downloads, Documents, Pictures, Videos, Music and Desktop "
+                                   "(your Repo projects are left out)."))
         self.dupe_note.setObjectName("Muted")
+        self.dupe_note.setWordWrap(True)
         row.addWidget(scan)
         row.addWidget(self.dupe_note, 1)
-        clean = QPushButton("Trash extra copies")
+        clean = QPushButton(tr("grimoire.spells.vaultl.tidyview", "Trash extra copies"))
         clean.clicked.connect(self._trash_dupes)
         row.addWidget(clean)
         v.addLayout(row)
         self.dupes = QTreeWidget()
-        self.dupes.setHeaderLabels(["File", "Size"])
+        self.dupes.setHeaderLabels([tr("grimoire.spells.vaultl.tidyview", "File"),
+                                    tr("grimoire.spells.vaultl.tidyview", "Size")])
         self.dupes.setColumnWidth(0, 900)
         v.addWidget(self.dupes, 1)
         return w
@@ -535,24 +621,27 @@ class TidyPanel(QWidget):
                 extras += [p for p in paths[1:] if _size(p) == keep]
         if not extras:
             return
-        if QMessageBox.question(self, "Trash extra copies?",
-                                f"Keep the first copy in each group and move the other {len(extras)} to the "
-                                "Trash?") != QMessageBox.StandardButton.Yes:
+        if QMessageBox.question(self, tr("grimoire.spells.vaultl.tidyview", "Trash extra copies?"),
+                                tr("grimoire.spells.vaultl.tidyview",
+                                   "Keep the first copy in each group and move the other %n to the Trash?",
+                                   n=len(extras))) != QMessageBox.StandardButton.Yes:
             return
         failed = []
         for p in extras:
             try:
-                tidy.trash_by_hand(p, "Duplicates", "duplicate copy")
+                tidy.trash_by_hand(p, tidy.DUPES, tidy.COPY)
             except OSError as e:
                 failed.append(f"{Path(p).name}: {e}")
         if failed:
-            QMessageBox.warning(self, "VaultL", f"Couldn't trash {len(failed)} file(s):\n\n" + "\n".join(failed[:8]))
+            QMessageBox.warning(self, "VaultL", tr("grimoire.spells.vaultl.tidyview",
+                                                   "Couldn't trash %n file(s):", n=len(failed)) + "\n\n"
+                                + "\n".join(failed[:8]))
         self._scan("dupes")
 
     # ------------------------------------------------------------------ background scans
     def _scan(self, kind):
         note = self.big_note if kind == "big" else self.dupe_note
-        note.setText("Scanning…")
+        note.setText(tr("grimoire.spells.vaultl.tidyview", "Scanning…"))
         fn = tidy.biggest if kind == "big" else tidy.duplicates
         sig = self._sig
         POOL.start(Job(fn, lambda result: sig.done.emit(kind, result)))
@@ -565,11 +654,13 @@ class TidyPanel(QWidget):
             for n, p in result:
                 r = self.big.rowCount()
                 self.big.insertRow(r)
-                self.big.setItem(r, 0, QTableWidgetItem(human(n)))
-                item = QTableWidgetItem(tilde(p))
+                self.big.setItem(r, 0, QTableWidgetItem(ltr(human(n))))
+                item = QTableWidgetItem(ltr(tilde(p)))
                 item.setData(Qt.ItemDataRole.UserRole, str(p))
                 self.big.setItem(r, 1, item)
-            self.big_note.setText(f"{len(result)} files over 50 MB. Double-click one to show it in its folder.")
+            self.big_note.setText(tr("grimoire.spells.vaultl.tidyview",
+                                     "%n file(s) over 50 MB. Double-click one to show it in its folder.",
+                                     n=len(result)))
         else:
             self.dupes.clear()
             wasted = 0
@@ -579,12 +670,23 @@ class TidyPanel(QWidget):
                 except OSError:                 # moved or deleted since the scan
                     continue
                 wasted += s * (len(group) - 1)
-                top = QTreeWidgetItem([f"{group[0].name}  ×{len(group)}", human(s)])
+                top = QTreeWidgetItem([ltr(f"{group[0].name}  ×{len(group)}"), ltr(human(s))])
                 for i, p in enumerate(group):
-                    child = QTreeWidgetItem([("keep    " if i == 0 else "extra   ") + tilde(p), ""])
+                    line = tr("grimoire.spells.vaultl.tidyview", "keep    {path}") if i == 0 \
+                        else tr("grimoire.spells.vaultl.tidyview", "extra    {path}")
+                    child = QTreeWidgetItem([line.format(path=ltr(tilde(p))), ""])
                     child.setData(0, Qt.ItemDataRole.UserRole, str(p))
                     top.addChild(child)
                 self.dupes.addTopLevelItem(top)
                 top.setExpanded(True)
-            self.dupe_note.setText(f"{len(result)} duplicate group(s), {human(wasted)} in extra copies."
-                                   if result else "No duplicates found.")
+            self.dupe_note.setText(tr("grimoire.spells.vaultl.tidyview",
+                                      "%n duplicate group(s), {size} in extra copies.", n=len(result)).format(
+                size=ltr(human(wasted))) if result else tr("grimoire.spells.vaultl.tidyview", "No duplicates found."))
+
+
+def _day_unit(box: QSpinBox, days: int):
+    """"14 days" in the UI's language: the plural form changes with the number, and the number may sit inside it."""
+    text = tr("grimoire.spells.vaultl.tidyview", "%n day(s)", n=days)
+    before, found, after = text.partition(str(days))
+    box.setPrefix(before if days and found else "")
+    box.setSuffix(after if days and found else "")

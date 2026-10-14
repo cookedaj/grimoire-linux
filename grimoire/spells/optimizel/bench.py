@@ -24,31 +24,34 @@ import threading
 import time
 from pathlib import Path
 
+from grimoire.i18n import tr_noop
 from grimoire.paths import CACHE, DATA
 
 FILE = DATA / "optimizel-bench.json"
 TMP = CACHE / "optimizel-bench"
 
-# key: (label, unit, higher is better, group)
+# key: (label, unit, higher is better, group); labels and groups are shown through tr(this module, …)
 METRICS = {
-    "boot_total": ("Boot to desktop", "s", False, "Boot"),
-    "boot_firmware": ("Firmware (BIOS/UEFI)", "s", False, "Boot"),
-    "boot_loader": ("Boot loader", "s", False, "Boot"),
-    "boot_kernel": ("Kernel", "s", False, "Boot"),
-    "boot_userspace": ("Services to desktop", "s", False, "Boot"),
-    "cpu_single": ("One core (SHA-256)", "MB/s", True, "CPU"),
-    "cpu_multi": ("All cores (SHA-256)", "MB/s", True, "CPU"),
-    "syscall": ("System call", "ns", False, "CPU"),
-    "mem_copy": ("Memory copy", "GB/s", True, "Memory"),
-    "mem_random": ("Random reads, many at once", "ns", False, "Memory"),
-    "disk_write": ("Sequential write", "MB/s", True, "Disk"),
-    "disk_read": ("Sequential read", "MB/s", True, "Disk"),
-    "disk_iops": ("4K random read", "IOPS", True, "Disk"),
-    "disk_lat": ("4K read latency", "µs", False, "Disk"),
-    "wake_p50": ("Wake-up delay, typical", "µs", False, "Latency"),
-    "wake_p99": ("Wake-up delay, worst 1%", "µs", False, "Latency"),
+    "boot_total": (tr_noop("grimoire.spells.optimizel.bench", "Boot to desktop"), "s", False, "Boot"),
+    "boot_firmware": (tr_noop("grimoire.spells.optimizel.bench", "Firmware (BIOS/UEFI)"), "s", False, "Boot"),
+    "boot_loader": (tr_noop("grimoire.spells.optimizel.bench", "Boot loader"), "s", False, "Boot"),
+    "boot_kernel": (tr_noop("grimoire.spells.optimizel.bench", "Kernel"), "s", False, "Boot"),
+    "boot_userspace": (tr_noop("grimoire.spells.optimizel.bench", "Services to desktop"), "s", False, "Boot"),
+    "cpu_single": (tr_noop("grimoire.spells.optimizel.bench", "One core (SHA-256)"), "MB/s", True, "CPU"),
+    "cpu_multi": (tr_noop("grimoire.spells.optimizel.bench", "All cores (SHA-256)"), "MB/s", True, "CPU"),
+    "syscall": (tr_noop("grimoire.spells.optimizel.bench", "System call"), "ns", False, "CPU"),
+    "mem_copy": (tr_noop("grimoire.spells.optimizel.bench", "Memory copy"), "GB/s", True, "Memory"),
+    "mem_random": (tr_noop("grimoire.spells.optimizel.bench", "Random reads, many at once"), "ns", False, "Memory"),
+    "disk_write": (tr_noop("grimoire.spells.optimizel.bench", "Sequential write"), "MB/s", True, "Disk"),
+    "disk_read": (tr_noop("grimoire.spells.optimizel.bench", "Sequential read"), "MB/s", True, "Disk"),
+    "disk_iops": (tr_noop("grimoire.spells.optimizel.bench", "4K random read"), "IOPS", True, "Disk"),
+    "disk_lat": (tr_noop("grimoire.spells.optimizel.bench", "4K read latency"), "µs", False, "Disk"),
+    "wake_p50": (tr_noop("grimoire.spells.optimizel.bench", "Wake-up delay, typical"), "µs", False, "Latency"),
+    "wake_p99": (tr_noop("grimoire.spells.optimizel.bench", "Wake-up delay, worst 1%"), "µs", False, "Latency"),
 }
-GROUPS = ["Boot", "CPU", "Memory", "Disk", "Latency"]
+GROUPS = [tr_noop("grimoire.spells.optimizel.bench", "Boot"), tr_noop("grimoire.spells.optimizel.bench", "CPU"),
+          tr_noop("grimoire.spells.optimizel.bench", "Memory"), tr_noop("grimoire.spells.optimizel.bench", "Disk"),
+          tr_noop("grimoire.spells.optimizel.bench", "Latency")]
 
 
 # ---------------------------------------------------------------- results file
