@@ -1,0 +1,361 @@
+# Grimoire Linux's Plasma widgets, zh_CN. SPDX-License-Identifier: GPL-3.0-or-later
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Language: zh_CN\n"
+
+#: clock system weather nowplaying
+msgid "General"
+msgstr "常规"
+
+#: clock
+msgid "Time:"
+msgstr "时间："
+
+#: clock
+msgid "24-hour clock"
+msgstr "24 小时制"
+
+#: clock
+msgid "Show seconds"
+msgstr "显示秒"
+
+#: clock
+msgid "Show the date"
+msgstr "显示日期"
+
+#: clock system weather nowplaying
+msgid "Background:"
+msgstr "背景："
+
+#: clock system weather nowplaying
+msgid "%1% dark"
+msgstr "%1% 暗"
+
+#: clock
+msgid "None, only the digits"
+msgstr "无，只显示数字"
+
+#: clock
+msgctxt "metadata.json Name"
+msgid "Clock (Grimoire Linux)"
+msgstr "时钟 (Grimoire Linux)"
+
+#: clock
+msgctxt "metadata.json Description"
+msgid "Grimoire Linux WidgetL: big thin digits and the date, in black and white"
+msgstr "Grimoire Linux WidgetL：黑白的大号细体数字和日期"
+
+#: system
+msgid "Draw readings as:"
+msgstr "读数显示为："
+
+#: system
+msgid "Thin bars"
+msgstr "细条"
+
+#: system
+msgid "Sparklines of the last two minutes"
+msgstr "最近两分钟的迷你折线图"
+
+#: system weather nowplaying
+msgid "Show:"
+msgstr "显示："
+
+#: system
+msgid "Graphics card"
+msgstr "显卡"
+
+#: system
+msgid "Temperatures"
+msgstr "温度"
+
+#: system
+msgid "In Fahrenheit"
+msgstr "使用华氏度"
+
+#: system
+msgid "None, only the readings"
+msgstr "无，只显示读数"
+
+#: system
+msgctxt "processor, short label"
+msgid "CPU"
+msgstr "CPU"
+
+#: system
+msgctxt "memory, short label"
+msgid "RAM"
+msgstr "内存"
+
+#: system
+msgctxt "graphics card, short label"
+msgid "GPU"
+msgstr "GPU"
+
+#: system
+msgid "System"
+msgstr "系统"
+
+#: system
+msgid "CPU %1% · RAM %2%"
+msgstr "CPU %1% · 内存 %2%"
+
+#: system
+msgctxt "memory used of total"
+msgid "%1 of %2 GB"
+msgstr "%1 / %2 GB"
+
+#: system
+msgctxt "metadata.json Name"
+msgid "System (Grimoire Linux)"
+msgstr "系统 (Grimoire Linux)"
+
+#: system
+msgctxt "metadata.json Description"
+msgid "Grimoire Linux WidgetL: CPU, memory, graphics card and temperatures as thin bars or sparklines"
+msgstr "Grimoire Linux WidgetL：CPU、内存、显卡和温度，以细条或迷你折线图显示"
+
+#: weather
+msgid "Type at least two letters."
+msgstr "请至少输入两个字。"
+
+#: weather
+msgid "Searching…"
+msgstr "正在搜索…"
+
+#: weather
+msgid "No place called \"%1\" found."
+msgstr "没有找到名为“%1”的地点。"
+
+#: weather
+msgid "Couldn't search: %1"
+msgstr "无法搜索：%1"
+
+#: weather
+msgid "no connection"
+msgstr "没有网络连接"
+
+#: weather
+msgid "Find a place:"
+msgstr "查找地点："
+
+#: weather
+msgid "City or town"
+msgstr "城市或城镇"
+
+#: weather
+msgid "Search"
+msgstr "搜索"
+
+#: weather
+msgctxt "place, region and country"
+msgid "%1 · %2"
+msgstr "%1 · %2"
+
+#: weather
+msgctxt "place and country"
+msgid "%1, %2"
+msgstr "%1，%2"
+
+#: weather
+msgid "Name on the widget:"
+msgstr "小部件上显示的名称："
+
+#: weather
+msgid "Latitude:"
+msgstr "纬度："
+
+#: weather
+msgid "e.g. 38.7223"
+msgstr "例如 38.7223"
+
+#: weather
+msgid "Longitude:"
+msgstr "经度："
+
+#: weather
+msgid "e.g. -9.1393"
+msgstr "例如 -9.1393"
+
+#: weather
+msgid "Units:"
+msgstr "单位："
+
+#: weather
+msgid "°C and km/h"
+msgstr "°C 和 km/h"
+
+#: weather
+msgid "°F and mph"
+msgstr "°F 和 mph"
+
+#: weather
+msgid "The next five days"
+msgstr "未来五天"
+
+#: weather
+msgid "None, only the weather"
+msgstr "无，只显示天气"
+
+#: weather
+msgid "Weather data by Open-Meteo.com (CC BY 4.0). Only the place you search for and the coordinates you pick are sent; your location is never looked up."
+msgstr "天气数据来自 Open-Meteo.com (CC BY 4.0)。只会发送你搜索的地点和你选择的坐标；绝不会查找你的位置。"
+
+#: weather
+msgid "Clear"
+msgstr "晴"
+
+#: weather
+msgid "Mostly clear"
+msgstr "大致晴朗"
+
+#: weather
+msgid "Partly cloudy"
+msgstr "局部多云"
+
+#: weather
+msgid "Overcast"
+msgstr "阴"
+
+#: weather
+msgid "Fog"
+msgstr "雾"
+
+#: weather
+msgid "Drizzle"
+msgstr "毛毛雨"
+
+#: weather
+msgid "Rain"
+msgstr "雨"
+
+#: weather
+msgid "Freezing rain"
+msgstr "冻雨"
+
+#: weather
+msgid "Snow"
+msgstr "雪"
+
+#: weather
+msgid "Showers"
+msgstr "阵雨"
+
+#: weather
+msgid "Snow showers"
+msgstr "阵雪"
+
+#: weather
+msgid "Thunderstorm"
+msgstr "雷暴"
+
+#: weather
+msgid "Cloudy"
+msgstr "多云"
+
+#: weather
+msgid "Feels %1 · Wind %2 %3 · Humidity %4%"
+msgstr "体感 %1 · 风速 %2 %3 · 湿度 %4%"
+
+#: weather
+msgid "Weather"
+msgstr "天气"
+
+#: weather
+msgid "Updated %1"
+msgstr "更新于 %1"
+
+#: weather
+msgid "Can't reach Open-Meteo right now."
+msgstr "现在无法连接 Open-Meteo。"
+
+#: weather
+msgid "Open-Meteo didn't answer as expected (%1)."
+msgstr "Open-Meteo 的回应不符合预期（%1）。"
+
+#: weather
+msgid "Offline · from %1"
+msgstr "离线 · 来自 %1"
+
+#: weather
+msgid "Pick a place in the widget's settings: right-click, Configure."
+msgstr "请在小部件的设置中选择地点：右键点击，选择“配置”。"
+
+#: weather
+msgid "Loading the weather…"
+msgstr "正在载入天气…"
+
+#: weather
+msgctxt "wind speed unit"
+msgid "mph"
+msgstr "英里/时"
+
+#: weather
+msgctxt "wind speed unit"
+msgid "km/h"
+msgstr "公里/时"
+
+#: weather
+msgctxt "metadata.json Name"
+msgid "Weather (Grimoire Linux)"
+msgstr "天气 (Grimoire Linux)"
+
+#: weather
+msgctxt "metadata.json Description"
+msgid "Grimoire Linux WidgetL: current weather and the next days from Open-Meteo, with line icons"
+msgstr "Grimoire Linux WidgetL：来自 Open-Meteo 的当前天气和未来几天预报，线条图标"
+
+#: nowplaying
+msgid "Cover:"
+msgstr "封面："
+
+#: nowplaying
+msgid "In grayscale"
+msgstr "灰度"
+
+#: nowplaying
+msgid "The album after the artist"
+msgstr "在艺人后显示专辑"
+
+#: nowplaying
+msgid "None, only the player"
+msgstr "无，只显示播放器"
+
+#: nowplaying
+msgid "Nothing playing"
+msgstr "没有正在播放的内容"
+
+#: nowplaying
+msgid "Start music or a video in any app"
+msgstr "在任意应用中播放音乐或视频"
+
+#: nowplaying
+msgctxt "media control"
+msgid "Previous"
+msgstr "上一首"
+
+#: nowplaying
+msgctxt "media control"
+msgid "Pause"
+msgstr "暂停"
+
+#: nowplaying
+msgctxt "media control"
+msgid "Play"
+msgstr "播放"
+
+#: nowplaying
+msgctxt "media control"
+msgid "Next"
+msgstr "下一首"
+
+#: nowplaying
+msgctxt "metadata.json Name"
+msgid "Now Playing (Grimoire Linux)"
+msgstr "正在播放 (Grimoire Linux)"
+
+#: nowplaying
+msgctxt "metadata.json Description"
+msgid "Grimoire Linux WidgetL: the song or video that's playing, with its cover in grayscale and play controls"
+msgstr "Grimoire Linux WidgetL：正在播放的歌曲或视频，灰度封面和播放控制"

@@ -1,0 +1,163 @@
+# Grimoire Linux's Plasma widgets, zh_CN. SPDX-License-Identifier: GPL-3.0-or-later
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Language: zh_CN\n"
+
+#: launchl
+msgid "Lock"
+msgstr "锁定"
+
+#: launchl
+msgid "Log out"
+msgstr "注销"
+
+#: launchl
+msgid "Sleep"
+msgstr "睡眠"
+
+#: launchl
+msgid "Restart"
+msgstr "重启"
+
+#: launchl
+msgid "Shut down"
+msgstr "关机"
+
+#: launchl
+msgid "Leave"
+msgstr "离开"
+
+#: launchl
+msgid "Crosshair on"
+msgstr "开启准星"
+
+#: launchl
+msgid "Crosshair off"
+msgstr "关闭准星"
+
+#: launchl
+msgid "Next crosshair"
+msgstr "下一个准星"
+
+#: launchl
+msgid "Tidy Downloads now"
+msgstr "立即整理“下载”"
+
+#: launchl
+msgid "Open VaultL"
+msgstr "打开 VaultL"
+
+#: launchl
+msgid "Screenshot region"
+msgstr "截取区域"
+
+#: launchl
+msgid "Every screen and surface"
+msgstr "每个屏幕和界面"
+
+#: launchl
+msgid "Crosshair overlay"
+msgstr "准星叠加层"
+
+#: launchl
+msgid "File manager with tidying built in"
+msgstr "内置整理功能的文件管理器"
+
+#: launchl
+msgid "Speed tweaks"
+msgstr "速度优化"
+
+#: launchl
+msgid "System monitor"
+msgstr "系统监视器"
+
+#: launchl
+msgid "Terminal"
+msgstr "终端"
+
+#: launchl
+msgid "This launcher"
+msgstr "本启动器"
+
+#: launchl
+msgid "Run %1"
+msgstr "运行 %1"
+
+#: launchl
+msgid "In %1"
+msgstr "在 %1 中"
+
+#: launchl
+msgid "Computer"
+msgstr "计算机"
+
+#: launchl
+msgid "Recent files"
+msgstr "最近的文件"
+
+#: launchl
+msgid "Frequently used"
+msgstr "常用"
+
+#: launchl
+msgid "Remove from Favorites"
+msgstr "从收藏中移除"
+
+#: launchl
+msgid "Add to Favorites"
+msgstr "添加到收藏"
+
+#: launchl
+msgid "Search"
+msgstr "搜索"
+
+#: launchl
+msgid "Search apps, files and Grimoire  ·  >command runs it"
+msgstr "搜索应用、文件和 Grimoire  ·  >命令 可直接运行"
+
+#: launchl
+msgid "Keep open"
+msgstr "保持打开"
+
+#: launchl
+msgid "No favorites yet. Right-click an app to add it."
+msgstr "还没有收藏。右键点击一个应用即可添加。"
+
+#: launchl
+msgid "Nothing here yet"
+msgstr "这里还什么都没有"
+
+#: launchl
+msgid "Applications"
+msgstr "应用程序"
+
+#: launchl
+msgid "Places"
+msgstr "位置"
+
+#: launchl
+msgid "No matches"
+msgstr "没有匹配项"
+
+#: launchl
+msgid "Apps, places and Grimoire's spells"
+msgstr "应用、位置和 Grimoire 的法术"
+
+#: launchl
+msgid "Open Grimoire Linux"
+msgstr "打开 Grimoire Linux"
+
+#: launchl
+msgid "Edit Applications…"
+msgstr "编辑应用程序…"
+
+#: launchl
+msgctxt "metadata.json Name"
+msgid "LaunchL (Grimoire Linux)"
+msgstr "LaunchL (Grimoire Linux)"
+
+#: launchl
+msgctxt "metadata.json Description"
+msgid "Grimoire Linux LaunchL: a black & white application launcher with Grimoire's spells in its search"
+msgstr "Grimoire Linux LaunchL：黑白应用启动器，搜索中包含 Grimoire 的法术"

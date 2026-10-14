@@ -52,7 +52,8 @@ ListView {
 
         Rectangle {
             visible: cat.picked && !cat.separator
-            x: 8
+            anchors.left: parent.left               // anchors, not x: they mirror in right-to-left languages
+            anchors.leftMargin: 8
             anchors.verticalCenter: parent.verticalCenter
             width: 2
             height: 16
@@ -63,7 +64,8 @@ ListView {
         Text {
             visible: !cat.separator
             anchors.verticalCenter: parent.verticalCenter
-            x: 20
+            anchors.left: parent.left
+            anchors.leftMargin: 20
             width: parent.width - 34
             text: cat.model.display ?? ""
             elide: Text.ElideRight

@@ -1,0 +1,163 @@
+# Grimoire Linux's Plasma widgets, ur. SPDX-License-Identifier: GPL-3.0-or-later
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Language: ur\n"
+
+#: launchl
+msgid "Lock"
+msgstr "لاک کریں"
+
+#: launchl
+msgid "Log out"
+msgstr "لاگ آؤٹ"
+
+#: launchl
+msgid "Sleep"
+msgstr "سلیپ"
+
+#: launchl
+msgid "Restart"
+msgstr "ری اسٹارٹ"
+
+#: launchl
+msgid "Shut down"
+msgstr "بند کریں"
+
+#: launchl
+msgid "Leave"
+msgstr "باہر نکلیں"
+
+#: launchl
+msgid "Crosshair on"
+msgstr "کراس ہیئر آن"
+
+#: launchl
+msgid "Crosshair off"
+msgstr "کراس ہیئر آف"
+
+#: launchl
+msgid "Next crosshair"
+msgstr "اگلا کراس ہیئر"
+
+#: launchl
+msgid "Tidy Downloads now"
+msgstr "ڈاؤن لوڈز ابھی ترتیب دیں"
+
+#: launchl
+msgid "Open VaultL"
+msgstr "‏VaultL کھولیں"
+
+#: launchl
+msgid "Screenshot region"
+msgstr "حصے کا اسکرین شاٹ"
+
+#: launchl
+msgid "Every screen and surface"
+msgstr "ہر اسکرین اور سطح"
+
+#: launchl
+msgid "Crosshair overlay"
+msgstr "کراس ہیئر اوورلے"
+
+#: launchl
+msgid "File manager with tidying built in"
+msgstr "ترتیب دینے کی سہولت والا فائل مینیجر"
+
+#: launchl
+msgid "Speed tweaks"
+msgstr "رفتار کی بہتریاں"
+
+#: launchl
+msgid "System monitor"
+msgstr "سسٹم مانیٹر"
+
+#: launchl
+msgid "Terminal"
+msgstr "ٹرمینل"
+
+#: launchl
+msgid "This launcher"
+msgstr "یہی لانچر"
+
+#: launchl
+msgid "Run %1"
+msgstr "‏%1 چلائیں"
+
+#: launchl
+msgid "In %1"
+msgstr "‏%1 میں"
+
+#: launchl
+msgid "Computer"
+msgstr "کمپیوٹر"
+
+#: launchl
+msgid "Recent files"
+msgstr "حالیہ فائلیں"
+
+#: launchl
+msgid "Frequently used"
+msgstr "اکثر استعمال ہونے والے"
+
+#: launchl
+msgid "Remove from Favorites"
+msgstr "پسندیدہ سے ہٹائیں"
+
+#: launchl
+msgid "Add to Favorites"
+msgstr "پسندیدہ میں شامل کریں"
+
+#: launchl
+msgid "Search"
+msgstr "تلاش"
+
+#: launchl
+msgid "Search apps, files and Grimoire  ·  >command runs it"
+msgstr "ایپس، فائلیں اور Grimoire تلاش کریں  ·  ‎>کمانڈ‎ اسے چلاتا ہے"
+
+#: launchl
+msgid "Keep open"
+msgstr "کھلا رکھیں"
+
+#: launchl
+msgid "No favorites yet. Right-click an app to add it."
+msgstr "ابھی کوئی پسندیدہ نہیں۔ شامل کرنے کے لیے کسی ایپ پر رائٹ کلک کریں۔"
+
+#: launchl
+msgid "Nothing here yet"
+msgstr "یہاں ابھی کچھ نہیں"
+
+#: launchl
+msgid "Applications"
+msgstr "ایپلیکیشنز"
+
+#: launchl
+msgid "Places"
+msgstr "مقامات"
+
+#: launchl
+msgid "No matches"
+msgstr "کوئی نتیجہ نہیں"
+
+#: launchl
+msgid "Apps, places and Grimoire's spells"
+msgstr "ایپس، مقامات اور Grimoire کے منتر"
+
+#: launchl
+msgid "Open Grimoire Linux"
+msgstr "‏Grimoire Linux کھولیں"
+
+#: launchl
+msgid "Edit Applications…"
+msgstr "ایپلیکیشنز میں ترمیم کریں…"
+
+#: launchl
+msgctxt "metadata.json Name"
+msgid "LaunchL (Grimoire Linux)"
+msgstr "LaunchL (Grimoire Linux)"
+
+#: launchl
+msgctxt "metadata.json Description"
+msgid "Grimoire Linux LaunchL: a black & white application launcher with Grimoire's spells in its search"
+msgstr "‏Grimoire Linux LaunchL: سیاہ و سفید ایپ لانچر، جس کی تلاش میں Grimoire کے منتر بھی ہیں"

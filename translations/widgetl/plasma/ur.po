@@ -1,0 +1,361 @@
+# Grimoire Linux's Plasma widgets, ur. SPDX-License-Identifier: GPL-3.0-or-later
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Language: ur\n"
+
+#: clock system weather nowplaying
+msgid "General"
+msgstr "عمومی"
+
+#: clock
+msgid "Time:"
+msgstr "وقت:"
+
+#: clock
+msgid "24-hour clock"
+msgstr "‏24 گھنٹے والی گھڑی"
+
+#: clock
+msgid "Show seconds"
+msgstr "سیکنڈز دکھائیں"
+
+#: clock
+msgid "Show the date"
+msgstr "تاریخ دکھائیں"
+
+#: clock system weather nowplaying
+msgid "Background:"
+msgstr "پس منظر:"
+
+#: clock system weather nowplaying
+msgid "%1% dark"
+msgstr "‏%1% گہرا"
+
+#: clock
+msgid "None, only the digits"
+msgstr "کوئی نہیں، صرف ہندسے"
+
+#: clock
+msgctxt "metadata.json Name"
+msgid "Clock (Grimoire Linux)"
+msgstr "گھڑی (Grimoire Linux)"
+
+#: clock
+msgctxt "metadata.json Description"
+msgid "Grimoire Linux WidgetL: big thin digits and the date, in black and white"
+msgstr "‏Grimoire Linux WidgetL: سیاہ و سفید میں بڑے باریک ہندسے اور تاریخ"
+
+#: system
+msgid "Draw readings as:"
+msgstr "ریڈنگز اس طرح دکھائیں:"
+
+#: system
+msgid "Thin bars"
+msgstr "باریک پٹیاں"
+
+#: system
+msgid "Sparklines of the last two minutes"
+msgstr "پچھلے دو منٹ کی اسپارک لائنز"
+
+#: system weather nowplaying
+msgid "Show:"
+msgstr "دکھائیں:"
+
+#: system
+msgid "Graphics card"
+msgstr "گرافکس کارڈ"
+
+#: system
+msgid "Temperatures"
+msgstr "درجۂ حرارت"
+
+#: system
+msgid "In Fahrenheit"
+msgstr "فارن ہائیٹ میں"
+
+#: system
+msgid "None, only the readings"
+msgstr "کوئی نہیں، صرف ریڈنگز"
+
+#: system
+msgctxt "processor, short label"
+msgid "CPU"
+msgstr "CPU"
+
+#: system
+msgctxt "memory, short label"
+msgid "RAM"
+msgstr "RAM"
+
+#: system
+msgctxt "graphics card, short label"
+msgid "GPU"
+msgstr "GPU"
+
+#: system
+msgid "System"
+msgstr "سسٹم"
+
+#: system
+msgid "CPU %1% · RAM %2%"
+msgstr "CPU %1% · RAM %2%"
+
+#: system
+msgctxt "memory used of total"
+msgid "%1 of %2 GB"
+msgstr "‏%2 GB میں سے %1"
+
+#: system
+msgctxt "metadata.json Name"
+msgid "System (Grimoire Linux)"
+msgstr "سسٹم (Grimoire Linux)"
+
+#: system
+msgctxt "metadata.json Description"
+msgid "Grimoire Linux WidgetL: CPU, memory, graphics card and temperatures as thin bars or sparklines"
+msgstr "‏Grimoire Linux WidgetL: CPU، میموری، گرافکس کارڈ اور درجۂ حرارت، باریک پٹیوں یا اسپارک لائنز کی صورت میں"
+
+#: weather
+msgid "Type at least two letters."
+msgstr "کم از کم دو حروف لکھیں۔"
+
+#: weather
+msgid "Searching…"
+msgstr "تلاش ہو رہی ہے…"
+
+#: weather
+msgid "No place called \"%1\" found."
+msgstr "\"%1\" نام کی کوئی جگہ نہیں ملی۔"
+
+#: weather
+msgid "Couldn't search: %1"
+msgstr "تلاش نہیں ہو سکی: %1"
+
+#: weather
+msgid "no connection"
+msgstr "کوئی کنکشن نہیں"
+
+#: weather
+msgid "Find a place:"
+msgstr "جگہ تلاش کریں:"
+
+#: weather
+msgid "City or town"
+msgstr "شہر یا قصبہ"
+
+#: weather
+msgid "Search"
+msgstr "تلاش"
+
+#: weather
+msgctxt "place, region and country"
+msgid "%1 · %2"
+msgstr "%1 · %2"
+
+#: weather
+msgctxt "place and country"
+msgid "%1, %2"
+msgstr "‏%1، %2"
+
+#: weather
+msgid "Name on the widget:"
+msgstr "ویجٹ پر نام:"
+
+#: weather
+msgid "Latitude:"
+msgstr "عرض بلد:"
+
+#: weather
+msgid "e.g. 38.7223"
+msgstr "مثلاً 38.7223"
+
+#: weather
+msgid "Longitude:"
+msgstr "طول بلد:"
+
+#: weather
+msgid "e.g. -9.1393"
+msgstr "مثلاً ‎-9.1393"
+
+#: weather
+msgid "Units:"
+msgstr "اکائیاں:"
+
+#: weather
+msgid "°C and km/h"
+msgstr "°C اور km/h"
+
+#: weather
+msgid "°F and mph"
+msgstr "°F اور mph"
+
+#: weather
+msgid "The next five days"
+msgstr "اگلے پانچ دن"
+
+#: weather
+msgid "None, only the weather"
+msgstr "کوئی نہیں، صرف موسم"
+
+#: weather
+msgid "Weather data by Open-Meteo.com (CC BY 4.0). Only the place you search for and the coordinates you pick are sent; your location is never looked up."
+msgstr "موسم کا ڈیٹا Open-Meteo.com سے (CC BY 4.0)۔ صرف وہ جگہ جو آپ تلاش کرتے ہیں اور جو کوآرڈینیٹس آپ چنتے ہیں، بھیجے جاتے ہیں؛ آپ کا مقام کبھی معلوم نہیں کیا جاتا۔"
+
+#: weather
+msgid "Clear"
+msgstr "صاف"
+
+#: weather
+msgid "Mostly clear"
+msgstr "زیادہ تر صاف"
+
+#: weather
+msgid "Partly cloudy"
+msgstr "جزوی ابر آلود"
+
+#: weather
+msgid "Overcast"
+msgstr "گھنے بادل"
+
+#: weather
+msgid "Fog"
+msgstr "دھند"
+
+#: weather
+msgid "Drizzle"
+msgstr "بوندا باندی"
+
+#: weather
+msgid "Rain"
+msgstr "بارش"
+
+#: weather
+msgid "Freezing rain"
+msgstr "جمنے والی بارش"
+
+#: weather
+msgid "Snow"
+msgstr "برف باری"
+
+#: weather
+msgid "Showers"
+msgstr "بوچھاڑیں"
+
+#: weather
+msgid "Snow showers"
+msgstr "برف کی بوچھاڑیں"
+
+#: weather
+msgid "Thunderstorm"
+msgstr "گرج چمک کا طوفان"
+
+#: weather
+msgid "Cloudy"
+msgstr "ابر آلود"
+
+#: weather
+msgid "Feels %1 · Wind %2 %3 · Humidity %4%"
+msgstr "محسوس %1 · ہوا %2 %3 · نمی %4%"
+
+#: weather
+msgid "Weather"
+msgstr "موسم"
+
+#: weather
+msgid "Updated %1"
+msgstr "‏%1 پر اپ ڈیٹ"
+
+#: weather
+msgid "Can't reach Open-Meteo right now."
+msgstr "ابھی Open-Meteo تک رسائی نہیں ہو پا رہی۔"
+
+#: weather
+msgid "Open-Meteo didn't answer as expected (%1)."
+msgstr "‏Open-Meteo نے توقع کے مطابق جواب نہیں دیا (%1)۔"
+
+#: weather
+msgid "Offline · from %1"
+msgstr "آف لائن · %1 کا"
+
+#: weather
+msgid "Pick a place in the widget's settings: right-click, Configure."
+msgstr "ویجٹ کی سیٹنگز میں جگہ چنیں: رائٹ کلک، پھر Configure۔"
+
+#: weather
+msgid "Loading the weather…"
+msgstr "موسم لوڈ ہو رہا ہے…"
+
+#: weather
+msgctxt "wind speed unit"
+msgid "mph"
+msgstr "mph"
+
+#: weather
+msgctxt "wind speed unit"
+msgid "km/h"
+msgstr "کلومیٹر/گھنٹہ"
+
+#: weather
+msgctxt "metadata.json Name"
+msgid "Weather (Grimoire Linux)"
+msgstr "موسم (Grimoire Linux)"
+
+#: weather
+msgctxt "metadata.json Description"
+msgid "Grimoire Linux WidgetL: current weather and the next days from Open-Meteo, with line icons"
+msgstr "‏Grimoire Linux WidgetL: Open-Meteo سے موجودہ موسم اور اگلے دنوں کا حال، لائن آئیکنز کے ساتھ"
+
+#: nowplaying
+msgid "Cover:"
+msgstr "کور:"
+
+#: nowplaying
+msgid "In grayscale"
+msgstr "گرے اسکیل میں"
+
+#: nowplaying
+msgid "The album after the artist"
+msgstr "فنکار کے بعد البم"
+
+#: nowplaying
+msgid "None, only the player"
+msgstr "کوئی نہیں، صرف پلیئر"
+
+#: nowplaying
+msgid "Nothing playing"
+msgstr "کچھ نہیں چل رہا"
+
+#: nowplaying
+msgid "Start music or a video in any app"
+msgstr "کسی بھی ایپ میں موسیقی یا ویڈیو چلائیں"
+
+#: nowplaying
+msgctxt "media control"
+msgid "Previous"
+msgstr "پچھلا"
+
+#: nowplaying
+msgctxt "media control"
+msgid "Pause"
+msgstr "روکیں"
+
+#: nowplaying
+msgctxt "media control"
+msgid "Play"
+msgstr "چلائیں"
+
+#: nowplaying
+msgctxt "media control"
+msgid "Next"
+msgstr "اگلا"
+
+#: nowplaying
+msgctxt "metadata.json Name"
+msgid "Now Playing (Grimoire Linux)"
+msgstr "ابھی چل رہا (Grimoire Linux)"
+
+#: nowplaying
+msgctxt "metadata.json Description"
+msgid "Grimoire Linux WidgetL: the song or video that's playing, with its cover in grayscale and play controls"
+msgstr "‏Grimoire Linux WidgetL: جو گانا یا ویڈیو چل رہا ہے، گرے اسکیل کور اور پلے کنٹرولز کے ساتھ"

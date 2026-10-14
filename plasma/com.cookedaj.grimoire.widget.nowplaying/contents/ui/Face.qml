@@ -1,5 +1,6 @@
 /*
     WidgetL Now Playing: what the widget draws, in plain QtQuick so Grimoire can render the same file as its preview.
+    i18n()/i18nc() come from Plasma here and from preview.py's stand-in there (the same .mo catalogs).
     main.qml feeds it the current MPRIS player and turns the button signals into player calls.
 
     SPDX-FileCopyrightText: 2026 cookedaj
@@ -112,7 +113,7 @@ Item {
                 Text {
                     width: parent.width
                     elide: Text.ElideRight
-                    text: face.hasPlayer ? (face.title || face.playerName) : qsTr("Nothing playing")
+                    text: face.hasPlayer ? (face.title || face.playerName) : i18n("Nothing playing")
                     color: face.hasPlayer ? "#f2f2f2" : "#8c8c8c"
                     font.family: face.fontName
                     font.pixelSize: 16 * face.u
@@ -122,7 +123,7 @@ Item {
                     elide: Text.ElideRight
                     visible: text !== ""
                     text: face.hasPlayer ? [face.artist, face.album].filter(x => x).join(" · ")
-                                         : qsTr("Start music or a video in any app")
+                                         : i18n("Start music or a video in any app")
                     color: "#8c8c8c"
                     font.family: face.fontName
                     font.pixelSize: 12 * face.u
@@ -183,7 +184,7 @@ Item {
                     height: width
                     anchors.verticalCenter: parent.verticalCenter
                     glyph: "previous"
-                    label: qsTr("Previous")
+                    label: i18nc("media control", "Previous")
                     enabled: face.canControl && face.canPrevious
                     onClicked: face.previous()
                 }
@@ -192,7 +193,7 @@ Item {
                     height: width
                     primary: true
                     glyph: face.playing ? "pause" : "play"
-                    label: face.playing ? qsTr("Pause") : qsTr("Play")
+                    label: face.playing ? i18nc("media control", "Pause") : i18nc("media control", "Play")
                     enabled: face.canControl
                     onClicked: face.playPause()
                 }
@@ -201,7 +202,7 @@ Item {
                     height: width
                     anchors.verticalCenter: parent.verticalCenter
                     glyph: "next"
-                    label: qsTr("Next")
+                    label: i18nc("media control", "Next")
                     enabled: face.canControl && face.canNext
                     onClicked: face.next()
                 }

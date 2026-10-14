@@ -1,5 +1,6 @@
 /*
     WidgetL System: what the widget draws, in plain QtQuick so Grimoire can render the same file as its preview.
+    i18n()/i18nc() come from Plasma here and from preview.py's stand-in there (the same .mo catalogs).
     main.qml feeds it Plasma's sensor readings. A value below 0 means "not available" and its row says so.
 
     SPDX-FileCopyrightText: 2026 cookedaj
@@ -33,6 +34,11 @@ Item {
     implicitHeight: designHeight
 
     readonly property real u: Math.max(0.3, Math.min(width / designWidth, height / designHeight))
+
+    // letter spacing pulls joined scripts (Arabic, Devanagari, Bengali...) apart: none for those
+    function spacing(text, px) {
+        return /[؀-ࣿऀ-෿ﭐ-﷿ﹰ-﻿]/.test(String(text)) ? 0 : px;
+    }
     readonly property string fontName: "IBM Plex Sans"
 
     function temp(c) {
@@ -59,7 +65,7 @@ Item {
             width: parent.width
             height: face.rowHeight * face.u
             u: face.u
-            label: qsTr("CPU")
+            label: i18nc("processor, short label", "CPU")
             value: face.cpu
             history: face.cpuHistory
             sparkline: face.style === "sparkline"
@@ -68,7 +74,7 @@ Item {
             width: parent.width
             height: face.rowHeight * face.u
             u: face.u
-            label: qsTr("RAM")
+            label: i18nc("memory, short label", "RAM")
             value: face.ram
             detail: face.ramDetail
             history: face.ramHistory
@@ -79,7 +85,7 @@ Item {
             width: parent.width
             height: face.rowHeight * face.u
             u: face.u
-            label: qsTr("GPU")
+            label: i18nc("graphics card, short label", "GPU")
             value: face.gpu
             history: face.gpuHistory
             sparkline: face.style === "sparkline"
@@ -101,8 +107,8 @@ Item {
                 spacing: 22 * face.u
 
                 Repeater {
-                    model: face.showGpu ? [[qsTr("CPU"), face.cpuTemp], [qsTr("GPU"), face.gpuTemp]]
-                                        : [[qsTr("CPU"), face.cpuTemp]]
+                    model: face.showGpu ? [[i18nc("processor, short label", "CPU"), face.cpuTemp], [i18nc("graphics card, short label", "GPU"), face.gpuTemp]]
+                                        : [[i18nc("processor, short label", "CPU"), face.cpuTemp]]
                     Row {
                         required property var modelData
                         spacing: 6 * face.u
@@ -111,7 +117,7 @@ Item {
                             color: "#6f6f6f"
                             font.family: face.fontName
                             font.pixelSize: 11 * face.u
-                            font.letterSpacing: 2 * face.u
+                            font.letterSpacing: face.spacing(text, 2 * face.u)
                             anchors.baseline: tempValue.baseline
                         }
                         Text {

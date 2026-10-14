@@ -1,8 +1,9 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 """Previews for WidgetL's page: each widget's own Face.qml (plain QtQuick, no Plasma) rendered offscreen with sample
 data, so the page shows exactly what the widget draws. Rendering runs in a child process (a QML scene can't share
-the page's QApplication offscreen), and the PNGs are cached by the face's files, so they're redrawn only after an
-update.
+the page's QApplication offscreen), and the PNGs are cached by the face's files and the language, so they're redrawn
+only after an update or a language change. The faces' i18n()/i18nc() come from Plasma in the real widget; here a
+stand-in reads the same .mo catalogs (plasmai18n.py) in Grimoire's language.
 
     QT_QPA_PLATFORM=offscreen python3 -m grimoire.spells.widgetl.preview OUTDIR [id ...]
 """
@@ -13,8 +14,9 @@ import subprocess
 import sys
 from pathlib import Path
 
+from grimoire import i18n
 from grimoire.paths import CACHE, ROOT
-from grimoire.spells.widgetl import widgets
+from grimoire.spells.widgetl import plasmai18n, widgets
 
 SCALE = 2                                   # rendered at twice the size, shown at device pixel ratio 2
 DIR = CACHE / "widgetl"
@@ -39,11 +41,20 @@ def face(wid: str) -> Path:
     return widgets.source_dir(wid) / "contents" / "ui" / "Face.qml"
 
 
+def language() -> str:
+    return i18n.loaded() or i18n.current()
+
+
 def _digest(wid: str) -> str:
-    h = hashlib.sha256(json.dumps(SAMPLES.get(wid, {}), sort_keys=True).encode() + str(SCALE).encode())
+    lang = language()
+    h = hashlib.sha256(json.dumps(SAMPLES.get(wid, {}), sort_keys=True).encode() + str(SCALE).encode()
+                       + lang.encode())
     ui = face(wid).parent
     for p in sorted(ui.glob("*.qml")):
         h.update(p.name.encode() + p.read_bytes())
+    mo = plasmai18n.mo_path(widgets.get(wid).plugin, lang, widgets.source_dir(wid))
+    if lang != "en" and mo.is_file():
+        h.update(mo.read_bytes())
     return h.hexdigest()[:16]
 
 
@@ -61,7 +72,7 @@ def ensure(timeout: float = 60) -> tuple[dict, str]:
     error = ""
     if missing:
         DIR.mkdir(parents=True, exist_ok=True)
-        env = dict(os.environ, QT_QPA_PLATFORM="offscreen", QT_QUICK_BACKEND="software",
+        env = dict(os.environ, QT_QPA_PLATFORM="offscreen", QT_QUICK_BACKEND="software", GRIMOIRE_LANG=language(),
                    PYTHONPATH=str(ROOT) + (os.pathsep + os.environ["PYTHONPATH"] if os.environ.get("PYTHONPATH") else ""))
         try:
             r = subprocess.run([sys.executable, "-P", "-m", "grimoire.spells.widgetl.preview", str(DIR), *missing],
@@ -72,20 +83,59 @@ def ensure(timeout: float = 60) -> tuple[dict, str]:
     return {w.id: cached(w.id) for w in widgets.WIDGETS}, error
 
 
+def _stand_in(plugin: str, lang: str):
+    """A QML context object with Plasma's i18n()/i18nc() (up to five %1.. arguments), from the package's catalog."""
+    from PySide6.QtCore import QObject, Slot
+
+    tr, trc = plasmai18n.translator(plugin, lang, widgets.source_dir(plugin.removeprefix(widgets.PREFIX)))
+
+    class Translations(QObject):
+        @Slot(str, result=str)
+        @Slot(str, "QVariant", result=str)
+        @Slot(str, "QVariant", "QVariant", result=str)
+        @Slot(str, "QVariant", "QVariant", "QVariant", result=str)
+        @Slot(str, "QVariant", "QVariant", "QVariant", "QVariant", result=str)
+        @Slot(str, "QVariant", "QVariant", "QVariant", "QVariant", "QVariant", result=str)
+        def i18n(self, text, *args):
+            return tr(text, *args)
+
+        @Slot(str, str, result=str)
+        @Slot(str, str, "QVariant", result=str)
+        @Slot(str, str, "QVariant", "QVariant", result=str)
+        @Slot(str, str, "QVariant", "QVariant", "QVariant", result=str)
+        @Slot(str, str, "QVariant", "QVariant", "QVariant", "QVariant", result=str)
+        @Slot(str, str, "QVariant", "QVariant", "QVariant", "QVariant", "QVariant", result=str)
+        def i18nc(self, context, text, *args):
+            return trc(context, text, *args)
+    return Translations(), tr, trc
+
+
 def render(out: Path, ids: list[str]) -> int:
     """The child process: render each face to OUT/<id>-<digest>.png, dropping that widget's older previews."""
-    from PySide6.QtCore import QDate, QDateTime, QEventLoop, QTime, QTimer, QUrl
+    from PySide6.QtCore import QDate, QDateTime, QEventLoop, QLocale, QTime, QTimer, QUrl
     from PySide6.QtGui import QColor, QGuiApplication
     from PySide6.QtQuick import QQuickView
 
+    lang = language()
+    QLocale.setDefault(QLocale(i18n.QT_LOCALE.get(lang, lang)))      # Qt.locale(): day names and the date
     app = QGuiApplication.instance() or QGuiApplication(sys.argv[:1])
-    failed = 0
+    failed, keep = 0, []                 # the context objects outlive their views (deleteLater runs at the end)
     for wid in ids:
         w = widgets.get(wid)
+        context, tr, trc = _stand_in(w.plugin, lang)
+        keep.append(context)
         props = dict(SAMPLES.get(wid, {}))
         if wid == "clock":
             props["now"] = QDateTime(QDate.currentDate(), QTime(10, 8, 0))
+        elif wid == "system":
+            props["ramDetail"] = trc("memory used of total", "%1 of %2 GB", "12.6", 31)
+        elif wid == "weather":
+            thursday = QDate(2026, 10, 15)
+            props["days"] = [dict(d, name=QLocale().toString(thursday.addDays(i), "ddd"))
+                             for i, d in enumerate(props["days"])]
+            props["windUnit"] = trc("wind speed unit", "km/h")
         view = QQuickView()
+        view.rootContext().setContextObject(context)
         view.setColor(QColor(0, 0, 0, 0))
         view.setResizeMode(QQuickView.ResizeMode.SizeRootObjectToView)
         view.resize(w.size[0] * SCALE, w.size[1] * SCALE)

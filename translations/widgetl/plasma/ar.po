@@ -1,0 +1,361 @@
+# Grimoire Linux's Plasma widgets, ar. SPDX-License-Identifier: GPL-3.0-or-later
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Language: ar\n"
+
+#: clock system weather nowplaying
+msgid "General"
+msgstr "عام"
+
+#: clock
+msgid "Time:"
+msgstr "الوقت:"
+
+#: clock
+msgid "24-hour clock"
+msgstr "نظام 24 ساعة"
+
+#: clock
+msgid "Show seconds"
+msgstr "أظهر الثواني"
+
+#: clock
+msgid "Show the date"
+msgstr "أظهر التاريخ"
+
+#: clock system weather nowplaying
+msgid "Background:"
+msgstr "الخلفية:"
+
+#: clock system weather nowplaying
+msgid "%1% dark"
+msgstr "معتم بنسبة %1%"
+
+#: clock
+msgid "None, only the digits"
+msgstr "بلا خلفية، الأرقام فقط"
+
+#: clock
+msgctxt "metadata.json Name"
+msgid "Clock (Grimoire Linux)"
+msgstr "الساعة (Grimoire Linux)"
+
+#: clock
+msgctxt "metadata.json Description"
+msgid "Grimoire Linux WidgetL: big thin digits and the date, in black and white"
+msgstr "‏Grimoire Linux WidgetL: أرقام كبيرة رفيعة والتاريخ، بالأبيض والأسود"
+
+#: system
+msgid "Draw readings as:"
+msgstr "اعرض القراءات على شكل:"
+
+#: system
+msgid "Thin bars"
+msgstr "أشرطة رفيعة"
+
+#: system
+msgid "Sparklines of the last two minutes"
+msgstr "منحنيات مصغّرة لآخر دقيقتين"
+
+#: system weather nowplaying
+msgid "Show:"
+msgstr "أظهر:"
+
+#: system
+msgid "Graphics card"
+msgstr "بطاقة الرسوميات"
+
+#: system
+msgid "Temperatures"
+msgstr "درجات الحرارة"
+
+#: system
+msgid "In Fahrenheit"
+msgstr "بالفهرنهايت"
+
+#: system
+msgid "None, only the readings"
+msgstr "بلا خلفية، القراءات فقط"
+
+#: system
+msgctxt "processor, short label"
+msgid "CPU"
+msgstr "المعالج"
+
+#: system
+msgctxt "memory, short label"
+msgid "RAM"
+msgstr "الذاكرة"
+
+#: system
+msgctxt "graphics card, short label"
+msgid "GPU"
+msgstr "الرسوميات"
+
+#: system
+msgid "System"
+msgstr "النظام"
+
+#: system
+msgid "CPU %1% · RAM %2%"
+msgstr "المعالج %1% · الذاكرة %2%"
+
+#: system
+msgctxt "memory used of total"
+msgid "%1 of %2 GB"
+msgstr "‏%1 من %2 غ.ب"
+
+#: system
+msgctxt "metadata.json Name"
+msgid "System (Grimoire Linux)"
+msgstr "النظام (Grimoire Linux)"
+
+#: system
+msgctxt "metadata.json Description"
+msgid "Grimoire Linux WidgetL: CPU, memory, graphics card and temperatures as thin bars or sparklines"
+msgstr "‏Grimoire Linux WidgetL: المعالج والذاكرة وبطاقة الرسوميات ودرجات الحرارة كأشرطة رفيعة أو منحنيات مصغّرة"
+
+#: weather
+msgid "Type at least two letters."
+msgstr "اكتب حرفين على الأقل."
+
+#: weather
+msgid "Searching…"
+msgstr "جارٍ البحث…"
+
+#: weather
+msgid "No place called \"%1\" found."
+msgstr "لم يُعثر على مكان باسم \"%1\"."
+
+#: weather
+msgid "Couldn't search: %1"
+msgstr "تعذّر البحث: %1"
+
+#: weather
+msgid "no connection"
+msgstr "لا يوجد اتصال"
+
+#: weather
+msgid "Find a place:"
+msgstr "ابحث عن مكان:"
+
+#: weather
+msgid "City or town"
+msgstr "مدينة أو بلدة"
+
+#: weather
+msgid "Search"
+msgstr "بحث"
+
+#: weather
+msgctxt "place, region and country"
+msgid "%1 · %2"
+msgstr "%1 · %2"
+
+#: weather
+msgctxt "place and country"
+msgid "%1, %2"
+msgstr "‏%1، %2"
+
+#: weather
+msgid "Name on the widget:"
+msgstr "الاسم على الأداة:"
+
+#: weather
+msgid "Latitude:"
+msgstr "خط العرض:"
+
+#: weather
+msgid "e.g. 38.7223"
+msgstr "مثلًا 38.7223"
+
+#: weather
+msgid "Longitude:"
+msgstr "خط الطول:"
+
+#: weather
+msgid "e.g. -9.1393"
+msgstr "مثلًا ‎-9.1393"
+
+#: weather
+msgid "Units:"
+msgstr "الوحدات:"
+
+#: weather
+msgid "°C and km/h"
+msgstr "°C و km/h"
+
+#: weather
+msgid "°F and mph"
+msgstr "°F و mph"
+
+#: weather
+msgid "The next five days"
+msgstr "الأيام الخمسة القادمة"
+
+#: weather
+msgid "None, only the weather"
+msgstr "بلا خلفية، الطقس فقط"
+
+#: weather
+msgid "Weather data by Open-Meteo.com (CC BY 4.0). Only the place you search for and the coordinates you pick are sent; your location is never looked up."
+msgstr "بيانات الطقس من Open-Meteo.com ‏(CC BY 4.0). لا يُرسل إلا المكان الذي تبحث عنه والإحداثيات التي تختارها؛ ولا يُبحث عن موقعك أبدًا."
+
+#: weather
+msgid "Clear"
+msgstr "صافٍ"
+
+#: weather
+msgid "Mostly clear"
+msgstr "صافٍ غالبًا"
+
+#: weather
+msgid "Partly cloudy"
+msgstr "غائم جزئيًا"
+
+#: weather
+msgid "Overcast"
+msgstr "ملبّد بالغيوم"
+
+#: weather
+msgid "Fog"
+msgstr "ضباب"
+
+#: weather
+msgid "Drizzle"
+msgstr "رذاذ"
+
+#: weather
+msgid "Rain"
+msgstr "مطر"
+
+#: weather
+msgid "Freezing rain"
+msgstr "مطر متجمد"
+
+#: weather
+msgid "Snow"
+msgstr "ثلج"
+
+#: weather
+msgid "Showers"
+msgstr "زخات مطر"
+
+#: weather
+msgid "Snow showers"
+msgstr "زخات ثلج"
+
+#: weather
+msgid "Thunderstorm"
+msgstr "عاصفة رعدية"
+
+#: weather
+msgid "Cloudy"
+msgstr "غائم"
+
+#: weather
+msgid "Feels %1 · Wind %2 %3 · Humidity %4%"
+msgstr "المحسوسة %1 · الرياح %2 %3 · الرطوبة %4%"
+
+#: weather
+msgid "Weather"
+msgstr "الطقس"
+
+#: weather
+msgid "Updated %1"
+msgstr "حُدّث في %1"
+
+#: weather
+msgid "Can't reach Open-Meteo right now."
+msgstr "يتعذّر الوصول إلى Open-Meteo الآن."
+
+#: weather
+msgid "Open-Meteo didn't answer as expected (%1)."
+msgstr "لم يُجب Open-Meteo كما هو متوقع (%1)."
+
+#: weather
+msgid "Offline · from %1"
+msgstr "غير متصل · من %1"
+
+#: weather
+msgid "Pick a place in the widget's settings: right-click, Configure."
+msgstr "اختر مكانًا في إعدادات الأداة: انقر بالزر الأيمن، ثم «إعداد»."
+
+#: weather
+msgid "Loading the weather…"
+msgstr "جارٍ تحميل الطقس…"
+
+#: weather
+msgctxt "wind speed unit"
+msgid "mph"
+msgstr "ميل/س"
+
+#: weather
+msgctxt "wind speed unit"
+msgid "km/h"
+msgstr "كم/س"
+
+#: weather
+msgctxt "metadata.json Name"
+msgid "Weather (Grimoire Linux)"
+msgstr "الطقس (Grimoire Linux)"
+
+#: weather
+msgctxt "metadata.json Description"
+msgid "Grimoire Linux WidgetL: current weather and the next days from Open-Meteo, with line icons"
+msgstr "‏Grimoire Linux WidgetL: الطقس الحالي والأيام القادمة من Open-Meteo، بأيقونات خطية"
+
+#: nowplaying
+msgid "Cover:"
+msgstr "الغلاف:"
+
+#: nowplaying
+msgid "In grayscale"
+msgstr "بتدرّج الرمادي"
+
+#: nowplaying
+msgid "The album after the artist"
+msgstr "الألبوم بعد الفنان"
+
+#: nowplaying
+msgid "None, only the player"
+msgstr "بلا خلفية، المشغّل فقط"
+
+#: nowplaying
+msgid "Nothing playing"
+msgstr "لا شيء قيد التشغيل"
+
+#: nowplaying
+msgid "Start music or a video in any app"
+msgstr "شغّل موسيقى أو فيديو في أي تطبيق"
+
+#: nowplaying
+msgctxt "media control"
+msgid "Previous"
+msgstr "السابق"
+
+#: nowplaying
+msgctxt "media control"
+msgid "Pause"
+msgstr "إيقاف مؤقت"
+
+#: nowplaying
+msgctxt "media control"
+msgid "Play"
+msgstr "تشغيل"
+
+#: nowplaying
+msgctxt "media control"
+msgid "Next"
+msgstr "التالي"
+
+#: nowplaying
+msgctxt "metadata.json Name"
+msgid "Now Playing (Grimoire Linux)"
+msgstr "قيد التشغيل (Grimoire Linux)"
+
+#: nowplaying
+msgctxt "metadata.json Description"
+msgid "Grimoire Linux WidgetL: the song or video that's playing, with its cover in grayscale and play controls"
+msgstr "‏Grimoire Linux WidgetL: الأغنية أو الفيديو قيد التشغيل، مع غلافه بتدرّج الرمادي وأزرار التحكم"

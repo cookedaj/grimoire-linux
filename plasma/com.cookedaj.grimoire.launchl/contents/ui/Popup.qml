@@ -1,5 +1,5 @@
 /*
-    LaunchL's menu. Header: avatar, name and the search field. Body: categories on the left, apps on the right
+    LaunchL's menu. Header: avatar, name and the search field. Body: categories on the left, apps on the right (mirrored in right-to-left languages)
     (Places: computer, recent files, frequently used), or the search results while there's text. Footer: the
     Applications / Places tabs and the leave buttons.
 
@@ -34,6 +34,10 @@ FocusScope {
     readonly property bool isCommand: query.startsWith(">")
     readonly property string command: isCommand ? query.slice(1).trim() : ""
     readonly property real sideWidth: Math.round(width * 0.3)
+
+    // right-to-left languages (Arabic, Urdu): the whole menu mirrors, categories on the right
+    LayoutMirroring.enabled: Qt.application.layoutDirection === Qt.RightToLeft
+    LayoutMirroring.childrenInherit: true
 
     //BEGIN search plumbing
     Binding {
@@ -82,9 +86,9 @@ FocusScope {
         return s && s.icon ? { icon: "file://" + s.icon, mask: false } : { icon: clover, mask: true }
     }
 
-    // every word typed must start a word of the entry's name or keywords
+    // every word typed must start a word of the entry's name or keywords (names are translated: any script counts)
     function matches(q: string, hay: string): bool {
-        const words = " " + hay.toLowerCase().replace(/[^a-z0-9]+/g, " ")
+        const words = " " + hay.toLowerCase().replace(/[\s!-\/:-@\[-`{-~·،؛]+/g, " ")
         return q.toLowerCase().split(/\s+/).filter(w => w !== "").every(w => words.includes(" " + w))
     }
 
@@ -302,10 +306,9 @@ FocusScope {
             setTab(tab === "apps" ? "places" : "apps")
         } else if ((k === Qt.Key_Tab || k === Qt.Key_Backtab) && !searching) {
             pane = pane === "side" ? "content" : "side"
-        } else if (k === Qt.Key_Left && empty) {
-            pane = "side"
-        } else if (k === Qt.Key_Right && empty) {
-            pane = "content"
+        } else if ((k === Qt.Key_Left || k === Qt.Key_Right) && empty) {
+            // the arrow that points at the categories (they sit on the right in right-to-left languages)
+            pane = (k === Qt.Key_Left) !== LayoutMirroring.enabled ? "side" : "content"
         } else if (k === Qt.Key_Menu || (k === Qt.Key_F10 && (event.modifiers & Qt.ShiftModifier))) {
             menuForCurrent()
         } else if ((k === Qt.Key_Home || k === Qt.Key_End) && empty) {

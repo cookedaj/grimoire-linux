@@ -1,0 +1,361 @@
+# Grimoire Linux's Plasma widgets, fr. SPDX-License-Identifier: GPL-3.0-or-later
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Language: fr\n"
+
+#: clock system weather nowplaying
+msgid "General"
+msgstr "Général"
+
+#: clock
+msgid "Time:"
+msgstr "Heure :"
+
+#: clock
+msgid "24-hour clock"
+msgstr "Horloge sur 24 heures"
+
+#: clock
+msgid "Show seconds"
+msgstr "Afficher les secondes"
+
+#: clock
+msgid "Show the date"
+msgstr "Afficher la date"
+
+#: clock system weather nowplaying
+msgid "Background:"
+msgstr "Arrière-plan :"
+
+#: clock system weather nowplaying
+msgid "%1% dark"
+msgstr "Sombre à %1 %"
+
+#: clock
+msgid "None, only the digits"
+msgstr "Aucun, seulement les chiffres"
+
+#: clock
+msgctxt "metadata.json Name"
+msgid "Clock (Grimoire Linux)"
+msgstr "Horloge (Grimoire Linux)"
+
+#: clock
+msgctxt "metadata.json Description"
+msgid "Grimoire Linux WidgetL: big thin digits and the date, in black and white"
+msgstr "Grimoire Linux WidgetL : de grands chiffres fins et la date, en noir et blanc"
+
+#: system
+msgid "Draw readings as:"
+msgstr "Afficher les mesures en :"
+
+#: system
+msgid "Thin bars"
+msgstr "Barres fines"
+
+#: system
+msgid "Sparklines of the last two minutes"
+msgstr "Mini-courbes des deux dernières minutes"
+
+#: system weather nowplaying
+msgid "Show:"
+msgstr "Afficher :"
+
+#: system
+msgid "Graphics card"
+msgstr "Carte graphique"
+
+#: system
+msgid "Temperatures"
+msgstr "Températures"
+
+#: system
+msgid "In Fahrenheit"
+msgstr "En Fahrenheit"
+
+#: system
+msgid "None, only the readings"
+msgstr "Aucun, seulement les mesures"
+
+#: system
+msgctxt "processor, short label"
+msgid "CPU"
+msgstr "CPU"
+
+#: system
+msgctxt "memory, short label"
+msgid "RAM"
+msgstr "RAM"
+
+#: system
+msgctxt "graphics card, short label"
+msgid "GPU"
+msgstr "GPU"
+
+#: system
+msgid "System"
+msgstr "Système"
+
+#: system
+msgid "CPU %1% · RAM %2%"
+msgstr "CPU %1 % · RAM %2 %"
+
+#: system
+msgctxt "memory used of total"
+msgid "%1 of %2 GB"
+msgstr "%1 sur %2 Go"
+
+#: system
+msgctxt "metadata.json Name"
+msgid "System (Grimoire Linux)"
+msgstr "Système (Grimoire Linux)"
+
+#: system
+msgctxt "metadata.json Description"
+msgid "Grimoire Linux WidgetL: CPU, memory, graphics card and temperatures as thin bars or sparklines"
+msgstr "Grimoire Linux WidgetL : processeur, mémoire, carte graphique et températures en barres fines ou en mini-courbes"
+
+#: weather
+msgid "Type at least two letters."
+msgstr "Tapez au moins deux lettres."
+
+#: weather
+msgid "Searching…"
+msgstr "Recherche…"
+
+#: weather
+msgid "No place called \"%1\" found."
+msgstr "Aucun lieu nommé « %1 » trouvé."
+
+#: weather
+msgid "Couldn't search: %1"
+msgstr "Recherche impossible : %1"
+
+#: weather
+msgid "no connection"
+msgstr "pas de connexion"
+
+#: weather
+msgid "Find a place:"
+msgstr "Trouver un lieu :"
+
+#: weather
+msgid "City or town"
+msgstr "Ville ou village"
+
+#: weather
+msgid "Search"
+msgstr "Rechercher"
+
+#: weather
+msgctxt "place, region and country"
+msgid "%1 · %2"
+msgstr "%1 · %2"
+
+#: weather
+msgctxt "place and country"
+msgid "%1, %2"
+msgstr "%1, %2"
+
+#: weather
+msgid "Name on the widget:"
+msgstr "Nom sur le widget :"
+
+#: weather
+msgid "Latitude:"
+msgstr "Latitude :"
+
+#: weather
+msgid "e.g. 38.7223"
+msgstr "p. ex. 38.7223"
+
+#: weather
+msgid "Longitude:"
+msgstr "Longitude :"
+
+#: weather
+msgid "e.g. -9.1393"
+msgstr "p. ex. -9.1393"
+
+#: weather
+msgid "Units:"
+msgstr "Unités :"
+
+#: weather
+msgid "°C and km/h"
+msgstr "°C et km/h"
+
+#: weather
+msgid "°F and mph"
+msgstr "°F et mph"
+
+#: weather
+msgid "The next five days"
+msgstr "Les cinq prochains jours"
+
+#: weather
+msgid "None, only the weather"
+msgstr "Aucun, seulement la météo"
+
+#: weather
+msgid "Weather data by Open-Meteo.com (CC BY 4.0). Only the place you search for and the coordinates you pick are sent; your location is never looked up."
+msgstr "Données météo d’Open-Meteo.com (CC BY 4.0). Seuls le lieu que vous cherchez et les coordonnées que vous choisissez sont envoyés ; votre position n’est jamais recherchée."
+
+#: weather
+msgid "Clear"
+msgstr "Dégagé"
+
+#: weather
+msgid "Mostly clear"
+msgstr "Plutôt dégagé"
+
+#: weather
+msgid "Partly cloudy"
+msgstr "Partiellement nuageux"
+
+#: weather
+msgid "Overcast"
+msgstr "Couvert"
+
+#: weather
+msgid "Fog"
+msgstr "Brouillard"
+
+#: weather
+msgid "Drizzle"
+msgstr "Bruine"
+
+#: weather
+msgid "Rain"
+msgstr "Pluie"
+
+#: weather
+msgid "Freezing rain"
+msgstr "Pluie verglaçante"
+
+#: weather
+msgid "Snow"
+msgstr "Neige"
+
+#: weather
+msgid "Showers"
+msgstr "Averses"
+
+#: weather
+msgid "Snow showers"
+msgstr "Averses de neige"
+
+#: weather
+msgid "Thunderstorm"
+msgstr "Orage"
+
+#: weather
+msgid "Cloudy"
+msgstr "Nuageux"
+
+#: weather
+msgid "Feels %1 · Wind %2 %3 · Humidity %4%"
+msgstr "Ressenti %1 · Vent %2 %3 · Humidité %4 %"
+
+#: weather
+msgid "Weather"
+msgstr "Météo"
+
+#: weather
+msgid "Updated %1"
+msgstr "Mis à jour à %1"
+
+#: weather
+msgid "Can't reach Open-Meteo right now."
+msgstr "Impossible de joindre Open-Meteo pour l’instant."
+
+#: weather
+msgid "Open-Meteo didn't answer as expected (%1)."
+msgstr "Open-Meteo n’a pas répondu comme prévu (%1)."
+
+#: weather
+msgid "Offline · from %1"
+msgstr "Hors ligne · de %1"
+
+#: weather
+msgid "Pick a place in the widget's settings: right-click, Configure."
+msgstr "Choisissez un lieu dans les réglages du widget : clic droit, Configurer."
+
+#: weather
+msgid "Loading the weather…"
+msgstr "Chargement de la météo…"
+
+#: weather
+msgctxt "wind speed unit"
+msgid "mph"
+msgstr "mph"
+
+#: weather
+msgctxt "wind speed unit"
+msgid "km/h"
+msgstr "km/h"
+
+#: weather
+msgctxt "metadata.json Name"
+msgid "Weather (Grimoire Linux)"
+msgstr "Météo (Grimoire Linux)"
+
+#: weather
+msgctxt "metadata.json Description"
+msgid "Grimoire Linux WidgetL: current weather and the next days from Open-Meteo, with line icons"
+msgstr "Grimoire Linux WidgetL : la météo actuelle et des prochains jours depuis Open-Meteo, avec des icônes au trait"
+
+#: nowplaying
+msgid "Cover:"
+msgstr "Pochette :"
+
+#: nowplaying
+msgid "In grayscale"
+msgstr "En niveaux de gris"
+
+#: nowplaying
+msgid "The album after the artist"
+msgstr "L’album après l’artiste"
+
+#: nowplaying
+msgid "None, only the player"
+msgstr "Aucun, seulement le lecteur"
+
+#: nowplaying
+msgid "Nothing playing"
+msgstr "Aucune lecture en cours"
+
+#: nowplaying
+msgid "Start music or a video in any app"
+msgstr "Lancez de la musique ou une vidéo dans n’importe quelle application"
+
+#: nowplaying
+msgctxt "media control"
+msgid "Previous"
+msgstr "Précédent"
+
+#: nowplaying
+msgctxt "media control"
+msgid "Pause"
+msgstr "Pause"
+
+#: nowplaying
+msgctxt "media control"
+msgid "Play"
+msgstr "Lecture"
+
+#: nowplaying
+msgctxt "media control"
+msgid "Next"
+msgstr "Suivant"
+
+#: nowplaying
+msgctxt "metadata.json Name"
+msgid "Now Playing (Grimoire Linux)"
+msgstr "Lecture en cours (Grimoire Linux)"
+
+#: nowplaying
+msgctxt "metadata.json Description"
+msgid "Grimoire Linux WidgetL: the song or video that's playing, with its cover in grayscale and play controls"
+msgstr "Grimoire Linux WidgetL : la chanson ou la vidéo en cours, avec sa pochette en niveaux de gris et les commandes de lecture"

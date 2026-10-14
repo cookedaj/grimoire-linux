@@ -19,13 +19,18 @@ Item {
     readonly property bool known: value >= 0 && !isNaN(value)
     readonly property real clamped: known ? Math.max(0, Math.min(100, value)) : 0
 
+    // letter spacing pulls joined scripts (Arabic, Devanagari, Bengali...) apart: none for those
+    function spacing(text, px) {
+        return /[؀-ࣿऀ-෿ﭐ-﷿ﹰ-﻿]/.test(String(text)) ? 0 : px;
+    }
+
     Text {
         id: name
         text: metric.label
         color: "#6f6f6f"
         font.family: "IBM Plex Sans"
         font.pixelSize: 11 * metric.u
-        font.letterSpacing: 2 * metric.u
+        font.letterSpacing: metric.spacing(text, 2 * metric.u)
         anchors.baseline: number.baseline
     }
     Text {

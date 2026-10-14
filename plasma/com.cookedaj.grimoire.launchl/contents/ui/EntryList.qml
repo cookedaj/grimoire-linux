@@ -58,7 +58,7 @@ ListView {
             font.family: launchl.ink.font
             font.pixelSize: 10
             font.weight: Font.DemiBold
-            font.letterSpacing: 2
+            font.letterSpacing: /[\u0600-\u08FF\u0900-\u0DFF\uFB50-\uFDFF\uFE70-\uFEFF]/.test(text) ? 0 : 2   // joined scripts stay joined
         }
     }
 

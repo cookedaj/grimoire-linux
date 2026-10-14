@@ -1,0 +1,163 @@
+# Grimoire Linux's Plasma widgets, fr. SPDX-License-Identifier: GPL-3.0-or-later
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Language: fr\n"
+
+#: launchl
+msgid "Lock"
+msgstr "Verrouiller"
+
+#: launchl
+msgid "Log out"
+msgstr "Se déconnecter"
+
+#: launchl
+msgid "Sleep"
+msgstr "Veille"
+
+#: launchl
+msgid "Restart"
+msgstr "Redémarrer"
+
+#: launchl
+msgid "Shut down"
+msgstr "Éteindre"
+
+#: launchl
+msgid "Leave"
+msgstr "Quitter"
+
+#: launchl
+msgid "Crosshair on"
+msgstr "Activer le réticule"
+
+#: launchl
+msgid "Crosshair off"
+msgstr "Désactiver le réticule"
+
+#: launchl
+msgid "Next crosshair"
+msgstr "Réticule suivant"
+
+#: launchl
+msgid "Tidy Downloads now"
+msgstr "Ranger les Téléchargements maintenant"
+
+#: launchl
+msgid "Open VaultL"
+msgstr "Ouvrir VaultL"
+
+#: launchl
+msgid "Screenshot region"
+msgstr "Capture d’une zone"
+
+#: launchl
+msgid "Every screen and surface"
+msgstr "Chaque écran et chaque surface"
+
+#: launchl
+msgid "Crosshair overlay"
+msgstr "Réticule en surimpression"
+
+#: launchl
+msgid "File manager with tidying built in"
+msgstr "Gestionnaire de fichiers avec rangement intégré"
+
+#: launchl
+msgid "Speed tweaks"
+msgstr "Réglages de vitesse"
+
+#: launchl
+msgid "System monitor"
+msgstr "Moniteur système"
+
+#: launchl
+msgid "Terminal"
+msgstr "Terminal"
+
+#: launchl
+msgid "This launcher"
+msgstr "Ce lanceur"
+
+#: launchl
+msgid "Run %1"
+msgstr "Exécuter %1"
+
+#: launchl
+msgid "In %1"
+msgstr "Dans %1"
+
+#: launchl
+msgid "Computer"
+msgstr "Ordinateur"
+
+#: launchl
+msgid "Recent files"
+msgstr "Fichiers récents"
+
+#: launchl
+msgid "Frequently used"
+msgstr "Utilisés souvent"
+
+#: launchl
+msgid "Remove from Favorites"
+msgstr "Retirer des favoris"
+
+#: launchl
+msgid "Add to Favorites"
+msgstr "Ajouter aux favoris"
+
+#: launchl
+msgid "Search"
+msgstr "Rechercher"
+
+#: launchl
+msgid "Search apps, files and Grimoire  ·  >command runs it"
+msgstr "Cherchez applications, fichiers et Grimoire  ·  >commande l’exécute"
+
+#: launchl
+msgid "Keep open"
+msgstr "Garder ouvert"
+
+#: launchl
+msgid "No favorites yet. Right-click an app to add it."
+msgstr "Pas encore de favoris. Faites un clic droit sur une application pour l’ajouter."
+
+#: launchl
+msgid "Nothing here yet"
+msgstr "Rien ici pour l’instant"
+
+#: launchl
+msgid "Applications"
+msgstr "Applications"
+
+#: launchl
+msgid "Places"
+msgstr "Emplacements"
+
+#: launchl
+msgid "No matches"
+msgstr "Aucun résultat"
+
+#: launchl
+msgid "Apps, places and Grimoire's spells"
+msgstr "Applications, emplacements et sortilèges de Grimoire"
+
+#: launchl
+msgid "Open Grimoire Linux"
+msgstr "Ouvrir Grimoire Linux"
+
+#: launchl
+msgid "Edit Applications…"
+msgstr "Modifier les applications…"
+
+#: launchl
+msgctxt "metadata.json Name"
+msgid "LaunchL (Grimoire Linux)"
+msgstr "LaunchL (Grimoire Linux)"
+
+#: launchl
+msgctxt "metadata.json Description"
+msgid "Grimoire Linux LaunchL: a black & white application launcher with Grimoire's spells in its search"
+msgstr "Grimoire Linux LaunchL : un lanceur d’applications en noir et blanc, avec les sortilèges de Grimoire dans sa recherche"

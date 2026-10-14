@@ -1,5 +1,6 @@
 /*
     WidgetL Clock: what the widget draws, in plain QtQuick so Grimoire can render the same file as its preview.
+    i18n()/i18nc() come from Plasma here and from preview.py's stand-in there (the same .mo catalogs).
     main.qml feeds it the time and the settings.
 
     SPDX-FileCopyrightText: 2026 cookedaj
@@ -24,6 +25,11 @@ Item {
     // every size is a multiple of u, so the face grows with the widget (fonts sized, not scaled, stay sharp)
     readonly property real u: Math.max(0.3, Math.min(width / designWidth, height / designHeight))
     readonly property string fontName: "IBM Plex Sans"
+
+    // letter spacing pulls joined scripts (Arabic, Devanagari, Bengali...) apart: none for those
+    function spacing(text, px) {
+        return /[؀-ࣿऀ-෿ﭐ-﷿ﹰ-﻿]/.test(String(text)) ? 0 : px;
+    }
 
     // "h" alone is still 24-hour in Qt's formats (only "h AP" is 12-hour), so the 12-hour hour is worked out here
     readonly property string hours: use24h ? Qt.formatTime(now, "HH") : String(now.getHours() % 12 || 12)
@@ -84,7 +90,7 @@ Item {
                     font.family: face.fontName
                     font.weight: Font.Light
                     font.pixelSize: 16 * face.u
-                    font.letterSpacing: 1.5 * face.u
+                    font.letterSpacing: face.spacing(text, 1.5 * face.u)
                 }
             }
         }
@@ -97,7 +103,7 @@ Item {
             font.family: face.fontName
             font.weight: Font.Normal
             font.pixelSize: 13 * face.u
-            font.letterSpacing: 3 * face.u
+            font.letterSpacing: face.spacing(text, 3 * face.u)
         }
     }
 }

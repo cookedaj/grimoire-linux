@@ -1,0 +1,163 @@
+# Grimoire Linux's Plasma widgets, bn. SPDX-License-Identifier: GPL-3.0-or-later
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Language: bn\n"
+
+#: launchl
+msgid "Lock"
+msgstr "লক করুন"
+
+#: launchl
+msgid "Log out"
+msgstr "লগ আউট"
+
+#: launchl
+msgid "Sleep"
+msgstr "স্লিপ"
+
+#: launchl
+msgid "Restart"
+msgstr "রিস্টার্ট"
+
+#: launchl
+msgid "Shut down"
+msgstr "বন্ধ করুন"
+
+#: launchl
+msgid "Leave"
+msgstr "বেরোন"
+
+#: launchl
+msgid "Crosshair on"
+msgstr "ক্রসহেয়ার চালু"
+
+#: launchl
+msgid "Crosshair off"
+msgstr "ক্রসহেয়ার বন্ধ"
+
+#: launchl
+msgid "Next crosshair"
+msgstr "পরের ক্রসহেয়ার"
+
+#: launchl
+msgid "Tidy Downloads now"
+msgstr "এখনই ডাউনলোড গোছান"
+
+#: launchl
+msgid "Open VaultL"
+msgstr "VaultL খুলুন"
+
+#: launchl
+msgid "Screenshot region"
+msgstr "অঞ্চলের স্ক্রিনশট"
+
+#: launchl
+msgid "Every screen and surface"
+msgstr "প্রতিটি স্ক্রিন ও পৃষ্ঠতল"
+
+#: launchl
+msgid "Crosshair overlay"
+msgstr "ক্রসহেয়ার ওভারলে"
+
+#: launchl
+msgid "File manager with tidying built in"
+msgstr "গোছানোর সুবিধাসহ ফাইল ম্যানেজার"
+
+#: launchl
+msgid "Speed tweaks"
+msgstr "গতি বাড়ানোর টুইক"
+
+#: launchl
+msgid "System monitor"
+msgstr "সিস্টেম মনিটর"
+
+#: launchl
+msgid "Terminal"
+msgstr "টার্মিনাল"
+
+#: launchl
+msgid "This launcher"
+msgstr "এই লঞ্চার"
+
+#: launchl
+msgid "Run %1"
+msgstr "%1 চালান"
+
+#: launchl
+msgid "In %1"
+msgstr "%1-এ"
+
+#: launchl
+msgid "Computer"
+msgstr "কম্পিউটার"
+
+#: launchl
+msgid "Recent files"
+msgstr "সাম্প্রতিক ফাইল"
+
+#: launchl
+msgid "Frequently used"
+msgstr "প্রায়ই ব্যবহৃত"
+
+#: launchl
+msgid "Remove from Favorites"
+msgstr "প্রিয় থেকে সরান"
+
+#: launchl
+msgid "Add to Favorites"
+msgstr "প্রিয়তে যোগ করুন"
+
+#: launchl
+msgid "Search"
+msgstr "খুঁজুন"
+
+#: launchl
+msgid "Search apps, files and Grimoire  ·  >command runs it"
+msgstr "অ্যাপ, ফাইল ও Grimoire খুঁজুন  ·  >কমান্ড সেটি চালায়"
+
+#: launchl
+msgid "Keep open"
+msgstr "খোলা রাখুন"
+
+#: launchl
+msgid "No favorites yet. Right-click an app to add it."
+msgstr "এখনও কোনো প্রিয় নেই। যোগ করতে কোনো অ্যাপে রাইট-ক্লিক করুন।"
+
+#: launchl
+msgid "Nothing here yet"
+msgstr "এখানে এখনও কিছু নেই"
+
+#: launchl
+msgid "Applications"
+msgstr "অ্যাপ্লিকেশন"
+
+#: launchl
+msgid "Places"
+msgstr "জায়গা"
+
+#: launchl
+msgid "No matches"
+msgstr "কোনো মিল নেই"
+
+#: launchl
+msgid "Apps, places and Grimoire's spells"
+msgstr "অ্যাপ, জায়গা ও Grimoire-এর মন্ত্র"
+
+#: launchl
+msgid "Open Grimoire Linux"
+msgstr "Grimoire Linux খুলুন"
+
+#: launchl
+msgid "Edit Applications…"
+msgstr "অ্যাপ্লিকেশন সম্পাদনা…"
+
+#: launchl
+msgctxt "metadata.json Name"
+msgid "LaunchL (Grimoire Linux)"
+msgstr "LaunchL (Grimoire Linux)"
+
+#: launchl
+msgctxt "metadata.json Description"
+msgid "Grimoire Linux LaunchL: a black & white application launcher with Grimoire's spells in its search"
+msgstr "Grimoire Linux LaunchL: সাদা-কালো অ্যাপ লঞ্চার, যার সার্চে Grimoire-এর মন্ত্রও আছে"

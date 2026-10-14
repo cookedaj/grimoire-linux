@@ -1,5 +1,6 @@
 /*
     WidgetL Weather: what the widget draws, in plain QtQuick so Grimoire can render the same file as its preview.
+    i18n()/i18nc() come from Plasma here and from preview.py's stand-in there (the same .mo catalogs).
     main.qml fetches the forecast from Open-Meteo and hands it over ready to show.
 
     SPDX-FileCopyrightText: 2026 cookedaj
@@ -33,25 +34,30 @@ Item {
     readonly property real u: Math.max(0.3, Math.min(width / designWidth, height / designHeight))
     readonly property string fontName: "IBM Plex Sans"
 
+    // letter spacing pulls joined scripts (Arabic, Devanagari, Bengali...) apart: none for those
+    function spacing(text, px) {
+        return /[؀-ࣿऀ-෿ﭐ-﷿ﹰ-﻿]/.test(String(text)) ? 0 : px;
+    }
+
     function deg(v) {
         const n = Math.round(v);
         return (n < 0 ? "\u2212" + (-n) : n) + "°";            // a real minus sign, not a hyphen
     }
 
     function describe(c) {
-        if (c <= 0) return qsTr("Clear");
-        if (c === 1) return qsTr("Mostly clear");
-        if (c === 2) return qsTr("Partly cloudy");
-        if (c === 3) return qsTr("Overcast");
-        if (c === 45 || c === 48) return qsTr("Fog");
-        if (c >= 51 && c <= 57) return qsTr("Drizzle");
-        if (c >= 61 && c <= 65) return qsTr("Rain");
-        if (c === 66 || c === 67) return qsTr("Freezing rain");
-        if (c >= 71 && c <= 77) return qsTr("Snow");
-        if (c >= 80 && c <= 82) return qsTr("Showers");
-        if (c === 85 || c === 86) return qsTr("Snow showers");
-        if (c >= 95) return qsTr("Thunderstorm");
-        return qsTr("Cloudy");
+        if (c <= 0) return i18n("Clear");
+        if (c === 1) return i18n("Mostly clear");
+        if (c === 2) return i18n("Partly cloudy");
+        if (c === 3) return i18n("Overcast");
+        if (c === 45 || c === 48) return i18n("Fog");
+        if (c >= 51 && c <= 57) return i18n("Drizzle");
+        if (c >= 61 && c <= 65) return i18n("Rain");
+        if (c === 66 || c === 67) return i18n("Freezing rain");
+        if (c >= 71 && c <= 77) return i18n("Snow");
+        if (c >= 80 && c <= 82) return i18n("Showers");
+        if (c === 85 || c === 86) return i18n("Snow showers");
+        if (c >= 95) return i18n("Thunderstorm");
+        return i18n("Cloudy");
     }
 
     Rectangle {
@@ -134,7 +140,7 @@ Item {
                 color: "#6f6f6f"
                 font.family: face.fontName
                 font.pixelSize: 10 * face.u
-                font.letterSpacing: 2 * face.u
+                font.letterSpacing: face.spacing(text, 2 * face.u)
             }
         }
 
@@ -144,8 +150,8 @@ Item {
             anchors.topMargin: 10 * face.u
             width: parent.width
             elide: Text.ElideRight
-            text: qsTr("Feels %1 · Wind %2 %3 · Humidity %4%").arg(face.deg(face.feelsLike))
-                  .arg(Math.round(face.wind)).arg(face.windUnit).arg(face.humidity)
+            text: i18n("Feels %1 · Wind %2 %3 · Humidity %4%", face.deg(face.feelsLike), Math.round(face.wind),
+                       face.windUnit, face.humidity)
             color: "#8c8c8c"
             font.family: face.fontName
             font.pixelSize: 11 * face.u
@@ -180,7 +186,7 @@ Item {
                         color: "#6f6f6f"
                         font.family: face.fontName
                         font.pixelSize: 10 * face.u
-                        font.letterSpacing: 1.5 * face.u
+                        font.letterSpacing: face.spacing(text, 1.5 * face.u)
                     }
                     WeatherIcon {
                         anchors.horizontalCenter: parent.horizontalCenter

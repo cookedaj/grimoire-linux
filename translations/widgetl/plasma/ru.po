@@ -1,0 +1,361 @@
+# Grimoire Linux's Plasma widgets, ru. SPDX-License-Identifier: GPL-3.0-or-later
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Language: ru\n"
+
+#: clock system weather nowplaying
+msgid "General"
+msgstr "Основные"
+
+#: clock
+msgid "Time:"
+msgstr "Время:"
+
+#: clock
+msgid "24-hour clock"
+msgstr "24-часовой формат"
+
+#: clock
+msgid "Show seconds"
+msgstr "Показывать секунды"
+
+#: clock
+msgid "Show the date"
+msgstr "Показывать дату"
+
+#: clock system weather nowplaying
+msgid "Background:"
+msgstr "Фон:"
+
+#: clock system weather nowplaying
+msgid "%1% dark"
+msgstr "Затемнение %1%"
+
+#: clock
+msgid "None, only the digits"
+msgstr "Нет, только цифры"
+
+#: clock
+msgctxt "metadata.json Name"
+msgid "Clock (Grimoire Linux)"
+msgstr "Часы (Grimoire Linux)"
+
+#: clock
+msgctxt "metadata.json Description"
+msgid "Grimoire Linux WidgetL: big thin digits and the date, in black and white"
+msgstr "Grimoire Linux WidgetL: крупные тонкие цифры и дата, в чёрно-белом"
+
+#: system
+msgid "Draw readings as:"
+msgstr "Показывать как:"
+
+#: system
+msgid "Thin bars"
+msgstr "Тонкие полоски"
+
+#: system
+msgid "Sparklines of the last two minutes"
+msgstr "Мини-графики за последние две минуты"
+
+#: system weather nowplaying
+msgid "Show:"
+msgstr "Показывать:"
+
+#: system
+msgid "Graphics card"
+msgstr "Видеокарта"
+
+#: system
+msgid "Temperatures"
+msgstr "Температуры"
+
+#: system
+msgid "In Fahrenheit"
+msgstr "В градусах Фаренгейта"
+
+#: system
+msgid "None, only the readings"
+msgstr "Нет, только показатели"
+
+#: system
+msgctxt "processor, short label"
+msgid "CPU"
+msgstr "ЦП"
+
+#: system
+msgctxt "memory, short label"
+msgid "RAM"
+msgstr "ОЗУ"
+
+#: system
+msgctxt "graphics card, short label"
+msgid "GPU"
+msgstr "ГП"
+
+#: system
+msgid "System"
+msgstr "Система"
+
+#: system
+msgid "CPU %1% · RAM %2%"
+msgstr "ЦП %1% · ОЗУ %2%"
+
+#: system
+msgctxt "memory used of total"
+msgid "%1 of %2 GB"
+msgstr "%1 из %2 ГБ"
+
+#: system
+msgctxt "metadata.json Name"
+msgid "System (Grimoire Linux)"
+msgstr "Система (Grimoire Linux)"
+
+#: system
+msgctxt "metadata.json Description"
+msgid "Grimoire Linux WidgetL: CPU, memory, graphics card and temperatures as thin bars or sparklines"
+msgstr "Grimoire Linux WidgetL: процессор, память, видеокарта и температуры — тонкими полосками или мини-графиками"
+
+#: weather
+msgid "Type at least two letters."
+msgstr "Введите хотя бы две буквы."
+
+#: weather
+msgid "Searching…"
+msgstr "Поиск…"
+
+#: weather
+msgid "No place called \"%1\" found."
+msgstr "Место «%1» не найдено."
+
+#: weather
+msgid "Couldn't search: %1"
+msgstr "Не удалось найти: %1"
+
+#: weather
+msgid "no connection"
+msgstr "нет соединения"
+
+#: weather
+msgid "Find a place:"
+msgstr "Найти место:"
+
+#: weather
+msgid "City or town"
+msgstr "Город или посёлок"
+
+#: weather
+msgid "Search"
+msgstr "Найти"
+
+#: weather
+msgctxt "place, region and country"
+msgid "%1 · %2"
+msgstr "%1 · %2"
+
+#: weather
+msgctxt "place and country"
+msgid "%1, %2"
+msgstr "%1, %2"
+
+#: weather
+msgid "Name on the widget:"
+msgstr "Название на виджете:"
+
+#: weather
+msgid "Latitude:"
+msgstr "Широта:"
+
+#: weather
+msgid "e.g. 38.7223"
+msgstr "например, 38.7223"
+
+#: weather
+msgid "Longitude:"
+msgstr "Долгота:"
+
+#: weather
+msgid "e.g. -9.1393"
+msgstr "например, -9.1393"
+
+#: weather
+msgid "Units:"
+msgstr "Единицы:"
+
+#: weather
+msgid "°C and km/h"
+msgstr "°C и км/ч"
+
+#: weather
+msgid "°F and mph"
+msgstr "°F и mph"
+
+#: weather
+msgid "The next five days"
+msgstr "Следующие пять дней"
+
+#: weather
+msgid "None, only the weather"
+msgstr "Нет, только погода"
+
+#: weather
+msgid "Weather data by Open-Meteo.com (CC BY 4.0). Only the place you search for and the coordinates you pick are sent; your location is never looked up."
+msgstr "Данные о погоде — Open-Meteo.com (CC BY 4.0). Отправляются только место, которое вы ищете, и выбранные координаты; ваше местоположение никогда не определяется."
+
+#: weather
+msgid "Clear"
+msgstr "Ясно"
+
+#: weather
+msgid "Mostly clear"
+msgstr "Преимущественно ясно"
+
+#: weather
+msgid "Partly cloudy"
+msgstr "Переменная облачность"
+
+#: weather
+msgid "Overcast"
+msgstr "Пасмурно"
+
+#: weather
+msgid "Fog"
+msgstr "Туман"
+
+#: weather
+msgid "Drizzle"
+msgstr "Морось"
+
+#: weather
+msgid "Rain"
+msgstr "Дождь"
+
+#: weather
+msgid "Freezing rain"
+msgstr "Ледяной дождь"
+
+#: weather
+msgid "Snow"
+msgstr "Снег"
+
+#: weather
+msgid "Showers"
+msgstr "Ливни"
+
+#: weather
+msgid "Snow showers"
+msgstr "Снегопады"
+
+#: weather
+msgid "Thunderstorm"
+msgstr "Гроза"
+
+#: weather
+msgid "Cloudy"
+msgstr "Облачно"
+
+#: weather
+msgid "Feels %1 · Wind %2 %3 · Humidity %4%"
+msgstr "Ощущается %1 · Ветер %2 %3 · Влажность %4%"
+
+#: weather
+msgid "Weather"
+msgstr "Погода"
+
+#: weather
+msgid "Updated %1"
+msgstr "Обновлено в %1"
+
+#: weather
+msgid "Can't reach Open-Meteo right now."
+msgstr "Сейчас не удаётся связаться с Open-Meteo."
+
+#: weather
+msgid "Open-Meteo didn't answer as expected (%1)."
+msgstr "Open-Meteo ответил не так, как ожидалось (%1)."
+
+#: weather
+msgid "Offline · from %1"
+msgstr "Нет сети · данные от %1"
+
+#: weather
+msgid "Pick a place in the widget's settings: right-click, Configure."
+msgstr "Выберите место в настройках виджета: правая кнопка, «Настроить»."
+
+#: weather
+msgid "Loading the weather…"
+msgstr "Загрузка погоды…"
+
+#: weather
+msgctxt "wind speed unit"
+msgid "mph"
+msgstr "миль/ч"
+
+#: weather
+msgctxt "wind speed unit"
+msgid "km/h"
+msgstr "км/ч"
+
+#: weather
+msgctxt "metadata.json Name"
+msgid "Weather (Grimoire Linux)"
+msgstr "Погода (Grimoire Linux)"
+
+#: weather
+msgctxt "metadata.json Description"
+msgid "Grimoire Linux WidgetL: current weather and the next days from Open-Meteo, with line icons"
+msgstr "Grimoire Linux WidgetL: текущая погода и прогноз на ближайшие дни от Open-Meteo, с линейными значками"
+
+#: nowplaying
+msgid "Cover:"
+msgstr "Обложка:"
+
+#: nowplaying
+msgid "In grayscale"
+msgstr "В оттенках серого"
+
+#: nowplaying
+msgid "The album after the artist"
+msgstr "Альбом после исполнителя"
+
+#: nowplaying
+msgid "None, only the player"
+msgstr "Нет, только плеер"
+
+#: nowplaying
+msgid "Nothing playing"
+msgstr "Ничего не играет"
+
+#: nowplaying
+msgid "Start music or a video in any app"
+msgstr "Включите музыку или видео в любом приложении"
+
+#: nowplaying
+msgctxt "media control"
+msgid "Previous"
+msgstr "Предыдущий"
+
+#: nowplaying
+msgctxt "media control"
+msgid "Pause"
+msgstr "Пауза"
+
+#: nowplaying
+msgctxt "media control"
+msgid "Play"
+msgstr "Воспроизвести"
+
+#: nowplaying
+msgctxt "media control"
+msgid "Next"
+msgstr "Следующий"
+
+#: nowplaying
+msgctxt "metadata.json Name"
+msgid "Now Playing (Grimoire Linux)"
+msgstr "Сейчас играет (Grimoire Linux)"
+
+#: nowplaying
+msgctxt "metadata.json Description"
+msgid "Grimoire Linux WidgetL: the song or video that's playing, with its cover in grayscale and play controls"
+msgstr "Grimoire Linux WidgetL: песня или видео, что сейчас играет, с обложкой в оттенках серого и кнопками управления"

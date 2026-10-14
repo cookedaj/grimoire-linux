@@ -1,9 +1,22 @@
 {
     "KPackageStructure": "Plasma/Applet",
     "KPlugin": {
-        "Authors": [{ "Name": "cookedaj" }],
+        "Authors": [
+            {
+                "Name": "cookedaj"
+            }
+        ],
         "Category": "Application Launchers",
         "Description": "Grimoire Linux LaunchL: a black & white application launcher with Grimoire's spells in its search",
+        "Description[ar]": "‏Grimoire Linux LaunchL: مشغّل تطبيقات بالأبيض والأسود يضم تعاويذ Grimoire في بحثه",
+        "Description[bn]": "Grimoire Linux LaunchL: সাদা-কালো অ্যাপ লঞ্চার, যার সার্চে Grimoire-এর মন্ত্রও আছে",
+        "Description[es]": "Grimoire Linux LaunchL: un lanzador de aplicaciones en blanco y negro con los hechizos de Grimoire en su búsqueda",
+        "Description[fr]": "Grimoire Linux LaunchL : un lanceur d’applications en noir et blanc, avec les sortilèges de Grimoire dans sa recherche",
+        "Description[hi]": "Grimoire Linux LaunchL: काले और सफ़ेद में ऐप लॉन्चर, जिसकी खोज में Grimoire के मंत्र भी हैं",
+        "Description[pt_BR]": "Grimoire Linux LaunchL: um lançador de aplicativos em preto e branco com os feitiços do Grimoire na busca",
+        "Description[ru]": "Grimoire Linux LaunchL: чёрно-белое меню запуска приложений с заклинаниями Grimoire в поиске",
+        "Description[ur]": "‏Grimoire Linux LaunchL: سیاہ و سفید ایپ لانچر، جس کی تلاش میں Grimoire کے منتر بھی ہیں",
+        "Description[zh_CN]": "Grimoire Linux LaunchL：黑白应用启动器，搜索中包含 Grimoire 的法术",
         "Icon": "grimoire",
         "Id": "com.cookedaj.grimoire.launchl",
         "License": "GPL-3.0-or-later",
@@ -12,5 +25,7 @@
         "Website": "https://github.com/cookedaj/grimoire-linux"
     },
     "X-Plasma-API-Minimum-Version": "6.0",
-    "X-Plasma-Provides": ["org.kde.plasma.launchermenu"]
+    "X-Plasma-Provides": [
+        "org.kde.plasma.launchermenu"
+    ]
 }
