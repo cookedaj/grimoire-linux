@@ -71,6 +71,16 @@ begin
   if p_new_password is null or length(p_new_password) < 10 or octet_length(p_new_password) > 72 then
     return jsonb_build_object('ok', false, 'error', 'weak_password');
   end if;
+  -- a name that can't be a username or a code of the wrong length is refused before any row is written, so
+  -- anonymous callers can't fill recovery_attempts with junk (the rules are public, so this reveals nothing)
+  if uname::text !~ '^[A-Za-z0-9][A-Za-z0-9_-]{2,31}$' or length(code) <> 20 then
+    return jsonb_build_object('ok', false, 'error', 'invalid');
+  end if;
+  delete from private.recovery_attempts a                        -- housekeeping: forget old, unlocked names
+   where a.username in (select o.username from private.recovery_attempts o
+                         where o.updated_at < now() - interval '1 day'
+                           and (o.locked_until is null or o.locked_until < now()) and o.username <> uname
+                         limit 100 for update skip locked);
   insert into private.recovery_attempts (username) values (uname) on conflict (username) do nothing;
   select a.locked_until into locked from private.recovery_attempts a where a.username = uname for update;
   if locked is not null and locked > now() then
@@ -81,7 +91,7 @@ begin
   select c.code_hash into hash from private.recovery_codes c where c.user_id = uid;
   -- always one bcrypt, so an unknown username takes as long as a wrong code
   if extensions.crypt(code, coalesce(hash, extensions.gen_salt('bf', 10))) is distinct from hash
-     or uid is null or length(code) <> 20 then
+     or uid is null then
     update private.recovery_attempts a
        set failures = a.failures + 1,
            updated_at = now(),

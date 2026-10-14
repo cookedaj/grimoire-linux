@@ -55,13 +55,13 @@
     </message>
     <message>
         <location filename="../../grimoire/accounts.py"/>
-        <source>Signed in. You can close this tab and go back to Grimoire Linux.</source>
-        <translation>تم تسجيل الدخول. يمكنك إغلاق هذا التبويب والعودة إلى Grimoire Linux.</translation>
+        <source>sign-in was cancelled</source>
+        <translation>أُلغي تسجيل الدخول</translation>
     </message>
     <message>
         <location filename="../../grimoire/accounts.py"/>
-        <source>sign-in was cancelled</source>
-        <translation>أُلغي تسجيل الدخول</translation>
+        <source>Signed in. You can close this tab and go back to Grimoire Linux.</source>
+        <translation>تم تسجيل الدخول. يمكنك إغلاق هذا التبويب والعودة إلى Grimoire Linux.</translation>
     </message>
     <message>
         <location filename="../../grimoire/accounts.py"/>
@@ -100,7 +100,6 @@
     </message>
     <message>
         <location filename="../../grimoire/accounts.py"/>
-        <location filename="../../grimoire/loginview.py"/>
         <source>Wrong username or password.</source>
         <translation>اسم المستخدم أو كلمة المرور غير صحيحة.</translation>
     </message>
@@ -1246,6 +1245,11 @@
         <source>Black &amp; white tools for KDE Plasma</source>
         <translation>أدوات بالأبيض والأسود لـ KDE Plasma</translation>
     </message>
+    <message>
+        <location filename="../../grimoire/loginview.py"/>
+        <source>Couldn&apos;t set up your profile: {err}</source>
+        <translation>تعذّر إعداد ملفك الشخصي: {err}</translation>
+    </message>
 </context>
 <context>
     <name>grimoire.roothelper</name>
@@ -1302,6 +1306,11 @@
 </context>
 <context>
     <name>grimoire.session</name>
+    <message>
+        <location filename="../../grimoire/session.py"/>
+        <source>{path} isn&apos;t a private folder of yours; not using it for the guest profile.</source>
+        <translation>‏{path} ليس مجلدًا خاصًا بك؛ لن يُستخدم لملف الضيف.</translation>
+    </message>
     <message>
         <location filename="../../grimoire/session.py"/>
         <source>Sign in to use your account.</source>

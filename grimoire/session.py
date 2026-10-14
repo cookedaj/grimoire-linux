@@ -15,6 +15,8 @@ import fcntl
 import json
 import os
 import shutil
+import stat
+import threading
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
@@ -26,7 +28,10 @@ from grimoire.i18n import tr
 KEYRING = keystore
 CURRENT: "accounts.Session | None" = None          # this process's live session (tokens in memory)
 _guest_lock = None                                  # held while this process uses the guest profile
+_refreshing = threading.Lock()                      # one refresh at a time: refresh tokens are single-use
+_keyring_behind = False                             # our last store failed: the keyring holds a spent token
 SKIP = {"session.json", "profiles"}                 # never copied between profiles
+HANDOFF = "GRIMOIRE_SESSION_FD"
 
 
 @dataclass
@@ -115,11 +120,24 @@ def begin(s: "accounts.Session", remember: bool, from_guest: bool = False) -> bo
     return paths.activate(uid)
 
 
+def _guest_base() -> Path:
+    """The guest profile's folder, made 0700 and checked: ours, a real folder (not a link), writable only by us.
+    XDG_RUNTIME_DIR is normally /run/user/<uid>; if it points somewhere shared (say /tmp), another user could
+    have planted "grimoire" there as a link to make the wipe below empty a folder of ours."""
+    gdir = paths.guest_dir()
+    base = gdir.parent
+    base.mkdir(parents=True, exist_ok=True, mode=0o700)
+    st = base.lstat()
+    if not stat.S_ISDIR(st.st_mode) or st.st_uid != os.getuid() or st.st_mode & 0o022:
+        raise OSError(0, tr("grimoire.session", "{path} isn't a private folder of yours; not using it for the guest "
+                                                "profile.").format(path=base))
+    return gdir
+
+
 def begin_guest() -> bool:
     """Start (or join) the guest profile. A new guest session empties the old one first."""
     global _guest_lock
-    gdir = paths.guest_dir()
-    gdir.parent.mkdir(parents=True, exist_ok=True, mode=0o700)
+    gdir = _guest_base()
     lock = open(gdir.parent / "guest-profile.lock", "a")
     try:
         fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
@@ -134,8 +152,7 @@ def begin_guest() -> bool:
 def join_guest() -> bool:
     """A window started by a guest session (GRIMOIRE_PROFILE=guest): share its profile, never empty it."""
     global _guest_lock
-    gdir = paths.guest_dir()
-    gdir.parent.mkdir(parents=True, exist_ok=True, mode=0o700)
+    gdir = _guest_base()
     _guest_lock = open(gdir.parent / "guest-profile.lock", "a")
     fcntl.flock(_guest_lock, fcntl.LOCK_SH)
     return paths.activate(paths.GUEST)
@@ -184,32 +201,116 @@ def _forget_token(uid: str):
 
 
 def live(backend=None) -> "accounts.Session":
-    """A usable session for server calls (sync), refreshing it from the keyring after a remembered start."""
-    global CURRENT
+    """A usable session for server calls (sync), refreshing it from the keyring after a remembered start.
+    Refresh tokens are single-use (and reusing a spent one can sign the account out everywhere), so refreshes are
+    serialized: across this process's threads by a lock, across Grimoire windows by a lock file, and a remembered
+    session always refreshes with the keyring's token, the newest any window has stored."""
+    global CURRENT, _keyring_behind
     backend = backend or accounts.BACKEND
     who = active()
     if who is None or who.guest:
         raise accounts.AccountError(tr("grimoire.session", "Sign in to use your account."))
-    if CURRENT is not None and CURRENT.user.id == who.profile and CURRENT.fresh():
-        return CURRENT
-    refresh = CURRENT.refresh if CURRENT is not None and CURRENT.user.id == who.profile else None
-    if refresh is None:
+    with _refreshing:
+        if CURRENT is not None and CURRENT.user.id == who.profile and CURRENT.fresh():
+            return CURRENT
+        with _refresh_lock():
+            mine = CURRENT.refresh if CURRENT is not None and CURRENT.user.id == who.profile else None
+            remember = _read().get("remember") is True and last() is not None and last().profile == who.profile
+            stored = None
+            if (remember and not _keyring_behind) or mine is None:
+                try:
+                    stored = KEYRING.load(accounts.keyring_attrs(who.profile))
+                except keystore.KeyringError as e:
+                    if mine is None:
+                        raise accounts.AccountError(str(e)) from None
+            refresh = Token(stored) if stored else mine
+            if refresh is None:
+                raise accounts.AccountError(tr("grimoire.session",
+                                               "Your sign-in expired. Sign out and sign in again."))
+            s = backend.refresh(refresh, who.provider or "password")
+            s.user.username = s.user.username or who.username
+            CURRENT = s
+            if remember:                                 # keep the new one for the next refresh (any window)
+                try:
+                    KEYRING.store(s.refresh.reveal(), accounts.keyring_attrs(s.user.id), "Grimoire Linux account")
+                    _keyring_behind = False
+                except keystore.KeyringError:
+                    _keyring_behind = True
+            return s
+
+
+class _refresh_lock:
+    """An flock on CACHE/session-refresh.lock (best effort: without it, only the in-process lock applies)."""
+
+    def __enter__(self):
         try:
-            stored = KEYRING.load(accounts.keyring_attrs(who.profile))
-        except keystore.KeyringError as e:
-            raise accounts.AccountError(str(e)) from None
-        if not stored:
-            raise accounts.AccountError(tr("grimoire.session", "Your sign-in expired. Sign out and sign in again."))
-        refresh = Token(stored)
-    s = backend.refresh(refresh, who.provider or "password")
-    s.user.username = s.user.username or who.username
-    CURRENT = s
-    if _read().get("remember") is True:                 # refresh tokens are single-use: keep the new one
+            paths.CACHE.mkdir(parents=True, exist_ok=True)
+            self.f = open(paths.CACHE / "session-refresh.lock", "a")
+            fcntl.flock(self.f, fcntl.LOCK_EX)
+        except OSError:
+            self.f = None
+        return self
+
+    def __exit__(self, *exc):
+        if self.f is not None:
+            self.f.close()
+
+
+# ---------------------------------------------------------------- across a restart
+def handoff():
+    """Before exec'ing this program again: pass the live session (refresh token included) to the new process
+    through an inherited pipe whose number goes in GRIMOIRE_SESSION_FD. Only the next process reads it (adopt()
+    closes it and drops the variable), so nothing it starts later sees the token; it never touches a file."""
+    s = CURRENT
+    if s is None or os.environ.get("GRIMOIRE_PROFILE") != s.user.id:
+        return
+    data = json.dumps({"id": s.user.id, "username": s.user.username, "provider": s.user.provider,
+                       "access": s.access.reveal(), "refresh": s.refresh.reveal(),
+                       "expires_at": s.expires_at}).encode()
+    if len(data) > 60000:                               # must fit the pipe's buffer: nobody reads it before exec
+        return
+    r, w = os.pipe()
+    try:
+        os.write(w, data)
+    finally:
+        os.close(w)
+    os.set_inheritable(r, True)
+    os.environ[HANDOFF] = str(r)
+
+
+def adopt():
+    """In the restarted process: take the session handed over by handoff(), if any (once, at import)."""
+    global CURRENT
+    fd = os.environ.pop(HANDOFF, "")
+    if not fd.isdigit():
+        return
+    fd, chunks = int(fd), []
+    try:
+        if fd < 3 or not stat.S_ISFIFO(os.fstat(fd).st_mode):
+            return                                      # not ours: leave that descriptor alone
+    except OSError:
+        return
+    try:
+        os.set_blocking(fd, False)
+        while len(b"".join(chunks)) < 65536 and (chunk := os.read(fd, 65536)):
+            chunks.append(chunk)
+        d = json.loads(b"".join(chunks))
+        uid = str(d["id"])
+        if not paths.valid_profile(uid) or uid == paths.GUEST or os.environ.get("GRIMOIRE_PROFILE") != uid:
+            return
+        name = str(d.get("username", ""))[:32]
+        CURRENT = accounts.Session(accounts.User(uid, name, str(d.get("provider", ""))[:10] or "password"),
+                                   Token(str(d["access"])), Token(str(d["refresh"])), float(d["expires_at"]))
+    except (OSError, ValueError, KeyError, TypeError):
+        pass
+    finally:
         try:
-            KEYRING.store(s.refresh.reveal(), accounts.keyring_attrs(s.user.id), "Grimoire Linux account")
-        except keystore.KeyringError:
+            os.close(fd)
+        except OSError:
             pass
-    return s
+
+
+adopt()
 
 
 def end(backend=None):

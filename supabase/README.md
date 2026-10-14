@@ -34,8 +34,11 @@ Check: Table Editor shows `profiles` and `user_settings` with RLS **enabled**; D
   ever mailed; the optional email people type is stored privately on their profile row, not used to sign in.)
 - **Minimum password length: 10** (the app asks for 10 too). Optionally "Password requirements: letters and
   digits".
-- **Secure email change: ON** (default). The database also refuses any change of a `@users.grimoire.invalid`
-  address.
+- **Secure email change: ON** (default). The database refuses every change of an account's login address anyway
+  (with "Confirm email" off a change would apply unconfirmed and could claim someone else's Google/GitHub sign-in
+  through Supabase's identity linking), and refuses email/password or magic-link sign-ups with a real address for
+  the same reason: Grimoire only ever signs up `<username>@users.grimoire.invalid`.
+- **Phone provider and anonymous sign-ins: OFF** (the defaults). Grimoire uses neither.
 - **Leaked password protection** (Pro plan): turn on if available.
 - **Rate limits**: keep the defaults or lower them; sign-in/sign-up per IP at about 30 per 5 minutes is plenty
   for a desktop app. The app also slows down repeated wrong passwords on its own, and recovery codes lock a
@@ -95,6 +98,6 @@ In `grimoire/supabase_app.py` set `SUPABASE_URL = "https://<project-ref>.supabas
 
 ## Housekeeping
 
-`private.recovery_attempts` keeps one small row per username that ever got a wrong recovery code. If it grows,
-`delete from private.recovery_attempts where updated_at < now() - interval '1 day' and (locked_until is null or
-locked_until < now());` (by hand, or with the pg_cron extension).
+`private.recovery_attempts` keeps one small row per username that recently got a wrong recovery code; names that
+can't be usernames are refused before a row is written, and `recover_account()` forgets rows older than a day
+(unless still locked) as it goes, so nothing needs cleaning by hand.

@@ -55,13 +55,13 @@
     </message>
     <message>
         <location filename="../../grimoire/accounts.py"/>
-        <source>Signed in. You can close this tab and go back to Grimoire Linux.</source>
-        <translation>已登录。你可以关闭此标签页并返回 Grimoire Linux。</translation>
+        <source>sign-in was cancelled</source>
+        <translation>登录已取消</translation>
     </message>
     <message>
         <location filename="../../grimoire/accounts.py"/>
-        <source>sign-in was cancelled</source>
-        <translation>登录已取消</translation>
+        <source>Signed in. You can close this tab and go back to Grimoire Linux.</source>
+        <translation>已登录。你可以关闭此标签页并返回 Grimoire Linux。</translation>
     </message>
     <message>
         <location filename="../../grimoire/accounts.py"/>
@@ -100,7 +100,6 @@
     </message>
     <message>
         <location filename="../../grimoire/accounts.py"/>
-        <location filename="../../grimoire/loginview.py"/>
         <source>Wrong username or password.</source>
         <translation>用户名或密码错误。</translation>
     </message>
@@ -1231,6 +1230,11 @@
         <source>Black &amp; white tools for KDE Plasma</source>
         <translation>适用于 KDE Plasma 的黑白工具</translation>
     </message>
+    <message>
+        <location filename="../../grimoire/loginview.py"/>
+        <source>Couldn&apos;t set up your profile: {err}</source>
+        <translation>无法设置你的配置文件：{err}</translation>
+    </message>
 </context>
 <context>
     <name>grimoire.roothelper</name>
@@ -1287,6 +1291,11 @@
 </context>
 <context>
     <name>grimoire.session</name>
+    <message>
+        <location filename="../../grimoire/session.py"/>
+        <source>{path} isn&apos;t a private folder of yours; not using it for the guest profile.</source>
+        <translation>{path} 不是你独有的私有文件夹；不会将其用于访客配置文件。</translation>
+    </message>
     <message>
         <location filename="../../grimoire/session.py"/>
         <source>Sign in to use your account.</source>

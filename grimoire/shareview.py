@@ -170,12 +170,12 @@ class SetupPreview(QDialog):
         h = QHBoxLayout(w)
         h.setContentsMargins(24, 3, 0, 3)
         h.setSpacing(10)
-        label = _label(change.label, "Muted", wrap=False)
+        label = _label(change.label, "Muted")              # wraps: "<tab> options" runs long in some languages
         label.setFixedWidth(150)
         h.addWidget(label)
         now = _label(change.now, "Muted")
         h.addWidget(now, 1)
-        h.addWidget(_label("→", "Muted", wrap=False))
+        h.addWidget(_label("←" if w.isRightToLeft() else "→", "Muted", wrap=False))   # points from now to new
         new = _label(change.new, "Muted" if change.same else "RowTitle")
         h.addWidget(new, 1)
         if change.same:

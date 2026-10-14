@@ -351,7 +351,7 @@ class AuthCard(QFrame):
         self.say(text)
 
     def _done(self, s, remember):
-        self.finished.emit({"kind": "account", "session": s, "remember": remember})
+        self.finished.emit({"kind": "account", "session": s, "remember": remember, "mode": self.mode})
 
     def _sign_in(self):
         if self._busy:
@@ -367,17 +367,24 @@ class AuthCard(QFrame):
         self._set_busy(True, tr("grimoire.loginview", "Signing in…"))
         keep = self.si_keep.isChecked()
 
+        def work():
+            try:
+                s = self.backend.sign_in(user, pw)
+            except accounts.AccountError as e:
+                if e.kind == "credentials":              # only wrong passwords count, not being offline
+                    accounts.note_attempt(user, False)
+                raise
+            accounts.note_attempt(user, True)
+            return s
+
         def then(ok, value):
             self._set_busy(False)
-            wrong = not ok and value == tr("grimoire.accounts", "Wrong username or password.")   # accounts' own text
-            if ok or wrong:
-                accounts.note_attempt(user, ok)
             if ok:
                 self.si_pass.clear()
                 self._done(value, keep)
             else:
                 self.say(value)
-        run(lambda: self.backend.sign_in(user, pw), then, (accounts.AccountError,))
+        run(work, then, (accounts.AccountError,))
 
     def _create(self):
         if self._busy:
@@ -507,19 +514,25 @@ class AccountDialog(QDialog):
         self.result_value = None
         lay = QVBoxLayout(self)
         lay.setContentsMargins(24, 24, 24, 24)
-        card = AuthCard(allow_guest=False, mode=mode)
-        card.finished.connect(self._finish)
-        lay.addWidget(card)
+        self.card = AuthCard(allow_guest=False, mode=mode)
+        self.card.finished.connect(self._finish)
+        lay.addWidget(self.card)
 
     def _finish(self, result):
         self.result_value = result
         self.accept()
 
+    def done(self, r):
+        self.card._cancel.set()                  # closed while a browser sign-in waits: free its local port
+        super().done(r)
+
 
 # ---------------------------------------------------------------- the gate
 def restart():
-    """Start this program again (to load another profile); GRIMOIRE_PROFILE says which."""
+    """Start this program again (to load another profile); GRIMOIRE_PROFILE says which. A session that isn't kept
+    in the keyring crosses the restart through a pipe (session.handoff), never a file or the environment."""
     sys.stdout.flush()
+    session.handoff()
     os.execv(sys.executable, sys.orig_argv)
 
 
@@ -563,10 +576,16 @@ def gate(title=NAME, size=(1440, 880), wizard=False) -> bool:
         screen.finished.connect(lambda r: (box.setdefault("r", r), loop.quit()))
         win.closeEvent = lambda e: (screen.card._cancel.set(), loop.quit(), e.accept())   # stops a waiting OAuth
         win.show()
-        loop.exec()
-        if "r" not in box:
-            return False
-        ok = _apply(box["r"])
+        while True:
+            loop.exec()
+            if "r" not in box:
+                return False
+            try:
+                ok = _apply(box.pop("r"))
+                break
+            except OSError as e:                         # e.g. an unsafe or full runtime dir for the guest profile
+                screen.card.say(tr("grimoire.loginview", "Couldn't set up your profile: {err}").format(
+                    err=e.strerror or e))
         if wizard and ok:
             ok = _wizard(win, lay, screen)
         win.hide()

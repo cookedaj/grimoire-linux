@@ -32,8 +32,8 @@ def create_account(parent, mode="create"):
     """A guest makes an account (their guest settings move into it) or signs in to one they have."""
     from grimoire.loginview import AccountDialog
     dlg = AccountDialog(mode, parent)
-    if dlg.exec() and dlg.result_value:
-        _restart_as_new_session(dlg.result_value, parent, from_guest=(mode == "create"))
+    if dlg.exec() and dlg.result_value:            # the form they finished on, not the one they started from
+        _restart_as_new_session(dlg.result_value, parent, from_guest=dlg.result_value.get("mode") == "create")
 
 
 def sign_out(parent):

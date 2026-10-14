@@ -198,6 +198,8 @@ class FakeSupabase:
             name, code, pw = str(b.get("p_username", "")), str(b.get("p_code", "")), str(b.get("p_new_password", ""))
             if len(pw) < 10:
                 return h._send(200, {"ok": False, "error": "weak_password"})
+            if not USERNAME.fullmatch(name) or len(re.sub(r"[^0-9A-Fa-f]", "", code)) != 20:
+                return h._send(200, {"ok": False, "error": "invalid"})          # no attempts row, like the SQL
             att = self.attempts.setdefault(name.lower(), [0, 0])
             if att[1] > time.time():
                 return h._send(200, {"ok": False, "error": "locked", "retry_after": int(att[1] - time.time())})

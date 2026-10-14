@@ -719,7 +719,7 @@ def inspect(source) -> Shared:
                             author=_text(meta.get("author"), AUTHOR_MAX), setup=clean(raw),
                             created=_text(meta.get("created"), 40), app_version=_text(meta.get("app_version"), 20),
                             preview=preview, wallpapers=wallpapers, ignored=ignored, source=source, digest=digest)
-    except zipfile.BadZipFile as e:
+    except (zipfile.BadZipFile, zlib.error) as e:               # zlib.error: a corrupt compressed member
         raise ShareError(tr("grimoire.sharesetup", "The setup is damaged: {error}").format(error=e)) from None
     except (zipfile.LargeZipFile, NotImplementedError, EOFError, RuntimeError) as e:
         raise ShareError(tr("grimoire.sharesetup", "The setup can't be read: {error}").format(error=e)) from None
@@ -1040,7 +1040,7 @@ def apply(shared: Shared, parts=frozenset(SPELLS), progress=lambda text: None) -
         if "tray" in parts and "tray" in new:
             _write_json(TRAY, {**_json(TRAY, {}), "meter": new["tray"]["meter"]})
             result.written.append(TRAY.name)
-    except (OSError, ShareError, zipfile.BadZipFile) as err:
+    except (OSError, ShareError, zipfile.BadZipFile, zlib.error) as err:
         msg = err.strerror if isinstance(err, OSError) and err.strerror else str(err)
         raise ShareError(tr("grimoire.sharesetup", "{error} Your settings from before are saved in {safety}.").format(
             error=msg, safety=result.safety.name)) from None

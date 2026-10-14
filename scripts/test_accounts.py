@@ -78,6 +78,10 @@ with FakeSupabase() as fake:
     check(fake.profiles[s.user.id]["email"] == "alice@example.com", "contact email kept on the profile")
     raises(lambda: b.sign_up("ALICE", "another pass 1"), "taken")
     raises(lambda: b.sign_in("alice", "wrong password"), "Wrong username or password")
+    try:
+        b.sign_in("alice", "wrong password")
+    except AccountError as e:
+        check(e.kind == "credentials", "wrong password has a fixed kind (the UI never compares translated text)")
     s2 = b.sign_in("aLiCe", "correct horse 1")
     check(s2.user.id == s.user.id, "case-insensitive sign in")
     check("Token(" in repr(s2.access) and s2.access.reveal() not in repr(s2), "tokens hide in repr")
@@ -117,8 +121,10 @@ with FakeSupabase() as fake:
     raises(lambda: b.sign_in("alice", "correct horse 1"), "Wrong")
     check(b.sign_in("alice", "new password 99").user.id == s.user.id, "new password works")
     for _ in range(5):
-        raises(lambda: b.recover("ghost", "AAAA", "whatever pass 1"), "")
-    raises(lambda: b.recover("ghost", "AAAA", "whatever pass 1"), "Too many wrong codes")
+        raises(lambda: b.recover("ghost", "AAAAA-AAAAA-AAAAA-AAAAA", "whatever pass 1"), "")
+    raises(lambda: b.recover("ghost", "AAAAA-AAAAA-AAAAA-AAAAA", "whatever pass 1"), "Too many wrong codes")
+    raises(lambda: b.recover("no such name!", "AAAA", "whatever pass 1"), "don't match")
+    check("no such name!" not in fake.attempts, "malformed names leave no attempts row")
 
     # OAuth PKCE through the loopback listener
     lb = accounts.Loopback()
@@ -148,12 +154,50 @@ with FakeSupabase() as fake:
     gh = b.oauth_finish(lb2.wait(timeout=10), verifier, "github")
     check(gh.user.username == "octo" and gh.user.provider == "github", "github account via PKCE")
 
+    # a client that connects and says nothing can't stall the listener (it gives up on it after a few seconds)
+    import socket
+    lb3 = accounts.Loopback()
+    idle = socket.create_connection(("127.0.0.1", lb3.port))
+    back = fake.oauth_login(url).replace(lb.redirect, lb3.redirect)
+    threading.Thread(target=browser, args=([back],), daemon=True).start()
+    check(lb3.wait(timeout=15), "callback served after an idle connection")
+    idle.close()
+
+    # a restart hands the in-memory session over through a pipe (not remembered: nothing in the keyring)
+    import json as _json
+    os.environ["GRIMOIRE_PROFILE"] = s.user.id
+    session.CURRENT = gh_like = b.sign_in("alice", "new password 99")
+    session.handoff()
+    fd = os.environ.get(session.HANDOFF, "")
+    check(fd.isdigit() and gh_like.refresh.reveal() not in _json.dumps(dict(os.environ)), "token not in the env")
+    session.CURRENT = None
+    session.adopt()
+    check(session.CURRENT is not None and session.CURRENT.refresh.reveal() == gh_like.refresh.reveal()
+          and session.HANDOFF not in os.environ, "restarted process adopts the session once")
+    try:
+        os.fstat(int(fd))
+        check(False, "handoff pipe closed after adopt")
+    except OSError:
+        check(True, "handoff pipe closed after adopt")
+    os.environ[session.HANDOFF] = "0"                         # never someone else's descriptor
+    session.adopt()
+    check(os.fstat(0) is not None, "adopt leaves fd 0 alone")
+
+    # two windows, one remembered account: the one holding a spent refresh token uses the keyring's newer one
+    session.begin(gh_like, remember=True)
+    other = session.live()                                    # "window A" refreshes and stores the new token
+    session.CURRENT = accounts.Session(other.user, other.access, gh_like.refresh, 0)   # "window B": spent token
+    check(session.live().user.id == s.user.id, "stale window refreshes with the keyring's token")
+    check(ring.load(accounts.keyring_attrs(s.user.id)) == session.CURRENT.refresh.reveal(), "newest token kept")
+
     # sign out forgets the token and the remember flag
     session.end()
     check(ring.load(accounts.keyring_attrs(s.user.id)) is None, "token forgotten")
     check(session.remembered() is None and session.last().profile == s.user.id, "last kept for background jobs")
 
 # throttle
+accounts.THROTTLE.write_text('{"zed": {"fails": "x", "until": null}, "amy": 3, "bo": {"until": 1e999}}')
+check(accounts.wait_left("zed") == 0 and accounts.wait_left("amy") == 0, "damaged throttle file is ignored")
 accounts.note_attempt("zed", False, now=1000)
 for _ in range(4):
     accounts.note_attempt("zed", False, now=1000)
@@ -175,6 +219,49 @@ held = session._guest_lock
 session.begin_guest()                                       # another window while the first still runs
 check((paths.CONFIG / "keep.json").exists(), "shared while in use")
 held.close()
+
+# a shared XDG_RUNTIME_DIR where someone else planted grimoire/ as a link: the guest profile refuses it
+held = session._guest_lock
+held.close()
+run_dir = Path(os.environ["XDG_RUNTIME_DIR"])
+precious = box / "precious"
+(precious / "guest-profile").mkdir(parents=True, exist_ok=True)
+(precious / "guest-profile" / "keep.txt").write_text("mine")
+(run_dir / "grimoire").rename(box / "grimoire-real")
+(run_dir / "grimoire").symlink_to(precious)
+try:
+    session.begin_guest()
+    check(False, "guest refuses a linked runtime folder")
+except OSError:
+    check((precious / "guest-profile" / "keep.txt").exists(), "nothing wiped through the link")
+(run_dir / "grimoire").unlink()
+(box / "grimoire-real").rename(run_dir / "grimoire")
+os.chmod(run_dir / "grimoire", 0o777)
+try:
+    session.begin_guest()
+    check(False, "guest refuses a world-writable runtime folder")
+except OSError:
+    check(True, "guest refuses a world-writable runtime folder")
+os.chmod(run_dir / "grimoire", 0o700)
+session.begin_guest()
+(paths.guest_dir() / "keep.json").write_text("{}")             # what this guest set up
+
+# a backup or setup with a corrupt compressed member is refused with its own error, not a crash
+import io
+import zipfile
+from grimoire import backup as _backup
+buf = io.BytesIO()
+with zipfile.ZipFile(buf, "w") as z:
+    z.writestr("config/a.json", '{"x": "' + "a" * 5000 + '"}', zipfile.ZIP_DEFLATED)
+    z.writestr("manifest.json", '{"format": "grimoire-backup", "format_version": 1, "files": []}')
+raw = bytearray(buf.getvalue())
+at = raw.find(b"PK\x03\x04") + 30 + len("config/a.json")
+raw[at:at + 6] = bytes(x ^ 0xFF for x in raw[at:at + 6])
+try:
+    _backup.inspect(bytes(raw))
+    check(False, "corrupt member refused")
+except _backup.BackupError:
+    check(True, "corrupt member refused")
 
 # guest → new account keeps the guest's settings
 with FakeSupabase():
