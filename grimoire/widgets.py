@@ -83,7 +83,8 @@ class Switch(QAbstractButton):
         p.setBrush(fill)
         p.drawRoundedRect(track, r, r)
         d = track.height() - 6
-        x = track.left() + 3 + (track.width() - 6 - d) * self._pos
+        pos = 1.0 - self._pos if self.isRightToLeft() else self._pos      # "on" sits at the reading end
+        x = track.left() + 3 + (track.width() - 6 - d) * pos
         knob_off = QColor("#4a4a4a" if dim else "#9a9a9a")
         knob = QColor("#0b0b0b") if self._pos >= 0.5 else knob_off
         p.setPen(Qt.PenStyle.NoPen)

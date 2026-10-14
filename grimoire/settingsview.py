@@ -387,8 +387,7 @@ def restore_flow(widget, source, origin, report, after=lambda: None):
             text = tr("grimoire.settingsview", "Restored %n file(s). Your previous settings are saved in {name}. "
                       "Restart Grimoire to load them.", n=len(done)).format(name=safety.name)
         else:
-            text = tr("grimoire.settingsview", "Restored %n file(s). Your previous settings are saved in nothing (no "
-                      "change). Restart Grimoire to load them.", n=len(done))
+            text = tr("grimoire.settingsview", "Restored %n file(s). Restart Grimoire to load them.", n=len(done))
         report(text, True)
     run(lambda: backup.inspect(source), inspected, (backup.BackupError, OSError))
 

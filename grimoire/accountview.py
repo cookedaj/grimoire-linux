@@ -6,7 +6,7 @@ import hashlib
 from PySide6.QtCore import QObject, Qt, QTimer
 from PySide6.QtWidgets import QFrame, QHBoxLayout, QLabel, QMessageBox, QVBoxLayout, QWidget
 
-from grimoire import NAME, accounts, session
+from grimoire import NAME, accounts, i18n, session
 from grimoire.i18n import tr, tr_noop
 from grimoire.settingsview import Row, _button, _label, restore_flow, run
 from grimoire.widgets import Switch
@@ -58,8 +58,8 @@ class GuestBar(QFrame):
         lay.setContentsMargins(18, 12, 12, 12)
         lay.setSpacing(12)
         badge = QLabel(tr("grimoire.accountview", "GUEST"))
-        badge.setStyleSheet("color: #ffffff; background: #000000; border-radius: 4px; padding: 2px 8px; "
-                            "font-size: 10px; font-weight: 700; letter-spacing: 2px;")
+        badge.setStyleSheet(i18n.qss("color: #ffffff; background: #000000; border-radius: 4px; padding: 2px 8px; "
+                                     "font-size: 10px; font-weight: 700; letter-spacing: 2px;"))
         lay.addWidget(badge)
         lay.addWidget(_label(tr("grimoire.accountview", "Guest: settings won't be kept after the next guest start."),
                              "PendingText"), 1)

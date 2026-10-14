@@ -80,7 +80,7 @@ class SetupWizard(QWidget):
     def __init__(self, start="welcome"):
         super().__init__()
         self.setObjectName("Page")
-        self.setStyleSheet(QSS)
+        self.setStyleSheet(i18n.qss(QSS))
         p = prefs.load()
         self.hidden = set(p["hidden_spells"])
         root = QVBoxLayout(self)

@@ -13,7 +13,7 @@ from PySide6.QtGui import QDesktopServices, QFont, QGuiApplication
 from PySide6.QtWidgets import (QCheckBox, QDialog, QFileDialog, QFrame, QHBoxLayout, QLabel, QLineEdit, QPushButton,
                                QVBoxLayout, QWidget)
 
-from grimoire import NAME, accounts, paths, session
+from grimoire import NAME, accounts, i18n, paths, session
 from grimoire.glyphs import clover
 from grimoire.i18n import tr
 from grimoire.settingsview import _button, _label, run
@@ -36,7 +36,7 @@ QFrame#Notice { background: #141414; border: 1px solid #2a2a2a; border-radius: 8
 def _spaced(text, size, spacing):
     lab = QLabel(text)
     font = QFont(FONT, size, QFont.Weight.DemiBold)
-    font.setLetterSpacing(QFont.SpacingType.AbsoluteSpacing, spacing)
+    font.setLetterSpacing(QFont.SpacingType.AbsoluteSpacing, i18n.spacing(text, spacing))
     lab.setFont(font)
     return lab
 
@@ -580,7 +580,6 @@ def gate(title=NAME, size=(1440, 880), wizard=False) -> bool:
     if not ok:
         _restart_once()
     os.environ.pop("GRIMOIRE_RESTARTED", None)
-    from grimoire import i18n
     again = os.environ.pop("GRIMOIRE_LANG_RESTARTED", "")
     if i18n.needs_restart() and not again:
         os.environ["GRIMOIRE_LANG_RESTARTED"] = "1"      # this account (or the setup) picked another language

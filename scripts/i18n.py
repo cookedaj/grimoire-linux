@@ -21,13 +21,16 @@ import re
 import shutil
 import subprocess
 import sys
+import unicodedata
 import xml.etree.ElementTree as ET
 from pathlib import Path
 from xml.sax.saxutils import escape
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
-from grimoire.i18n import AREAS, LANGUAGES, QT_LOCALE, TRANSLATIONS  # noqa: E402
+from grimoire.i18n import AREAS, LANGUAGES, QT_LOCALE, RTL, TRANSLATIONS  # noqa: E402
+
+RLM = "\u200f"
 
 # plural forms Qt uses per language (measured with lrelease + QTranslator), in Qt's order
 FORMS = {"en": 2, "zh_CN": 1, "hi": 2, "es": 2, "fr": 2, "ar": 6, "bn": 2, "pt": 2, "ru": 3, "ur": 2}
@@ -258,6 +261,11 @@ def problems_in(source, value, lang, numerus) -> list[str]:
         got = [p for p in placeholders(v) if p != "%n"]
         if got != want:
             out.append(f"placeholders {got} ≠ {want}")
+        elif "{" in source:                      # stray braces would make str.format() raise at runtime
+            try:
+                v.format(**{re.match(r"\{(\w+)", p).group(1): "x" for p in want if p.startswith("{")})
+            except (ValueError, KeyError, IndexError) as e:
+                out.append(f"doesn't format: {e}")
         # a form that only ever means one number (Arabic zero/one/two, the "one" of 2-form languages) may spell it
         exact = {"ar": {0, 1, 2}}.get(lang, {0} if FORMS[lang] == 2 and lang not in ("fr", "pt") else set())
         if numerus and "%n" not in v and i not in exact:
@@ -304,6 +312,14 @@ def cmd_export(args):
     print()
 
 
+def rtl_start(text: str) -> str:
+    """Prefix U+200F (right-to-left mark) when a translation doesn't begin with a right-to-left letter, so Qt lays
+    the whole line out right to left ("Grimoire Linux میں خوش آمدید" would otherwise start on the left)."""
+    if not text or text[0] == RLM or unicodedata.bidirectional(text[0]) in ("R", "AL"):
+        return text
+    return RLM + text
+
+
 def cmd_import(args):
     if len(args) != 3:
         sys.exit("usage: import AREA LANG FILE.json")
@@ -327,6 +343,8 @@ def cmd_import(args):
             print(f"skip (wrong form count): {it['source'][:60]!r}", file=sys.stderr)
             skipped += 1
             continue
+        if lang in RTL:                          # a right-to-left line that starts with Latin, a number or a {field}
+            value = [rtl_start(v) for v in value] if numerus else rtl_start(value)   # must still read RTL
         issues = problems_in(it["source"], value, lang, numerus)
         t = m.find("translation")
         if numerus:

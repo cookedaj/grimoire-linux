@@ -25,10 +25,15 @@ AREAS = ("core", "mural", "sightc", "vaultl", "optimizel", "systeml", "terminall
 TRANSLATIONS = ROOT / "translations"
 MACHINE = CONFIG_ROOT / "language"               # the last choice on this PC: the sign-in screen and guests follow it
 SANS, MONO = "IBM Plex Sans", "IBM Plex Mono"
-# fallbacks for the scripts IBM Plex Sans lacks; the current language's own script goes first (Urdu is written in
-# Nastaliq, Arabic in a plain naskh; CJK must be the Simplified Chinese cut, not the Japanese one fontconfig picks)
+# fallbacks for the scripts IBM Plex Sans lacks; the current language's own script goes first (CJK must be the
+# Simplified Chinese cut, not the Japanese one fontconfig picks). Urdu: Naskh in the dense UI, where Nastaliq's
+# 2.5x line height overflows rows and fields and its dots blur at 13px; Nastaliq in the big headings (URDU_QSS).
+URDU_QSS = """
+QLabel#Hero, QLabel#Title, QLabel#PageHeading, QLabel#SectionTitle {
+    font-family: "IBM Plex Sans", "Noto Nastaliq Urdu"; }
+"""
 SCRIPT_FONTS = {"ar": ["IBM Plex Sans Arabic", "Noto Sans Arabic", "Noto Naskh Arabic"],
-                "ur": ["Noto Nastaliq Urdu", "Noto Naskh Arabic", "IBM Plex Sans Arabic"],
+                "ur": ["Noto Naskh Arabic UI", "Noto Naskh Arabic", "IBM Plex Sans Arabic"],
                 "hi": ["IBM Plex Sans Devanagari", "Noto Sans Devanagari"],
                 "bn": ["Noto Sans Bengali"],
                 "zh_CN": ["Noto Sans CJK SC"]}
@@ -157,6 +162,22 @@ def install(app, code: str | None = None) -> str:
     QFont.insertSubstitutions(MONO, mono)
     _loaded = code
     return code
+
+
+# Arabic (+ Urdu letters), Devanagari, Bengali
+JOINED = re.compile("[\u0600-\u06ff\u0750-\u077f\ufb50-\ufdff\ufe70-\ufeff\u0900-\u09ff]")
+JOINED_LANGS = {"ar", "ur", "hi", "bn"}
+
+
+def spacing(text: str, px: float) -> float:
+    """Letter spacing for a label: none for scripts whose letters join or stack (spacing breaks the words apart)."""
+    return 0 if JOINED.search(text) else px
+
+
+def qss(css: str) -> str:
+    """A stylesheet without letter-spacing when the language's script joins its letters."""
+    code = _loaded or current()
+    return re.sub(r"letter-spacing:\s*[\d.]+px;", "", css) if code in JOINED_LANGS else css
 
 
 def mirrored(name: str) -> bool:

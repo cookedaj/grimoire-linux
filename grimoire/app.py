@@ -10,7 +10,7 @@ from PySide6.QtWidgets import (QApplication, QButtonGroup, QCheckBox, QFrame, QG
                                QMainWindow, QMessageBox, QPushButton, QScrollArea, QStackedWidget, QVBoxLayout,
                                QWidget)
 
-from grimoire import NAME, standalone
+from grimoire import NAME, i18n, standalone
 from grimoire.glyphs import clover, glyph
 from grimoire.i18n import tr
 from grimoire.paths import ASSETS
@@ -23,7 +23,7 @@ from grimoire.updateview import Banner, Updater, VersionButton, WhatsNew
 def spaced(text: str, size: int, spacing: float, weight=QFont.Weight.DemiBold) -> QLabel:
     label = QLabel(text)
     font = QFont(FONT, size, weight)
-    font.setLetterSpacing(QFont.SpacingType.AbsoluteSpacing, spacing)
+    font.setLetterSpacing(QFont.SpacingType.AbsoluteSpacing, i18n.spacing(text, spacing))
     label.setFont(font)
     return label
 
@@ -312,7 +312,6 @@ class Window(QMainWindow):
 def style_app(app: QApplication):
     """Grimoire's black & white look and the chosen language (also used by standalone spells, the tray and every
     other window that makes a QApplication)."""
-    from grimoire import i18n
     i18n.install(app)
     app.setWindowIcon(QIcon(str(ASSETS / "clover5.svg")))
     app.setStyle("Fusion")
@@ -324,7 +323,7 @@ def style_app(app: QApplication):
                         (QPalette.ColorRole.Button, "#121212"), (QPalette.ColorRole.ButtonText, "#e8e8e8")):
         pal.setColor(role, QColor(color))
     app.setPalette(pal)
-    app.setStyleSheet(QSS)
+    app.setStyleSheet(i18n.qss(QSS) + (i18n.URDU_QSS if i18n.loaded() == "ur" else ""))
 
 
 def main():
