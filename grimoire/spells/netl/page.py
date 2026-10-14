@@ -19,16 +19,21 @@ from PySide6.QtWidgets import (QAbstractItemView, QApplication, QCheckBox, QFram
 
 from grimoire.fsutil import human
 from grimoire.glyphs import glyph
+from grimoire.i18n import tr, tr_noop
 from grimoire.jobs import POOL, Job
 from grimoire.spells.netl import probe, usage
 from grimoire.spells.netl.usageview import UsagePanel
 from grimoire.spells.netl.wifiview import WifiPanel
 from grimoire.spells.systeml import system
 from grimoire.spells.systeml.graph import SOFT, Graph
+from grimoire.spells.systeml.bidi import lead, ltr
 from grimoire.spells.systeml.page import NumItem, _label, _rate, _tree
 
-PANELS = [("overview", "Overview", "net"), ("apps", "Apps", "grid"), ("conns", "Connections", "link"),
-          ("wifi", "Wi-Fi && VPN", "wifi"), ("usage", "Usage history", "clock")]
+PANELS = [("overview", tr_noop("grimoire.spells.netl.page", "Overview"), "net"),
+          ("apps", tr_noop("grimoire.spells.netl.page", "Apps"), "grid"),
+          ("conns", tr_noop("grimoire.spells.netl.page", "Connections"), "link"),
+          ("wifi", tr_noop("grimoire.spells.netl.page", "Wi-Fi & VPN"), "wifi"),
+          ("usage", tr_noop("grimoire.spells.netl.page", "Usage history"), "clock")]
 RECORD_EVERY = 60            # seconds between writes to the usage file while open
 
 
@@ -107,7 +112,10 @@ class OverviewPanel(QScrollArea):
         tiles = QHBoxLayout()
         tiles.setSpacing(12)
         self.tiles = {}
-        for key, label in (("down", "Download"), ("up", "Upload"), ("today", "Today"), ("month", "This month")):
+        for key, label in (("down", tr("grimoire.spells.netl.page", "Download")),
+                           ("up", tr("grimoire.spells.netl.page", "Upload")),
+                           ("today", tr("grimoire.spells.netl.page", "Today")),
+                           ("month", tr("grimoire.spells.netl.page", "This month"))):
             tile = QFrame()
             tile.setObjectName("Stat")
             tl = QVBoxLayout(tile)
@@ -120,7 +128,7 @@ class OverviewPanel(QScrollArea):
             self.tiles[key] = num
         col.addLayout(tiles)
 
-        self.total = Graph("All traffic", fmt=_rate, top=None, labels=("↓", "↑"), two=True, height=190)
+        self.total = Graph(tr("grimoire.spells.netl.page", "All traffic"), fmt=_rate, top=None, labels=("↓", "↑"), two=True, height=190)
         col.addWidget(self.total)
         self.iface_grid = QGridLayout()
         self.iface_grid.setSpacing(12)
@@ -128,9 +136,9 @@ class OverviewPanel(QScrollArea):
         col.addLayout(self.iface_grid)
 
         head = QHBoxLayout()
-        head.addWidget(_label("Addresses", "SectionTitle"))
+        head.addWidget(_label(tr("grimoire.spells.netl.page", "Addresses"), "SectionTitle"))
         head.addStretch(1)
-        refresh = QPushButton("Refresh")
+        refresh = QPushButton(tr("grimoire.spells.netl.page", "Refresh"))
         refresh.clicked.connect(self.load)
         head.addWidget(refresh)
         col.addLayout(head)
@@ -139,18 +147,21 @@ class OverviewPanel(QScrollArea):
         self.addr.setVerticalSpacing(6)
         col.addLayout(self.addr)
 
-        col.addWidget(_label("Checks", "SectionTitle"))
-        col.addWidget(_label("Nothing here runs by itself: each check sends a few packets (or one web request for "
-                             "the public IP) only when you press it.", "Muted", wrap=True))
+        col.addWidget(_label(tr("grimoire.spells.netl.page", "Checks"), "SectionTitle"))
+        col.addWidget(_label(tr("grimoire.spells.netl.page", "Nothing here runs by itself: each check sends a few "
+                                "packets (or one web request for the public IP) only when you press it."),
+                             "Muted", wrap=True))
         checks = QGridLayout()
         checks.setHorizontalSpacing(16)
         checks.setVerticalSpacing(8)
         self.check_labels = {}
-        for i, (key, text) in enumerate((("public", "Show public IP"), ("gateway", "Ping gateway"),
-                                         ("cloudflare", "Ping 1.1.1.1"))):
+        for i, (key, text) in enumerate((("public", tr("grimoire.spells.netl.page", "Show public IP")),
+                                         ("gateway", tr("grimoire.spells.netl.page", "Ping gateway")),
+                                         ("cloudflare", tr("grimoire.spells.netl.page", "Ping {host}").format(
+                                             host="1.1.1.1")))):
             b = QPushButton(text)
             b.clicked.connect(lambda _=False, k=key: self.run_check(k))
-            lab = _label("", "Value")
+            lab = lead(_label("", "Value", wrap=True))
             lab.setTextInteractionFlags(Qt.TextInteractionFlag.TextSelectableByMouse)
             checks.addWidget(b, i, 0)
             checks.addWidget(lab, i, 1)
@@ -177,44 +188,47 @@ class OverviewPanel(QScrollArea):
         def put(key, value, muted=False):
             nonlocal row
             self.addr.addWidget(_label(key.upper(), "StatLabel"), row, 0, Qt.AlignmentFlag.AlignTop)
-            val = _label(value, "Muted" if muted else "", wrap=True)
+            val = lead(_label(value, "Muted" if muted else "", wrap=True))
             val.setTextInteractionFlags(Qt.TextInteractionFlag.TextSelectableByMouse)
             self.addr.addWidget(val, row, 1)
             row += 1
         for a in addrs:
-            bits = [a["kind"], "up" if a["up"] else "down"]
+            bits = [a["kind"], tr("grimoire.spells.netl.page", "up", "link state") if a["up"] else
+                    tr("grimoire.spells.netl.page", "down", "link state")]
             if a["up"] and a["speed"]:
                 bits.append(f"{a['speed']} Mb/s" if a["speed"] < 1000 else f"{a['speed'] / 1000:g} Gb/s")
             lines = [" · ".join(bits)] + a["ipv4"] + a["ipv6"][:3] + ([f"MAC {a['mac']}"] if a["mac"] else [])
             put(a["name"], "\n".join(lines), muted=not a["up"])
-        put("Gateway", "\n".join(f"{g}  ({dev})" for g, dev in gws) or "no default route")
-        put("DNS", "\n".join(f"{s}  ({where})" for s, where in servers) or "none found")
+        put(tr("grimoire.spells.netl.page", "Gateway"), "\n".join(f"{g}  ({dev})" for g, dev in gws)
+            or tr("grimoire.spells.netl.page", "no default route"))
+        put("DNS", "\n".join(f"{s}  ({where})" for s, where in servers) or tr("grimoire.spells.netl.page", "none found"))
         self.addr.setColumnStretch(1, 1)
         self.gateway = gws[0][0] if gws else ""
 
     def run_check(self, key: str):
         lab, sig = self.check_labels[key], self.page.sig
         if key == "public":
-            lab.setText("asking…")
+            lab.setText(tr("grimoire.spells.netl.page", "asking…"))
 
             def work():
                 try:
                     return key, probe.public_ip()
                 except Exception as err:
-                    return key, f"couldn't tell: {err}"
+                    return key, tr("grimoire.spells.netl.page", "couldn't tell: {error}").format(error=err)
         else:
             host = self.gateway if key == "gateway" else "1.1.1.1"
             if not host:
-                lab.setText("no gateway (offline?)")
+                lab.setText(tr("grimoire.spells.netl.page", "no gateway (offline?)"))
                 return
-            lab.setText(f"pinging {host}…")
+            lab.setText(tr("grimoire.spells.netl.page", "pinging {host}…").format(host=host))
 
             def work():
                 r = probe.ping(host)
                 if "error" in r:
                     return key, f"{host}: {r['error']}"
-                return key, f"{host}: {r['avg']:.1f} ms average (min {r['min']:.1f}, max {r['max']:.1f}) · " \
-                            f"{r['loss']:.0f}% lost"
+                return key, tr("grimoire.spells.netl.page", "{host}: {avg} ms average (min {min}, max {max}) · {loss}% "
+                               "lost").format(host=host, avg=f"{r['avg']:.1f}", min=f"{r['min']:.1f}",
+                                              max=f"{r['max']:.1f}", loss=f"{r['loss']:.0f}")
         POOL.start(Job(work, sig.check.emit))
 
     def update_snap(self, s: dict):
@@ -228,7 +242,8 @@ class OverviewPanel(QScrollArea):
                 n = len(self.iface_graphs)
                 self.iface_grid.addWidget(g, n // 2, n % 2)
                 self.iface_graphs[name] = g
-            g.push(i["down"], i["up"], note=f"{human(i['rx'])} ↓ · {human(i['tx'])} ↑ since up")
+            g.push(i["down"], i["up"], note=tr("grimoire.spells.netl.page", "{down} ↓ · {up} ↑ since up").format(
+                down=ltr(human(i["rx"])), up=ltr(human(i["tx"]))))
         for name, g in self.iface_graphs.items():
             g.setVisible(name in s["ifaces"])
 
@@ -248,21 +263,24 @@ class AppsPanel(QWidget):
         lay = QVBoxLayout(self)
         lay.setContentsMargins(0, 0, 0, 0)
         lay.setSpacing(12)
-        lay.addWidget(_label(
-            "Per-app traffic from the kernel's own TCP counters, for your apps (no root needed). UDP has no per-socket "
-            "counters, so QUIC (HTTP/3 in browsers), games and voice calls land in \"Not attributed\", along with "
-            "packet headers and connections that closed between readings. Session totals count since NetL opened. "
-            "Double-click an app to see its connections.", "Muted", wrap=True))
-        self.table = _tree(["App", "Download", "Upload", "Session ↓", "Session ↑", "Connections"])
+        lay.addWidget(_label(tr(
+            "grimoire.spells.netl.page", "Per-app traffic from the kernel's own TCP counters, for your apps (no root "
+            "needed). UDP has no per-socket counters, so QUIC (HTTP/3 in browsers), games and voice calls land in "
+            "\"Not attributed\", along with packet headers and connections that closed between readings. Session "
+            "totals count since NetL opened. Double-click an app to see its connections."), "Muted", wrap=True))
+        self.table = _tree([tr("grimoire.spells.netl.page", "App"), tr("grimoire.spells.netl.page", "Download"),
+                            tr("grimoire.spells.netl.page", "Upload"), tr("grimoire.spells.netl.page", "Session ↓"),
+                            tr("grimoire.spells.netl.page", "Session ↑"), tr("grimoire.spells.netl.page", "Connections")])
         h = self.table.header()
         h.setStretchLastSection(False)
         h.setSectionResizeMode(0, QHeaderView.ResizeMode.Stretch)
         for c in range(1, 6):
             h.resizeSection(c, 110)
         self.table.sortItems(1, Qt.SortOrder.DescendingOrder)
-        self.table.itemDoubleClicked.connect(lambda it, _c: self.page.find_app(it.text(0)))
+        self.table.itemDoubleClicked.connect(lambda it, _c: self.page.find_app(it.data(0, Qt.ItemDataRole.UserRole + 1)))
         lay.addWidget(self.table, 1)
-        self.foot = _label("Measuring… the first reading sets the baseline.", "Muted", wrap=True)
+        self.foot = _label(tr("grimoire.spells.netl.page", "Measuring… the first reading sets the baseline."), "Muted",
+                           wrap=True)
         lay.addWidget(self.foot)
 
     def set_apps(self, a: dict, totals: dict, rest: tuple[float, float]):
@@ -273,17 +291,22 @@ class AppsPanel(QWidget):
             for name in names:
                 cur = apps.get(name, {"down": 0.0, "up": 0.0, "conns": 0})
                 tot = totals.get(name, [0, 0])
-                it = _row_item([name, _rate(cur["down"]), _rate(cur["up"]), human(tot[0]), human(tot[1]),
+                shown = probe.app_text(name)
+                it = _row_item([shown, ltr(_rate(cur["down"])), ltr(_rate(cur["up"])), ltr(human(tot[0])), ltr(human(tot[1])),
                                 str(cur["conns"]) if cur["conns"] else "–"],
-                               [name.lower(), cur["down"], cur["up"], tot[0], tot[1], cur["conns"]])
+                               [shown.lower(), cur["down"], cur["up"], tot[0], tot[1], cur["conns"]])
+                it.setData(0, Qt.ItemDataRole.UserRole + 1, name)          # the id, for double-click
                 icon = app_icon(name) if name != probe.SYSTEM else glyph("net", 16)
                 if icon:
                     it.setIcon(0, icon)
                 self.table.addTopLevelItem(it)
         _keep_selection(self.table, fill)
         mine = sum(1 for n in apps if n != probe.SYSTEM)
-        self.foot.setText(f"Not attributed right now: ↓ {_rate(rest[0])}  ↑ {_rate(rest[1])}   ·   {mine} app(s) "
-                          "with connections · read every 2 s while this panel is open, every 10 s otherwise")
+        self.foot.setText("   ·   ".join([
+            tr("grimoire.spells.netl.page", "Not attributed right now: ↓ {down}  ↑ {up}").format(
+                down=ltr(_rate(rest[0])), up=ltr(_rate(rest[1]))),
+            tr("grimoire.spells.netl.page", "%n app(s) with connections", n=mine),
+            tr("grimoire.spells.netl.page", "read every 2 s while this panel is open, every 10 s otherwise")]))
 
 
 # ---------------------------------------------------------------- connections
@@ -298,19 +321,23 @@ class ConnsPanel(QWidget):
         lay.setSpacing(12)
         bar = QHBoxLayout()
         self.search = QLineEdit()
-        self.search.setPlaceholderText("Filter by app, address, port, host name or state")
+        self.search.setPlaceholderText(tr("grimoire.spells.netl.page", "Filter by app, address, port, host name or "
+                                          "state"))
         self.search.setClearButtonEnabled(True)
         self.search.textChanged.connect(self.fill)
         bar.addWidget(self.search, 1)
-        self.listening = QCheckBox("Listening")
-        self.hosts = QCheckBox("Host names")
+        self.listening = QCheckBox(tr("grimoire.spells.netl.page", "Listening"))
+        self.hosts = QCheckBox(tr("grimoire.spells.netl.page", "Host names"))
         self.hosts.setChecked(True)
-        self.hosts.setToolTip("Looks up remote addresses' names (reverse DNS) in the background, once each")
+        self.hosts.setToolTip(tr("grimoire.spells.netl.page", "Looks up remote addresses' names (reverse DNS) in the "
+                                 "background, once each"))
         for c in (self.listening, self.hosts):
             c.toggled.connect(self.fill)
             bar.addWidget(c)
         lay.addLayout(bar)
-        self.table = _tree(["Proto", "Local", "Remote", "Host", "State", "App", "PID"])
+        self.table = _tree([tr("grimoire.spells.netl.page", "Proto"), tr("grimoire.spells.netl.page", "Local"),
+                            tr("grimoire.spells.netl.page", "Remote"), tr("grimoire.spells.netl.page", "Host"),
+                            tr("grimoire.spells.netl.page", "State"), tr("grimoire.spells.netl.page", "App"), "PID"])
         h = self.table.header()
         h.setStretchLastSection(False)
         h.setSectionResizeMode(3, QHeaderView.ResizeMode.Stretch)
@@ -323,9 +350,9 @@ class ConnsPanel(QWidget):
         acts = QHBoxLayout()
         self.info = _label("", "Muted")
         acts.addWidget(self.info, 1)
-        self.copy_btn = QPushButton("Copy remote address")
+        self.copy_btn = QPushButton(tr("grimoire.spells.netl.page", "Copy remote address"))
         self.copy_btn.clicked.connect(self._copy)
-        self.end_btn = QPushButton("End app")
+        self.end_btn = QPushButton(tr("grimoire.spells.netl.page", "End app"))
         self.end_btn.setObjectName("Primary")
         self.end_btn.clicked.connect(self._end)
         acts.addWidget(self.copy_btn)
@@ -372,13 +399,14 @@ class ConnsPanel(QWidget):
                     name = self.names.get(r["remote"])
                     waiting |= name is None
                     host = name or ""
-                app = r["app"] or ("system / other user" if not r["pid"] else r["pname"])
+                app = r["app"] or (tr("grimoire.spells.netl.page", "system / other user") if not r["pid"] else
+                                   r["pname"])
                 remote = "" if r["listen"] else self._addr(r["remote"], r["rport"])
                 local = self._addr(r["local"], r["lport"])
                 state = "LISTEN" if r["listen"] else r["state"]
                 if q and not any(q in t.lower() for t in (r["proto"], local, remote, host, state, app, str(r["pid"]))):
                     continue
-                it = _row_item([r["proto"], local, remote, host, state, app, str(r["pid"]) if r["pid"] else ""],
+                it = _row_item([r["proto"], ltr(local), ltr(remote), host, state, app, str(r["pid"]) if r["pid"] else ""],
                                [r["proto"], local, remote, host.lower(), state, app.lower(), r["pid"]], align_from=6)
                 it.setData(0, Qt.ItemDataRole.UserRole + 1, r)
                 if not r["pid"]:
@@ -386,7 +414,8 @@ class ConnsPanel(QWidget):
                 self.table.addTopLevelItem(it)
                 shown += 1
         _keep_selection(self.table, fill)
-        self.count_text = f"{shown} of {len(self.rows)} sockets" + (" · looking up names…" if waiting else "")
+        self.count_text = tr("grimoire.spells.netl.page", "{shown} of %n socket(s)", n=len(self.rows)).format(
+            shown=shown) + (" · " + tr("grimoire.spells.netl.page", "looking up names…") if waiting else "")
         self._sel()
 
     def current(self) -> dict | None:
@@ -399,10 +428,11 @@ class ConnsPanel(QWidget):
         guarded = bool(r) and system.is_protected(r["pname"])
         self.end_btn.setEnabled(bool(r) and bool(r["pid"]) and not guarded)
         if r and not r["pid"]:
-            self.info.setText("Owned by a system service or another user: NetL can't tell which process, and "
-                              "won't end it")
+            self.info.setText(tr("grimoire.spells.netl.page", "Owned by a system service or another user: NetL can't "
+                                 "tell which process, and won't end it"))
         elif r and guarded:
-            self.info.setText(f"{r['pname']} keeps your session running, so it can't be ended from here")
+            self.info.setText(tr("grimoire.spells.netl.page", "{app} keeps your session running, so it can't be ended "
+                                 "from here").format(app=r["pname"]))
         elif r:
             self.info.setText(f"{r['app']} · PID {r['pid']}")
         else:
@@ -421,10 +451,11 @@ class ConnsPanel(QWidget):
         try:
             started = psutil.Process(r["pid"]).create_time()
         except psutil.Error:
-            self.page.say(f"{r['app']}: already gone")
+            self.page.say(tr("grimoire.spells.netl.page", "{app}: already gone").format(app=r["app"]))
             return
-        if QMessageBox.question(self, f"End {r['app']}", f"End {r['app']} (PID {r['pid']})? It gets the chance to "
-                                "save and close.") != QMessageBox.StandardButton.Yes:
+        if QMessageBox.question(self, tr("grimoire.spells.netl.page", "End {app}").format(app=r["app"]),
+                                tr("grimoire.spells.netl.page", "End {app} (PID {pid})? It gets the chance to save and "
+                                   "close.").format(app=r["app"], pid=r["pid"])) != QMessageBox.StandardButton.Yes:
             return
         self.page.act(r["app"], lambda: system.send(r["pid"], "TERM", started), then=self.load)
 
@@ -452,13 +483,13 @@ class NetLPage(QWidget):
         nl.setSpacing(2)
         nl.addWidget(_label("NetL", "Title"))
         nl.addSpacing(12)
-        nl.addWidget(_label("MONITOR", "NavSection"))
+        nl.addWidget(_label(tr("grimoire.spells.netl.page", "MONITOR"), "NavSection"))
         self.nav = {}
         for pid, name, icon in PANELS:
             if pid == "wifi":
                 nl.addSpacing(10)
-                nl.addWidget(_label("CONTROL", "NavSection"))
-            b = QPushButton(glyph(icon, 18), "  " + name)
+                nl.addWidget(_label(tr("grimoire.spells.netl.page", "CONTROL"), "NavSection"))
+            b = QPushButton(glyph(icon, 18), "  " + tr("grimoire.spells.netl.page", name).replace("&", "&&"))
             b.setObjectName("SubNavItem")
             b.setCheckable(True)
             b.clicked.connect(lambda _=False, p=pid: self.show_panel(p))
@@ -587,7 +618,7 @@ class NetLPage(QWidget):
     def show_panel(self, pid: str):
         for p, b in self.nav.items():
             b.setChecked(p == pid)
-        self.heading.setText(next(n for p, n, _ in PANELS if p == pid).replace("&&", "&"))
+        self.heading.setText(tr("grimoire.spells.netl.page", next(n for p, n, _ in PANELS if p == pid)))
         panel = self.panels[pid]
         self.stack.setCurrentWidget(panel)
         if pid in ("conns", "wifi"):
@@ -597,23 +628,26 @@ class NetLPage(QWidget):
 
     def find_app(self, app: str):
         self.show_panel("conns")
-        self.panels["conns"].search.setText("system / other user" if app == probe.SYSTEM else app)
+        self.panels["conns"].search.setText(tr("grimoire.spells.netl.page", "system / other user")
+                                            if app == probe.SYSTEM else app)
 
     # ------------------------------------------------------------ actions
     def act(self, what: str, fn, then=None, quiet=False):
         """Run fn on the pool; report how it went in the toast, then call then() (e.g. reload a list)."""
         def work():
             try:
-                return (what, fn() or "done", True, then, quiet)
+                return (what, fn() or tr("grimoire.spells.netl.page", "done"), True, then, quiet)
             except Exception as err:                 # shown to the user, not a crash
-                msg = str(err)
-                return (what, "cancelled" if msg == "cancelled" else msg, False, then, quiet)
+                msg = str(err)                       # "cancelled": a dismissed password prompt (SystemL's run_root)
+                return (what, tr("grimoire.spells.netl.page", "cancelled") if msg == "cancelled" else msg, False,
+                        then, quiet)
         POOL.start(Job(work, self.sig.acted.emit))
 
     def _acted(self, result):
         what, msg, ok, then, quiet = result
         if not ok or not quiet:
-            self.say(f"{what}: {msg}" if ok else f"Couldn't change {what}: {msg}")
+            self.say(tr("grimoire.spells.netl.page", "{what}: {result}").format(what=what, result=msg) if ok else
+                     tr("grimoire.spells.netl.page", "Couldn't change {what}: {error}").format(what=what, error=msg))
         if then:
             then()
 

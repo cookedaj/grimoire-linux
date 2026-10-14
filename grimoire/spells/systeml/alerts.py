@@ -13,6 +13,9 @@ Stuck apps are two cheap signals: windows KWin itself marks "(Not Responding)" (
 focus or you try to close it, and its windows runner finds them by caption in a few ms), and your processes stuck
 in uninterruptible sleep (D state) with no CPU or I/O progress between checks, which is what a frozen network
 share or USB device looks like. A process merely busy at 100% is left alone: games and compilers do that on purpose.
+
+The notification texts go through tr(): in SystemL's window they follow the app's language; the timer's process
+loads the same catalogs into a bare QCoreApplication first (load_language), and stays English without PySide6.
 """
 import json
 import os
@@ -23,6 +26,7 @@ import traceback
 
 import psutil
 
+from grimoire.i18n import tr
 from grimoire.paths import ASSETS, CACHE, CONFIG, DATA, HOME, unit_command
 
 SETTINGS = CONFIG / "systeml-alerts.json"
@@ -221,7 +225,15 @@ def biggest_app() -> str:
     if not apps:
         return ""
     name, (_, mem, _) = max(apps.items(), key=lambda kv: kv[1][1])
-    return f"{name} uses the most ({mem / 2**30:.1f} GB)."
+    return tr("grimoire.spells.systeml.alerts", "{app} uses the most ({size} GB).").format(app=name,
+                                                                                         size=f"{mem / 2**30:.1f}")
+
+
+def test_message() -> tuple[str, str]:
+    """The test notification (the panel's button and `alerts test`)."""
+    return (tr("grimoire.spells.systeml.alerts", "SystemL alerts work"),
+            tr("grimoire.spells.systeml.alerts", "This is how memory, temperature, disk and stuck-app alerts will "
+               "look."))
 
 
 # ---------------------------------------------------------------- notifications
@@ -261,9 +273,10 @@ def _ram(s: dict, state: dict, now: float):
         pct, used, total = ram()
         lim = s["ram"]["percent"]
         bad = pct >= lim
-        yield ("ram", bad, pct < lim - 5, "Memory almost full",
-               f"RAM is {pct:.0f}% used ({used / 2**30:.1f} of {total / 2**30:.0f} GB). "
-               + (biggest_app() if bad else ""), False)
+        body = tr("grimoire.spells.systeml.alerts", "RAM is {percent}% used ({used} of {total} GB).").format(
+            percent=f"{pct:.0f}", used=f"{used / 2**30:.1f}", total=f"{total / 2**30:.0f}")
+        yield ("ram", bad, pct < lim - 5, tr("grimoire.spells.systeml.alerts", "Memory almost full"),
+               body + (" " + biggest_app() if bad else ""), False)
 
 
 def _temps(s: dict, state: dict, now: float):
@@ -272,8 +285,14 @@ def _temps(s: dict, state: dict, now: float):
         t = temps(with_gpu=s["gpu_temp"]["on"])
         for name, w in want.items():
             if w["on"] and name in t:             # a missing sensor just isn't checked
-                yield (f"temp:{name}", t[name] >= w["c"], t[name] < w["c"] - 5, f"{name} is running hot",
-                       f"{name} temperature is {t[name]:.0f}°C (alert at {w['c']}°C).", True)
+                if name == "CPU":
+                    title = tr("grimoire.spells.systeml.alerts", "CPU is running hot")
+                    body = tr("grimoire.spells.systeml.alerts", "CPU temperature is {now}°C (alert at {limit}°C).")
+                else:
+                    title = tr("grimoire.spells.systeml.alerts", "GPU is running hot")
+                    body = tr("grimoire.spells.systeml.alerts", "GPU temperature is {now}°C (alert at {limit}°C).")
+                yield (f"temp:{name}", t[name] >= w["c"], t[name] < w["c"] - 5, title,
+                       body.format(now=f"{t[name]:.0f}", limit=w["c"]), True)
 
 
 def _disks(s: dict, state: dict, now: float):
@@ -285,8 +304,10 @@ def _disks(s: dict, state: dict, now: float):
         val = free_gb if rule["unit"] == "GB" else free_pct
         lim = rule["value"]
         yield (f"disk:{d['mount']}", val < lim, val > lim * 1.1 + (0.5 if rule["unit"] == "GB" else 1),
-               f"{d['mount']} is almost full",
-               f"{d['mount']} has {free_gb:.1f} GB free ({free_pct:.0f}%; alert below {lim} {rule['unit']}).", False)
+               tr("grimoire.spells.systeml.alerts", "{mount} is almost full").format(mount=d["mount"]),
+               tr("grimoire.spells.systeml.alerts", "{mount} has {free} GB free ({percent}%; alert below {limit})."
+                  ).format(mount=d["mount"], free=f"{free_gb:.1f}", percent=f"{free_pct:.0f}",
+                           limit=f"{lim} {rule['unit']}"), False)
 
 
 def _hung(s: dict, state: dict, now: float):
@@ -299,18 +320,22 @@ def _hung(s: dict, state: dict, now: float):
             seen.add(key)
             since = streaks.setdefault(key, {"since": now})["since"]
             mins = round((now - since) / 60)
-            yield (key, now - since >= need, False, f"{caption or 'An app'} isn't responding",
-                   f"It hasn't responded for {mins} min. Wait a little, or close it from its window or SystemL's "
-                   "Processes.", False)
+            title = tr("grimoire.spells.systeml.alerts", "{app} isn't responding").format(app=caption) if caption \
+                else tr("grimoire.spells.systeml.alerts", "An app isn't responding")
+            yield (key, now - since >= need, False, title,
+                   tr("grimoire.spells.systeml.alerts", "It hasn't responded for %n min. Wait a little, or close it "
+                      "from its window or SystemL's Processes.", n=mins), False)
         for key, p in stuck_procs().items():
             seen.add(key)
             old = streaks.get(key)
             if not old or old.get("cpu") != p["cpu"] or old.get("io") != p["io"]:
                 streaks[key] = old = {"since": now, "cpu": p["cpu"], "io": p["io"]}   # still moving: restart
             mins = round((now - old["since"]) / 60)
-            yield (key, now - old["since"] >= need, False, f"{p['name']} is stuck",
-                   f"{p['name']} (PID {p['pid']}) has waited on a disk or device for {mins} min without progress, "
-                   "often a frozen network share or USB drive.", False)
+            yield (key, now - old["since"] >= need, False,
+                   tr("grimoire.spells.systeml.alerts", "{app} is stuck").format(app=p["name"]),
+                   tr("grimoire.spells.systeml.alerts", "{app} (PID {pid}) has waited on a disk or device for %n min "
+                      "without progress, often a frozen network share or USB drive.", n=mins).format(
+                       app=p["name"], pid=p["pid"]), False)
         for key in [k for k in streaks if k not in seen]:      # gone or recovered: forget it
             del streaks[key]
             yield (key, False, True, "", "", False)
@@ -384,13 +409,39 @@ def enabled() -> bool:
         return False
 
 
+_language: list = []                     # the timer's QCoreApplication and translators, kept alive
+
+
+def load_language():
+    """Translations for a process without a window (the timer): Qt's translators need a QCoreApplication, so make a
+    bare one and load the language's catalogs (the same files i18n.install loads). Without PySide6 the
+    notifications stay English. Returns what must stay alive while tr() is used."""
+    try:
+        from PySide6.QtCore import QCoreApplication, QTranslator
+    except ImportError:
+        return None
+    from grimoire import i18n
+    app = QCoreApplication.instance() or QCoreApplication(["grimoire-systeml"])
+    keep = [app]
+    for qm in i18n.catalogs(i18n.current()):
+        t = QTranslator(app)
+        if t.load(str(qm)):
+            app.installTranslator(t)
+            keep.append(t)
+    return keep
+
+
 def main(argv: list[str]):
     cmd = argv[0] if argv else "check"
+    if cmd in ("check", "test"):
+        try:
+            _language[:] = load_language() or []
+        except Exception:                        # never let a language problem stop the alerts
+            log("loading the language failed:\n" + traceback.format_exc())
     if cmd == "check":
         check_safely()
     elif cmd == "test":
-        print("sent" if notify("SystemL alerts work", "This is how memory, temperature, disk and stuck-app "
-                               "alerts will look.") else "couldn't send a notification")
+        print("sent" if notify(*test_message()) else "couldn't send a notification")
     elif cmd in ("enable", "disable"):
         set_enabled(cmd == "enable")
         print(f"alerts {'on' if cmd == 'enable' else 'off'}")

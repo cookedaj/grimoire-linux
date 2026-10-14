@@ -15,6 +15,7 @@ import psutil
 
 from grimoire import roothelper
 from grimoire.fsutil import free_name, trash
+from grimoire.i18n import tr
 
 AUTOSTART = Path(os.environ.get("XDG_CONFIG_HOME", Path.home() / ".config")) / "autostart"
 SYSTEM_AUTOSTART = [Path("/etc/xdg/autostart")]
@@ -44,7 +45,8 @@ def run_root(*args: str) -> str:
         raise RuntimeError("cancelled")
     if r.returncode:
         msg = (r.stderr or r.stdout).strip().splitlines()
-        raise RuntimeError(msg[-1] if msg else f"helper failed ({r.returncode})")
+        raise RuntimeError(msg[-1] if msg else tr("grimoire.spells.systeml.system", "the helper failed ({code})").format(
+            code=r.returncode))
     return r.stdout.strip()
 
 
@@ -67,25 +69,26 @@ def _same(pid: int, started: float | None) -> psutil.Process | None:
 def send(pid: int, sig: str, started: float | None = None) -> str:
     """TERM ends politely, KILL forces, STOP pauses, CONT resumes. Asks for the password for others' processes."""
     if pid <= 2 or pid == os.getpid():
-        raise RuntimeError("that process can't be stopped from here")
+        raise RuntimeError(tr("grimoire.spells.systeml.system", "that process can't be stopped from here"))
     p = _same(pid, started)
     if p is None:
-        return "already gone"
+        return tr("grimoire.spells.systeml.system", "already gone")
     try:
         name = p.name()
     except psutil.NoSuchProcess:
-        return "already gone"
+        return tr("grimoire.spells.systeml.system", "already gone")
     except psutil.AccessDenied:
         name = ""
     if sig != "CONT" and is_protected(name):
-        raise RuntimeError(f"{name} keeps your session running; not stopping it")
+        raise RuntimeError(tr("grimoire.spells.systeml.system", "{name} keeps your session running; not stopping "
+                              "it").format(name=name))
     try:
         os.kill(pid, SIGNALS[sig])
     except ProcessLookupError:
-        return "already gone"
+        return tr("grimoire.spells.systeml.system", "already gone")
     except PermissionError:
         run_root("signal", str(pid), sig)
-    return "done"
+    return tr("grimoire.spells.systeml.system", "done")
 
 
 def _tids(pid: int) -> list[int]:
@@ -99,7 +102,7 @@ def _tids(pid: int) -> list[int]:
 def renice(pid: int, nice: int, started: float | None = None) -> str:
     """Lower priority works on your own processes; raising it (negative nice) needs the password."""
     if _same(pid, started) is None:
-        return "already gone"
+        return tr("grimoire.spells.systeml.system", "already gone")
     try:
         for tid in _tids(pid):
             try:
@@ -108,7 +111,7 @@ def renice(pid: int, nice: int, started: float | None = None) -> str:
                 pass
     except PermissionError:
         run_root("renice", str(pid), str(nice))
-    return "done"
+    return tr("grimoire.spells.systeml.system", "done")
 
 
 # ---------------------------------------------------------------- services
@@ -160,11 +163,12 @@ def unit_action(user: bool, action: str, unit: str) -> str:
         raise ValueError(action)
     if not user:
         run_root("unit", action, unit)
-        return "done"
+        return tr("grimoire.spells.systeml.system", "done")
     r = subprocess.run(["systemctl", "--user", action, "--", unit], capture_output=True, text=True, timeout=60)
     if r.returncode:
-        raise RuntimeError(r.stderr.strip().splitlines()[-1] if r.stderr.strip() else f"{action} failed")
-    return "done"
+        raise RuntimeError(r.stderr.strip().splitlines()[-1] if r.stderr.strip() else
+                           tr("grimoire.spells.systeml.system", "systemctl {action} failed").format(action=action))
+    return tr("grimoire.spells.systeml.system", "done")
 
 
 def unit_log(user: bool, unit: str, lines=200) -> str:
@@ -172,8 +176,8 @@ def unit_log(user: bool, unit: str, lines=200) -> str:
     try:
         out = subprocess.run(cmd, capture_output=True, text=True, timeout=15)
     except (OSError, subprocess.TimeoutExpired):
-        return "Couldn't read the log."
-    return out.stdout.strip() or out.stderr.strip() or "No log lines yet."
+        return tr("grimoire.spells.systeml.system", "Couldn't read the log.")
+    return out.stdout.strip() or out.stderr.strip() or tr("grimoire.spells.systeml.system", "No log lines yet.")
 
 
 def failed_count() -> int:
@@ -193,6 +197,17 @@ def _read(path: Path) -> dict:
         return dict(cp["Desktop Entry"]) if cp.has_section("Desktop Entry") else {}
     except Exception:                  # a broken .desktop file just doesn't show
         return {}
+
+
+def _local(entry: dict, key: str) -> str:
+    """A desktop entry's Name/Comment in the app's language (Name[zh_CN], Name[pt_BR], Name[ru]…), as Plasma shows
+    it, else the plain one."""
+    from grimoire import i18n
+    code = i18n.loaded() or i18n.current()
+    for loc in dict.fromkeys([i18n.QT_LOCALE.get(code, code), code, code.split("_")[0]]):
+        if f"{key}[{loc}]" in entry:
+            return entry[f"{key}[{loc}]"]
+    return entry.get(key, "")
 
 
 def _on(entry: dict) -> bool:
@@ -223,7 +238,7 @@ def startup_apps() -> list[dict]:
         e, stem = r["entry"], r["file"].removesuffix(".desktop")
         if not _shown_on_plasma(e):
             continue
-        out.append({"file": r["file"], "name": e.get("Name", stem), "comment": e.get("Comment", ""),
+        out.append({"file": r["file"], "name": _local(e, "Name") or stem, "comment": _local(e, "Comment"),
                     "exec": e.get("Exec", ""), "icon": e.get("Icon", ""), "on": _on(e),
                     "essential": stem in ESSENTIAL, "source": "System" if r["system"] else "Yours",
                     "ours": bool(r["user"] and _read(r["user"]).get(MARK)), "removable": not r["system"]})
@@ -255,7 +270,7 @@ def set_startup(file: str, on: bool):
         raise ValueError(file)
     stem = file.removesuffix(".desktop")
     if not on and stem in ESSENTIAL:
-        raise RuntimeError("Plasma needs this to start; leaving it on")
+        raise RuntimeError(tr("grimoire.spells.systeml.system", "Plasma needs this to start; leaving it on"))
     mine = AUTOSTART / file
     system = next((d / file for d in SYSTEM_AUTOSTART if (d / file).is_file()), None)
     if mine.is_file():
@@ -288,7 +303,7 @@ def installed_apps() -> list[dict]:
             e = _read(f)
             if not e or e.get("NoDisplay", "").lower() == "true" or e.get("Type") != "Application" or "Exec" not in e:
                 continue
-            seen[f.name] = {"name": e.get("Name", f.stem), "path": f, "comment": e.get("Comment", "")}
+            seen[f.name] = {"name": _local(e, "Name") or f.stem, "path": f, "comment": _local(e, "Comment")}
     return sorted(seen.values(), key=lambda a: a["name"].lower())
 
 
@@ -307,7 +322,7 @@ def remove_startup(file: str):
     """Only your own entries can be removed, and they go to the Trash."""
     path = AUTOSTART / file
     if Path(file).name != file or not path.is_file() or any((d / file).exists() for d in SYSTEM_AUTOSTART):
-        raise RuntimeError("only your own startup entries can be removed")
+        raise RuntimeError(tr("grimoire.spells.systeml.system", "only your own startup entries can be removed"))
     trash(path)
 
 
@@ -324,8 +339,9 @@ def drives() -> list[dict]:
     for dev in data.get("blockdevices", []):
         if dev.get("type") not in ("disk",) or dev["name"].startswith(("loop", "zram", "ram")):
             continue
-        kind = "NVMe SSD" if dev.get("tran") == "nvme" else "USB drive" if dev.get("tran") == "usb" else \
-            "Hard drive" if dev.get("rota") else "SSD"
+        kind = "NVMe SSD" if dev.get("tran") == "nvme" else \
+            tr("grimoire.spells.systeml.system", "USB drive") if dev.get("tran") == "usb" else \
+            tr("grimoire.spells.systeml.system", "Hard drive") if dev.get("rota") else "SSD"
         parts = []
         for p in dev.get("children") or [dev]:
             mounts = [m for m in (p.get("mountpoints") or []) if m]
@@ -358,5 +374,5 @@ def disk_rates(prev: dict | None, dt: float) -> tuple[dict, dict]:
 def unmount(device: str) -> str:
     r = subprocess.run(["udisksctl", "unmount", "-b", f"/dev/{device}"], capture_output=True, text=True, timeout=30)
     if r.returncode:
-        raise RuntimeError(r.stderr.strip() or "couldn't unmount")
+        raise RuntimeError(r.stderr.strip() or tr("grimoire.spells.systeml.system", "couldn't unmount"))
     return r.stdout.strip()
