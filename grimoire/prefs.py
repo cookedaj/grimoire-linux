@@ -11,7 +11,11 @@ from pathlib import Path
 from grimoire.paths import CONFIG
 
 FILE = CONFIG / "settings.json"
-DEFAULTS = {"auto_update": True, "gist_id": ""}
+DEFAULTS = {"auto_update": True, "gist_id": "", "hidden_spells": [], "locale": "", "setup_done": False,
+            "cloud_sync": True}
+# the languages the setup wizard offers (translations come later; the choice is stored now)
+LOCALES = [("en", "English"), ("zh_CN", "中文 (简体)"), ("hi", "हिन्दी"), ("es", "Español"), ("fr", "Français"),
+           ("ar", "العربية"), ("bn", "বাংলা"), ("pt", "Português"), ("ru", "Русский"), ("ur", "اردو")]
 
 
 def load() -> dict:
@@ -26,6 +30,14 @@ def load() -> dict:
         gid = data.get("gist_id")
         if isinstance(gid, str) and gid.isalnum() and len(gid) <= 64:     # gist ids are hex
             out["gist_id"] = gid
+        hidden = data.get("hidden_spells")
+        if isinstance(hidden, list):
+            out["hidden_spells"] = [h for h in hidden if isinstance(h, str) and h.isascii() and h.isalnum()][:64]
+        if data.get("locale") in dict(LOCALES):
+            out["locale"] = data["locale"]
+        for key in ("setup_done", "cloud_sync"):
+            if isinstance(data.get(key), bool):
+                out[key] = data[key]
     return out
 
 

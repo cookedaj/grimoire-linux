@@ -14,7 +14,6 @@ def main(argv: list[str]):
     from PySide6.QtWidgets import QApplication, QMainWindow, QMessageBox
 
     from grimoire.app import style_app
-    from grimoire.spells.terminall.page import TerminalLPage
     from grimoire.standalone import app_icon
 
     app = QApplication(sys.argv[:1])
@@ -22,6 +21,10 @@ def main(argv: list[str]):
     app.setDesktopFileName("grimoire-terminall")
     style_app(app)
     app.setWindowIcon(QIcon(app_icon("terminall")))
+    from grimoire.loginview import gate
+    if not gate("TerminalL", (1100, 700)):           # the account picks the settings folder before the page loads
+        sys.exit(0)
+    from grimoire.spells.terminall.page import TerminalLPage
     command = ""
     if argv[:1] == ["-e"] and len(argv) > 1:
         command, argv = argv[1], argv[2:]

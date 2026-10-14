@@ -140,6 +140,9 @@ def run(sid: str):
     app.setDesktopFileName(f"grimoire-{sid}")
     style_app(app)
     app.setWindowIcon(QIcon(app_icon(spell.icon)))
+    from grimoire.loginview import gate
+    if not gate(spell.name, (1280, 820)):            # the account picks the settings folder before the page loads
+        sys.exit(0)
     win = QMainWindow()
     win.setWindowTitle(spell.name)
     win.setCentralWidget(spell.page())
