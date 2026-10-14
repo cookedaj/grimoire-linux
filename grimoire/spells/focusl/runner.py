@@ -20,6 +20,8 @@ import sys
 import time
 from pathlib import Path
 
+from grimoire import i18n
+from grimoire.i18n import tr
 from grimoire.paths import CACHE
 from grimoire.spells.focusl import guards, store
 from grimoire.spells.focusl.store import log
@@ -66,7 +68,7 @@ class Session:
             err = guards.block_sites(self.s["sites"])       # replaces an old block: one password prompt, not two
             self.st["sites_blocked"] = not err or bool(old.get("sites_blocked"))
             if err:
-                self.st["note"] = f"Sites aren't blocked: {err}"
+                self.st["note"] = tr("grimoire.spells.focusl.runner", "Sites aren't blocked: {error}").format(error=err)
                 log(f"block sites: {err}")
         elif old.get("sites_blocked"):
             err = guards.unblock_sites()
@@ -117,18 +119,25 @@ class Session:
         nxt = self.i + 1
         if nxt >= len(self.seq):
             if full:
-                n = len(self.seq) // 2
-                guards.notify("Session complete", f"{n} focus round{'s' if n > 1 else ''} done. Well earned.")
+                guards.notify(tr("grimoire.spells.focusl.runner", "Session complete"),
+                              tr("grimoire.spells.focusl.runner", "%n focus round(s) done. Well earned.",
+                                 n=len(self.seq) // 2))
                 self.chime()
             self.quit = True
             return
         nk, nr = self.seq[nxt]
         if full:
             if kind == "focus":
-                title, body = "Focus done", f"Take a {self.s[nk]} min {'long ' if nk == 'long' else ''}break."
+                title = tr("grimoire.spells.focusl.runner", "Focus done")
+                body = (tr("grimoire.spells.focusl.runner", "Take a {minutes} min long break.") if nk == "long" else
+                        tr("grimoire.spells.focusl.runner", "Take a {minutes} min break.")).format(minutes=self.s[nk])
             else:
-                title, body = "Break's over", f"Round {nr} of {len(self.seq) // 2}: {self.s['focus']} min of focus."
-            guards.notify(title, body + ("" if self.s["auto_start"] else " Start it in FocusL when you're ready."))
+                title = tr("grimoire.spells.focusl.runner", "Break's over")
+                body = tr("grimoire.spells.focusl.runner", "Round {round} of {rounds}: {minutes} min of focus.").format(
+                    round=nr, rounds=len(self.seq) // 2, minutes=self.s["focus"])
+            if not self.s["auto_start"]:
+                body += " " + tr("grimoire.spells.focusl.runner", "Start it in FocusL when you're ready.")
+            guards.notify(title, body)
             self.chime()
         if self.s["auto_start"]:
             self.start_phase(nxt)
@@ -205,8 +214,10 @@ class Session:
             err = guards.unblock_sites()
             if err:
                 log(f"unblock sites: {err}")
-                guards.notify("Sites still blocked", f"FocusL couldn't unblock them ({err}). Run "
-                              "\"grimoire-focusl unblock\" or press Unblock in FocusL.")
+                guards.notify(tr("grimoire.spells.focusl.runner", "Sites still blocked"),
+                              tr("grimoire.spells.focusl.runner", "FocusL couldn't unblock them ({error}). Run "
+                                                                  "\"grimoire-focusl unblock\" or press Unblock in "
+                                                                  "FocusL.").format(error=err))
             self.st["sites_blocked"] = bool(err)
         store.write_state({"phase": "idle", "ended": self.clock(), "crosshair_hidden": False,
                            "sites_blocked": self.st["sites_blocked"]})
@@ -214,6 +225,25 @@ class Session:
 
 
 # ---------------------------------------------------------------- running it
+_app = None
+
+
+def _translations(code: str | None = None):
+    """tr() needs a QCoreApplication with our catalogs; the runner and the CLI have none, so they'd say everything in
+    English as written ("%n round(s)" included). A bare one is enough: the session's language for the notifications
+    (code None), English for the CLI. Without PySide6 tr() falls back to the English text by itself."""
+    global _app
+    try:
+        from PySide6.QtCore import QCoreApplication, QTranslator
+    except ImportError:
+        return
+    _app = QCoreApplication.instance() or QCoreApplication(["grimoire-focusl"])
+    for qm in i18n.catalogs(code or i18n.current()):
+        t = QTranslator(_app)
+        if t.load(str(qm)):
+            _app.installTranslator(t)
+
+
 def _lock():
     """The single-instance lock, held for the runner's whole life; None if another runner has it."""
     fd = os.open(store.LOCK, os.O_RDWR | os.O_CREAT, 0o600)
@@ -234,6 +264,7 @@ def run() -> int:
     if fd is None:
         print("FocusL is already running")
         return 0
+    _translations()
     sess = Session()
 
     def bye(*_):
@@ -309,10 +340,11 @@ def recover(sites: bool = False) -> str:
         st = {"phase": "idle", "ended": time.time(), "crosshair_hidden": False,
               "sites_blocked": bool(st.get("sites_blocked"))}
     store.write_state(st)
-    return err or ("sites are still blocked" if st.get("sites_blocked") else "")
+    return err or (tr("grimoire.spells.focusl.runner", "sites are still blocked") if st.get("sites_blocked") else "")
 
 
 def status_text() -> str:
+    _translations("en")                                      # CLI output stays English (plurals spelled out)
     s = store.live_state()
     line = store.status_line()
     if s["phase"] != "idle":

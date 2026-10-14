@@ -9,6 +9,7 @@ import os
 import re
 import time
 
+from grimoire.i18n import tr, tr_noop
 from grimoire.paths import CACHE, CONFIG, DATA
 
 SETTINGS = CONFIG / "focusl.json"
@@ -36,7 +37,9 @@ PROTECTED = {"systemd", "kwin_wayland", "kwin_wayland_wrapper", "kwin_x11", "pla
              "xwayland", "dbus-daemon", "dbus-broker", "pipewire", "wireplumber", "pipewire-pulse", "sddm",
              "startplasma-wayland", "polkit-kde-authentication-agent-1", "bash", "sh", "zsh", "fish", "dash",
              "konsole", "python", "python3", "grimoire", "sudo", "pkexec", "kdeconnectd", "baloo_file"}
-PHASES = {"focus": "Focus", "short": "Short break", "long": "Long break"}
+PHASES = {"focus": tr_noop("grimoire.spells.focusl.store", "Focus"),       # shown with tr(this context, …)
+          "short": tr_noop("grimoire.spells.focusl.store", "Short break"),
+          "long": tr_noop("grimoire.spells.focusl.store", "Long break")}
 
 
 # ---------------------------------------------------------------- json files
@@ -170,14 +173,21 @@ def clock(seconds: float) -> str:
 def status_line() -> str:
     s = live_state()
     if s["phase"] == "idle":
-        n = stats()["today"]
-        return f"Idle · {n} session{'' if n == 1 else 's'} today"
-    word = {"focus": "Focusing", "short": "Short break", "long": "Long break"}[s["phase"]]
+        return tr("grimoire.spells.focusl.store", "Idle · %n session(s) today", n=stats()["today"])
+    phase, time_left = s["phase"], clock(left(s))
     if s.get("status") == "paused":
-        return f"Paused · {word.lower()} · {clock(left(s))} left"
-    if s.get("status") == "waiting":
-        return f"Waiting · {PHASES[s['phase']].lower()} next"
-    return f"{word} · {clock(left(s))} left"
+        line = {"focus": tr("grimoire.spells.focusl.store", "Paused · focusing · {time} left"),
+                "short": tr("grimoire.spells.focusl.store", "Paused · short break · {time} left"),
+                "long": tr("grimoire.spells.focusl.store", "Paused · long break · {time} left")}[phase]
+    elif s.get("status") == "waiting":
+        line = {"focus": tr("grimoire.spells.focusl.store", "Waiting · focus next"),
+                "short": tr("grimoire.spells.focusl.store", "Waiting · short break next"),
+                "long": tr("grimoire.spells.focusl.store", "Waiting · long break next")}[phase]
+    else:
+        line = {"focus": tr("grimoire.spells.focusl.store", "Focusing · {time} left"),
+                "short": tr("grimoire.spells.focusl.store", "Short break · {time} left"),
+                "long": tr("grimoire.spells.focusl.store", "Long break · {time} left")}[phase]
+    return line.format(time=time_left)
 
 
 # ---------------------------------------------------------------- history and stats
