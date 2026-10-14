@@ -10,20 +10,22 @@ import html
 import subprocess
 from pathlib import Path
 
-from PySide6.QtCore import QEvent, QSize, Qt, QTimer, Signal
-from PySide6.QtGui import QKeyEvent
+from PySide6.QtCore import QEvent, QRect, QSize, Qt, QTimer, Signal
+from PySide6.QtGui import QColor, QKeyEvent
 from PySide6.QtWidgets import (QApplication, QButtonGroup, QComboBox, QDialog, QFontComboBox, QFrame, QHBoxLayout,
                                QLabel, QLineEdit, QListWidget, QListWidgetItem, QMenu, QPushButton, QSpinBox,
-                               QSplitter, QStackedWidget, QTabBar, QToolButton, QVBoxLayout, QWidget)
+                               QSplitter, QStackedWidget, QStyle, QStyledItemDelegate, QStyleOptionViewItem, QTabBar,
+                               QToolButton, QVBoxLayout, QWidget)
 
 from grimoire.glyphs import glyph
+from grimoire.i18n import tr
 from grimoire.paths import CACHE, HOME
 from grimoire.spells.terminall import config
 
 APT = "sudo apt install python3-pyte"
 CTRL = Qt.KeyboardModifier.ControlModifier
 SHIFT = Qt.KeyboardModifier.ShiftModifier
-EDIT_PROFILES = "Edit profiles…"
+EDIT_PROFILES = "\x00edit"                 # the combo item that opens the profile editor (data, not text)
 LOCAL_QSS = """
 QFrame#TermBar { background: #070707; border-bottom: 1px solid #161616; }
 QTabBar { background: transparent; }
@@ -52,6 +54,11 @@ def vaultl_folder() -> Path | None:
     return p if p.is_absolute() and p.is_dir() else None
 
 
+def profile_label(name: str) -> str:
+    """A profile's name as shown: config.load() names the first one "Default", which reads in the UI language."""
+    return tr("grimoire.spells.terminall.page", "Default", "profile name") if name == "Default" else name
+
+
 def tool(icon: str, tip: str, slot) -> QToolButton:
     b = QToolButton()
     b.setObjectName("Tool")
@@ -72,9 +79,10 @@ class Missing(QWidget):
         lay = QVBoxLayout(self)
         lay.setContentsMargins(56, 52, 56, 44)
         lay.addStretch(1)
-        for text, name in (("TerminalL needs one more package", "PageHeading"),
-                           ("pyte, the terminal emulator library TerminalL is built on, isn't installed. "
-                            "Install it from a terminal, then reopen TerminalL:", "Muted")):
+        for text, name in ((tr("grimoire.spells.terminall.page", "TerminalL needs one more package"), "PageHeading"),
+                           (tr("grimoire.spells.terminall.page",
+                               "pyte, the terminal emulator library TerminalL is built on, isn't installed. "
+                               "Install it from a terminal, then reopen TerminalL:"), "Muted")):
             label = QLabel(text)
             label.setObjectName(name)
             label.setWordWrap(True)
@@ -85,7 +93,7 @@ class Missing(QWidget):
         cmd.setObjectName("Mono")
         cmd.setTextInteractionFlags(Qt.TextInteractionFlag.TextSelectableByMouse)
         lay.addWidget(cmd, 0, Qt.AlignmentFlag.AlignHCenter)
-        copy = QPushButton("Copy command")
+        copy = QPushButton(tr("grimoire.spells.terminall.page", "Copy command"))
         copy.clicked.connect(lambda: QApplication.clipboard().setText(APT))
         lay.addWidget(copy, 0, Qt.AlignmentFlag.AlignHCenter)
         lay.addStretch(2)
@@ -159,7 +167,8 @@ class SearchBar(QFrame):
         icon.setPixmap(glyph("search", 16).pixmap(16, 16))
         lay.addWidget(icon)
         self.edit = QLineEdit()
-        self.edit.setPlaceholderText("Search the scrollback   (Enter older, Shift+Enter newer)")
+        self.edit.setPlaceholderText(tr("grimoire.spells.terminall.page",
+                                       "Search the scrollback   (Enter older, Shift+Enter newer)"))
         self.edit.textChanged.connect(lambda: self.go(True))
         self.edit.returnPressed.connect(lambda: self.go(not QApplication.keyboardModifiers() & SHIFT))
         lay.addWidget(self.edit, 1)
@@ -167,16 +176,18 @@ class SearchBar(QFrame):
         self.count.setObjectName("Muted")
         self.count.setMinimumWidth(70)
         lay.addWidget(self.count)
-        for icon, back, tip in (("up", True, "Older match (Enter)"), ("down", False, "Newer match (Shift+Enter)")):
+        for icon, back, tip in (("up", True, tr("grimoire.spells.terminall.page", "Older match (Enter)")),
+                                ("down", False, tr("grimoire.spells.terminall.page", "Newer match (Shift+Enter)"))):
             lay.addWidget(tool(icon, tip, lambda _=False, back=back: self.go(back)))
-        lay.addWidget(tool("close", "Close search (Esc)", self.close_bar))
+        lay.addWidget(tool("close", tr("grimoire.spells.terminall.page", "Close search (Esc)"), self.close_bar))
 
     def go(self, backwards: bool):
         view = self.page.active_view()
         if not view:
             return
         n, total = view.find(self.edit.text(), backwards)
-        self.count.setText(f"{n} of {total}" if total else ("No matches" if self.edit.text() else ""))
+        self.count.setText(tr("grimoire.spells.terminall.page", "{n} of {total}").format(n=n, total=total) if total
+                           else tr("grimoire.spells.terminall.page", "No matches") if self.edit.text() else "")
 
     def keyPressEvent(self, e):
         if e.key() == Qt.Key.Key_Escape:
@@ -202,6 +213,31 @@ class SearchBar(QFrame):
             view.setFocus()
 
 
+class _TwoLines(QStyledItemDelegate):
+    """A saved command as name over command, each line drawn on its own: Qt's item text elides a two-line text
+    whose first line is Hindi or Arabic and whose second is Latin, and the command disappeared."""
+
+    def paint(self, p, option, index):
+        opt = QStyleOptionViewItem(option)
+        self.initStyleOption(opt, index)
+        lines, opt.text = opt.text.split("\n"), ""
+        style = opt.widget.style()
+        style.drawControl(QStyle.ControlElement.CE_ItemViewItem, opt, p, opt.widget)     # frame and selection
+        r = opt.rect.adjusted(9, 8, -9, -8)          # the item's padding (LOCAL_QSS) and border
+        p.save()
+        p.setFont(opt.font)
+        fm = p.fontMetrics()
+        p.setPen(QColor("#ffffff" if opt.state & QStyle.StateFlag.State_Selected else "#9a9a9a"))
+        y = r.y() + (r.height() - fm.lineSpacing() * len(lines)) // 2
+        for i, line in enumerate(lines):
+            text = fm.elidedText(line, Qt.TextElideMode.ElideRight, r.width())
+            p.drawText(QRect(r.x(), y, r.width(), fm.lineSpacing()), Qt.AlignmentFlag.AlignLeft
+                       | Qt.AlignmentFlag.AlignVCenter | Qt.TextFlag.TextDontClip,
+                       "\u2066" + text + "\u2069" if i else text)     # the command reads left to right
+            y += fm.lineSpacing()
+        p.restore()
+
+
 class Palette(QFrame):
     """Saved commands: type to filter, Enter runs one in the active terminal, Shift+Enter only types it."""
 
@@ -214,31 +250,34 @@ class Palette(QFrame):
         lay.setContentsMargins(12, 12, 12, 12)
         lay.setSpacing(8)
         self.filter = QLineEdit()
-        self.filter.setPlaceholderText("Run a saved command…")
+        self.filter.setPlaceholderText(tr("grimoire.spells.terminall.page", "Run a saved command…"))
         self.filter.textChanged.connect(self._fill)
         self.filter.installEventFilter(self)
         lay.addWidget(self.filter)
         self.list = QListWidget()
         self.list.setObjectName("Commands")
+        self.list.setItemDelegate(_TwoLines(self.list))
         self.list.itemActivated.connect(lambda _: self.run(False))
         lay.addWidget(self.list, 1)
         add = QHBoxLayout()
         self.name = QLineEdit()
-        self.name.setPlaceholderText("Name")
+        self.name.setPlaceholderText(tr("grimoire.spells.terminall.page", "Name"))
         self.cmd = QLineEdit()
-        self.cmd.setPlaceholderText("Command")
-        save = QPushButton("Save")
+        self.cmd.setPlaceholderText(tr("grimoire.spells.terminall.page", "Command"))
+        save = QPushButton(tr("grimoire.spells.terminall.page", "Save"))
         save.clicked.connect(self._add)
         self.cmd.returnPressed.connect(self._add)
-        remove = QPushButton("Remove")
-        remove.setToolTip("Remove the selected command from the list")
+        remove = QPushButton(tr("grimoire.spells.terminall.page", "Remove"))
+        remove.setToolTip(tr("grimoire.spells.terminall.page", "Remove the selected command from the list"))
         remove.clicked.connect(self._remove)
         add.addWidget(self.name, 1)
         add.addWidget(self.cmd, 2)
         add.addWidget(save)
         add.addWidget(remove)
         lay.addLayout(add)
-        hint = QLabel("Enter runs it in the active tab · Shift+Enter types it without running · Esc closes")
+        hint = QLabel(tr("grimoire.spells.terminall.page",
+                         "Enter runs it in the active tab · Shift+Enter types it without running · Esc closes"))
+        hint.setWordWrap(True)
         hint.setObjectName("Hint")
         lay.addWidget(hint)
 
@@ -258,8 +297,10 @@ class Palette(QFrame):
         q = self.filter.text().lower()
         self.list.clear()
         for c in self._commands():
-            if q in c["name"].lower() or q in c["command"].lower():
-                item = QListWidgetItem(f"{c['name']}\n{c['command']}")
+            if q in c["name"].lower() or q in c["command"].lower() \
+                    or q in tr("grimoire.spells.terminall.config", c["name"]).lower():
+                name = tr("grimoire.spells.terminall.config", c["name"])    # the built-in ones are translated
+                item = QListWidgetItem(f"{name}\n{c['command']}")
                 item.setData(Qt.ItemDataRole.UserRole, c)
                 item.setToolTip(c["command"])
                 self.list.addItem(item)
@@ -322,7 +363,7 @@ class ProfileDialog(QDialog):
 
     def __init__(self, page):
         super().__init__(page)
-        self.setWindowTitle("TerminalL profiles")
+        self.setWindowTitle(tr("grimoire.spells.terminall.page", "TerminalL profiles"))
         self.page = page
         self.cfg = page.cfg
         self.resize(640, 380)
@@ -330,11 +371,13 @@ class ProfileDialog(QDialog):
         left = QVBoxLayout()
         self.names = QListWidget()
         self.names.setObjectName("Plain")
-        self.names.currentTextChanged.connect(self._show)
+        self.names.currentItemChanged.connect(
+            lambda item, _: self._show(item.data(Qt.ItemDataRole.UserRole) if item else ""))
         self.names.itemChanged.connect(self._renamed)
         left.addWidget(self.names, 1)
         row = QHBoxLayout()
-        for text, slot in (("New", self._new), ("Remove", self._remove)):
+        for text, slot in ((tr("grimoire.spells.terminall.page", "New", "profile"), self._new),
+                           (tr("grimoire.spells.terminall.page", "Remove"), self._remove)):
             b = QPushButton(text)
             b.clicked.connect(slot)
             row.addWidget(b)
@@ -350,30 +393,33 @@ class ProfileDialog(QDialog):
             form.addWidget(w)
             form.addSpacing(6)
             return w
-        self.font_box = field("FONT", QFontComboBox())
+        self.font_box = field(tr("grimoire.spells.terminall.page", "FONT"), QFontComboBox())
         self.font_box.setFontFilters(QFontComboBox.FontFilter.MonospacedFonts)
-        self.size_box = field("SIZE", QSpinBox())
+        self.size_box = field(tr("grimoire.spells.terminall.page", "SIZE"), QSpinBox())
         self.size_box.setRange(*config.LIMITS["size"])
-        self.size_box.setSuffix(" pt")
+        self.size_box.setSuffix(tr("grimoire.spells.terminall.page", " pt", "font size unit"))
         seg = QWidget()
         sl = QHBoxLayout(seg)
         sl.setContentsMargins(0, 0, 0, 0)
         sl.setSpacing(0)
         self.cursor_group = QButtonGroup(self)
+        names = {"block": tr("grimoire.spells.terminall.page", "Block", "cursor shape"),
+                 "underline": tr("grimoire.spells.terminall.page", "Underline", "cursor shape"),
+                 "bar": tr("grimoire.spells.terminall.page", "Bar", "cursor shape")}
         for i, shape in enumerate(config.CURSORS):
-            b = QPushButton(shape.title())
+            b = QPushButton(names.get(shape, shape))
             b.setObjectName("Segment")
             b.setCheckable(True)
             b.setProperty("pos", "first" if i == 0 else "last" if i == len(config.CURSORS) - 1 else "mid")
             self.cursor_group.addButton(b, i)
             sl.addWidget(b)
         sl.addStretch(1)
-        field("CURSOR", seg)
-        self.scrollback = field("SCROLLBACK LINES", QSpinBox())
+        field(tr("grimoire.spells.terminall.page", "CURSOR"), seg)
+        self.scrollback = field(tr("grimoire.spells.terminall.page", "SCROLLBACK LINES"), QSpinBox())
         self.scrollback.setRange(*config.LIMITS["scrollback"])
         self.scrollback.setSingleStep(1000)
         form.addStretch(1)
-        done = QPushButton("Done")
+        done = QPushButton(tr("grimoire.spells.terminall.page", "Done"))
         done.setObjectName("Primary")
         done.clicked.connect(self.accept)
         form.addWidget(done, 0, Qt.AlignmentFlag.AlignRight)
@@ -389,11 +435,13 @@ class ProfileDialog(QDialog):
         self.names.blockSignals(True)
         self.names.clear()
         for name in self.cfg["profiles"]:
-            item = QListWidgetItem(name)
+            item = QListWidgetItem(profile_label(name))
+            item.setData(Qt.ItemDataRole.UserRole, name)       # the key in terminall.json; the text may be translated
             item.setFlags(item.flags() | Qt.ItemFlag.ItemIsEditable)
             self.names.addItem(item)
         self.names.blockSignals(False)
-        found = self.names.findItems(select, Qt.MatchFlag.MatchExactly)
+        found = [self.names.item(i) for i in range(self.names.count())
+                 if self.names.item(i).data(Qt.ItemDataRole.UserRole) == select]
         self.names.setCurrentItem(found[0] if found else self.names.item(0))
 
     def _show(self, name: str):
@@ -412,30 +460,33 @@ class ProfileDialog(QDialog):
         item = self.names.currentItem()
         if self._loading or not item:
             return
-        self.cfg["profiles"][item.text()][key] = value
-        self.page.use_profile(item.text())
+        self.cfg["profiles"][item.data(Qt.ItemDataRole.UserRole)][key] = value
+        self.page.use_profile(item.data(Qt.ItemDataRole.UserRole))
 
     def _renamed(self, item):
-        old = self.cfg["profile"]
+        old = item.data(Qt.ItemDataRole.UserRole)
         new = item.text().strip()[:40]
-        if not new or new in self.cfg["profiles"]:
-            item.setText(old)
-            return
-        self.cfg["profiles"] = {(new if k == old else k): v for k, v in self.cfg["profiles"].items()}
-        self.page.use_profile(new)
+        self.names.blockSignals(True)
+        if not new or new == profile_label(old) or new in self.cfg["profiles"]:
+            item.setText(profile_label(old))
+        else:
+            item.setData(Qt.ItemDataRole.UserRole, new)
+            self.cfg["profiles"] = {(new if k == old else k): v for k, v in self.cfg["profiles"].items()}
+            self.page.use_profile(new)
+        self.names.blockSignals(False)
 
     def _new(self):
         n = 2
-        while f"Profile {n}" in self.cfg["profiles"]:
+        while tr("grimoire.spells.terminall.page", "Profile {n}").format(n=n) in self.cfg["profiles"]:
             n += 1
-        name = f"Profile {n}"
+        name = tr("grimoire.spells.terminall.page", "Profile {n}").format(n=n)
         self.cfg["profiles"][name] = dict(self.cfg["profiles"][self.cfg["profile"]])
         self._list(name)
 
     def _remove(self):
         item = self.names.currentItem()
         if item and len(self.cfg["profiles"]) > 1:
-            del self.cfg["profiles"][item.text()]
+            del self.cfg["profiles"][item.data(Qt.ItemDataRole.UserRole)]
             self._list(next(iter(self.cfg["profiles"])))
 
 
@@ -475,16 +526,22 @@ class TerminalLPage(QWidget):
         self.tabs.currentChanged.connect(self._tab_changed)
         self.tabs.tabMoved.connect(self._tab_moved)
         bl.addWidget(self.tabs, 0)
-        bl.addWidget(tool("plus", "New tab (Ctrl+Shift+T)", lambda: self.new_tab()))
+        bl.addWidget(tool("plus", tr("grimoire.spells.terminall.page", "New tab (Ctrl+Shift+T)"),
+                          lambda: self.new_tab()))
         bl.addStretch(1)
-        bl.addWidget(tool("splith", "Split side by side (Ctrl+Shift+E)", lambda: self.split(Qt.Orientation.Horizontal)))
-        bl.addWidget(tool("splitv", "Split top and bottom (Ctrl+Shift+O)", lambda: self.split(Qt.Orientation.Vertical)))
-        bl.addWidget(tool("search", "Search the scrollback (Ctrl+Shift+F)", lambda: self.search.open_bar()))
-        bl.addWidget(tool("palette", "Saved commands (Ctrl+Shift+P)", lambda: self.palette.open()))
-        bl.addWidget(tool("vault", "New tab in VaultL's folder", self.tab_at_vaultl))
+        bl.addWidget(tool("splith", tr("grimoire.spells.terminall.page", "Split side by side (Ctrl+Shift+E)"),
+                          lambda: self.split(Qt.Orientation.Horizontal)))
+        bl.addWidget(tool("splitv", tr("grimoire.spells.terminall.page", "Split top and bottom (Ctrl+Shift+O)"),
+                          lambda: self.split(Qt.Orientation.Vertical)))
+        bl.addWidget(tool("search", tr("grimoire.spells.terminall.page", "Search the scrollback (Ctrl+Shift+F)"),
+                          lambda: self.search.open_bar()))
+        bl.addWidget(tool("palette", tr("grimoire.spells.terminall.page", "Saved commands (Ctrl+Shift+P)"),
+                          lambda: self.palette.open()))
+        bl.addWidget(tool("vault", tr("grimoire.spells.terminall.page", "New tab in VaultL's folder"),
+                          self.tab_at_vaultl))
         bl.addSpacing(8)
         self.profiles = QComboBox()
-        self.profiles.setToolTip("Profile: font, size, cursor and scrollback")
+        self.profiles.setToolTip(tr("grimoire.spells.terminall.page", "Profile: font, size, cursor and scrollback"))
         self.profiles.activated.connect(self._profile_picked)
         bl.addWidget(self.profiles)
         lay.addWidget(bar)
@@ -509,11 +566,11 @@ class TerminalLPage(QWidget):
         w.setObjectName("Page")
         lay = QVBoxLayout(w)
         lay.addStretch(1)
-        t = QLabel("No terminals open")
+        t = QLabel(tr("grimoire.spells.terminall.page", "No terminals open"))
         t.setObjectName("Muted")
         t.setAlignment(Qt.AlignmentFlag.AlignHCenter)
         lay.addWidget(t)
-        b = QPushButton("New tab")
+        b = QPushButton(tr("grimoire.spells.terminall.page", "New tab"))
         b.setObjectName("Primary")
         b.clicked.connect(lambda: self.new_tab())
         lay.addWidget(b, 0, Qt.AlignmentFlag.AlignHCenter)
@@ -533,16 +590,17 @@ class TerminalLPage(QWidget):
     def _fill_profiles(self):
         self.profiles.blockSignals(True)
         self.profiles.clear()
-        self.profiles.addItems(list(self.cfg["profiles"]))
+        for name in self.cfg["profiles"]:
+            self.profiles.addItem(profile_label(name), name)
         self.profiles.insertSeparator(self.profiles.count())
-        self.profiles.addItem(EDIT_PROFILES)
-        self.profiles.setCurrentText(self.cfg["profile"])
+        self.profiles.addItem(tr("grimoire.spells.terminall.page", "Edit profiles…"), EDIT_PROFILES)
+        self.profiles.setCurrentIndex(self.profiles.findData(self.cfg["profile"]))
         self.profiles.blockSignals(False)
 
     def _profile_picked(self, i: int):
-        text = self.profiles.itemText(i)
+        text = self.profiles.itemData(i)
         if text == EDIT_PROFILES:
-            self.profiles.setCurrentText(self.cfg["profile"])
+            self.profiles.setCurrentIndex(self.profiles.findData(self.cfg["profile"]))
             ProfileDialog(self).exec()
             self._fill_profiles()
             self.save_cfg()
@@ -572,9 +630,10 @@ class TerminalLPage(QWidget):
         v = self._make_view(cwd)
         tab = Tab(v)
         self.stack.addWidget(tab)
-        i = self.tabs.addTab("Shell")
+        i = self.tabs.addTab(tr("grimoire.spells.terminall.page", "Shell"))
         self.tabs.setTabData(i, tab)
-        close = tool("close", "Close tab", lambda _=False, tab=tab: self.close_tab(tab))
+        close = tool("close", tr("grimoire.spells.terminall.page", "Close tab"),
+                     lambda _=False, tab=tab: self.close_tab(tab))
         close.setIconSize(QSize(12, 12))
         close.setIcon(glyph("close", 12))
         self.tabs.setTabButton(i, QTabBar.ButtonPosition.RightSide, close)
@@ -731,20 +790,30 @@ class TerminalLPage(QWidget):
     def _menu(self, view, e):
         m = QMenu(self)
         has_sel = bool(view.selected_text())
-        m.addAction(glyph("copies", 16), "Copy\tCtrl+Shift+C", view.copy).setEnabled(has_sel)
-        m.addAction("Paste\tCtrl+Shift+V", view.paste)
-        m.addAction("Select all\tCtrl+Shift+A", view.select_all)
+        def label(text, keys=""):                # the shortcut column stays as Qt writes keys
+            return text + ("\t" + keys if keys else "")
+        m.addAction(glyph("copies", 16), label(tr("grimoire.spells.terminall.page", "Copy"), "Ctrl+Shift+C"),
+                    view.copy).setEnabled(has_sel)
+        m.addAction(label(tr("grimoire.spells.terminall.page", "Paste"), "Ctrl+Shift+V"), view.paste)
+        m.addAction(label(tr("grimoire.spells.terminall.page", "Select all"), "Ctrl+Shift+A"), view.select_all)
         m.addSeparator()
-        m.addAction(glyph("splith", 16), "Split side by side\tCtrl+Shift+E", lambda: self.split(Qt.Orientation.Horizontal))
-        m.addAction(glyph("splitv", 16), "Split top and bottom\tCtrl+Shift+O", lambda: self.split(Qt.Orientation.Vertical))
-        m.addAction(glyph("plus", 16), "New tab\tCtrl+Shift+T", lambda: self.new_tab(view.session.cwd()))
+        m.addAction(glyph("splith", 16), label(tr("grimoire.spells.terminall.page", "Split side by side"),
+                                               "Ctrl+Shift+E"), lambda: self.split(Qt.Orientation.Horizontal))
+        m.addAction(glyph("splitv", 16), label(tr("grimoire.spells.terminall.page", "Split top and bottom"),
+                                               "Ctrl+Shift+O"), lambda: self.split(Qt.Orientation.Vertical))
+        m.addAction(glyph("plus", 16), label(tr("grimoire.spells.terminall.page", "New tab"), "Ctrl+Shift+T"),
+                    lambda: self.new_tab(view.session.cwd()))
         m.addSeparator()
-        m.addAction(glyph("search", 16), "Search…\tCtrl+Shift+F", self.search.open_bar)
-        m.addAction(glyph("palette", 16), "Saved commands…\tCtrl+Shift+P", self.palette.open)
-        m.addAction(glyph("vault", 16), "Open this folder in VaultL", lambda: self.open_in_vaultl(view))
-        m.addAction("Clear scrollback", view.clear_scrollback)
+        m.addAction(glyph("search", 16), label(tr("grimoire.spells.terminall.page", "Search…"), "Ctrl+Shift+F"),
+                    self.search.open_bar)
+        m.addAction(glyph("palette", 16), label(tr("grimoire.spells.terminall.page", "Saved commands…"),
+                                                "Ctrl+Shift+P"), self.palette.open)
+        m.addAction(glyph("vault", 16), tr("grimoire.spells.terminall.page", "Open this folder in VaultL"),
+                    lambda: self.open_in_vaultl(view))
+        m.addAction(tr("grimoire.spells.terminall.page", "Clear scrollback"), view.clear_scrollback)
         m.addSeparator()
-        m.addAction(glyph("close", 16), "Close pane\tCtrl+Shift+W", lambda: self.close_view(view))
+        m.addAction(glyph("close", 16), label(tr("grimoire.spells.terminall.page", "Close pane"), "Ctrl+Shift+W"),
+                    lambda: self.close_view(view))
         m.exec(e.globalPosition().toPoint())
 
     def open_in_vaultl(self, view):
@@ -764,6 +833,7 @@ def status() -> str:
     try:
         from grimoire.spells.terminall import session
     except ImportError:
-        return f"Needs pyte: {APT}"
+        return tr("grimoire.spells.terminall.page", "Needs pyte: {command}").format(command=APT)
     n = sum(1 for s in session.LIVE if s.alive)
-    return f"{n} session{'s' if n != 1 else ''} open" if n else "Ready · your shell, in black and white"
+    return tr("grimoire.spells.terminall.page", "%n session(s) open", n=n) if n \
+        else tr("grimoire.spells.terminall.page", "Ready · your shell, in black and white")

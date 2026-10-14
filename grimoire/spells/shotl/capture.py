@@ -8,6 +8,7 @@ import subprocess
 import time
 from pathlib import Path
 
+from grimoire.i18n import tr
 from grimoire.spells.shotl.shots import TEMP
 
 FLAGS = {"full": "-f", "screen": "-m", "window": "-a"}     # all screens, the one under the pointer, active window
@@ -43,24 +44,29 @@ def grab(mode: str, pointer=False) -> Path:
             try:                       # instance and save nothing; a second try a moment later works
                 r = subprocess.run(cmd, capture_output=True, text=True, timeout=20)
             except subprocess.TimeoutExpired:
-                raise CaptureError("Spectacle didn't answer in 20 s")
+                raise CaptureError(tr("grimoire.spells.shotl.capture", "Spectacle didn't answer in 20 s"))
             if out.is_file() and out.stat().st_size:
                 break
             time.sleep(0.4)
         if not out.is_file() or out.stat().st_size == 0:
             msg = [ln for ln in r.stderr.splitlines() if "Tesseract" not in ln]
-            raise CaptureError("Spectacle took no screenshot" + (f": {msg[-1]}" if msg else ""))
+            raise CaptureError(tr("grimoire.spells.shotl.capture", "Spectacle took no screenshot: {error}")
+                               .format(error=msg[-1]) if msg
+                               else tr("grimoire.spells.shotl.capture", "Spectacle took no screenshot"))
         return out
     if how == "portal":
         if mode == "window":
-            raise CaptureError("Window shots need Spectacle (sudo apt install kde-spectacle)")
+            raise CaptureError(tr("grimoire.spells.shotl.capture", "Window shots need Spectacle ({command})")
+                               .format(command="sudo apt install kde-spectacle"))
         from grimoire.spells.shotl import portal
         try:
             portal.screenshot(out)
         except Exception as e:                 # PortalError, D-Bus, a file it couldn't copy
-            raise CaptureError(f"The desktop portal took no screenshot: {e}") from e
+            raise CaptureError(tr("grimoire.spells.shotl.capture", "The desktop portal took no screenshot: {error}")
+                               .format(error=e)) from e
         return out
-    raise CaptureError("Nothing here can take screenshots: install Spectacle (sudo apt install kde-spectacle)")
+    raise CaptureError(tr("grimoire.spells.shotl.capture", "Nothing here can take screenshots: install Spectacle "
+                          "({command})").format(command="sudo apt install kde-spectacle"))
 
 
 def take(path: Path):
@@ -69,7 +75,7 @@ def take(path: Path):
     img = QImage(str(path))
     path.unlink(missing_ok=True)
     if img.isNull():
-        raise CaptureError("The screenshot couldn't be read")
+        raise CaptureError(tr("grimoire.spells.shotl.capture", "The screenshot couldn't be read"))
     return img
 
 

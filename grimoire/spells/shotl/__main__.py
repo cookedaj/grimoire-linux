@@ -24,6 +24,7 @@ def shoot(mode: str, args: list[str]) -> int:
 
     from grimoire.app import style_app
     from grimoire.fsutil import tilde
+    from grimoire.i18n import tr
     from grimoire.spells.shotl import capture, region, shots
     from grimoire.spells.shotl.record import _notify
     from grimoire.standalone import app_icon
@@ -47,7 +48,7 @@ def shoot(mode: str, args: list[str]) -> int:
         img = capture.take(capture.grab("full" if mode == "region" else mode,
                                         pointer=settings["pointer"] and mode != "region"))
     except capture.CaptureError as e:
-        _notify("No screenshot", str(e))
+        _notify(tr("grimoire.spells.shotl.__main__", "No screenshot"), str(e))
         print(e)
         return 1
     if mode == "region":
@@ -91,11 +92,12 @@ def shoot(mode: str, args: list[str]) -> int:
     print(dest)
     if after == "copy":
         how = capture.copy_image(img)
-        _notify("Screenshot copied", f"Also saved as {tilde(dest)}")
+        _notify(tr("grimoire.spells.shotl.__main__", "Screenshot copied"),
+                tr("grimoire.spells.shotl.__main__", "Also saved as {path}").format(path=shots.ltr(tilde(dest))))
         if how == "qt":
             return capture.hold_clipboard(app)          # Wayland drops the image if its owner quits
         return 0
-    _notify("Screenshot saved", tilde(dest))
+    _notify(tr("grimoire.spells.shotl.__main__", "Screenshot saved"), shots.ltr(tilde(dest)))
     return 0
 
 
