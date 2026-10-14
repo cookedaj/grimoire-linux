@@ -5,15 +5,17 @@ details panel (play, open its folder in VaultL); plus the MangoHud overlay and P
 The library is read on a worker thread each time the page is shown; covers are turned gray (and cached) on a worker
 too. Nothing here changes anything on its own when a game starts.
 """
-from PySide6.QtCore import QObject, QRectF, QSize, Qt, QTimer, Signal
+from PySide6.QtCore import QDate, QLocale, QObject, QRectF, QSize, Qt, QTimer, Signal
 from PySide6.QtGui import QColor, QFont, QImage, QPainter, QPixmap
 from PySide6.QtWidgets import (QAbstractItemView, QApplication, QComboBox, QFrame, QGridLayout, QHBoxLayout,
                                QHeaderView, QLabel, QLineEdit, QListView, QListWidget, QListWidgetItem, QPushButton,
                                QScrollArea, QStackedWidget, QToolButton, QTreeWidget, QTreeWidgetItem, QVBoxLayout,
                                QWidget)
 
+from grimoire import i18n
 from grimoire.fsutil import human, tilde
 from grimoire.glyphs import glyph
+from grimoire.i18n import tr, tr_noop
 from grimoire.jobs import POOL, Job
 from grimoire.spells.gamel import launch, library, overlay
 from grimoire.spells.gamel.library import SOURCES, Game
@@ -21,8 +23,13 @@ from grimoire.widgets import Switch
 
 COVER = QSize(240, 360)          # covers are made at this size, then shown smaller
 GRID_ICON = QSize(120, 180)
-FILTERS = [("all", "All games"), ("steam", "Steam"), ("heroic", "Heroic"), ("lutris", "Lutris")]
-SORT_NAMES = {"name": "Name", "last": "Last played", "size": "Size", "playtime": "Playtime"}
+# shown with tr("grimoire.spells.gamel.page", …); launcher names stay as they are
+FILTERS = [("all", tr_noop("grimoire.spells.gamel.page", "All games")),
+           ("steam", "Steam"), ("heroic", "Heroic"), ("lutris", "Lutris")]
+SORT_NAMES = {"name": tr_noop("grimoire.spells.gamel.page", "Name"),
+              "last": tr_noop("grimoire.spells.gamel.page", "Last played"),
+              "size": tr_noop("grimoire.spells.gamel.page", "Size"),
+              "playtime": tr_noop("grimoire.spells.gamel.page", "Playtime")}
 
 
 class _Signals(QObject):
@@ -38,6 +45,16 @@ def _label(text="", name="", wrap=False) -> QLabel:
         lab.setObjectName(name)
     lab.setWordWrap(wrap)
     return lab
+
+
+def _date(d) -> str:
+    """An older "last played" day, in the app's language."""
+    fmt = tr("grimoire.spells.gamel.page", "dd MMM yyyy", "QLocale date format")
+    return QLocale().toString(QDate(d.year, d.month, d.day), fmt)
+
+
+def _ago(ts: float) -> str:
+    return library.ago(ts, date=_date)
 
 
 def _row(title: str, sub: str, *controls, below: QWidget | None = None) -> QFrame:
@@ -89,11 +106,11 @@ def make_cover(g: Game) -> QImage:
                    Qt.AlignmentFlag.AlignCenter | Qt.TextFlag.TextWordWrap, g.name)
         f.setPixelSize(14)
         f.setWeight(QFont.Weight.Medium)
-        f.setLetterSpacing(QFont.SpacingType.AbsoluteSpacing, 2)
+        source = g.source_name.upper()
+        f.setLetterSpacing(QFont.SpacingType.AbsoluteSpacing, i18n.spacing(source, 2))
         p.setFont(f)
         p.setPen(QColor("#6f6f6f"))
-        p.drawText(QRectF(0, COVER.height() - 50, COVER.width(), 30), Qt.AlignmentFlag.AlignCenter,
-                   g.source_name.upper())
+        p.drawText(QRectF(0, COVER.height() - 50, COVER.width(), 30), Qt.AlignmentFlag.AlignCenter, source)
     p.end()
     return img
 
@@ -124,19 +141,20 @@ class LibraryPanel(QWidget):
         bar = QHBoxLayout()
         bar.setSpacing(8)
         self.search = QLineEdit()
-        self.search.setPlaceholderText("Search your games")
+        self.search.setPlaceholderText(tr("grimoire.spells.gamel.page", "Search your games"))
         self.search.setClearButtonEnabled(True)
         self.search.textChanged.connect(lambda _: self.fill())
         bar.addWidget(self.search, 1)
         self.sort = QComboBox()
         for key, name in SORT_NAMES.items():
-            self.sort.addItem(name, key)
+            self.sort.addItem(tr("grimoire.spells.gamel.page", name), key)
         self.sort.setCurrentIndex(list(SORT_NAMES).index(self.s["sort"]))
-        self.sort.setToolTip("Sort by")
+        self.sort.setToolTip(tr("grimoire.spells.gamel.page", "Sort by"))
         self.sort.currentIndexChanged.connect(self._sorted)
         bar.addWidget(self.sort)
         self.view_btns = {}
-        for key, icon, tip in (("grid", "grid", "Covers"), ("list", "list", "List")):
+        for key, icon, tip in (("grid", "grid", tr("grimoire.spells.gamel.page", "Covers")),
+                               ("list", "list", tr("grimoire.spells.gamel.page", "List"))):
             b = QToolButton()
             b.setObjectName("Tool")
             b.setIcon(glyph(icon, 18))
@@ -148,7 +166,7 @@ class LibraryPanel(QWidget):
         refresh = QToolButton()
         refresh.setObjectName("Tool")
         refresh.setIcon(glyph("update", 18))
-        refresh.setToolTip("Look for games again")
+        refresh.setToolTip(tr("grimoire.spells.gamel.page", "Look for games again"))
         refresh.clicked.connect(self.page.scan)
         bar.addWidget(refresh)
         left.addLayout(bar)
@@ -167,7 +185,11 @@ class LibraryPanel(QWidget):
         self.grid.currentRowChanged.connect(lambda r: self.select(self.shown[r] if 0 <= r < len(self.shown) else None))
         self.grid.itemActivated.connect(lambda _: self.play())
         self.list = QTreeWidget()
-        self.list.setHeaderLabels(["Name", "Launcher", "Size", "Playtime", "Last played"])
+        self.list.setHeaderLabels([tr("grimoire.spells.gamel.page", "Name"),
+                                   tr("grimoire.spells.gamel.page", "Launcher"),
+                                   tr("grimoire.spells.gamel.page", "Size"),
+                                   tr("grimoire.spells.gamel.page", "Playtime"),
+                                   tr("grimoire.spells.gamel.page", "Last played")])
         self.list.setRootIsDecorated(False)
         self.list.setUniformRowHeights(True)
         self.list.setSelectionMode(QAbstractItemView.SelectionMode.SingleSelection)
@@ -203,10 +225,15 @@ class LibraryPanel(QWidget):
         info.setHorizontalSpacing(12)
         info.setVerticalSpacing(6)
         self.d = {}
-        for r, (key, name) in enumerate((("path", "Folder"), ("size", "Size"), ("playtime", "Playtime"),
-                                         ("last", "Last played"))):
+        start = Qt.AlignmentFlag.AlignAbsolute | (Qt.AlignmentFlag.AlignRight if QApplication.isRightToLeft()
+                                                  else Qt.AlignmentFlag.AlignLeft)
+        for r, (key, name) in enumerate((("path", tr("grimoire.spells.gamel.page", "Folder")),
+                                         ("size", tr("grimoire.spells.gamel.page", "Size")),
+                                         ("playtime", tr("grimoire.spells.gamel.page", "Playtime")),
+                                         ("last", tr("grimoire.spells.gamel.page", "Last played")))):
             info.addWidget(_label(name, "Muted"), r, 0, Qt.AlignmentFlag.AlignTop)
             v = _label("", "", wrap=True)
+            v.setAlignment(start)              # a path or "3.0 GB" would else sit on the left in right-to-left
             v.setTextInteractionFlags(Qt.TextInteractionFlag.TextSelectableByMouse)
             info.addWidget(v, r, 1)
             self.d[key] = v
@@ -217,14 +244,15 @@ class LibraryPanel(QWidget):
         dl.addStretch(1)
         self.d_hint = _label("", "Muted", wrap=True)
         dl.addWidget(self.d_hint)
-        self.copy_btn = QPushButton("Copy launch option")
+        self.copy_btn = QPushButton(tr("grimoire.spells.gamel.page", "Copy launch option"))
         self.copy_btn.setToolTip(overlay.STEAM_OPTION)
         self.copy_btn.clicked.connect(self.page.copy_option)
         dl.addWidget(self.copy_btn)
-        self.folder_btn = QPushButton(glyph("vault", 16), "  Open folder in VaultL")
+        self.folder_btn = QPushButton(glyph("vault", 16),
+                                      "  " + tr("grimoire.spells.gamel.page", "Open folder in VaultL"))
         self.folder_btn.clicked.connect(self.open_folder)
         dl.addWidget(self.folder_btn)
-        self.play_btn = QPushButton("Play")
+        self.play_btn = QPushButton(tr("grimoire.spells.gamel.page", "Play"))
         self.play_btn.setObjectName("Primary")
         self.play_btn.setMinimumHeight(40)
         self.play_btn.clicked.connect(self.play)
@@ -279,17 +307,19 @@ class LibraryPanel(QWidget):
             it.setSizeHint(QSize(146, 236))
             self.grid.addItem(it)
             row = _Item([g.name, g.source_name, human(self.page.size_of(g)) if self.page.size_of(g) else "–",
-                         library.hours(g.playtime) if g.playtime else "–", library.ago(g.last_played)])
+                         library.hours(g.playtime) if g.playtime else "–", _ago(g.last_played)])
             for c in (2, 3):
                 row.setTextAlignment(c, Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter)
             self.list.addTopLevelItem(row)
         self.grid.blockSignals(False)
         self.list.blockSignals(False)
         if not self.games:
-            self.empty.setText("No games found. GameL looks for Steam, Heroic and Lutris libraries in their usual "
-                               "places, including their Flatpak versions.")
+            self.empty.setText(tr("grimoire.spells.gamel.page", "No games found. GameL looks for Steam, Heroic and "
+                                                                "Lutris libraries in their usual places, including "
+                                                                "their Flatpak versions."))
         else:
-            self.empty.setText("No game matches “{query}”.".format(query=self.search.text().strip()))
+            self.empty.setText(tr("grimoire.spells.gamel.page", "No game matches “{query}”.").format(
+                query=self.search.text().strip()))
         self._show_view()
         keys = [g.key for g in self.shown]
         idx = keys.index(want) if want in keys else (0 if keys else -1)
@@ -322,22 +352,27 @@ class LibraryPanel(QWidget):
                                                       Qt.TransformationMode.SmoothTransformation))
         self.d_name.setText(g.name)
         self.d_source.setText(g.source_name.upper())
-        self.d["path"].setText(tilde(g.path) if g.path else "Not known")
+        self.d["path"].setText(tilde(g.path) if g.path else tr("grimoire.spells.gamel.page", "Not known"))
         size = self.page.size_of(g)
-        self.d["size"].setText(human(size) if size else ("Counting…" if g.path else "Not known"))
+        if size:
+            self.d["size"].setText(human(size))
+        elif g.path:
+            self.d["size"].setText(tr("grimoire.spells.gamel.page", "Counting…"))
+        else:
+            self.d["size"].setText(tr("grimoire.spells.gamel.page", "Not known"))
         if not size and g.path:
             self.page.count_size(g)
         self.d["playtime"].setText(library.hours(g.playtime))
-        self.d["last"].setText(library.ago(g.last_played))
+        self.d["last"].setText(_ago(g.last_played))
         self.d_note.setText(g.note)
         self.d_note.setVisible(bool(g.note))
         steam_hint = g.source == "steam" and overlay.load()["mangohud"] and overlay.installed()
-        self.d_hint.setText("For MangoHud in this game, add “{option}” to its launch options in Steam."
-                            .format(option=overlay.STEAM_OPTION))
+        self.d_hint.setText(tr("grimoire.spells.gamel.page", "For MangoHud in this game, add “{option}” to its launch "
+                                                             "options in Steam.").format(option=overlay.STEAM_OPTION))
         self.d_hint.setVisible(steam_hint)
         self.copy_btn.setVisible(steam_hint)
         self.folder_btn.setEnabled(bool(g.path))
-        self.play_btn.setText("Play")
+        self.play_btn.setText(tr("grimoire.spells.gamel.page", "Play"))
 
     def update_size(self, key: str):
         for i, g in enumerate(self.shown):
@@ -345,7 +380,7 @@ class LibraryPanel(QWidget):
                 size = self.page.size_of(g)
                 self.list.topLevelItem(i).setText(2, human(size) if size else "–")
                 if self.current and self.current.key == key:
-                    self.d["size"].setText(human(size) if size else "Not known")
+                    self.d["size"].setText(human(size) if size else tr("grimoire.spells.gamel.page", "Not known"))
 
     def play(self):
         g = self.current
@@ -354,20 +389,21 @@ class LibraryPanel(QWidget):
         try:
             launch.play(g)
         except OSError as e:
-            self.page.say("Couldn't start {name}: {error}".format(name=g.name, error=e))
+            self.page.say(tr("grimoire.spells.gamel.page", "Couldn't start {name}: {error}").format(
+                name=g.name, error=e))
             return
         if g.source != "steam" and launch.game_env(g):
-            text = "Starting {name} through {launcher}, with MangoHud.".format(name=g.name, launcher=g.source_name)
+            text = tr("grimoire.spells.gamel.page", "Starting {name} through {launcher}, with MangoHud.")
         else:
-            text = "Starting {name} through {launcher}.".format(name=g.name, launcher=g.source_name)
-        self.page.say(text)
+            text = tr("grimoire.spells.gamel.page", "Starting {name} through {launcher}.")
+        self.page.say(text.format(name=g.name, launcher=g.source_name))
 
     def open_folder(self):
         if self.current and self.current.path:
             try:
                 launch.open_folder(self.current.path)
             except OSError as e:
-                self.page.say("Couldn't open VaultL: {error}".format(error=e))
+                self.page.say(tr("grimoire.spells.gamel.page", "Couldn't open VaultL: {error}").format(error=e))
 
 
 # ---------------------------------------------------------------- overlay
@@ -384,19 +420,24 @@ class OverlayPanel(QScrollArea):
         col.setSpacing(8)
         s = overlay.load()
 
-        col.addWidget(_label("MangoHud shows FPS, frame times, CPU and GPU load and temperature, RAM and VRAM over a "
-                             "game, in a black & white style. It's a manual switch: GameL never turns it, the "
-                             "crosshair, optimizations or anything else on by itself when a game starts.",
-                             "Subtitle", wrap=True))
-        self.missing = _row("MangoHud isn't installed", "Install it, then come back here:",
+        intro = tr("grimoire.spells.gamel.page", "MangoHud shows FPS, frame times, CPU and GPU load and temperature, "
+                                                 "RAM and VRAM over a game, in a black & white style. It's a manual "
+                                                 "switch: GameL never turns it, the crosshair, optimizations or "
+                                                 "anything else on by itself when a game starts.")
+        col.addWidget(_label(intro, "Subtitle", wrap=True))
+        self.missing = _row(tr("grimoire.spells.gamel.page", "MangoHud isn't installed"),
+                            tr("grimoire.spells.gamel.page", "Install it, then come back here:"),
                             below=_label("sudo apt install mangohud", "Mono"))
         col.addWidget(self.missing)
 
         self.switch = Switch()
         self.switch.setChecked(s["mangohud"])
         self.switch.toggled.connect(self._toggle)
-        col.addWidget(_row("MangoHud overlay", "On: GameL writes its style to ~/.config/MangoHud/MangoHud.conf and "
-                           "starts Heroic and Lutris games with MANGOHUD=1. Off: games GameL starts don't get it.",
+        col.addWidget(_row(tr("grimoire.spells.gamel.page", "MangoHud overlay"),
+                           tr("grimoire.spells.gamel.page", "On: GameL writes its style to "
+                                                            "~/.config/MangoHud/MangoHud.conf and starts Heroic and "
+                                                            "Lutris games with MANGOHUD=1. Off: games GameL starts "
+                                                            "don't get it."),
                            self.switch))
 
         self.key = QComboBox()
@@ -407,38 +448,47 @@ class OverlayPanel(QScrollArea):
         self.key.setFixedWidth(170)
         self.key.lineEdit().editingFinished.connect(self._key)
         self.key.activated.connect(lambda _: self._key())
-        col.addWidget(_row("Show or hide key", "Press it in a game to hide the overlay or bring it back", self.key))
+        col.addWidget(_row(tr("grimoire.spells.gamel.page", "Show or hide key"),
+                           tr("grimoire.spells.gamel.page", "Press it in a game to hide the overlay or bring it back"),
+                           self.key))
 
         self.pos = QComboBox()
         for k, name in overlay.POSITIONS.items():
-            self.pos.addItem(name, k)
+            self.pos.addItem(tr("grimoire.spells.gamel.overlay", name), k)
         self.pos.setCurrentIndex(list(overlay.POSITIONS).index(s["position"]))
-        self.pos.setFixedWidth(170)
+        self.pos.setMinimumWidth(170)          # grows for longer names in other languages
         self.pos.currentIndexChanged.connect(lambda _: self._set("position", self.pos.currentData()))
-        col.addWidget(_row("Position", "Which corner of the screen it sits in", self.pos))
+        col.addWidget(_row(tr("grimoire.spells.gamel.page", "Position"),
+                           tr("grimoire.spells.gamel.page", "Which corner of the screen it sits in"), self.pos))
 
         self.compact = Switch()
         self.compact.setChecked(s["compact"])
         self.compact.toggled.connect(lambda on: self._set("compact", on))
-        col.addWidget(_row("Compact", "One thin row along the edge instead of a table", self.compact))
+        col.addWidget(_row(tr("grimoire.spells.gamel.page", "Compact"),
+                           tr("grimoire.spells.gamel.page", "One thin row along the edge instead of a table"),
+                           self.compact))
 
         col.addSpacing(10)
-        col.addWidget(_label("MangoHud for Steam games", "SectionTitle"))
+        col.addWidget(_label(tr("grimoire.spells.gamel.page", "MangoHud for Steam games"), "SectionTitle"))
         steam = QWidget()
         sl = QHBoxLayout(steam)
         sl.setContentsMargins(0, 0, 0, 0)
         opt = _label(overlay.STEAM_OPTION, "Mono")
         opt.setTextInteractionFlags(Qt.TextInteractionFlag.TextSelectableByMouse)
         sl.addWidget(opt, 1)
-        copy = QPushButton("Copy")
+        copy = QPushButton(tr("grimoire.spells.gamel.page", "Copy"))
         copy.clicked.connect(self.page.copy_option)
         sl.addWidget(copy)
-        col.addWidget(_row("Add a launch option in Steam", "Steam starts its games itself, so GameL can't hand "
-                           "MangoHud to them. In Steam, right-click a game, choose Properties, and under General "
-                           "put this in Launch options. It uses the same style.", below=steam))
-        col.addWidget(_row("Heroic and Lutris", "If Heroic or Lutris is already open, the game starts from that "
-                           "window and may start without MangoHud. Both also have a MangoHud switch in each game's "
-                           "settings."))
+        col.addWidget(_row(tr("grimoire.spells.gamel.page", "Add a launch option in Steam"),
+                           tr("grimoire.spells.gamel.page", "Steam starts its games itself, so GameL can't hand "
+                                                            "MangoHud to them. In Steam, right-click a game, choose "
+                                                            "Properties, and under General put this in Launch options. "
+                                                            "It uses the same style."),
+                           below=steam))
+        col.addWidget(_row(tr("grimoire.spells.gamel.page", "Heroic and Lutris"),
+                           tr("grimoire.spells.gamel.page", "If Heroic or Lutris is already open, the game starts from "
+                                                            "that window and may start without MangoHud. Both also "
+                                                            "have a MangoHud switch in each game's settings.")))
         self.state = _label("", "Muted", wrap=True)
         col.addWidget(self.state)
         col.addStretch(1)
@@ -450,10 +500,10 @@ class OverlayPanel(QScrollArea):
         self.switch.setEnabled(ok)
         path = overlay.conf_path()
         if overlay.ours():
-            self.state.setText("GameL's style is in {path}.".format(path=tilde(path)))
+            self.state.setText(tr("grimoire.spells.gamel.page", "GameL's style is in {path}.").format(path=tilde(path)))
         elif path.exists():
-            self.state.setText("{path} is your own; turning the overlay on moves it aside first.".format(
-                path=tilde(path)))
+            self.state.setText(tr("grimoire.spells.gamel.page", "{path} is your own; turning the overlay on moves it "
+                                                                "aside first.").format(path=tilde(path)))
         else:
             self.state.setText("")
 
@@ -461,20 +511,25 @@ class OverlayPanel(QScrollArea):
         try:
             moved = overlay.set_overlay(on)
         except OSError as e:
-            self.page.say("Couldn't write MangoHud's settings: {error}".format(error=e))
+            self.page.say(tr("grimoire.spells.gamel.page", "Couldn't write MangoHud's settings: {error}").format(
+                error=e))
             self.switch.setChecked(not on)
             return
         if moved:
-            self.page.say("Your own MangoHud.conf was kept as {name}.".format(name=moved.name))
+            self.page.say(tr("grimoire.spells.gamel.page", "Your own MangoHud.conf was kept as {name}.").format(
+                name=moved.name))
+        elif on:
+            self.page.say(tr("grimoire.spells.gamel.page", "MangoHud overlay on."))
         else:
-            self.page.say("MangoHud overlay on." if on else "MangoHud overlay off.")
+            self.page.say(tr("grimoire.spells.gamel.page", "MangoHud overlay off."))
         self.load()
         self.page.panels["library"].select(self.page.panels["library"].current)
 
     def _key(self):
         text = self.key.currentText().strip()
         if not overlay.KEY_RE.match(text):
-            self.page.say("“{key}” isn't a key MangoHud knows. Use names like Shift_R+F12.".format(key=text))
+            self.page.say(tr("grimoire.spells.gamel.page", "“{key}” isn't a key MangoHud knows. Use names like "
+                                                           "Shift_R+F12.").format(key=text))
             self.key.setCurrentText(overlay.load()["toggle"])
             return
         self._set("toggle", text)
@@ -485,10 +540,11 @@ class OverlayPanel(QScrollArea):
             if s["mangohud"]:
                 moved = overlay.write_conf(s)
                 if moved:
-                    self.page.say("Your own MangoHud.conf was kept as {name}.".format(name=moved.name))
+                    self.page.say(tr("grimoire.spells.gamel.page", "Your own MangoHud.conf was kept as {name}.").format(
+                        name=moved.name))
             overlay.save(s)
         except OSError as e:
-            self.page.say("Couldn't save: {error}".format(error=e))
+            self.page.say(tr("grimoire.spells.gamel.page", "Couldn't save: {error}").format(error=e))
         self.load()
 
 
@@ -505,15 +561,18 @@ class PerfPanel(QScrollArea):
         col.setContentsMargins(0, 0, 12, 20)
         col.setSpacing(8)
         from grimoire.spells.optimizel import perfmode
-        col.addWidget(_label("A few of OptimizeL's switches for gaming, turned on together while you play. It's "
-                             "the same Performance mode as the tray's. Manual only: starting a game never turns it "
-                             "on, and turning it off puts back only what it changed.", "Subtitle", wrap=True))
+        intro = tr("grimoire.spells.gamel.page", "A few of OptimizeL's switches for gaming, turned on together while "
+                                                 "you play. It's the same Performance mode as the tray's. Manual only: "
+                                                 "starting a game never turns it on, and turning it off puts back only "
+                                                 "what it changed.")
+        col.addWidget(_label(intro, "Subtitle", wrap=True))
         self.btn = QPushButton()
         self.btn.setObjectName("Primary")
         self.btn.setMinimumWidth(130)
         self.btn.clicked.connect(self.toggle)
-        self.row = _row("Performance mode", "Switches on: {list}. Turning off split-lock throttling asks for your "
-                        "password.".format(list=perfmode.describe(perfmode.IDS)), self.btn)
+        sub = tr("grimoire.spells.gamel.page", "Switches on: {list}. Turning off split-lock throttling asks for your "
+                                               "password.").format(list=perfmode.describe(perfmode.IDS))
+        self.row = _row(tr("grimoire.spells.gamel.page", "Performance mode"), sub, self.btn)
         col.addWidget(self.row)
         self.state = _label("", "Muted", wrap=True)
         col.addWidget(self.state)
@@ -525,19 +584,23 @@ class PerfPanel(QScrollArea):
         from grimoire.spells.optimizel import perfmode
         d = perfmode.load()
         self.btn.setEnabled(True)
-        self.btn.setText("Turn off" if d["on"] else "Turn on")
+        self.btn.setText(tr("grimoire.spells.gamel.page", "Turn off") if d["on"]
+                         else tr("grimoire.spells.gamel.page", "Turn on"))
         if d["on"] and d["changed"]:
-            self.state.setText("On. GameL turned on: {list}.".format(list=perfmode.describe(d["changed"])))
+            self.state.setText(tr("grimoire.spells.gamel.page", "On. GameL turned on: {list}.").format(
+                list=perfmode.describe(d["changed"])))
         elif d["on"]:
-            self.state.setText("On. Everything it switches was already on, so turning it off changes nothing.")
+            self.state.setText(tr("grimoire.spells.gamel.page", "On. Everything it switches was already on, so turning "
+                                                                "it off changes nothing."))
         else:
-            self.state.setText("Off.")
+            self.state.setText(tr("grimoire.spells.gamel.page", "Off."))
 
     def toggle(self):
         from grimoire.spells.optimizel import perfmode
         on = not perfmode.is_on()
         self.btn.setEnabled(False)
-        self.btn.setText("Turning on…" if on else "Turning off…")
+        self.btn.setText(tr("grimoire.spells.gamel.page", "Turning on…") if on
+                         else tr("grimoire.spells.gamel.page", "Turning off…"))
 
         def work():
             try:
@@ -549,16 +612,20 @@ class PerfPanel(QScrollArea):
     def _done(self, result):
         from grimoire.spells.optimizel import perfmode
         on, r = result
-        if on:
-            text = "Turned on: {list}.".format(list=perfmode.describe(r["changed"])) if r["changed"] else \
-                "Everything it switches was already on, or doesn't apply here."
+        changed = perfmode.describe(r["changed"])
+        if on and r["changed"]:
+            text = tr("grimoire.spells.gamel.page", "Turned on: {list}.").format(list=changed)
+        elif on:
+            text = tr("grimoire.spells.gamel.page", "Everything it switches was already on, or doesn't apply here.")
+        elif r["changed"]:
+            text = tr("grimoire.spells.gamel.page", "Turned back off: {list}.").format(list=changed)
         else:
-            text = "Turned back off: {list}.".format(list=perfmode.describe(r["changed"])) if r["changed"] else \
-                "Nothing to turn back."
-            if r.get("left"):
-                text += " " + "Still on: {list}.".format(list=perfmode.describe(r["left"]))
+            text = tr("grimoire.spells.gamel.page", "Nothing to turn back.")
+        if not on and r.get("left"):
+            text += " " + tr("grimoire.spells.gamel.page", "Still on: {list}.").format(
+                list=perfmode.describe(r["left"]))
         if r["problems"]:
-            text += " " + "Problems: {list}".format(list="; ".join(r["problems"]))
+            text += " " + tr("grimoire.spells.gamel.page", "Problems: {list}").format(list="; ".join(r["problems"]))
         self.page.say(text)
         self.load()
 
@@ -582,24 +649,26 @@ class GameLPage(QWidget):
         root.setSpacing(0)
         nav = QFrame()
         nav.setObjectName("SubNav")
-        nav.setFixedWidth(210)
+        nav.setMinimumWidth(210)               # grows for longer names in other languages
         nl = QVBoxLayout(nav)
         nl.setContentsMargins(12, 26, 12, 16)
         nl.setSpacing(2)
         nl.addWidget(_label("GameL", "Title"))
         nl.addSpacing(12)
-        nl.addWidget(_label("LIBRARY", "NavSection"))
+        nl.addWidget(_label(tr("grimoire.spells.gamel.page", "LIBRARY"), "NavSection"))
         self.nav: dict[str, QPushButton] = {}
         for fid, name in FILTERS:
-            b = QPushButton(glyph("game" if fid == "all" else "grid", 18), "  " + name)
+            b = QPushButton(glyph("game" if fid == "all" else "grid", 18),
+                            "  " + tr("grimoire.spells.gamel.page", name))
             b.setObjectName("SubNavItem")
             b.setCheckable(True)
             b.clicked.connect(lambda _=False, f=fid: self.show_panel("library", f))
             nl.addWidget(b)
             self.nav[fid] = b
         nl.addSpacing(10)
-        nl.addWidget(_label("WHILE YOU PLAY", "NavSection"))
-        for pid, name, icon in (("overlay", "Overlay", "system"), ("perf", "Performance mode", "optimize")):
+        nl.addWidget(_label(tr("grimoire.spells.gamel.page", "WHILE YOU PLAY"), "NavSection"))
+        for pid, name, icon in (("overlay", tr("grimoire.spells.gamel.page", "Overlay"), "system"),
+                                ("perf", tr("grimoire.spells.gamel.page", "Performance mode"), "optimize")):
             b = QPushButton(glyph(icon, 18), "  " + name)
             b.setObjectName("SubNavItem")
             b.setCheckable(True)
@@ -640,10 +709,11 @@ class GameLPage(QWidget):
         if pid == "library":
             lib = self.panels["library"]
             lib.source = source or "all"
-            self.heading.setText(dict(FILTERS)[lib.source])
+            self.heading.setText(tr("grimoire.spells.gamel.page", dict(FILTERS)[lib.source]))
             lib.fill()
         else:
-            self.heading.setText({"overlay": "Overlay", "perf": "Performance mode"}[pid])
+            self.heading.setText({"overlay": tr("grimoire.spells.gamel.page", "Overlay"),
+                                  "perf": tr("grimoire.spells.gamel.page", "Performance mode")}[pid])
             self.panels[pid].load()
         self.stack.setCurrentWidget(self.panels[pid])
 
@@ -665,7 +735,7 @@ class GameLPage(QWidget):
         counts = {src: sum(g.source == src for g in games) for src in SOURCES}
         for fid, name in FILTERS:
             n = len(games) if fid == "all" else counts[fid]
-            self.nav[fid].setText("  {name}   {n}".format(name=name, n=n))
+            self.nav[fid].setText("  {name}   {n}".format(name=tr("grimoire.spells.gamel.page", name), n=n))
         self.foot.setText("; ".join(problems))
         self.panels["library"].set_games(games)
         todo = [g for g in games if self._ck(g) not in self._images]
@@ -717,8 +787,8 @@ class GameLPage(QWidget):
     # ------------------------------------------------------------ helpers
     def copy_option(self):
         QApplication.clipboard().setText(overlay.STEAM_OPTION)
-        self.say("Copied “{option}”. Paste it into the game's Launch options in Steam.".format(
-            option=overlay.STEAM_OPTION))
+        self.say(tr("grimoire.spells.gamel.page", "Copied “{option}”. Paste it into the game's Launch options in "
+                                                  "Steam.").format(option=overlay.STEAM_OPTION))
 
     def say(self, text: str):
         self.toast.setText(text)

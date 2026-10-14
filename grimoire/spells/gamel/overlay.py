@@ -13,14 +13,19 @@ import shutil
 from pathlib import Path
 
 from grimoire.fsutil import free_name
+from grimoire.i18n import tr_noop
 from grimoire.paths import CONFIG
 
 MARKER = "# Written by Grimoire Linux GameL"
 STEAM_OPTION = "mangohud %command%"
 DEFAULTS = {"mangohud": False, "toggle": "Shift_R+F12", "position": "top-left", "compact": False,
             "view": "grid", "sort": "name"}
-POSITIONS = {"top-left": "Top left", "top-right": "Top right", "bottom-left": "Bottom left",
-             "bottom-right": "Bottom right", "top-center": "Top center"}
+# shown with tr("grimoire.spells.gamel.overlay", …)
+POSITIONS = {"top-left": tr_noop("grimoire.spells.gamel.overlay", "Top left"),
+             "top-right": tr_noop("grimoire.spells.gamel.overlay", "Top right"),
+             "bottom-left": tr_noop("grimoire.spells.gamel.overlay", "Bottom left"),
+             "bottom-right": tr_noop("grimoire.spells.gamel.overlay", "Bottom right"),
+             "top-center": tr_noop("grimoire.spells.gamel.overlay", "Top center")}
 SORTS = ("name", "last", "size", "playtime")
 KEY_RE = re.compile(r"^[A-Za-z0-9_]{1,24}(\+[A-Za-z0-9_]{1,24}){0,3}$")
 MONO = Path("/usr/share/fonts/truetype/ibm-plex/IBMPlexMono-Medium.ttf")

@@ -15,10 +15,12 @@ from datetime import datetime
 from pathlib import Path
 from urllib.request import pathname2url
 
+from grimoire.i18n import tr, tr_noop
 from grimoire.spells.gamel import vdf
 
 SOURCES = {"steam": "Steam", "heroic": "Heroic", "lutris": "Lutris"}
-STORES = {"legendary": "Epic", "gog": "GOG", "nile": "Amazon", "sideload": "Sideloaded"}
+STORES = {"legendary": "Epic", "gog": "GOG", "nile": "Amazon",       # store names stay as they are
+          "sideload": tr_noop("grimoire.spells.gamel.library", "Sideloaded")}
 
 # Steam's own runtimes and compatibility tools also have app manifests; they aren't games
 # (runtimes, Proton builds, anti-cheat runtimes); names and toolmanifest.vdf catch newer ones
@@ -48,7 +50,7 @@ class Game:
     @property
     def source_name(self) -> str:
         if self.source == "heroic" and self.store in STORES:
-            return "Heroic · {store}".format(store=STORES[self.store])
+            return "Heroic · {store}".format(store=tr("grimoire.spells.gamel.library", STORES[self.store]))
         return SOURCES.get(self.source, self.source)
 
 
@@ -182,7 +184,8 @@ def scan_steam() -> list[Game]:
                     continue
                 last, mins = played.get(appid, (0, 0))
                 flags = _int(st.get("StateFlags"))
-                note = "" if flags & 4 else "Steam hasn't finished downloading or updating it."
+                note = "" if flags & 4 else tr("grimoire.spells.gamel.library",
+                                                    "Steam hasn't finished downloading or updating it.")
                 games[appid] = Game("steam", appid, name, str(folder), _int(st.get("SizeOnDisk")),
                                     max(last, _int(st.get("LastPlayed"))), mins,
                                     steam_cover(root, appid), flatpak=flat, note=note)
@@ -369,36 +372,36 @@ def folder_size(path: str, budget: float = 20.0) -> int:
     return total
 
 
-def ago(ts: float, now: float | None = None) -> str:
+def ago(ts: float, now: float | None = None, date=lambda d: d.strftime("%d %b %Y")) -> str:
+    """When a game was last played; date writes an older day (the page passes one in the app's language)."""
     if not ts:
-        return "Never"
+        return tr("grimoire.spells.gamel.library", "Never")
     now = now or time.time()
     days = (datetime.fromtimestamp(now).date() - datetime.fromtimestamp(ts).date()).days
     if days <= 0:
-        return "Today"
+        return tr("grimoire.spells.gamel.library", "Today")
     if days == 1:
-        return "Yesterday"
+        return tr("grimoire.spells.gamel.library", "Yesterday")
     if days < 30:
-        return "{n} days ago".format(n=days)
-    return datetime.fromtimestamp(ts).strftime("%d %b %Y")
+        return tr("grimoire.spells.gamel.library", "%n day(s) ago", n=days)
+    return date(datetime.fromtimestamp(ts).date())
 
 
 def hours(minutes: float | None) -> str:
     if minutes is None:
-        return "Not known"
+        return tr("grimoire.spells.gamel.library", "Not known")
     if minutes <= 0:
-        return "Not played yet"
+        return tr("grimoire.spells.gamel.library", "Not played yet")
     if minutes < 60:
-        return "{n:.0f} min".format(n=minutes)
-    return "{n:.1f} h".format(n=minutes / 60)
+        return tr("grimoire.spells.gamel.library", "{minutes} min").format(minutes=f"{minutes:.0f}")
+    return tr("grimoire.spells.gamel.library", "{hours} h").format(hours=f"{minutes / 60:.1f}")
 
 
 def status_line() -> str:
     games, _ = scan()
     if not games:
-        return "No games found yet"
+        return tr("grimoire.spells.gamel.library", "No games found yet")
     last = max(games, key=lambda g: g.last_played)
-    count = "1 game" if len(games) == 1 else "{n} games".format(n=len(games))
     if not last.last_played:
-        return count
-    return "{count} · last played {name}".format(count=count, name=last.name)
+        return tr("grimoire.spells.gamel.library", "%n game(s)", n=len(games))
+    return tr("grimoire.spells.gamel.library", "%n game(s) · last played {name}", n=len(games)).format(name=last.name)
