@@ -25,6 +25,11 @@
     </message>
     <message>
         <location filename="../../grimoire/spells/updatel/apply.py"/>
+        <source>The update plan changed since the preview; check again.</source>
+        <translation>自预览以来更新计划已改变；请重新检查。</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/updatel/apply.py"/>
         <source>The update stopped with an error (code {code}); see the log.</source>
         <translation>更新因错误而停止（代码 {code}），请查看日志。</translation>
     </message>

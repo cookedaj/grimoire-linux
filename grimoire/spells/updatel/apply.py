@@ -4,7 +4,7 @@
 Everything needing root (APT, system Flatpaks, snaps, firmware, refreshing the package lists) goes into ONE call of
 UpdateL's root helper, steps joined by "+", so a batch asks for the password once. Your own Flatpaks update as you,
 without a prompt. APT upgrades are simulated first (sources.simulate) so removals are shown before anything runs;
-the helper simulates again and refuses removals that weren't confirmed.
+the helper simulates again and refuses any removal that isn't on the list you confirmed.
 """
 import re
 import subprocess
@@ -25,7 +25,7 @@ class Plan:
     snap: list[str] | None = field(default_factory=list)
     fwupd: list[str] = field(default_factory=list)
     refresh: bool = False                                   # apt-get update first
-    allow_removals: bool = False
+    removals: list[str] = field(default_factory=list)       # what you confirmed APT may remove (from the preview)
 
     def empty(self) -> bool:
         return not (self.refresh or self.fwupd or any(x is None or x for x in
@@ -68,7 +68,8 @@ def root_args(p: Plan) -> list[str]:
     if p.refresh:
         steps.append(["refresh"])
     if p.apt is None or p.apt:
-        steps.append(["apt", *(["--allow-removals"] if p.allow_removals else []),
+        gone = ",".join(_names("apt", sorted(set(p.removals))))
+        steps.append(["apt", *([f"--removals={gone}"] if gone else []),
                       *(["--all"] if p.apt is None else _names("apt", sorted(set(p.apt))))])
     if p.flatpak_system is None or p.flatpak_system:
         steps.append(["flatpak", *(["--all"] if p.flatpak_system is None else _names("flatpak", p.flatpak_system))])
@@ -140,6 +141,9 @@ def run(p: Plan, on_line) -> tuple[bool, str]:
         if code == 4:
             return False, tr("grimoire.spells.updatel.apply",
                              "Refused: the upgrade would remove packages you didn't confirm (see the log).")
+        if code == 6:
+            return False, tr("grimoire.spells.updatel.apply",
+                             "The update plan changed since the preview; check again.")
         if code:
             return False, tr("grimoire.spells.updatel.apply",
                              "The update stopped with an error (code {code}); see the log.").format(code=code)
