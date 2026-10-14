@@ -41,6 +41,7 @@ MONO_FONTS = {"zh_CN": ["Noto Sans Mono CJK SC"]}
 
 _loaded = None                                   # the language install() set up in this process
 _keep = []                                       # the translators (Qt holds them by pointer only)
+_bare: dict = {"app": None, "areas": set(), "translators": []}   # install_catalogs(): what it made and loaded
 
 
 def tr(context: str, text: str, disambiguation: str | None = None, n: int = -1) -> str:
@@ -162,6 +163,53 @@ def install(app, code: str | None = None) -> str:
     QFont.insertSubstitutions(MONO, mono)
     _loaded = code
     return code
+
+
+def install_catalogs(areas=None) -> str:
+    """Translations for a process without windows (timers, CLI commands, background runners): tr() needs a
+    QCoreApplication and the catalogs, which install() only loads for a QApplication. Uses the running
+    QCoreApplication or makes a bare one (QtCore only: no display needed), loads core plus the given areas (None: every
+    area) for current() and sets QLocale's default, so tr() and fsutil.human() speak the language. Call again to add
+    areas; never in a process that will make a QApplication later. Returns the language code ("en" without PySide6:
+    tr() then gives English as written)."""
+    global _loaded
+    try:
+        from PySide6.QtCore import QCoreApplication, QLocale, QTranslator
+    except ImportError:
+        return "en"
+    if _keep:                                    # install() already loaded every area for a window
+        return _loaded
+    app = QCoreApplication.instance() or QCoreApplication(["grimoire"])
+    _bare["app"] = app
+    code = _loaded or current()
+    QLocale.setDefault(QLocale(QT_LOCALE.get(code, code)))
+    wanted = set(AREAS) if areas is None else {"core", *areas}
+    for qm in catalogs(code):
+        if qm.parent.name in wanted - _bare["areas"]:
+            t = QTranslator(app)
+            if t.load(str(qm)) and app.installTranslator(t):
+                _bare["translators"].append(t)
+    _bare["areas"] |= wanted
+    _loaded = code
+    return code
+
+
+# bidi isolates: a path, number or version inside a right-to-left sentence keeps its own order (without them
+# "/home/x/a b" or "v1.2 (3)" come out shuffled). Text is returned unchanged in left-to-right languages.
+LRI, FSI, PDI = "\u2066", "\u2068", "\u2069"
+
+
+def ltr(text) -> str:
+    """text forced left to right (paths, numbers with units, versions, commands, key names) in an RTL language."""
+    text = str(text)
+    return f"{LRI}{text}{PDI}" if text and rtl() else text
+
+
+def isolate(text) -> str:
+    """text laid out by its own first letter (names, titles, anything a user or another program wrote) in an RTL
+    language, so it can't pull the sentence around it into its direction."""
+    text = str(text)
+    return f"{FSI}{text}{PDI}" if text and rtl() else text
 
 
 # Arabic (+ Urdu letters), Devanagari, Bengali

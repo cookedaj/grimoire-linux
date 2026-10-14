@@ -681,6 +681,34 @@
     </message>
 </context>
 <context>
+    <name>grimoire.fsutil</name>
+    <message>
+        <location filename="../../grimoire/fsutil.py"/>
+        <source>{n} B</source>
+        <translation>‏{n} بايت</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/fsutil.py"/>
+        <source>{n} KB</source>
+        <translation>‏{n} ك.ب</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/fsutil.py"/>
+        <source>{n} MB</source>
+        <translation>‏{n} م.ب</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/fsutil.py"/>
+        <source>{n} GB</source>
+        <translation>‏{n} غ.ب</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/fsutil.py"/>
+        <source>{n} TB</source>
+        <translation>‏{n} ت.ب</translation>
+    </message>
+</context>
+<context>
     <name>grimoire.github</name>
     <message>
         <location filename="../../grimoire/github.py"/>
@@ -1611,7 +1639,7 @@
     <message>
         <location filename="../../grimoire/settingsview.py"/>
         <source>Saves a .grimoire-backup file wherever you choose.</source>
-        <translation>يحفظ ملف .grimoire-backup حيث تختار.</translation>
+        <translation>يحفظ ملف ⁦.grimoire-backup⁩ حيث تختار.</translation>
     </message>
     <message>
         <location filename="../../grimoire/settingsview.py"/>
@@ -2833,7 +2861,7 @@
     <message>
         <location filename="../../grimoire/shareview.py"/>
         <source>A .grimoire-setup file to send or post anywhere. Grimoire checks it holds nothing personal before saving.</source>
-        <translation>ملف .grimoire-setup لإرساله أو نشره في أي مكان. يتحقق Grimoire من أنه لا يحتوي على أي شيء شخصي قبل حفظه.</translation>
+        <translation>ملف ⁦.grimoire-setup⁩ لإرساله أو نشره في أي مكان. يتحقق Grimoire من أنه لا يحتوي على أي شيء شخصي قبل حفظه.</translation>
     </message>
     <message>
         <location filename="../../grimoire/shareview.py"/>

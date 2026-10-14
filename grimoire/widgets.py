@@ -5,6 +5,20 @@ from PySide6.QtGui import QColor, QPainter
 from PySide6.QtWidgets import QAbstractButton, QHBoxLayout, QLabel, QSlider, QWidget
 
 
+def segments(buttons):
+    """Join buttons (objectName "Segment", laid out in a row in this order) into one segmented control: rounded
+    outer corners and single borders between them. Sets the "seg" property theme.py styles, by where each button
+    shows on screen, so a right-to-left language (where the row is mirrored) still rounds the outer ends."""
+    from grimoire import i18n
+    seen = list(reversed(buttons)) if i18n.rtl() else list(buttons)
+    for i, b in enumerate(seen):
+        b.setProperty("seg", "left" if i == 0 else "right" if i == len(seen) - 1 else "mid")
+        if len(seen) == 1:
+            b.setProperty("seg", "")
+        b.style().unpolish(b)
+        b.style().polish(b)
+
+
 class Slider(QWidget):
     """Label + slider + value, in one row."""
 

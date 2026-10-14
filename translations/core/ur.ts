@@ -677,6 +677,34 @@
     </message>
 </context>
 <context>
+    <name>grimoire.fsutil</name>
+    <message>
+        <location filename="../../grimoire/fsutil.py"/>
+        <source>{n} B</source>
+        <translation>‏{n} بائٹ</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/fsutil.py"/>
+        <source>{n} KB</source>
+        <translation>‏{n} کے بی</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/fsutil.py"/>
+        <source>{n} MB</source>
+        <translation>‏{n} ایم بی</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/fsutil.py"/>
+        <source>{n} GB</source>
+        <translation>‏{n} جی بی</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/fsutil.py"/>
+        <source>{n} TB</source>
+        <translation>‏{n} ٹی بی</translation>
+    </message>
+</context>
+<context>
     <name>grimoire.github</name>
     <message>
         <location filename="../../grimoire/github.py"/>
@@ -1571,7 +1599,7 @@
     <message>
         <location filename="../../grimoire/settingsview.py"/>
         <source>Saves a .grimoire-backup file wherever you choose.</source>
-        <translation>آپ کی منتخب جگہ پر ایک .grimoire-backup فائل محفوظ کرتا ہے۔</translation>
+        <translation>آپ کی منتخب جگہ پر ایک ⁦.grimoire-backup⁩ فائل محفوظ کرتا ہے۔</translation>
     </message>
     <message>
         <location filename="../../grimoire/settingsview.py"/>
@@ -2737,7 +2765,7 @@
     <message>
         <location filename="../../grimoire/shareview.py"/>
         <source>A .grimoire-setup file to send or post anywhere. Grimoire checks it holds nothing personal before saving.</source>
-        <translation>کہیں بھی بھیجنے یا پوسٹ کرنے کے لیے ایک .grimoire-setup فائل۔ محفوظ کرنے سے پہلے Grimoire جانچتا ہے کہ اس میں کچھ بھی ذاتی نہ ہو۔</translation>
+        <translation>کہیں بھی بھیجنے یا پوسٹ کرنے کے لیے ایک ⁦.grimoire-setup⁩ فائل۔ محفوظ کرنے سے پہلے Grimoire جانچتا ہے کہ اس میں کچھ بھی ذاتی نہ ہو۔</translation>
     </message>
     <message>
         <location filename="../../grimoire/shareview.py"/>

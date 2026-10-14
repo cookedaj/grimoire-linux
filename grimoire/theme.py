@@ -35,6 +35,8 @@ QPushButton#Pill[on="true"] { color: #8c8c8c; border-color: #2a2a2a; }
 QPushButton#Pill[on="true"]:hover { color: #ffffff; border-color: #8a8a8a; }
 
 QWidget#Rail { background: #030303; border-right: 1px solid #161616; }
+QScrollArea#RailScroll, QWidget#RailSpells { background: transparent; }
+QScrollArea#RailScroll QScrollBar:vertical { width: 4px; }
 QPushButton#RailItem { border: none; border-radius: 12px; padding: 0; background: transparent; }
 QPushButton#RailItem:hover { background: #121212; }
 QPushButton#RailItem:checked { background: #1e1e1e; }
@@ -75,9 +77,11 @@ QPushButton#Tab:checked { color: #ffffff; border-bottom: 2px solid #ffffff; }
 QPushButton#Segment {
     border: 1px solid #2e2e2e; border-radius: 0; padding: 6px 14px; color: #8c8c8c; background: transparent;
 }
-QPushButton#Segment[pos="first"] { border-top-left-radius: 6px; border-bottom-left-radius: 6px; }
-QPushButton#Segment[pos="last"] { border-top-right-radius: 6px; border-bottom-right-radius: 6px; }
-QPushButton#Segment[pos="mid"], QPushButton#Segment[pos="last"] { border-left: none; }
+/* seg = the button's place seen on screen, left to right: set by widgets.segments(), which mirrors it in RTL.
+   (Not "pos": that's QWidget's own position property, so a selector on it never matches.) */
+QPushButton#Segment[seg="left"] { border-top-left-radius: 6px; border-bottom-left-radius: 6px; }
+QPushButton#Segment[seg="right"] { border-top-right-radius: 6px; border-bottom-right-radius: 6px; }
+QPushButton#Segment[seg="mid"], QPushButton#Segment[seg="right"] { border-left: none; }
 QPushButton#Segment:checked { background: #f2f2f2; color: #000000; border-color: #f2f2f2; }
 
 QPushButton#Link { border: none; text-align: left; padding: 4px 6px; color: #d0d0d0; }

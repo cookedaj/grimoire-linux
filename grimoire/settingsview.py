@@ -346,17 +346,23 @@ class Preview(QDialog):
 
 
 def _when(iso: str) -> str:
+    """When a backup or setup was made, in local time: 'Oct 14, 2026 at 13:05', or the language's own short date
+    and time ('14/10/2026 13:05')."""
+    from grimoire import i18n
     try:
-        return datetime.fromisoformat(iso).astimezone().strftime("%b %-d, %Y at %H:%M")
+        when = datetime.fromisoformat(iso).astimezone()
     except (ValueError, TypeError):
         return ""
+    if i18n.loaded() in ("", "en"):
+        return when.strftime("%b %-d, %Y at %H:%M")
+    from PySide6.QtCore import QDate, QDateTime, QLocale, QTime
+    stamp = QDateTime(QDate(when.year, when.month, when.day), QTime(when.hour, when.minute))
+    return QLocale().toString(stamp, QLocale.FormatType.ShortFormat)
 
 
 def _size(n: int) -> str:
-    for unit in ("B", "KB", "MB", "GB"):
-        if n < 1024 or unit == "GB":
-            return f"{n:.0f} {unit}" if unit == "B" else f"{n:.1f} {unit}"
-        n /= 1024
+    from grimoire.fsutil import human
+    return human(n)
 
 
 def restore_flow(widget, source, origin, report, after=lambda: None):
