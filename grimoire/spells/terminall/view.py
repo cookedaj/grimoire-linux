@@ -45,6 +45,7 @@ class TerminalView(QWidget):
 
     def __init__(self, session, profile: dict, parent=None):
         super().__init__(parent)
+        self.setLayoutDirection(Qt.LayoutDirection.LeftToRight)   # a chart/canvas: never mirrored in RTL
         self.session = session
         self.profile = profile
         self.zoom = 0

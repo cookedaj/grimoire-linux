@@ -43,6 +43,9 @@ Recommends: kpackagetool6,
             desktop-file-utils,
             xdg-user-dirs,
             pipewire-bin,
+            qt6-translations-l10n,
+            fonts-noto-core,
+            fonts-noto-cjk,
             wireplumber,
             pulseaudio-utils
 Suggests: rsync, python3-numpy, wl-clipboard, baloo6

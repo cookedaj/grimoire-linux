@@ -23,6 +23,7 @@ from datetime import datetime
 from pathlib import Path
 
 from grimoire import NAME, __version__
+from grimoire.i18n import tr, tr_noop
 from grimoire.paths import CACHE, DATA, packaged
 
 REPO = "cookedaj/grimoire-linux"   # GitHub redirects the old cookedaj/GrimioreL
@@ -85,9 +86,10 @@ def managed() -> bool:
     return bool(packaged()) and not is_installed()
 
 
-PACKAGE_NOTE = "Installed from a distro package: updates come with your system updates (apt, pacman…)."
-NOT_INSTALLED = (f"{NAME} isn't installed (run ./install.sh from a download first); "
-                 "a git checkout updates with git pull.")
+PACKAGE_NOTE = tr_noop("grimoire.update",
+                       "Installed from a distro package: updates come with your system updates (apt, pacman…).")
+NOT_INSTALLED = tr_noop("grimoire.update", "{name} isn't installed (run ./install.sh from a download first); "
+                        "a git checkout updates with git pull.")
 
 
 def _sha_ok(sha: str) -> bool:
@@ -108,23 +110,29 @@ def _get(url: str, etag: str = "", timeout=20) -> tuple[int, dict, bytes]:
             return 304, dict(e.headers), b""
         if e.code in (403, 429) and (e.headers.get("X-RateLimit-Remaining") == "0" or e.code == 429):
             reset = e.headers.get("X-RateLimit-Reset")
-            when = time.strftime(" after %H:%M", time.localtime(int(reset))) if (reset or "").isdigit() else " later"
-            raise UpdateError(f"GitHub's hourly limit for update checks is used up; try again{when}.") from None
+            if (reset or "").isdigit():
+                at = time.strftime("%H:%M", time.localtime(int(reset)))
+                raise UpdateError(tr("grimoire.update", "GitHub's hourly limit for update checks is used up; try again "
+                                     "after {time}.").format(time=at)) from None
+            raise UpdateError(tr("grimoire.update", "GitHub's hourly limit for update checks is used up; try again "
+                                 "later.")) from None
         if e.code == 404:
             return 404, dict(e.headers), b""
-        raise UpdateError(f"GitHub answered {e.code} {e.reason}.") from None
+        raise UpdateError(tr("grimoire.update", "GitHub answered {code} {reason}.")
+                          .format(code=e.code, reason=e.reason)) from None
     except (urllib.error.URLError, TimeoutError, OSError) as e:
         reason = getattr(e, "reason", e)
-        raise UpdateError(f"Couldn't reach GitHub (offline?): {reason}") from None
+        raise UpdateError(tr("grimoire.update", "Couldn't reach GitHub (offline?): {reason}")
+                          .format(reason=reason)) from None
 
 
 def _json(body: bytes) -> dict:
     try:
         data = json.loads(body)
     except ValueError:
-        raise UpdateError("GitHub sent an answer that isn't JSON.") from None
+        raise UpdateError(tr("grimoire.update", "GitHub sent an answer that isn't JSON.")) from None
     if not isinstance(data, dict):
-        raise UpdateError("GitHub sent an unexpected answer.")
+        raise UpdateError(tr("grimoire.update", "GitHub sent an unexpected answer."))
     return data
 
 
@@ -168,11 +176,12 @@ def _latest(state: dict) -> dict:
     if code == 304 and cached.get("sha"):
         return cached
     if code != 200:
-        raise UpdateError(f"Couldn't find {REPO}'s {BRANCH} branch on GitHub.")
+        raise UpdateError(tr("grimoire.update", "Couldn't find {repo}'s {branch} branch on GitHub.")
+                          .format(repo=REPO, branch=BRANCH))
     d = _json(body)
     sha = d.get("sha", "")
     if not _sha_ok(sha):
-        raise UpdateError("GitHub sent an unexpected answer.")
+        raise UpdateError(tr("grimoire.update", "GitHub sent an unexpected answer."))
     return {"sha": sha, "date": ((d.get("commit") or {}).get("committer") or {}).get("date", ""),
             "message": (d.get("commit") or {}).get("message", ""), "etag": headers.get("ETag", "")}
 
@@ -188,7 +197,7 @@ def _compare(base: str, head: str, state: dict) -> dict | None:
     if code == 404:
         result = None
     elif code != 200:
-        raise UpdateError(f"GitHub answered {code} comparing versions.")
+        raise UpdateError(tr("grimoire.update", "GitHub answered {code} comparing versions.").format(code=code))
     else:
         d = _json(body)
         commits = []
@@ -220,7 +229,8 @@ def check(force: bool = False) -> Status:
         return st
     if not _sha_ok(base):
         st.available = True
-        st.note = "This copy didn't record which version it is, so only the newest change is listed."
+        st.note = tr("grimoire.update", "This copy didn't record which version it is, so only the newest change is "
+                     "listed.")
         title, bullets = parse_message(latest.get("message", ""))
         if title:
             st.changes = [Change(latest["sha"], title, bullets, latest.get("date", ""))]
@@ -229,8 +239,8 @@ def check(force: bool = False) -> Status:
     cmp = _compare(base, latest["sha"], state)
     _save_state(state)
     if cmp is None:
-        st.note = ("This copy was installed from a commit that isn't on GitHub (a local build), so there's "
-                   "nothing to compare it with.")
+        st.note = tr("grimoire.update", "This copy was installed from a commit that isn't on GitHub (a local build), "
+                     "so there's nothing to compare it with.")
         return st
     st.available = cmp["status"] in ("ahead", "diverged") and cmp["ahead_by"] > 0
     st.changes = [Change(**c) for c in reversed(cmp["commits"])]
@@ -247,12 +257,15 @@ def _download(url: str, dest: Path, limit=MAX_DOWNLOAD):
             while chunk := r.read(1 << 16):
                 total += len(chunk)
                 if total > limit:
-                    raise UpdateError("The download is larger than the safety limit; not installing it.")
+                    raise UpdateError(tr("grimoire.update", "The download is larger than the safety limit; not "
+                                             "installing it."))
                 f.write(chunk)
     except urllib.error.HTTPError as e:
-        raise UpdateError(f"The download failed: {e.code} {e.reason}.") from None
+        raise UpdateError(tr("grimoire.update", "The download failed: {code} {reason}.")
+                          .format(code=e.code, reason=e.reason)) from None
     except (urllib.error.URLError, TimeoutError, OSError) as e:
-        raise UpdateError(f"The download failed (offline?): {getattr(e, 'reason', e)}") from None
+        raise UpdateError(tr("grimoire.update", "The download failed (offline?): {reason}")
+                          .format(reason=getattr(e, "reason", e))) from None
 
 
 def _extract(archive: Path, dest: Path) -> Path:
@@ -271,22 +284,25 @@ def _extract(archive: Path, dest: Path) -> Path:
                 elif m.type == tarfile.XGLTYPE or m.type == tarfile.XHDTYPE:
                     continue
                 else:
-                    raise UpdateError(f"The download contains a link or special file ({m.name}); not installing it.")
+                    raise UpdateError(tr("grimoire.update", "The download contains a link or special file ({name}); "
+                                         "not installing it.").format(name=m.name))
                 parts = Path(m.name).parts
                 if m.name.startswith("/") or ".." in parts or not parts:
-                    raise UpdateError(f"The download contains an unsafe path ({m.name}); not installing it.")
+                    raise UpdateError(tr("grimoire.update", "The download contains an unsafe path ({name}); not "
+                                         "installing it.").format(name=m.name))
                 tops.add(parts[0])
                 total += m.size
             if total > MAX_EXPANDED:
-                raise UpdateError("The download expands too large; not installing it.")
+                raise UpdateError(tr("grimoire.update", "The download expands too large; not installing it."))
             if len(tops) != 1:
-                raise UpdateError("The download isn't laid out like Grimoire; not installing it.")
+                raise UpdateError(tr("grimoire.update", "The download isn't laid out like Grimoire; not "
+                                         "installing it."))
             t.extractall(dest, members=[m for m in members if m.isfile() or m.isdir()], filter="data")
     except (tarfile.TarError, EOFError, OSError) as e:
-        raise UpdateError(f"The download is damaged: {e}") from None
+        raise UpdateError(tr("grimoire.update", "The download is damaged: {error}").format(error=e)) from None
     root = dest / tops.pop()
     if not ((root / "install.sh").is_file() and (root / "grimoire" / "__init__.py").is_file()):
-        raise UpdateError("The download isn't laid out like Grimoire; not installing it.")
+        raise UpdateError(tr("grimoire.update", "The download isn't laid out like Grimoire; not installing it."))
     return root
 
 
@@ -294,43 +310,46 @@ def apply(sha: str, date: str = "", progress=lambda text: None) -> dict:
     """Download main at sha and install it over the installed copy with its own install.sh.
     Returns the new INSTALLED.json. Only one update runs at a time."""
     if managed():
-        raise UpdateError(PACKAGE_NOTE)
+        raise UpdateError(tr("grimoire.update", PACKAGE_NOTE))
     if not is_installed():                         # a checkout updates with git pull, not by installing a copy
-        raise UpdateError(NOT_INSTALLED)
+        raise UpdateError(tr("grimoire.update", NOT_INSTALLED).format(name=NAME))
     if not _sha_ok(sha):
-        raise UpdateError("No valid version to update to; check for updates first.")
+        raise UpdateError(tr("grimoire.update", "No valid version to update to; check for updates first."))
     STAGING.mkdir(parents=True, exist_ok=True)
     with open(STAGING.parent / "update.lock", "w") as lock:
         try:
             fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
         except OSError:
-            raise UpdateError("Another update is already running.") from None
+            raise UpdateError(tr("grimoire.update", "Another update is already running.")) from None
         work = STAGING / sha
         try:
             if work.exists():
                 shutil.rmtree(work)
             work.mkdir(parents=True)
-            progress("Downloading…")
+            progress(tr("grimoire.update", "Downloading…"))
             archive = work / "grimoire.tar.gz"
             _download(TARBALL.format(sha=sha), archive)
-            progress("Unpacking…")
+            progress(tr("grimoire.update", "Unpacking…"))
             root = _extract(archive, work / "x")
-            progress("Installing…")
+            progress(tr("grimoire.update", "Installing…"))
             env = os.environ | {"GRIMOIRE_SOURCE_SHA": sha, "GRIMOIRE_SOURCE_DATE": date}
             env.pop("PYTHONPATH", None)            # install.sh runs the new code, not the running copy's
             try:
                 r = subprocess.run(["bash", str(root / "install.sh")], cwd=root, env=env, capture_output=True,
                                    text=True, timeout=300)
             except (OSError, subprocess.TimeoutExpired) as e:
-                raise UpdateError(f"The installer didn't finish: {e}") from None
+                raise UpdateError(tr("grimoire.update", "The installer didn't finish: {error}")
+                                  .format(error=e)) from None
             if r.returncode != 0:
                 tail = (r.stdout + r.stderr).strip().splitlines()[-3:]
-                raise UpdateError("The installer failed: " + (" ".join(tail) or f"exit {r.returncode}"))
+                raise UpdateError(tr("grimoire.update", "The installer failed: {output}")
+                                  .format(output=" ".join(tail) or f"exit {r.returncode}"))
         finally:
             shutil.rmtree(work, ignore_errors=True)  # Grimoire's own staging folder, never user files
     new = installed()
     if new.get("sha") != sha:
-        raise UpdateError("The installer ran, but the installed copy doesn't report the new version.")
+        raise UpdateError(tr("grimoire.update", "The installer ran, but the installed copy doesn't report the new "
+                             "version."))
     state = _load_state()
     state.pop("compare", None)
     _save_state(state)
@@ -370,7 +389,7 @@ def cli(argv: list[str]) -> int:
         print(PACKAGE_NOTE)
         return 0
     if not is_installed():
-        print(NOT_INSTALLED)
+        print(NOT_INSTALLED.format(name=NAME))
         return 1
     try:
         st = check(force=True)

@@ -25,6 +25,7 @@ class UsageBars(QWidget):
 
     def __init__(self):
         super().__init__()
+        self.setLayoutDirection(Qt.LayoutDirection.LeftToRight)   # a chart/canvas: never mirrored in RTL
         self.rows: list[tuple[str, int, int]] = []
         self.setMinimumHeight(170)
 

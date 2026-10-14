@@ -43,6 +43,9 @@ optdepends=(
     'python-numpy: OptimizeL memory benchmark'
     'wl-clipboard: copy screenshots from the command line'
     'rsync: per-user install with install.sh'
+    'qt6-translations: Qt dialogs in your language'
+    'noto-fonts: Arabic, Urdu, Hindi and Bengali text'
+    'noto-fonts-cjk: Chinese text'
 )
 makedepends=('git')
 provides=("$_pkgname")

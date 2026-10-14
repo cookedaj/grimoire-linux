@@ -13,6 +13,8 @@ Secret values never appear in exceptions or return values other than load().
 """
 import time
 
+from grimoire.i18n import tr
+
 LABEL = "Grimoire GitHub sign-in"
 ATTRS = {"application": "grimoire", "service": "github"}
 BUS_NAME, ROOT = "org.freedesktop.secrets", "/org/freedesktop/secrets"
@@ -29,14 +31,16 @@ class _Session:
         try:
             import dbus
         except ImportError:
-            raise KeyringError("Saving the sign-in needs python3-dbus (sudo apt install python3-dbus).") from None
+            raise KeyringError(tr("grimoire.keystore", "Saving the sign-in needs python3-dbus (sudo apt install "
+                                                       "python3-dbus).")) from None
         self.dbus = dbus
         try:
             self.bus = dbus.SessionBus(private=True)
             self.svc = dbus.Interface(self.bus.get_object(BUS_NAME, ROOT), SVC)
             _, self.path = self.svc.OpenSession("plain", dbus.String("", variant_level=1))
         except dbus.DBusException as e:
-            raise KeyringError(f"No system keyring is available ({e.get_dbus_name()}).") from None
+            raise KeyringError(tr("grimoire.keystore", "No system keyring is available ({error}).")
+                               .format(error=e.get_dbus_name())) from None
 
     def __enter__(self):
         return self
@@ -79,12 +83,14 @@ class _Session:
         def locked(p):                 # .../collection/<name> is a collection, one level deeper an item
             return bool(self.prop(p, COLL if p.count("/") <= 5 else ITEM, "Locked"))
         if not self.prompt(prompt, lambda: not any(locked(p) for p in paths)):
-            raise KeyringError("The keyring stayed locked, so the sign-in wasn't saved or read.")
+            raise KeyringError(tr("grimoire.keystore", "The keyring stayed locked, so the sign-in wasn't saved or "
+                                                       "read."))
 
     def default_collection(self) -> str:
         path = str(self.svc.ReadAlias("default"))
         if path == "/":
-            raise KeyringError("The system keyring has no default wallet yet; open KWallet Manager to create one.")
+            raise KeyringError(tr("grimoire.keystore", "The system keyring has no default wallet yet; open KWallet "
+                                                       "Manager to create one."))
         return path
 
     def search(self, attrs) -> list:
@@ -98,11 +104,15 @@ def _guard(fn):
         try:
             import dbus
         except ImportError:
-            raise KeyringError("Saving the sign-in needs python3-dbus (sudo apt install python3-dbus).") from None
+            raise KeyringError(tr("grimoire.keystore", "Saving the sign-in needs python3-dbus (sudo apt install "
+                                                       "python3-dbus).")) from None
         try:
             return fn(*a, **kw)
         except dbus.DBusException as e:
-            raise KeyringError(f"The keyring refused ({e.get_dbus_name() or 'unknown error'}).") from None
+            if e.get_dbus_name():
+                raise KeyringError(tr("grimoire.keystore", "The keyring refused ({error}).")
+                                   .format(error=e.get_dbus_name())) from None
+            raise KeyringError(tr("grimoire.keystore", "The keyring refused (unknown error).")) from None
     return run
 
 
@@ -120,7 +130,8 @@ def store(secret: str, attrs: dict = ATTRS, label: str = LABEL):
                              dbus.String("text/plain")), signature="oayays")
         item, prompt = s.obj(coll, COLL).CreateItem(dbus.Dictionary(props, signature="sv"), value, True)
         if str(item) == "/" and not s.prompt(prompt, lambda: bool(s.search(attrs)[0])):
-            raise KeyringError("The keyring didn't save the sign-in (the prompt was dismissed).")
+            raise KeyringError(tr("grimoire.keystore", "The keyring didn't save the sign-in (the prompt was "
+                                                       "dismissed)."))
 
 
 @_guard

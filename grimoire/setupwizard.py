@@ -9,10 +9,12 @@ from PySide6.QtWidgets import (QButtonGroup, QCheckBox, QComboBox, QDialog, QFra
 
 from grimoire import NAME, i18n, prefs, session
 from grimoire.glyphs import clover, glyph
+from grimoire.i18n import tr, tr_noop
 from grimoire.settingsview import HotkeysPanel, _button, _label, restore_flow, run
 
-STEPS = [("welcome", "Welcome"), ("spells", "Spells"), ("look", "Look"), ("hotkeys", "Hotkeys"),
-         ("language", "Language"), ("done", "Done")]
+STEPS = [("welcome", tr_noop("grimoire.setupwizard", "Welcome")), ("spells", tr_noop("grimoire.setupwizard", "Spells")),
+         ("look", tr_noop("grimoire.setupwizard", "Look")), ("hotkeys", tr_noop("grimoire.setupwizard", "Hotkeys")),
+         ("language", tr_noop("grimoire.setupwizard", "Language")), ("done", tr_noop("grimoire.setupwizard", "Done"))]
 QSS = """
 QLabel#Step { color: #4a4a4a; font-size: 11px; font-weight: 600; letter-spacing: 1px; }
 QLabel#Step[on="true"] { color: #ffffff; }
@@ -56,7 +58,7 @@ class SpellPick(QFrame):
         text = QVBoxLayout()
         text.setSpacing(1)
         text.addWidget(_label(spell.name, "RowTitle"))
-        tag = _label(spell.tagline, "Muted")
+        tag = _label(tr("grimoire.spells", spell.tagline), "Muted")
         tag.setStyleSheet("font-size: 11px;")
         text.addWidget(tag)
         lay.addLayout(text, 1)
@@ -91,12 +93,13 @@ class SetupWizard(QWidget):
         top.addSpacing(18)
         self.steps = []
         for i, (_, name) in enumerate(STEPS):
-            lab = _label("{n}  {name}".format(n=i + 1, name=name.upper()), "Step", wrap=False)
+            lab = _label("{n}  {name}".format(n=i + 1, name=tr("grimoire.setupwizard", name).upper()), "Step",
+                         wrap=False)
             self.steps.append(lab)
             top.addWidget(lab)
             top.addSpacing(14)
         top.addStretch(1)
-        self.skip = _button("Skip setup", self._finish, "Link")
+        self.skip = _button(tr("grimoire.setupwizard", "Skip setup"), self._finish, "Link")
         top.addWidget(self.skip)
         root.addLayout(top)
         rule = QFrame()
@@ -122,10 +125,10 @@ class SetupWizard(QWidget):
         root.addWidget(self.stack, 1)
 
         nav = QHBoxLayout()
-        self.back = _button("Back", lambda: self.go(self.index - 1))
+        self.back = _button(tr("grimoire.setupwizard", "Back"), lambda: self.go(self.index - 1))
         nav.addWidget(self.back)
         nav.addStretch(1)
-        self.next = _button("Next", self._next, "Primary")
+        self.next = _button(tr("grimoire.setupwizard", "Next"), self._next, "Primary")
         self.next.setMinimumWidth(140)
         nav.addWidget(self.next)
         root.addLayout(nav)
@@ -136,20 +139,21 @@ class SetupWizard(QWidget):
     def _welcome(self):
         who = session.active()
         name = who.username if who and not who.guest else ""
-        w, lay = _page("Welcome, {name}.".format(name=name) if name else "Welcome to {app}.".format(app=NAME),
-                       "A few quick choices and you're in. Everything here can be changed later in Settings, "
-                       "and every step can be skipped.")
+        w, lay = _page(tr("grimoire.setupwizard", "Welcome, {name}.").format(name=name) if name
+                       else tr("grimoire.setupwizard", "Welcome to {app}.").format(app=NAME),
+                       tr("grimoire.setupwizard", "A few quick choices and you're in. Everything here can be changed "
+                          "later in Settings, and every step can be skipped."))
         if who and who.guest:
-            lay.addWidget(_label("You're using Grimoire Linux as a guest: the choices you make now last until the "
-                                 "next guest start. Create an account any time from Settings to keep them.",
-                                 "Muted"))
+            lay.addWidget(_label(tr("grimoire.setupwizard", "You're using Grimoire Linux as a guest: the choices you "
+                                    "make now last until the next guest start. Create an account any time from "
+                                    "Settings to keep them."), "Muted"))
         self.cloud = QFrame()
         self.cloud.setObjectName("Row")
         cl = QHBoxLayout(self.cloud)
         cl.setContentsMargins(18, 14, 14, 14)
         self.cloud_text = _label("", "Muted")
         cl.addWidget(self.cloud_text, 1)
-        self.cloud_btn = _button("Restore them", self._restore_cloud, "Primary")
+        self.cloud_btn = _button(tr("grimoire.setupwizard", "Restore them"), self._restore_cloud, "Primary")
         cl.addWidget(self.cloud_btn)
         self.cloud.hide()
         lay.addWidget(self.cloud)
@@ -166,8 +170,8 @@ class SetupWizard(QWidget):
 
     def _cloud_found(self, ok, when):
         if ok and when:
-            self.cloud_text.setText("Your account has settings saved from another PC ({when}). Restore them here?"
-                                    .format(when=when[:16].replace("T", " ")))
+            self.cloud_text.setText(tr("grimoire.setupwizard", "Your account has settings saved from another PC "
+                                       "({when}). Restore them here?").format(when=when[:16].replace("T", " ")))
             self.cloud.show()
 
     def _restore_cloud(self):
@@ -181,8 +185,8 @@ class SetupWizard(QWidget):
             if not ok:
                 report(value, True)
                 return
-            restore_flow(self, value[0], "your account", report, self._reload_choices)
-        report("Downloading…", False)
+            restore_flow(self, value[0], tr("grimoire.setupwizard", "From your account"), report, self._reload_choices)
+        report(tr("grimoire.setupwizard", "Downloading…"), False)
         run(lambda: accounts.BACKEND.load_settings(session.live()), got)
 
     def _reload_choices(self):
@@ -192,8 +196,9 @@ class SetupWizard(QWidget):
 
     def _spells(self):
         from grimoire.spells import SPELLS
-        w, lay = _page("Pick your spells", "The ones you tick show in the rail and on the home page. Hidden ones "
-                       "keep working (timers, hotkeys) and come back any time from Settings → General.")
+        w, lay = _page(tr("grimoire.setupwizard", "Pick your spells"),
+                       tr("grimoire.setupwizard", "The ones you tick show in the rail and on the home page. Hidden "
+                          "ones keep working (timers, hotkeys) and come back any time from Settings → General."))
         grid = QGridLayout()
         grid.setSpacing(10)
         self.picks = [SpellPick(s, s.id not in self.hidden) for s in SPELLS]
@@ -203,20 +208,22 @@ class SetupWizard(QWidget):
         return w
 
     def _look(self):
-        w, lay = _page("A look", "MuraL can put a saved desktop look back in one go. This changes your desktop "
-                       "(panels, colors, wallpaper…), so it's only done when you press Apply.")
+        w, lay = _page(tr("grimoire.setupwizard", "A look"),
+                       tr("grimoire.setupwizard", "MuraL can put a saved desktop look back in one go. This changes "
+                          "your desktop (panels, colors, wallpaper…), so it's only done when you press Apply."))
         try:
             from grimoire.spells.mural import looks
             saved = looks.all_looks()
         except Exception:                      # MuraL missing pieces must not stop setup
             looks, saved = None, []
         self.look_group = QButtonGroup(self)
-        keep = QRadioButton("Keep my current look")
+        keep = QRadioButton(tr("grimoire.setupwizard", "Keep my current look"))
         keep.setChecked(True)
         self.look_group.addButton(keep)
         lay.addWidget(keep)
         if not saved:
-            lay.addWidget(_label("No saved looks yet. Save one in MuraL → Looks whenever you like.", "Muted"))
+            lay.addWidget(_label(tr("grimoire.setupwizard", "No saved looks yet. Save one in MuraL → Looks whenever "
+                                    "you like."), "Muted"))
         grid = QGridLayout()
         grid.setSpacing(12)
         for i, look in enumerate(saved[:6]):
@@ -233,14 +240,14 @@ class SetupWizard(QWidget):
                 thumb.setFixedSize(240, 135)
                 thumb.setStyleSheet("background: #141414; border-radius: 6px;")
             cl.addWidget(thumb)
-            rb = QRadioButton(str(look.get("name", "Look"))[:40])
+            rb = QRadioButton(str(look.get("name", tr("grimoire.setupwizard", "Look")))[:40])
             rb.setProperty("look_id", look.get("id"))
             self.look_group.addButton(rb)
             cl.addWidget(rb)
             grid.addWidget(card, i // 3, i % 3)
         lay.addLayout(grid)
         row = QHBoxLayout()
-        self.apply_look = _button("Apply this look", self._apply_look)
+        self.apply_look = _button(tr("grimoire.setupwizard", "Apply this look"), self._apply_look)
         self.apply_look.setEnabled(False)
         row.addWidget(self.apply_look)
         self.look_note = _label("", "Muted")
@@ -254,38 +261,44 @@ class SetupWizard(QWidget):
         from grimoire.spells.mural import looks
         look_id = self.look_group.checkedButton().property("look_id")
         self.apply_look.setEnabled(False)
-        self.look_note.setText("Applying (the panel may restart)…")
+        self.look_note.setText(tr("grimoire.setupwizard", "Applying (the panel may restart)…"))
 
         def then(ok, value):
             self.apply_look.setEnabled(True)
             if not ok:
-                self.look_note.setText("Couldn't apply it: {err}".format(err=value))
+                self.look_note.setText(tr("grimoire.setupwizard", "Couldn't apply it: {err}").format(err=value))
                 return
             bad = sum(not r[1] for r in value)
-            self.look_note.setText("Applied." if not bad else "Applied, but {n} part(s) failed; see MuraL → Looks."
-                                   .format(n=bad))
+            self.look_note.setText(tr("grimoire.setupwizard", "Applied.") if not bad else
+                                   tr("grimoire.setupwizard", "Applied, but %n part(s) failed; see MuraL → Looks.",
+                                      n=bad))
         run(lambda: looks.restore(look_id), then)        # never the login/boot parts (those need a password)
 
     def _hotkeys(self):
-        w, lay = _page("Hotkeys", "Keep the defaults or set your own. You can change them later in Settings.")
+        w, lay = _page(tr("grimoire.setupwizard", "Hotkeys"),
+                       tr("grimoire.setupwizard", "Keep the defaults or set your own. You can change them later in "
+                          "Settings."))
         lay.addWidget(HotkeysPanel())
         return w
 
     def _language(self):
-        w, lay = _page("Language", "Which language should Grimoire Linux use?")
+        w, lay = _page(tr("grimoire.setupwizard", "Language"),
+                       tr("grimoire.setupwizard", "Which language should Grimoire Linux use?"))
         self.lang = QComboBox()
         for code, native in i18n.LANGUAGES.items():
             self.lang.addItem(native, code)
         self.lang.setCurrentIndex(max(0, self.lang.findData(i18n.current())))
         self.lang.setFixedWidth(280)
         lay.addWidget(self.lang)
-        lay.addWidget(_label("Grimoire Linux restarts in the new language when the setup ends. Translations are "
-                             "machine-made; native speakers are welcome to improve them on GitHub.", "Muted"))
+        lay.addWidget(_label(tr("grimoire.setupwizard", "Grimoire Linux restarts in the new language when the setup "
+                                "ends. Translations are machine-made; native speakers are welcome to improve them on "
+                                "GitHub."), "Muted"))
         return w
 
     def _done(self):
-        w, lay = _page("You're all set.", "Your spells are waiting. Settings (the gear at the bottom of the rail) "
-                       "has everything from this setup, plus backups and your account.")
+        w, lay = _page(tr("grimoire.setupwizard", "You're all set."),
+                       tr("grimoire.setupwizard", "Your spells are waiting. Settings (the gear at the bottom of the "
+                          "rail) has everything from this setup, plus backups and your account."))
         return w
 
     # ---------------------------------------------------------------- navigation
@@ -299,7 +312,8 @@ class SetupWizard(QWidget):
             lab.style().polish(lab)
         self.back.setVisible(self.index > 0)
         last = self.index == len(STEPS) - 1
-        self.next.setText("Open {app}".format(app=NAME) if last else "Next")
+        self.next.setText(tr("grimoire.setupwizard", "Open {app}").format(app=NAME) if last
+                          else tr("grimoire.setupwizard", "Next"))
         self.skip.setVisible(not last)
 
     def _next(self):
@@ -323,7 +337,7 @@ class SetupDialog(QDialog):
 
     def __init__(self, parent=None, start="welcome"):
         super().__init__(parent)
-        self.setWindowTitle("Setup")
+        self.setWindowTitle(tr("grimoire.setupwizard", "Setup"))
         self.setObjectName("WhatsNew")
         self.resize(1100, 720)
         lay = QVBoxLayout(self)

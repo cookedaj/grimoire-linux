@@ -30,6 +30,7 @@ class EqCurve(QWidget):
 
     def __init__(self):
         super().__init__()
+        self.setLayoutDirection(Qt.LayoutDirection.LeftToRight)   # a chart/canvas: never mirrored in RTL
         self.gains = [0.0] * 10
         self.preamp = 0.0
         self.drag = -1

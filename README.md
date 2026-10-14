@@ -184,6 +184,19 @@ to your desktop; `grimoire-widgetl add clock|system|weather|nowplaying` does the
 - Accounts run on a Supabase project (see [supabase/README.md](supabase/README.md)); until one is set up, the
   sign-in screen offers Guest. Threat model: [docs/security.md](docs/security.md).
 
+### Languages
+
+Grimoire Linux speaks English, 中文（简体） (Simplified Chinese), हिन्दी (Hindi), Español (Spanish), Français
+(French), العربية (Arabic), বাংলা (Bengali), Português (Brazilian Portuguese), Русский (Russian) and اردو (Urdu).
+Pick one in the first-run setup or in Settings → General (it applies after a restart). Arabic and Urdu lay the app
+out right to left; Urdu uses Nastaliq. Text in these scripts needs the Noto fonts (`fonts-noto-core`,
+`fonts-noto-cjk`; already on Kubuntu).
+
+The translations are machine-made, so some wording will be off. Native speakers are very welcome to fix them: edit
+`translations/<area>/<lang>.ts` (`core` is the hub, Settings and sign-in; every spell has its own area) with Qt
+Linguist or any text editor, run `python3 scripts/i18n.py release <area>` (needs `qt6-l10n-tools`) and open a pull
+request. `python3 scripts/i18n.py stats` shows what is still untranslated.
+
 ## Install
 
 ### From source (recommended)

@@ -15,6 +15,7 @@ from PySide6.QtWidgets import (QCheckBox, QDialog, QFileDialog, QFrame, QHBoxLay
 
 from grimoire import NAME, accounts, paths, session
 from grimoire.glyphs import clover
+from grimoire.i18n import tr
 from grimoire.settingsview import _button, _label, run
 from grimoire.theme import FONT
 
@@ -77,8 +78,8 @@ class Strength(QWidget):
             b.setProperty("on", i < score)
             b.style().unpolish(b)
             b.style().polish(b)
-        self.hint.setText(hint or "At least {n} characters. A few words together make a strong password.".format(
-            n=accounts.MIN_PASSWORD))
+        self.hint.setText(hint or tr("grimoire.loginview", "At least {n} characters. A few words together make a "
+                                                           "strong password.").format(n=accounts.MIN_PASSWORD))
 
 
 class RecoveryCodeDialog(QDialog):
@@ -86,7 +87,7 @@ class RecoveryCodeDialog(QDialog):
 
     def __init__(self, username, code, parent=None):
         super().__init__(parent)
-        self.setWindowTitle("Your recovery code")
+        self.setWindowTitle(tr("grimoire.loginview", "Your recovery code"))
         self.setObjectName("WhatsNew")
         self.setStyleSheet(CARD_QSS)
         self.setModal(True)
@@ -94,25 +95,26 @@ class RecoveryCodeDialog(QDialog):
         lay = QVBoxLayout(self)
         lay.setContentsMargins(28, 24, 28, 22)
         lay.setSpacing(12)
-        lay.addWidget(_label("Save your recovery code", "SectionTitle"))
-        lay.addWidget(_label("If you forget your password, this code lets you set a new one. It's shown only now; "
-                             "Grimoire Linux can't show it again. Keep it somewhere safe, like a password manager "
-                             "or on paper.", "Muted"))
+        lay.addWidget(_label(tr("grimoire.loginview", "Save your recovery code"), "SectionTitle"))
+        lay.addWidget(_label(tr("grimoire.loginview",
+                                "If you forget your password, this code lets you set a new one. It's shown only now; "
+                                "Grimoire Linux can't show it again. Keep it somewhere safe, like a password manager "
+                                "or on paper."), "Muted"))
         code_label = _label(code, "Code", wrap=False)
         code_label.setTextInteractionFlags(Qt.TextInteractionFlag.TextSelectableByMouse)
         code_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         lay.addWidget(code_label)
         row = QHBoxLayout()
-        row.addWidget(_button("Copy", self._copy))
-        row.addWidget(_button("Save to a file…", self._save))
+        row.addWidget(_button(tr("grimoire.loginview", "Copy"), self._copy))
+        row.addWidget(_button(tr("grimoire.loginview", "Save to a file…"), self._save))
         row.addStretch(1)
         lay.addLayout(row)
         self.note = _label("", "Muted")
         self.note.hide()
         lay.addWidget(self.note)
-        self.saved = QCheckBox("I saved my recovery code")
+        self.saved = QCheckBox(tr("grimoire.loginview", "I saved my recovery code"))
         lay.addWidget(self.saved)
-        self.go = _button("Continue", self.accept, "Primary")
+        self.go = _button(tr("grimoire.loginview", "Continue"), self.accept, "Primary")
         self.go.setEnabled(False)
         self.saved.toggled.connect(self.go.setEnabled)
         lay.addWidget(self.go, 0, Qt.AlignmentFlag.AlignRight)
@@ -120,7 +122,7 @@ class RecoveryCodeDialog(QDialog):
 
     def _copy(self):
         QGuiApplication.clipboard().setText(self.code)
-        self.note.setText("Copied. Paste it somewhere safe, then clear your clipboard.")
+        self.note.setText(tr("grimoire.loginview", "Copied. Paste it somewhere safe, then clear your clipboard."))
         self.note.show()
 
     def _save(self):
@@ -128,18 +130,20 @@ class RecoveryCodeDialog(QDialog):
 
         from grimoire.fsutil import free_name
         start = str(Path.home() / "grimoire-recovery-code.txt")
-        path, _ = QFileDialog.getSaveFileName(self, "Save recovery code", start, "Text (*.txt)")
+        path, _ = QFileDialog.getSaveFileName(self, tr("grimoire.loginview", "Save recovery code"), start,
+                                              tr("grimoire.loginview", "Text (*.txt)"))
         if not path:
             return
         dest = free_name(Path(path)) if Path(path).exists() else Path(path)
         try:
             fd = os.open(dest, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
             with os.fdopen(fd, "w") as f:
-                f.write("{name}\nRecovery code for {user}: {code}\n".format(name=NAME, user=self.username,
-                                                                            code=self.code))
-            self.note.setText("Saved to {path}.".format(path=dest))
+                line = tr("grimoire.loginview", "Recovery code for {user}: {code}").format(user=self.username,
+                                                                                           code=self.code)
+                f.write("{name}\n{line}\n".format(name=NAME, line=line))
+            self.note.setText(tr("grimoire.loginview", "Saved to {path}.").format(path=dest))
         except OSError as e:
-            self.note.setText("Couldn't save it: {err}".format(err=e.strerror or e))
+            self.note.setText(tr("grimoire.loginview", "Couldn't save it: {err}").format(err=e.strerror or e))
         self.note.show()
 
 
@@ -179,9 +183,10 @@ class AuthCard(QFrame):
             notice.setObjectName("Notice")
             nl = QVBoxLayout(notice)
             nl.setContentsMargins(14, 12, 14, 12)
-            nl.addWidget(_label("Accounts aren't set up yet in this copy of Grimoire Linux, so signing in isn't "
-                                "possible for now. Continue as a guest: everything works, your settings just "
-                                "aren't kept.", "Muted"))
+            nl.addWidget(_label(tr("grimoire.loginview",
+                                   "Accounts aren't set up yet in this copy of Grimoire Linux, so signing in isn't "
+                                   "possible for now. Continue as a guest: everything works, your settings just "
+                                   "aren't kept."), "Muted"))
             lay.addWidget(notice)
 
         self.forms = QWidget()                   # one form visible at a time, the card as tall as that one
@@ -195,7 +200,7 @@ class AuthCard(QFrame):
         self.status.setAlignment(Qt.AlignmentFlag.AlignHCenter)
         self.status.hide()
         lay.addWidget(self.status)
-        self.cancel_oauth = _button("Cancel", self._stop_oauth, "Link")
+        self.cancel_oauth = _button(tr("grimoire.loginview", "Cancel"), self._stop_oauth, "Link")
         self.cancel_oauth.hide()
         lay.addWidget(self.cancel_oauth, 0, Qt.AlignmentFlag.AlignHCenter)
 
@@ -210,11 +215,13 @@ class AuthCard(QFrame):
             line.setFixedHeight(1)
             div.addWidget(line, 1)
             if _ == 0:
-                div.addWidget(_label("or", "Muted", wrap=False))
+                div.addWidget(_label(tr("grimoire.loginview", "or"), "Muted", wrap=False))
         ol.addLayout(div)
-        self.google = _button("Sign in with Google" if ready else "Sign in with Google · not set up yet",
+        self.google = _button(tr("grimoire.loginview", "Sign in with Google") if ready else
+                              tr("grimoire.loginview", "Sign in with Google · not set up yet"),
                               lambda: self._oauth("google"))
-        self.github = _button("Sign in with GitHub" if ready else "Sign in with GitHub · not set up yet",
+        self.github = _button(tr("grimoire.loginview", "Sign in with GitHub") if ready else
+                              tr("grimoire.loginview", "Sign in with GitHub · not set up yet"),
                               lambda: self._oauth("github"))
         for b in (self.google, self.github):
             b.setEnabled(ready)
@@ -224,12 +231,14 @@ class AuthCard(QFrame):
         self.guest = None
         if allow_guest:
             lay.addSpacing(8)
-            self.guest = _button("Continue as Guest", self._guest, "Primary" if not ready else "Guest")
+            self.guest = _button(tr("grimoire.loginview", "Continue as Guest"), self._guest,
+                                 "Primary" if not ready else "Guest")
             if ready:
                 lay.addWidget(self.guest, 0, Qt.AlignmentFlag.AlignHCenter)
             else:
                 lay.addWidget(self.guest)
-            g = _label("Everything works as a guest, but settings are cleared next time.", "Muted")
+            g = _label(tr("grimoire.loginview", "Everything works as a guest, but settings are cleared next time."),
+                       "Muted")
             g.setAlignment(Qt.AlignmentFlag.AlignHCenter)
             g.setStyleSheet("font-size: 11px;")
             lay.addWidget(g)
@@ -249,65 +258,67 @@ class AuthCard(QFrame):
 
     def _signin_form(self):
         w, lay = self._form()
-        self.si_user = _field("Username")
-        self.si_pass = _field("Password", True)
+        self.si_user = _field(tr("grimoire.loginview", "Username"))
+        self.si_pass = _field(tr("grimoire.loginview", "Password"), True)
         lay.addWidget(self.si_user)
         lay.addWidget(self.si_pass)
         row = QHBoxLayout()
-        self.si_keep = QCheckBox("Keep me signed in")
+        self.si_keep = QCheckBox(tr("grimoire.loginview", "Keep me signed in"))
         self.si_keep.setChecked(True)
         row.addWidget(self.si_keep)
         row.addStretch(1)
-        row.addWidget(_button("Forgot password?", lambda: self.show_mode("forgot"), "Link"))
+        row.addWidget(_button(tr("grimoire.loginview", "Forgot password?"), lambda: self.show_mode("forgot"), "Link"))
         lay.addLayout(row)
-        self.si_go = _button("Sign in", self._sign_in, "Primary")
+        self.si_go = _button(tr("grimoire.loginview", "Sign in"), self._sign_in, "Primary")
         lay.addWidget(self.si_go)
-        lay.addWidget(_button("New here? Create an account", lambda: self.show_mode("create"), "Link"), 0,
-                      Qt.AlignmentFlag.AlignHCenter)
+        lay.addWidget(_button(tr("grimoire.loginview", "New here? Create an account"), lambda: self.show_mode("create"),
+                              "Link"), 0, Qt.AlignmentFlag.AlignHCenter)
         for f in (self.si_user, self.si_pass):
             f.returnPressed.connect(self._sign_in)
         return w
 
     def _create_form(self):
         w, lay = self._form()
-        self.cr_user = _field("Username")
-        self.cr_mail = _field("Email (optional)")
-        self.cr_mail.setToolTip("Kept privately with your account. It isn't used to sign in and never shared.")
-        self.cr_pass = _field("Password", True)
+        self.cr_user = _field(tr("grimoire.loginview", "Username"))
+        self.cr_mail = _field(tr("grimoire.loginview", "Email (optional)"))
+        self.cr_mail.setToolTip(tr("grimoire.loginview", "Kept privately with your account. It isn't used to sign in "
+                                                         "and never shared."))
+        self.cr_pass = _field(tr("grimoire.loginview", "Password"), True)
         self.cr_strength = Strength()
-        self.cr_conf = _field("Confirm password", True)
+        self.cr_conf = _field(tr("grimoire.loginview", "Confirm password"), True)
         self.cr_pass.textChanged.connect(self.cr_strength.update_for)
         for f in (self.cr_user, self.cr_mail, self.cr_pass):
             lay.addWidget(f)
         lay.addWidget(self.cr_strength)
         lay.addWidget(self.cr_conf)
-        self.cr_keep = QCheckBox("Keep me signed in")
+        self.cr_keep = QCheckBox(tr("grimoire.loginview", "Keep me signed in"))
         self.cr_keep.setChecked(True)
         lay.addWidget(self.cr_keep)
-        self.cr_go = _button("Create account", self._create, "Primary")
+        self.cr_go = _button(tr("grimoire.loginview", "Create account"), self._create, "Primary")
         lay.addWidget(self.cr_go)
-        lay.addWidget(_button("Have an account? Sign in", lambda: self.show_mode("signin"), "Link"), 0,
-                      Qt.AlignmentFlag.AlignHCenter)
+        lay.addWidget(_button(tr("grimoire.loginview", "Have an account? Sign in"), lambda: self.show_mode("signin"),
+                              "Link"), 0, Qt.AlignmentFlag.AlignHCenter)
         self.cr_conf.returnPressed.connect(self._create)
         return w
 
     def _forgot_form(self):
         w, lay = self._form()
-        lay.addWidget(_label("Enter your username and the recovery code you saved when you made the account. "
-                             "Accounts made with Google or GitHub reset their password there.", "Muted"))
-        self.fg_user = _field("Username")
-        self.fg_code = _field("Recovery code (like 1A2B3-C4D5E-…)")
-        self.fg_pass = _field("New password", True)
+        lay.addWidget(_label(tr("grimoire.loginview",
+                                "Enter your username and the recovery code you saved when you made the account. "
+                                "Accounts made with Google or GitHub reset their password there."), "Muted"))
+        self.fg_user = _field(tr("grimoire.loginview", "Username"))
+        self.fg_code = _field(tr("grimoire.loginview", "Recovery code (like 1A2B3-C4D5E-…)"))
+        self.fg_pass = _field(tr("grimoire.loginview", "New password"), True)
         self.fg_strength = Strength()
-        self.fg_conf = _field("Confirm new password", True)
+        self.fg_conf = _field(tr("grimoire.loginview", "Confirm new password"), True)
         self.fg_pass.textChanged.connect(self.fg_strength.update_for)
         for f in (self.fg_user, self.fg_code, self.fg_pass):
             lay.addWidget(f)
         lay.addWidget(self.fg_strength)
         lay.addWidget(self.fg_conf)
-        self.fg_go = _button("Set new password", self._recover, "Primary")
+        self.fg_go = _button(tr("grimoire.loginview", "Set new password"), self._recover, "Primary")
         lay.addWidget(self.fg_go)
-        lay.addWidget(_button("Back to sign in", lambda: self.show_mode("signin"), "Link"), 0,
+        lay.addWidget(_button(tr("grimoire.loginview", "Back to sign in"), lambda: self.show_mode("signin"), "Link"), 0,
                       Qt.AlignmentFlag.AlignHCenter)
         self.fg_conf.returnPressed.connect(self._recover)
         return w
@@ -315,11 +326,12 @@ class AuthCard(QFrame):
     def show_mode(self, mode):
         index = {"signin": 0, "create": 1, "forgot": 2}[mode]
         self.mode = mode
-        self.heading.setText({"signin": "Sign in", "create": "Create your account",
-                              "forgot": "Forgot your password?"}[mode])
-        self.sub.setText({"signin": "Your settings, on every PC you sign in to.",
-                          "create": "A username and a password. Email is optional.",
-                          "forgot": "Set a new password with your recovery code."}[mode])
+        self.heading.setText({"signin": tr("grimoire.loginview", "Sign in"),
+                              "create": tr("grimoire.loginview", "Create your account"),
+                              "forgot": tr("grimoire.loginview", "Forgot your password?")}[mode])
+        self.sub.setText({"signin": tr("grimoire.loginview", "Your settings, on every PC you sign in to."),
+                          "create": tr("grimoire.loginview", "A username and a password. Email is optional."),
+                          "forgot": tr("grimoire.loginview", "Set a new password with your recovery code.")}[mode])
         self.oauth.setVisible(mode != "forgot")
         self.say("")
         for i, page in enumerate(self.pages):
@@ -346,18 +358,18 @@ class AuthCard(QFrame):
             return
         user, pw = self.si_user.text().strip(), self.si_pass.text()
         if not user or not pw:
-            self.say("Enter your username and password.")
+            self.say(tr("grimoire.loginview", "Enter your username and password."))
             return
         wait = accounts.wait_left(user)
         if wait:
-            self.say("Too many wrong passwords. Try again in {n} seconds.".format(n=wait))
+            self.say(tr("grimoire.loginview", "Too many wrong passwords. Try again in %n second(s).", n=wait))
             return
-        self._set_busy(True, "Signing in…")
+        self._set_busy(True, tr("grimoire.loginview", "Signing in…"))
         keep = self.si_keep.isChecked()
 
         def then(ok, value):
             self._set_busy(False)
-            wrong = not ok and "Wrong username or password" in value
+            wrong = not ok and value == tr("grimoire.accounts", "Wrong username or password.")   # accounts' own text
             if ok or wrong:
                 accounts.note_attempt(user, ok)
             if ok:
@@ -378,9 +390,9 @@ class AuthCard(QFrame):
             self.say(problem)
             return
         if accounts.strength(pw)[0] == 0:
-            self.say("That password is too easy to guess. Try a longer one.")
+            self.say(tr("grimoire.loginview", "That password is too easy to guess. Try a longer one."))
             return
-        self._set_busy(True, "Creating your account…")
+        self._set_busy(True, tr("grimoire.loginview", "Creating your account…"))
         keep = self.cr_keep.isChecked()
 
         def then(ok, value):
@@ -400,12 +412,12 @@ class AuthCard(QFrame):
             return
         user, code = self.fg_user.text().strip(), self.fg_code.text().strip()
         pw, conf = self.fg_pass.text(), self.fg_conf.text()
-        problem = ("Enter your username and recovery code." if not user or not code else
+        problem = (tr("grimoire.loginview", "Enter your username and recovery code.") if not user or not code else
                    accounts.password_problem(pw, conf))
         if problem:
             self.say(problem)
             return
-        self._set_busy(True, "Checking your recovery code…")
+        self._set_busy(True, tr("grimoire.loginview", "Checking your recovery code…"))
 
         def then(ok, value):
             self._set_busy(False)
@@ -427,7 +439,7 @@ class AuthCard(QFrame):
         try:
             lb = accounts.Loopback()
         except OSError:
-            self.say("Couldn't open a local port for the browser to come back to.")
+            self.say(tr("grimoire.loginview", "Couldn't open a local port for the browser to come back to."))
             return
         verifier, challenge = accounts.pkce_pair()
         try:
@@ -437,7 +449,8 @@ class AuthCard(QFrame):
             self.say(str(e))
             return
         self._cancel.clear()
-        self._set_busy(True, "Finish signing in with {p} in your browser…".format(p=accounts.PROVIDERS[provider]))
+        self._set_busy(True, tr("grimoire.loginview", "Finish signing in with {p} in your browser…").format(
+            p=accounts.PROVIDERS[provider]))
         self.cancel_oauth.show()
         QDesktopServices.openUrl(QUrl(url))
         keep = self.si_keep.isChecked() if self.mode == "signin" else self.cr_keep.isChecked()
@@ -479,7 +492,7 @@ class SignInScreen(QWidget):
         row.addStretch(1)
         outer.addLayout(row)
         outer.addStretch(1)
-        foot = _label("Black & white tools for KDE Plasma", "Tiny")
+        foot = _label(tr("grimoire.loginview", "Black & white tools for KDE Plasma"), "Tiny")
         foot.setAlignment(Qt.AlignmentFlag.AlignHCenter)
         outer.addWidget(foot)
 

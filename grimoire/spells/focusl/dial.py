@@ -15,6 +15,7 @@ class Ring(QWidget):
 
     def __init__(self):
         super().__init__()
+        self.setLayoutDirection(Qt.LayoutDirection.LeftToRight)   # a chart/canvas: never mirrored in RTL
         self.setMinimumSize(250, 250)
         self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
         self.frac, self.big, self.top, self.bottom = 1.0, "25:00", "READY", ""
@@ -84,6 +85,7 @@ class Bars(QWidget):
 
     def __init__(self):
         super().__init__()
+        self.setLayoutDirection(Qt.LayoutDirection.LeftToRight)   # a chart/canvas: never mirrored in RTL
         self.days: list[tuple[dt.date, float, int]] = []
         self.setMinimumHeight(130)
         self.setMouseTracking(True)

@@ -12,6 +12,7 @@ from PySide6.QtWidgets import (QApplication, QButtonGroup, QCheckBox, QFrame, QG
 
 from grimoire import NAME, standalone
 from grimoire.glyphs import clover, glyph
+from grimoire.i18n import tr
 from grimoire.paths import ASSETS
 from grimoire.settingsview import SettingsPage
 from grimoire.spells import SPELLS
@@ -41,8 +42,11 @@ class InstallButton(QPushButton):
     def _show(self, hover: bool):
         on = standalone.installed(self.spell.id)
         self.setProperty("on", on)
-        self.setText(("Uninstall" if hover else "Installed") if on else "Install")
-        self.setToolTip(f"{'Remove' if on else 'Add'} {self.spell.name} as its own app in the app menu")
+        self.setText((tr("grimoire.app", "Uninstall") if hover else tr("grimoire.app", "Installed")) if on
+                     else tr("grimoire.app", "Install"))
+        self.setToolTip((tr("grimoire.app", "Remove {name} as its own app in the app menu") if on
+                         else tr("grimoire.app", "Add {name} as its own app in the app menu")).format(
+                             name=self.spell.name))
         self.style().unpolish(self)
         self.style().polish(self)
 
@@ -60,11 +64,14 @@ class InstallButton(QPushButton):
             if not standalone.installed(sid):
                 standalone.install(sid)
             elif sid != "vaultl" or QMessageBox.question(
-                    self, "Uninstall VaultL", "Remove VaultL from the app menu? If it's your default file manager, "
-                    "folders will open in another one until you install it again.") == QMessageBox.StandardButton.Yes:
+                    self, tr("grimoire.app", "Uninstall VaultL"),
+                    tr("grimoire.app", "Remove VaultL from the app menu? If it's your default file manager, "
+                       "folders will open in another one until you install it again.")) \
+                    == QMessageBox.StandardButton.Yes:
                 standalone.uninstall(sid)
         except (OSError, ValueError) as err:
-            QMessageBox.warning(self, self.spell.name, f"Couldn't change the launcher: {err}")
+            QMessageBox.warning(self, self.spell.name,
+                                tr("grimoire.app", "Couldn't change the launcher: {err}").format(err=err))
         self._show(self.underMouse())
 
 
@@ -89,7 +96,7 @@ class SpellCard(QFrame):
         if standalone.available(spell.id):
             top.addWidget(InstallButton(spell))
         lay.addLayout(top)
-        tag = QLabel(spell.tagline)
+        tag = QLabel(tr("grimoire.spells", spell.tagline))
         tag.setObjectName("Muted")
         tag.setWordWrap(True)
         lay.addWidget(tag)
@@ -115,9 +122,9 @@ class TrayToggle(QCheckBox):
     """Opt-in: Grimoire's tray icon at login. Turning it on also starts the tray now."""
     def __init__(self):
         from grimoire import tray
-        super().__init__("Tray icon at login")
-        self.setToolTip("Live CPU and RAM in the system tray, plus crosshair, tidy Downloads, performance mode "
-                        "and every spell in its menu")
+        super().__init__(tr("grimoire.app", "Tray icon at login"))
+        self.setToolTip(tr("grimoire.app", "Live CPU and RAM in the system tray, plus crosshair, tidy Downloads, "
+                           "performance mode and every spell in its menu"))
         self.setChecked(tray.autostart_on())
         self.toggled.connect(self._set)
 
@@ -128,7 +135,8 @@ class TrayToggle(QCheckBox):
             if on and not tray.running():
                 tray.launch("grimoire-tray")
         except OSError as err:
-            QMessageBox.warning(self, "Tray icon", f"Couldn't change it: {err}")
+            QMessageBox.warning(self, tr("grimoire.app", "Tray icon"),
+                                tr("grimoire.app", "Couldn't change it: {err}").format(err=err))
 
 
 class Home(QWidget):
@@ -140,17 +148,18 @@ class Home(QWidget):
         lay.setSpacing(4)
         lay.addWidget(banner)                    # hidden unless an update is waiting
         hour = datetime.now().hour
-        greeting = "Good morning" if hour < 12 else "Good afternoon" if hour < 18 else "Good evening"
+        greeting = tr("grimoire.app", "Good morning") if hour < 12 else tr("grimoire.app", "Good afternoon") \
+            if hour < 18 else tr("grimoire.app", "Good evening")
         hello = QLabel(greeting)
         hello.setObjectName("Hero")
         lay.addWidget(hello)
-        sub = QLabel("Your spells. Personal tools for this machine, all in black and white.")
+        sub = QLabel(tr("grimoire.app", "Your spells. Personal tools for this machine, all in black and white."))
         sub.setObjectName("Muted")
         lay.addWidget(sub)
         lay.addSpacing(14)
         lay.addWidget(TrayToggle())
         lay.addSpacing(20)
-        lay.addWidget(spaced("SPELLS", 10, 4))
+        lay.addWidget(spaced(tr("grimoire.app", "SPELLS"), 10, 4))
         lay.addSpacing(10)
 
         self.grid = grid = QGridLayout()
@@ -161,7 +170,7 @@ class Home(QWidget):
         soon.setMinimumSize(360, 190)
         sl = QVBoxLayout(soon)
         sl.setContentsMargins(24, 22, 24, 20)
-        t = QLabel("Next spell")
+        t = QLabel(tr("grimoire.app", "Next spell"))
         t.setObjectName("Muted")
         sl.addWidget(t)
         sl.addStretch(1)
@@ -229,7 +238,7 @@ class Window(QMainWindow):
         tl.addWidget(GuestBar())
         self.home = Home(self.open, top)
         home.setWidget(self.home)
-        self._add_page("home", "Home", "home", home, rl)
+        self._add_page("home", tr("grimoire.app", "Home"), "home", home, rl)
         for spell in SPELLS:
             self._add_page(spell.id, spell.name, spell.icon, None, rl, spell)
         rl.addStretch(1)
@@ -241,7 +250,7 @@ class Window(QMainWindow):
         account.setToolTip(self._who())
         account.clicked.connect(lambda: (self.open("settings"), self.pages["settings"][1].show_section("profile")))
         rl.addWidget(account, 0, Qt.AlignmentFlag.AlignHCenter)
-        self._add_page("settings", "Settings", "gear", None, rl,
+        self._add_page("settings", tr("grimoire.app", "Settings"), "gear", None, rl,
                        SimpleNamespace(page=lambda: SettingsPage(self.updater, self.whats_new)))
         rl.addWidget(VersionButton(self.updater, self.whats_new), 0, Qt.AlignmentFlag.AlignHCenter)
 
@@ -257,8 +266,8 @@ class Window(QMainWindow):
         from grimoire import session
         who = session.active()
         if who is None or who.guest:
-            return "Guest: settings won't be kept"
-        return "Signed in as {name}".format(name=who.username or "you")
+            return tr("grimoire.app", "Guest: settings won't be kept")
+        return tr("grimoire.app", "Signed in as {name}").format(name=who.username or tr("grimoire.app", "you"))
 
     def refresh_spells(self):
         """Show only the spells picked in setup/Settings, in the rail and on the home page."""

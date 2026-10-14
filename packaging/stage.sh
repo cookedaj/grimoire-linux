@@ -35,7 +35,8 @@ install -d "$APP" "$USR/bin" "$USR/share/applications" "$USR/share/icons/hicolor
     "$USR/share/icons/hicolor/256x256/apps" "$USR/share/plasma/wallpapers" "$USR/share/metainfo"
 
 # 1. the app, with plain modes (a checkout may carry a 002 umask's group-write bits)
-tar -C "$SRC" --exclude=__pycache__ --exclude='*.pyc' -cf - grimoire bin plasma install.sh uninstall.sh README.md LICENSE \
+tar -C "$SRC" --exclude=__pycache__ --exclude='*.pyc' --exclude='translations/*/*.ts' \
+    -cf - grimoire bin plasma translations install.sh uninstall.sh README.md LICENSE \
     | tar -C "$APP" --no-same-owner -xf -
 find "$APP" -type d -exec chmod 755 {} +
 find "$APP" -type f -exec chmod 644 {} +

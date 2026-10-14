@@ -45,6 +45,7 @@ class BootChart(QWidget):
 
     def __init__(self):
         super().__init__()
+        self.setLayoutDirection(Qt.LayoutDirection.LeftToRight)   # a chart/canvas: never mirrored in RTL
         self.boots: list[dict] = []
         self.setMinimumHeight(150)
         self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)

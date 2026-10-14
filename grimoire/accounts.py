@@ -31,6 +31,7 @@ from dataclasses import dataclass
 
 from grimoire import __version__, supabase_app
 from grimoire.github import Token
+from grimoire.i18n import tr
 from grimoire.paths import CACHE, GUEST, valid_profile
 
 USERNAME = re.compile(r"[A-Za-z0-9][A-Za-z0-9_-]{2,31}")
@@ -68,25 +69,26 @@ class Session:
 # ---------------------------------------------------------------- checks the UI shows as you type
 def username_problem(name: str) -> str:
     if not name:
-        return "Choose a username."
+        return tr("grimoire.accounts", "Choose a username.")
     if not USERNAME.fullmatch(name):
-        return "Usernames are 3 to 32 letters, digits, - or _, starting with a letter or digit."
+        return tr("grimoire.accounts",
+                  "Usernames are 3 to 32 letters, digits, - or _, starting with a letter or digit.")
     return ""
 
 
 def email_problem(email: str) -> str:
     if email and (len(email) > 254 or not EMAIL.fullmatch(email)):
-        return "That email address doesn't look right (or leave it empty)."
+        return tr("grimoire.accounts", "That email address doesn't look right (or leave it empty).")
     return ""
 
 
 def password_problem(password: str, confirm: str | None = None) -> str:
     if len(password) < MIN_PASSWORD:
-        return "Passwords need at least {n} characters.".format(n=MIN_PASSWORD)
+        return tr("grimoire.accounts", "Passwords need at least {n} characters.").format(n=MIN_PASSWORD)
     if len(password.encode()) > MAX_PASSWORD:
-        return "Passwords can be at most {n} bytes long.".format(n=MAX_PASSWORD)
+        return tr("grimoire.accounts", "Passwords can be at most {n} bytes long.").format(n=MAX_PASSWORD)
     if confirm is not None and confirm != password:
-        return "The two passwords don't match."
+        return tr("grimoire.accounts", "The two passwords don't match.")
     return ""
 
 
@@ -97,8 +99,9 @@ def strength(password: str) -> tuple[int, str]:
     kinds = sum(bool(re.search(rx, password)) for rx in (r"[a-z]", r"[A-Z]", r"[0-9]", r"[^A-Za-z0-9]"))
     common = password.lower() in {"password123", "1234567890", "qwertyuiop", "iloveyou12", "grimoire123"}
     score = 0 if common or len(password) < MIN_PASSWORD else 1 + (len(password) >= 14) + (kinds >= 3)
-    hint = ["Too weak: use a longer password.", "Okay. Longer is stronger.",
-            "Good.", "Strong."][min(score, 3)]
+    hint = [tr("grimoire.accounts", "Too weak: use a longer password."),
+            tr("grimoire.accounts", "Okay. Longer is stronger."),
+            tr("grimoire.accounts", "Good."), tr("grimoire.accounts", "Strong.")][min(score, 3)]
     return min(score, 3), hint
 
 
@@ -174,11 +177,13 @@ class Loopback:
                     return
                 if q.get("code"):
                     outer.result = ("code", q["code"][0][:512])
-                    text = "Signed in. You can close this tab and go back to Grimoire Linux."
+                    text = tr("grimoire.accounts",
+                              "Signed in. You can close this tab and go back to Grimoire Linux.")
                 else:
-                    err = (q.get("error_description") or q.get("error") or ["sign-in was cancelled"])[0][:120]
+                    err = (q.get("error_description") or q.get("error")
+                           or [tr("grimoire.accounts", "sign-in was cancelled")])[0][:120]
                     outer.result = ("error", err)
-                    text = "Sign-in didn't finish. You can close this tab."
+                    text = tr("grimoire.accounts", "Sign-in didn't finish. You can close this tab.")
                 body = PAGE.format(text=text).encode()
                 self.send_response(200)
                 self.send_header("Content-Type", "text/html; charset=utf-8")
@@ -201,15 +206,15 @@ class Loopback:
         try:
             while not self.done.is_set():
                 if cancelled():
-                    raise AccountError("Sign-in cancelled.")
+                    raise AccountError(tr("grimoire.accounts", "Sign-in cancelled."))
                 if time.monotonic() > end:
-                    raise AccountError("Sign-in timed out. Try again.")
+                    raise AccountError(tr("grimoire.accounts", "Sign-in timed out. Try again."))
                 self.server.handle_request()
         finally:
             self.server.server_close()
         kind, value = self.result
         if kind != "code":
-            raise AccountError("The sign-in page said: {reason}".format(reason=value))
+            raise AccountError(tr("grimoire.accounts", "The sign-in page said: {reason}").format(reason=value))
         return value
 
     def close(self):
@@ -241,7 +246,7 @@ def _urllib(method: str, url: str, headers: dict, body: bytes | None) -> tuple[i
         except OSError:
             return e.code, b""
     except (urllib.error.URLError, TimeoutError, OSError):
-        raise AccountError("Couldn't reach the account server. Are you online?") from None
+        raise AccountError(tr("grimoire.accounts", "Couldn't reach the account server. Are you online?")) from None
 
 
 HTTP = _urllib
@@ -299,7 +304,7 @@ class Supabase(Backend):
     def _call(self, method: str, path: str, payload=None, token: Token | None = None, prefer: str = ""):
         base, key = supabase_app.url(), supabase_app.anon_key()
         if not base or not key:
-            raise AccountError("Accounts aren't set up yet in this copy of Grimoire Linux.")
+            raise AccountError(tr("grimoire.accounts", "Accounts aren't set up yet in this copy of Grimoire Linux."))
         headers = {"apikey": key, "Accept": "application/json",
                    "Authorization": f"Bearer {token.reveal() if token else key}"}
         body = None
@@ -310,7 +315,7 @@ class Supabase(Backend):
             headers["Prefer"] = prefer
         code, data = HTTP(method, base + path, headers, body)
         if len(data) > MAX_BODY:
-            raise AccountError("The account server sent more than expected; stopped.")
+            raise AccountError(tr("grimoire.accounts", "The account server sent more than expected; stopped."))
         try:
             parsed = json.loads(data) if data.strip() else None
         except (ValueError, UnicodeDecodeError):
@@ -322,34 +327,42 @@ class Supabase(Backend):
         d = d if isinstance(d, dict) else {}
         err = str(d.get("error_code") or d.get("code") or d.get("error") or "")
         known = {
-            "invalid_credentials": "Wrong username or password.",
-            "invalid_grant": "Wrong username or password.",
-            "user_already_exists": "That username is taken. Pick another one.",
-            "email_exists": "That username is taken. Pick another one.",
-            "weak_password": "The server wants a stronger password (longer, or with more kinds of characters).",
-            "over_request_rate_limit": "Too many tries. Wait a few minutes, then try again.",
-            "over_email_send_rate_limit": "Too many tries. Wait a few minutes, then try again.",
-            "signup_disabled": "New accounts are turned off on the server right now.",
-            "email_provider_disabled": "Username accounts are turned off on the server right now.",
-            "provider_disabled": "That sign-in option is turned off on the server.",
-            "captcha_failed": "The server asks for a captcha, which this version of Grimoire Linux can't show yet.",
-            "refresh_token_not_found": "Your sign-in expired. Sign in again.",
-            "refresh_token_already_used": "Your sign-in expired. Sign in again.",
-            "session_not_found": "Your sign-in expired. Sign in again.",
-            "bad_code_verifier": "The sign-in didn't match this window. Try again.",
-            "flow_state_not_found": "The sign-in took too long or was already used. Try again.",
-            "flow_state_expired": "The sign-in took too long or was already used. Try again.",
-            "23514": "The server refused that username.",
-            "unexpected_failure": "The server couldn't create that account. Try another username.",
-            "23505": "That username is taken. Pick another one.",
+            "invalid_credentials": tr("grimoire.accounts", "Wrong username or password."),
+            "invalid_grant": tr("grimoire.accounts", "Wrong username or password."),
+            "user_already_exists": tr("grimoire.accounts", "That username is taken. Pick another one."),
+            "email_exists": tr("grimoire.accounts", "That username is taken. Pick another one."),
+            "weak_password": tr("grimoire.accounts",
+                "The server wants a stronger password (longer, or with more kinds of characters)."),
+            "over_request_rate_limit": tr("grimoire.accounts", "Too many tries. Wait a few minutes, then try again."),
+            "over_email_send_rate_limit": tr("grimoire.accounts",
+                "Too many tries. Wait a few minutes, then try again."),
+            "signup_disabled": tr("grimoire.accounts", "New accounts are turned off on the server right now."),
+            "email_provider_disabled": tr("grimoire.accounts",
+                "Username accounts are turned off on the server right now."),
+            "provider_disabled": tr("grimoire.accounts", "That sign-in option is turned off on the server."),
+            "captcha_failed": tr("grimoire.accounts",
+                "The server asks for a captcha, which this version of Grimoire Linux can't show yet."),
+            "refresh_token_not_found": tr("grimoire.accounts", "Your sign-in expired. Sign in again."),
+            "refresh_token_already_used": tr("grimoire.accounts", "Your sign-in expired. Sign in again."),
+            "session_not_found": tr("grimoire.accounts", "Your sign-in expired. Sign in again."),
+            "bad_code_verifier": tr("grimoire.accounts", "The sign-in didn't match this window. Try again."),
+            "flow_state_not_found": tr("grimoire.accounts",
+                "The sign-in took too long or was already used. Try again."),
+            "flow_state_expired": tr("grimoire.accounts", "The sign-in took too long or was already used. Try again."),
+            "23514": tr("grimoire.accounts", "The server refused that username."),
+            "unexpected_failure": tr("grimoire.accounts",
+                "The server couldn't create that account. Try another username."),
+            "23505": tr("grimoire.accounts", "That username is taken. Pick another one."),
         }
         if err in known:
             return AccountError(known[err])
         if code == 429:
             return AccountError(known["over_request_rate_limit"])
         if code in (401, 403):
-            return AccountError("The account server refused this (signed out or not allowed). Sign in again.")
-        return AccountError("The account server answered {code} ({err}).".format(code=code, err=err[:40] or "error"))
+            return AccountError(tr("grimoire.accounts",
+                                   "The account server refused this (signed out or not allowed). Sign in again."))
+        return AccountError(tr("grimoire.accounts", "The account server answered {code} ({err}).").format(
+            code=code, err=err[:40] or "error"))
 
     def _session(self, d, provider: str) -> Session:
         try:
@@ -360,7 +373,7 @@ class Supabase(Backend):
             access, refresh = str(d["access_token"]), str(d["refresh_token"])
             expires = float(d.get("expires_at") or time.time() + float(d.get("expires_in", 3600)))
         except (KeyError, TypeError, ValueError):
-            raise AccountError("The account server sent an unexpected answer.") from None
+            raise AccountError(tr("grimoire.accounts", "The account server sent an unexpected answer.")) from None
         meta = user.get("user_metadata") or {}
         name = str(meta.get("username") or "")
         s = Session(User(uid, name, provider), Token(access), Token(refresh), expires)
@@ -396,15 +409,15 @@ class Supabase(Backend):
         if code not in (200, 201):
             raise self._error(code, d)
         if not isinstance(d, dict) or not d.get("access_token"):
-            raise AccountError("The server wants the account confirmed by email; turn \"Confirm email\" off "
-                               "in Supabase (see supabase/README.md).")
+            raise AccountError(tr("grimoire.accounts", "The server wants the account confirmed by email; turn "
+                                  "\"Confirm email\" off in Supabase (see supabase/README.md)."))
         s = self._session(d, "password")
         s.user.username = username
         return s, self.new_recovery_code(s)
 
     def sign_in(self, username, password):
         if username_problem(username):
-            raise AccountError("Wrong username or password.")
+            raise AccountError(tr("grimoire.accounts", "Wrong username or password."))
         code, d = self._call("POST", "/auth/v1/token?grant_type=password",
                              {"email": self._login_email(username), "password": password})
         if code != 200:
@@ -424,7 +437,7 @@ class Supabase(Backend):
 
     def oauth_url(self, provider, redirect, challenge):
         if provider not in PROVIDERS:
-            raise AccountError("Unknown sign-in option.")
+            raise AccountError(tr("grimoire.accounts", "Unknown sign-in option."))
         q = urllib.parse.urlencode({"provider": provider, "redirect_to": redirect, "code_challenge": challenge,
                                     "code_challenge_method": "s256"})
         return f"{supabase_app.url()}/auth/v1/authorize?{q}"
@@ -443,20 +456,21 @@ class Supabase(Backend):
         d = self._rpc("recover_account", {"p_username": username, "p_code": normalize_code(code),
                                           "p_new_password": new_password})
         if not isinstance(d, dict):
-            raise AccountError("The account server sent an unexpected answer.")
+            raise AccountError(tr("grimoire.accounts", "The account server sent an unexpected answer."))
         if d.get("ok") and isinstance(d.get("code"), str):
             return d["code"]
         if d.get("error") == "locked":
-            raise AccountError("Too many wrong codes for this username. Try again in {m} minutes.".format(
-                m=max(1, int(d.get("retry_after") or 60) // 60)))
+            raise AccountError(tr("grimoire.accounts",
+                                  "Too many wrong codes for this username. Try again in %n minute(s).",
+                                  n=max(1, int(d.get("retry_after") or 60) // 60)))
         if d.get("error") == "weak_password":
-            raise AccountError(password_problem("") or "Choose a longer password.")
-        raise AccountError("That username and recovery code don't match.")
+            raise AccountError(password_problem("") or tr("grimoire.accounts", "Choose a longer password."))
+        raise AccountError(tr("grimoire.accounts", "That username and recovery code don't match."))
 
     def new_recovery_code(self, session):
         d = self._rpc("issue_recovery_code", {}, session.access)
         if not isinstance(d, str) or not re.fullmatch(r"[0-9A-F-]{16,40}", d):
-            raise AccountError("The account server sent an unexpected answer.")
+            raise AccountError(tr("grimoire.accounts", "The account server sent an unexpected answer."))
         return d
 
     # -- settings sync (table user_settings, one row per account, guarded by row-level security)
@@ -470,14 +484,16 @@ class Supabase(Backend):
         try:
             raw = base64.b64decode(str(d[0]["data"]), validate=True)
         except (KeyError, TypeError, ValueError):
-            raise AccountError("The settings saved on your account are damaged.") from None
+            raise AccountError(tr("grimoire.accounts", "The settings saved on your account are damaged.")) from None
         if len(raw) > MAX_SETTINGS:
-            raise AccountError("The settings saved on your account are larger than the safety limit.")
+            raise AccountError(tr("grimoire.accounts",
+                                  "The settings saved on your account are larger than the safety limit."))
         return raw, str(d[0].get("updated_at") or "")[:40]
 
     def save_settings(self, session, data):
         if len(data) > MAX_SETTINGS:
-            raise AccountError("Your settings are too large to save on your account (over 1 MB).")
+            raise AccountError(tr("grimoire.accounts",
+                                  "Your settings are too large to save on your account (over 1 MB)."))
         code, d = self._call("POST", "/rest/v1/user_settings?on_conflict=user_id",
                              {"user_id": session.user.id, "data": base64.b64encode(data).decode()},
                              session.access, prefer="resolution=merge-duplicates,return=minimal")

@@ -53,6 +53,7 @@ class Graph(QWidget):
     def __init__(self, title: str, fmt=lambda v: f"{v:.0f}%", top: float | None = 100, labels=("", ""),
                  two=False, height=150):
         super().__init__()
+        self.setLayoutDirection(Qt.LayoutDirection.LeftToRight)   # a chart/canvas: never mirrored in RTL
         self.title, self.fmt, self.top, self.labels, self.two = title, fmt, top, labels, two
         self.a, self.b = deque(maxlen=POINTS), deque(maxlen=POINTS)
         self.note = ""                       # small text under the value (e.g. "7.1 of 31 GB")
@@ -129,6 +130,7 @@ class Spark(QWidget):
 
     def __init__(self, label="", top: float | None = 100, height=46):
         super().__init__()
+        self.setLayoutDirection(Qt.LayoutDirection.LeftToRight)   # a chart/canvas: never mirrored in RTL
         self.label, self.top = label, top
         self.a = deque(maxlen=POINTS)
         self.points = POINTS
@@ -169,6 +171,7 @@ class CoreGrid(QWidget):
 
     def __init__(self, cores: int):
         super().__init__()
+        self.setLayoutDirection(Qt.LayoutDirection.LeftToRight)   # a chart/canvas: never mirrored in RTL
         grid = QGridLayout(self)
         grid.setContentsMargins(0, 0, 0, 0)
         grid.setSpacing(6)
@@ -187,6 +190,7 @@ class Bar(QWidget):
 
     def __init__(self, height=6):
         super().__init__()
+        self.setLayoutDirection(Qt.LayoutDirection.LeftToRight)   # a chart/canvas: never mirrored in RTL
         self.v = 0.0
         self.setFixedHeight(height)
         self.setMinimumWidth(60)

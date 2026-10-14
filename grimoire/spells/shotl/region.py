@@ -15,6 +15,7 @@ class _Screen(QWidget):
 
     def __init__(self, img, screen, crop: QRect):
         super().__init__(None, Qt.WindowType.FramelessWindowHint | Qt.WindowType.WindowStaysOnTopHint)
+        self.setLayoutDirection(Qt.LayoutDirection.LeftToRight)   # a chart/canvas: never mirrored in RTL
         self.setAttribute(Qt.WidgetAttribute.WA_DeleteOnClose)
         self.setAttribute(Qt.WidgetAttribute.WA_QuitOnClose, False)   # ShotL's own window is hidden meanwhile
         self.setWindowTitle("ShotL region")

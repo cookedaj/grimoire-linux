@@ -17,6 +17,7 @@ from PySide6.QtCore import QRectF, Qt
 from PySide6.QtGui import QColor, QIcon, QPainter, QPixmap
 from PySide6.QtWidgets import QApplication, QMainWindow
 
+from grimoire.i18n import tr
 from grimoire.paths import DATA, packaged
 from grimoire.spells import SPELLS
 
@@ -74,7 +75,7 @@ def app_icon(glyph_name: str, size: int = 256) -> QPixmap:
 def install(sid: str):
     spell = _spell(sid)
     if not spell or not available(sid):
-        raise ValueError(f"{sid} has no standalone command yet")
+        raise ValueError(tr("grimoire.standalone", "{id} has no standalone command yet").format(id=sid))
     cmd, entry, icon = _paths(sid)
     for d in (cmd.parent, entry.parent, icon.parent):
         d.mkdir(parents=True, exist_ok=True)

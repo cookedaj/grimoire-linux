@@ -10,6 +10,7 @@ from PySide6.QtCore import QBuffer, QByteArray, QIODevice, QSize, Qt
 from PySide6.QtGui import QGuiApplication, QImage, QImageReader, QPixmap
 from PySide6.QtWidgets import QCheckBox, QDialog, QFileDialog, QHBoxLayout, QLabel, QLineEdit, QVBoxLayout, QWidget
 
+from grimoire.i18n import tr
 from grimoire.settingsview import Row, _button, _label, _scroll, _size, _when, run
 
 PREVIEW = QSize(480, 270)
@@ -51,19 +52,20 @@ def _summary(setup: dict) -> str:
     m = setup.get("mural") or {}
     if m:
         pics = len((m.get("desktop") or {}).get("items", []))
-        bits.append("MuraL: {tabs} screens and {pics} wallpapers".format(tabs=len(m.get("tabs", {})), pics=pics))
+        bits.append(tr("grimoire.shareview", "MuraL: %n screen(s) and {wallpapers}", n=len(m.get("tabs", {}))).format(
+            wallpapers=tr("grimoire.shareview", "%n wallpaper(s)", n=pics)))
     if setup.get("store"):
-        bits.append("{n} community items by store link".format(n=len(setup["store"])))
+        bits.append(tr("grimoire.shareview", "%n community item(s) by store link", n=len(setup["store"])))
     s = setup.get("sightc") or {}
     if s:
-        bits.append("SightsL: crosshair and {n} profiles".format(n=len(s.get("profiles", {}))))
+        bits.append(tr("grimoire.shareview", "SightsL: crosshair and %n profile(s)", n=len(s.get("profiles", {}))))
     if setup.get("terminall"):
-        bits.append("TerminalL: {n} profiles".format(n=len(setup["terminall"]["profiles"])))
+        bits.append(tr("grimoire.shareview", "TerminalL: %n profile(s)", n=len(setup["terminall"]["profiles"])))
     if setup.get("launchl"):
-        bits.append("LaunchL: {n} favorites in order".format(n=len(setup["launchl"]["favorites"])))
+        bits.append(tr("grimoire.shareview", "LaunchL: %n favorite(s) in order", n=len(setup["launchl"]["favorites"])))
     if setup.get("tray"):
-        bits.append("the tray meter")
-    return " · ".join(bits) or "Nothing yet."
+        bits.append(tr("grimoire.shareview", "the tray meter"))
+    return " · ".join(bits) or tr("grimoire.shareview", "Nothing yet.")
 
 
 # ---------------------------------------------------------------- the preview dialog
@@ -74,7 +76,7 @@ class SetupPreview(QDialog):
         from grimoire import sharesetup
         super().__init__(parent)
         self.setObjectName("WhatsNew")
-        self.setWindowTitle("Import a setup")
+        self.setWindowTitle(tr("grimoire.shareview", "Import a setup"))
         self.resize(700, 760)
         self.shared, self.result = shared, None
         lay = QVBoxLayout(self)
@@ -83,13 +85,13 @@ class SetupPreview(QDialog):
         lay.addWidget(_label(shared.title, "PageHeading"))
         meta = []
         if shared.author:
-            meta.append("by {author}".format(author=shared.author))
+            meta.append(tr("grimoire.shareview", "by {author}").format(author=shared.author))
         if _when(shared.created):
-            meta.append("made {when}".format(when=_when(shared.created)))
+            meta.append(tr("grimoire.shareview", "made {when}").format(when=_when(shared.created)))
         if shared.app_version:
-            meta.append("Grimoire v{version}".format(version=shared.app_version))
+            meta.append(tr("grimoire.shareview", "Grimoire v{version}").format(version=shared.app_version))
         if shared.source is None:
-            meta.append("from a share code")
+            meta.append(tr("grimoire.shareview", "from a share code"))
         lay.addWidget(_label(" · ".join(meta), "Muted"))
         lay.addSpacing(6)
 
@@ -106,7 +108,7 @@ class SetupPreview(QDialog):
             bl.addSpacing(8)
         self.ticks = {}
         for spell, rows in sharesetup.changes(shared).items():
-            box = QCheckBox(sharesetup.SPELL_NAMES[spell])
+            box = QCheckBox(tr("grimoire.sharesetup", sharesetup.SPELL_NAMES[spell]))
             box.setObjectName("RowTitle")
             box.setChecked(True)
             box.toggled.connect(self._sync)
@@ -118,39 +120,45 @@ class SetupPreview(QDialog):
         self.missing = sharesetup.missing_store(shared)
         if self.missing:
             bl.addSpacing(14)
-            bl.addWidget(_label("FROM THE COMMUNITY STORE", "Section"))
-            bl.addWidget(_label("This setup uses these community themes and wallpapers. They aren't inside the file: "
-                                "Grimoire downloads each one from the store only when you click its button.", "Muted"))
+            bl.addWidget(_label(tr("grimoire.shareview", "FROM THE COMMUNITY STORE"), "Section"))
+            bl.addWidget(_label(tr("grimoire.shareview",
+                                   "This setup uses these community themes and wallpapers. They aren't inside the "
+                                   "file: Grimoire downloads each one from the store only when you click its button."),
+                                "Muted"))
             for ref in self.missing:
                 bl.addWidget(self._store_row(ref))
         notes = []
         pics = sharesetup.missing_pictures(shared)
         if pics:
-            notes.append("{n} wallpapers aren't included and aren't in your library: {names}. Those parts are left "
-                         "out when you apply the look.".format(n=len(pics), names=", ".join(pics[:6])))
+            notes.append(tr("grimoire.shareview", "%n wallpaper(s) aren't included and aren't in your library: "
+                            "{names}. Those parts are left out when you apply the look.", n=len(pics)).format(
+                names=", ".join(pics[:6])))
         if shared.ignored:
-            notes.append("{n} unknown files in the setup were ignored.".format(n=len(shared.ignored)))
+            notes.append(tr("grimoire.shareview", "%n unknown file(s) in the setup were ignored.",
+                            n=len(shared.ignored)))
         for n in notes:
             bl.addSpacing(8)
             bl.addWidget(_label(n, "Muted"))
         bl.addStretch(1)
         lay.addWidget(_scroll(body), 1)
 
-        self.message = _label("A safety backup of your current settings is saved first. Importing changes no screen: "
-                              "the MuraL look is saved under MuraL → Looks, and you choose whether to apply it now.",
+        self.message = _label(tr("grimoire.shareview",
+                                 "A safety backup of your current settings is saved first. Importing changes "
+                                 "no screen: the MuraL look is saved under MuraL → Looks, and you choose whether "
+                                 "to apply it now."),
                               "Status")
         lay.addWidget(self.message)
-        self.root = QCheckBox("Include the login and boot screens (asks for your password)")
+        self.root = QCheckBox(tr("grimoire.shareview", "Include the login and boot screens (asks for your password)"))
         self.root.hide()
         lay.addWidget(self.root)
         row = QHBoxLayout()
         row.addStretch(1)
-        self.cancel = _button("Cancel", self.reject)
+        self.cancel = _button(tr("grimoire.shareview", "Cancel"), self.reject)
         row.addWidget(self.cancel)
-        self.go = _button("Import", self._import, "Primary")
+        self.go = _button(tr("grimoire.shareview", "Import"), self._import, "Primary")
         row.addWidget(self.go)
-        self.now = _button("Apply the look now", self._apply_now, "Primary",
-                           tip="Changes your desktop: wallpaper, taskbar, colors, windows…")
+        self.now = _button(tr("grimoire.shareview", "Apply the look now"), self._apply_now, "Primary",
+                           tip=tr("grimoire.shareview", "Changes your desktop: wallpaper, taskbar, colors, windows…"))
         self.now.hide()
         row.addWidget(self.now)
         lay.addLayout(row)
@@ -171,22 +179,24 @@ class SetupPreview(QDialog):
         new = _label(change.new, "Muted" if change.same else "RowTitle")
         h.addWidget(new, 1)
         if change.same:
-            h.addWidget(_label("SAME", "Badge", wrap=False))
+            h.addWidget(_label(tr("grimoire.shareview", "SAME"), "Badge", wrap=False))
         return w
 
     def _store_row(self, ref):
         from grimoire import sharesetup
-        b = _button("Get from store", lambda: get())
-        row = Row(ref["name"], "{kind} · by {author}".format(kind=ref["kind"], author=ref["author"] or "unknown"), [b])
+        b = _button(tr("grimoire.shareview", "Get from store"), lambda: get())
+        row = Row(ref["name"], tr("grimoire.shareview", "{kind} · by {author}").format(
+            kind=ref["kind"], author=ref["author"] or tr("grimoire.shareview", "unknown")), [b])
 
         def got(ok, value):
-            b.setText("Installed" if ok else "Try again")
+            b.setText(tr("grimoire.shareview", "Installed") if ok else tr("grimoire.shareview", "Try again"))
             b.setEnabled(not ok)
-            row.sub.setText("Installed." if ok else "Couldn't get it: {error}".format(error=value))
+            row.sub.setText(tr("grimoire.shareview", "Installed.") if ok
+                            else tr("grimoire.shareview", "Couldn't get it: {error}").format(error=value))
 
         def get():
             b.setEnabled(False)
-            b.setText("Getting…")
+            b.setText(tr("grimoire.shareview", "Getting…"))
             run(lambda: sharesetup.get_from_store(ref), got)
         return row
 
@@ -206,7 +216,7 @@ class SetupPreview(QDialog):
     def _import(self):
         from grimoire import sharesetup
         shared, parts = self.shared, self.parts()
-        self._busy("Saving a safety backup, then importing…")
+        self._busy(tr("grimoire.shareview", "Saving a safety backup, then importing…"))
         run(lambda: sharesetup.apply(shared, parts), self._imported)
 
     def _imported(self, ok, value):
@@ -218,13 +228,15 @@ class SetupPreview(QDialog):
                 box.setEnabled(True)
             return
         self.result = value
-        self.cancel.setText("Close")
+        self.cancel.setText(tr("grimoire.shareview", "Close"))
         self.go.hide()
-        text = "Imported. Your previous settings are saved in {safety}.".format(safety=value.safety.name)
+        text = tr("grimoire.shareview", "Imported. Your previous settings are saved in {safety}.").format(
+            safety=value.safety.name)
         if value.look_id:
-            text += " " + "The look is saved in MuraL → Looks as “{title}”.".format(title=self.shared.title)
+            text += " " + tr("grimoire.shareview", "The look is saved in MuraL → Looks as “{title}”.").format(
+                title=self.shared.title)
         if value.look_id or value.favorites:
-            text += " " + "Apply it now to change your desktop, or later from MuraL."
+            text += " " + tr("grimoire.shareview", "Apply it now to change your desktop, or later from MuraL.")
             self.now.show()
             self.now.setEnabled(True)
             self.root.setVisible(bool(value.look_id))
@@ -233,17 +245,18 @@ class SetupPreview(QDialog):
     def _apply_now(self):
         from grimoire import sharesetup
         result, root = self.result, {"login", "boot"} if self.root.isChecked() else set()
-        self._busy("Applying the look… (the taskbar may blink while Plasma restarts)")
+        self._busy(tr("grimoire.shareview", "Applying the look… (the taskbar may blink while Plasma restarts)"))
         self.root.setEnabled(False)
         run(lambda: sharesetup.apply_look(result, root), self._applied)
 
     def _applied(self, ok, value):
         self.cancel.setEnabled(True)
         if not ok:
-            self.message.setText("Couldn't apply the look: {error}".format(error=value))
+            self.message.setText(tr("grimoire.shareview", "Couldn't apply the look: {error}").format(error=value))
             self.now.setEnabled(True)
             return
-        self.message.setText("\n".join(f"{part}: {msg}" for part, _, msg in value) or "Nothing to apply.")
+        self.message.setText("\n".join(tr("grimoire.shareview", "{part}: {message}").format(part=part, message=msg)
+                                       for part, _, msg in value) or tr("grimoire.shareview", "Nothing to apply."))
 
 
 # ---------------------------------------------------------------- the panel
@@ -253,43 +266,53 @@ class SharePanel(QWidget):
         lay = QVBoxLayout(self)
         lay.setContentsMargins(0, 0, 8, 0)
         lay.setSpacing(10)
-        lay.addWidget(_label("Share your whole Grimoire look as one file: MuraL's screens and wallpaper playlist, your "
-                             "crosshair, terminal profiles, LaunchL's favorites order and the tray meter. Never your "
-                             "accounts, sign-ins, folders, tidy rules, history, network data or terminal commands. "
-                             "Community themes travel as store links, not files.", "Muted"))
-        lay.addWidget(_label("SHARE", "Section"))
+        lay.addWidget(_label(tr("grimoire.shareview",
+                                "Share your whole Grimoire look as one file: MuraL's screens and wallpaper "
+                                "playlist, your crosshair, terminal profiles, LaunchL's favorites order and the tray "
+                                "meter. Never your accounts, sign-ins, folders, tidy rules, history, network data or "
+                                "terminal commands. Community themes travel as store links, not files."), "Muted"))
+        lay.addWidget(_label(tr("grimoire.shareview", "SHARE"), "Section"))
         self.title = QLineEdit()
         self.title.setMaxLength(60)
-        self.title.setPlaceholderText("Monochrome Clover")
+        self.title.setPlaceholderText(tr("grimoire.shareview", "Monochrome Clover"))
         self.title.setFixedWidth(260)
-        lay.addWidget(Row("Name of this setup", "Shown to whoever opens it.", [self.title]))
+        lay.addWidget(Row(tr("grimoire.shareview", "Name of this setup"),
+                          tr("grimoire.shareview", "Shown to whoever opens it."), [self.title]))
         self.author = QLineEdit()
         self.author.setMaxLength(40)
-        self.author.setPlaceholderText("Optional")
+        self.author.setPlaceholderText(tr("grimoire.shareview", "Optional"))
         self.author.setFixedWidth(260)
-        lay.addWidget(Row("Made by", "Any name you like; leave it empty to stay anonymous.", [self.author]))
-        self.pictures = QCheckBox("Include wallpaper pictures")
-        self.pictures.setToolTip("Pictures in your MuraL library that this look uses, up to 100 MB in total")
-        self.save = _button("Save setup…", self._export, "Primary")
-        lay.addWidget(Row("Save as a file", "A .grimoire-setup file to send or post anywhere. Grimoire checks it holds "
-                          "nothing personal before saving.", [self.pictures, self.save]))
-        self.copy = _button("Copy share code", self._code)
-        lay.addWidget(Row("Copy a share code", "A short text code for chats (small setups only, no pictures).",
+        lay.addWidget(Row(tr("grimoire.shareview", "Made by"),
+                          tr("grimoire.shareview", "Any name you like; leave it empty to stay anonymous."),
+                          [self.author]))
+        self.pictures = QCheckBox(tr("grimoire.shareview", "Include wallpaper pictures"))
+        self.pictures.setToolTip(tr("grimoire.shareview",
+                                    "Pictures in your MuraL library that this look uses, up to 100 MB in total"))
+        self.save = _button(tr("grimoire.shareview", "Save setup…"), self._export, "Primary")
+        lay.addWidget(Row(tr("grimoire.shareview", "Save as a file"),
+                          tr("grimoire.shareview", "A .grimoire-setup file to send or post anywhere. Grimoire "
+                                                   "checks it holds nothing personal before saving."),
+                          [self.pictures, self.save]))
+        self.copy = _button(tr("grimoire.shareview", "Copy share code"), self._code)
+        lay.addWidget(Row(tr("grimoire.shareview", "Copy a share code"),
+                          tr("grimoire.shareview", "A short text code for chats (small setups only, no pictures)."),
                           [self.copy]))
         self.contents = _label("", "Muted")
         lay.addWidget(self.contents)
 
         lay.addSpacing(10)
-        lay.addWidget(_label("IMPORT", "Section"))
-        self.open = _button("Open setup…", self._open)
-        lay.addWidget(Row("Open a setup file", "Checked, then previewed: you see what changes before anything does.",
+        lay.addWidget(_label(tr("grimoire.shareview", "IMPORT"), "Section"))
+        self.open = _button(tr("grimoire.shareview", "Open setup…"), self._open)
+        lay.addWidget(Row(tr("grimoire.shareview", "Open a setup file"),
+                          tr("grimoire.shareview",
+                             "Checked, then previewed: you see what changes before anything does."),
                           [self.open]))
         self.paste = QLineEdit()
         self.paste.setPlaceholderText("GS1-…")
         self.paste.setFixedWidth(260)
         self.paste.returnPressed.connect(self._paste)
-        self.check = _button("Preview", self._paste)
-        lay.addWidget(Row("Paste a share code", "", [self.paste, self.check]))
+        self.check = _button(tr("grimoire.shareview", "Preview"), self._paste)
+        lay.addWidget(Row(tr("grimoire.shareview", "Paste a share code"), "", [self.paste, self.check]))
         self.status = _label("", "Status")
         self.status.hide()
         lay.addWidget(self.status)
@@ -310,10 +333,13 @@ class SharePanel(QWidget):
         if not ok:
             self.contents.setText(d)
             return
-        self.contents.setText("In it now: {summary}".format(summary=_summary(d.setup)))
+        self.contents.setText(tr("grimoire.shareview", "In it now: {summary}").format(summary=_summary(d.setup)))
         size = sum(s for _, _, s in d.wallpapers)
-        self.pictures.setText("Include wallpaper pictures ({size})".format(size=_size(size)) if d.wallpapers
-                              else "Include wallpaper pictures (none to include)")
+        if d.wallpapers:
+            self.pictures.setText(tr("grimoire.shareview", "Include wallpaper pictures ({size})").format(
+                size=_size(size)))
+        else:
+            self.pictures.setText(tr("grimoire.shareview", "Include wallpaper pictures (none to include)"))
         self.pictures.setEnabled(bool(d.wallpapers))
 
     def report(self, text, done=True):
@@ -323,20 +349,21 @@ class SharePanel(QWidget):
             b.setEnabled(done)
 
     def _name(self) -> str:
-        return self.title.text().strip() or "My Grimoire setup"
+        return self.title.text().strip() or tr("grimoire.shareview", "My Grimoire setup")
 
     def _export(self):
         from grimoire import sharesetup
         from grimoire.fsutil import free_name
         title, author, pics = self._name(), self.author.text(), self.pictures.isChecked()
         start = str(Path.home() / sharesetup.default_name(title))
-        path, _ = QFileDialog.getSaveFileName(self, "Save Grimoire setup", start, "Grimoire setup (*.grimoire-setup)")
+        path, _ = QFileDialog.getSaveFileName(self, tr("grimoire.shareview", "Save Grimoire setup"), start,
+                                              tr("grimoire.shareview", "Grimoire setup (*.grimoire-setup)"))
         if not path:
             return
         dest = Path(path)
         if dest.suffix != sharesetup.SUFFIX:          # the dialog only confirmed overwriting the name as typed
             dest = free_name(dest.with_name(dest.name + sharesetup.SUFFIX))
-        self.report("Checking and saving…", False)
+        self.report(tr("grimoire.shareview", "Checking and saving…"), False)
 
         def work():
             d = sharesetup.draft(pics)
@@ -347,33 +374,36 @@ class SharePanel(QWidget):
             if not ok:
                 self.report(d)
                 return
-            text = "Saved {name}.".format(name=dest.name)
+            text = tr("grimoire.shareview", "Saved {name}.").format(name=dest.name)
             if d.left_out:
-                text += " " + "Left out: {names}.".format(names=", ".join(f"{n} ({why})" for n, why in d.left_out[:4]))
+                names = ", ".join(tr("grimoire.shareview", "{name} ({reason})").format(name=n, reason=why)
+                                  for n, why in d.left_out[:4])
+                text += " " + tr("grimoire.shareview", "Left out: {names}.").format(names=names)
             self.report(text)
         run(work, done)
 
     def _code(self):
         from grimoire import sharesetup
         title, author = self._name(), self.author.text()
-        self.report("Checking…", False)
+        self.report(tr("grimoire.shareview", "Checking…"), False)
 
         def done(ok, code):
             if not ok:
                 self.report(code)
             elif code is None:
-                self.report("This setup is too big for a code; save it as a file instead.")
+                self.report(tr("grimoire.shareview", "This setup is too big for a code; save it as a file instead."))
             else:
                 QGuiApplication.clipboard().setText(code)
-                self.report("Share code copied ({n} characters).".format(n=len(code)))
+                self.report(tr("grimoire.shareview", "Share code copied (%n character(s)).", n=len(code)))
         run(lambda: sharesetup.share_code(sharesetup.draft(False), title, author), done)
 
     def _open(self):
         from grimoire import sharesetup
-        path, _ = QFileDialog.getOpenFileName(self, "Open Grimoire setup", str(Path.home()),
-                                              "Grimoire setup (*.grimoire-setup);;All files (*)")
+        path, _ = QFileDialog.getOpenFileName(self, tr("grimoire.shareview", "Open Grimoire setup"), str(Path.home()),
+                                              tr("grimoire.shareview",
+                                                 "Grimoire setup (*.grimoire-setup);;All files (*)"))
         if path:
-            self.report("Checking the setup…", False)
+            self.report(tr("grimoire.shareview", "Checking the setup…"), False)
             run(lambda: sharesetup.inspect(Path(path)), self._show, (sharesetup.ShareError, OSError))
 
     def _paste(self):
@@ -397,7 +427,7 @@ class SharePanel(QWidget):
         dlg.exec()
         if dlg.result:
             self.paste.clear()
-            self.report("Imported “{title}”.".format(title=shared.title))
+            self.report(tr("grimoire.shareview", "Imported “{title}”.").format(title=shared.title))
             self.refresh()
         else:
-            self.report("Import cancelled; nothing changed.")
+            self.report(tr("grimoire.shareview", "Import cancelled; nothing changed."))

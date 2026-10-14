@@ -37,6 +37,7 @@ from functools import lru_cache
 from pathlib import Path
 
 from grimoire import __version__
+from grimoire.i18n import tr, tr_noop
 from grimoire.paths import CONFIG, DATA, HOME
 
 FORMAT = "grimoire-setup"
@@ -72,7 +73,7 @@ MAGIC = {".png": (b"\x89PNG\r\n\x1a\n",), ".jpg": (b"\xff\xd8\xff",), ".jpeg": (
          ".webp": (b"RIFF",)}
 SPELLS = ["mural", "sightc", "terminall", "launchl", "tray"]
 SPELL_NAMES = {"mural": "MuraL", "sightc": "SightsL", "terminall": "TerminalL", "launchl": "LaunchL",
-               "tray": "Tray"}
+               "tray": tr_noop("grimoire.sharesetup", "Tray")}      # shown with tr("grimoire.sharesetup", …)
 
 
 class ShareError(ValueError):
@@ -283,9 +284,9 @@ def clean(raw) -> dict:
         favs = [x for x in f["favorites"][:50] if isinstance(x, str) and FAVORITE.fullmatch(x)]
         if favs:
             out["launchl"] = {"favorites": list(dict.fromkeys(favs))}
-    tr = raw.get("tray")
-    if isinstance(tr, dict) and isinstance(tr.get("meter"), bool):
-        out["tray"] = {"meter": tr["meter"]}
+    tray = raw.get("tray")
+    if isinstance(tray, dict) and isinstance(tray.get("meter"), bool):
+        out["tray"] = {"meter": tray["meter"]}
     return out
 
 
@@ -373,12 +374,13 @@ EMAIL = re.compile(r"[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)*\.[A-Za-
 
 def _personal() -> list[tuple[str, re.Pattern]]:
     """What must never leave this PC in a shared setup, as (what it is, pattern)."""
-    pats = [("your home folder's path", re.compile(re.escape(str(HOME)))),
-            ("a path to someone's home folder", re.compile(r"/home/|/root/|file:/", re.I)),
-            ("an email address", EMAIL)]
-    words = [("your user name", getpass.getuser()), ("your user name", HOME.name)]
+    pats = [(tr("grimoire.sharesetup", "your home folder's path"), re.compile(re.escape(str(HOME)))),
+            (tr("grimoire.sharesetup", "a path to someone's home folder"), re.compile(r"/home/|/root/|file:/", re.I)),
+            (tr("grimoire.sharesetup", "an email address"), EMAIL)]
+    user, pc = tr("grimoire.sharesetup", "your user name"), tr("grimoire.sharesetup", "this computer's name")
+    words = [(user, getpass.getuser()), (user, HOME.name)]
     host = socket.gethostname()
-    words += [("this computer's name", host), ("this computer's name", host.split(".")[0])]
+    words += [(pc, host), (pc, host.split(".")[0])]
     for what, w in words:                       # as whole words; a two-letter name only in its own case
         if w and len(w) >= 2 and w.lower() not in ("root", "user", "home", "localhost"):
             pats.append((what, re.compile(rf"(?<![A-Za-z0-9]){re.escape(w)}(?![A-Za-z0-9])",
@@ -404,7 +406,8 @@ def scrub(obj) -> list[str]:
     for where, s in _strings(obj):
         for what, rx in pats:
             if rx.search(s):
-                found.append(f"{where.strip('/') or 'text'} contains {what}")
+                found.append(tr("grimoire.sharesetup", "{where} contains {what}").format(
+                    where=where.strip('/') or tr("grimoire.sharesetup", "text"), what=what))
                 break
     return found
 
@@ -435,13 +438,13 @@ def draft(include_wallpapers=False, cap=WALLPAPER_CAP) -> Draft:
     for name in _pictures(d.setup):
         p = _library_file(name)
         if name in store:
-            d.left_out.append((name, "from the community store"))
+            d.left_out.append((name, tr("grimoire.sharesetup", "from the community store")))
         elif p is None or not IMAGE_NAME.fullmatch(name):
-            d.left_out.append((name, "not a picture in your library"))
+            d.left_out.append((name, tr("grimoire.sharesetup", "not a picture in your library")))
         elif not _magic_ok(name, p.read_bytes()[:16]):
-            d.left_out.append((name, "not a PNG, JPEG or WebP picture"))
+            d.left_out.append((name, tr("grimoire.sharesetup", "not a PNG, JPEG or WebP picture")))
         elif (size := p.stat().st_size) > MAX_WALLPAPER or total + size > cap:
-            d.left_out.append((name, "too large"))
+            d.left_out.append((name, tr("grimoire.sharesetup", "too large")))
         else:
             total += size
             d.wallpapers.append((name, p, size))
@@ -457,7 +460,8 @@ def _meta(title: str, author: str) -> dict:
 def _check_clean(meta: dict, setup: dict, names=()):
     problems = scrub({"title": meta["title"], "author": meta["author"], "setup": setup, "files": list(names)})
     if problems:
-        raise ShareError("Not shared: {problems}. Change it and try again.".format(problems="; ".join(problems[:3])))
+        raise ShareError(tr("grimoire.sharesetup", "Not shared: {problems}. Change it and try again.")
+                         .format(problems="; ".join(problems[:3])))
 
 
 def export(dest: Path, d: Draft, title: str, author: str = "", preview_png: bytes = b"") -> dict:
@@ -540,21 +544,22 @@ def _loads(data: bytes):
 def _open(source) -> zipfile.ZipFile:
     if isinstance(source, (bytes, bytearray)):
         if len(source) > MAX_ARCHIVE:
-            raise ShareError("The setup is larger than the safety limit.")
+            raise ShareError(tr("grimoire.sharesetup", "The setup is larger than the safety limit."))
         if not zipfile.is_zipfile(io.BytesIO(source)):
-            raise ShareError("That isn't a Grimoire setup (not a zip file).")
+            raise ShareError(tr("grimoire.sharesetup", "That isn't a Grimoire setup (not a zip file)."))
         return zipfile.ZipFile(io.BytesIO(source))
     path = Path(source)
     try:
         st = path.stat()
     except OSError as e:
-        raise ShareError("Couldn't open the setup: {error}".format(error=e.strerror or e)) from None
+        raise ShareError(tr("grimoire.sharesetup", "Couldn't open the setup: {error}")
+                         .format(error=e.strerror or e)) from None
     if not stat.S_ISREG(st.st_mode):
-        raise ShareError("That isn't a file.")
+        raise ShareError(tr("grimoire.sharesetup", "That isn't a file."))
     if st.st_size > MAX_ARCHIVE:
-        raise ShareError("The setup is larger than the safety limit.")
+        raise ShareError(tr("grimoire.sharesetup", "The setup is larger than the safety limit."))
     if not zipfile.is_zipfile(path):
-        raise ShareError("That isn't a Grimoire setup (not a zip file).")
+        raise ShareError(tr("grimoire.sharesetup", "That isn't a Grimoire setup (not a zip file)."))
     return zipfile.ZipFile(path)
 
 
@@ -575,7 +580,8 @@ def _read(z: zipfile.ZipFile, info: zipfile.ZipInfo, limit: int, sink=None) -> t
         while chunk := f.read(1 << 20):
             n += len(chunk)
             if n > limit:
-                raise ShareError("{name} is larger than it says (or than the limit).".format(name=info.filename[:80]))
+                raise ShareError(tr("grimoire.sharesetup", "{name} is larger than it says (or than the limit).")
+                                 .format(name=info.filename[:80]))
             h.update(chunk)
             if sink:
                 sink(chunk)
@@ -585,15 +591,15 @@ def _read(z: zipfile.ZipFile, info: zipfile.ZipInfo, limit: int, sink=None) -> t
 def _check_member(info: zipfile.ZipInfo):
     name, mode = info.filename, info.external_attr >> 16
     if info.flag_bits & 0x1:
-        raise ShareError("The setup is encrypted; Grimoire doesn't read those.")
+        raise ShareError(tr("grimoire.sharesetup", "The setup is encrypted; Grimoire doesn't read those."))
     if stat.S_ISLNK(mode):
-        raise ShareError("The setup contains a link; not importing it.")
+        raise ShareError(tr("grimoire.sharesetup", "The setup contains a link; not importing it."))
     if mode and stat.S_IFMT(mode) not in (0, stat.S_IFREG, stat.S_IFDIR):
-        raise ShareError("The setup contains a special file; not importing it.")
+        raise ShareError(tr("grimoire.sharesetup", "The setup contains a special file; not importing it."))
     parts = name.rstrip("/").split("/")
     if (name.startswith("/") or "\\" in name or re.match(r"[A-Za-z]:", name) or len(name) > 300
             or any(not c.isprintable() for c in name) or any(s in ("", ".", "..") for s in parts)):
-        raise ShareError("The setup contains an unsafe file name; not importing it.")
+        raise ShareError(tr("grimoire.sharesetup", "The setup contains an unsafe file name; not importing it."))
 
 
 def _kind(name: str) -> str | None:
@@ -611,30 +617,30 @@ def _manifest(z: zipfile.ZipFile) -> dict:
     try:
         info = z.getinfo("manifest.json")
     except KeyError:
-        raise ShareError("That isn't a Grimoire setup (no manifest.json).") from None
+        raise ShareError(tr("grimoire.sharesetup", "That isn't a Grimoire setup (no manifest.json).")) from None
     raw = io.BytesIO()
     _read(z, info, MAX_MANIFEST, raw.write)
     try:
         meta = _loads(raw.getvalue())
     except (ValueError, UnicodeDecodeError, RecursionError):
-        raise ShareError("The setup's manifest isn't valid JSON.") from None
+        raise ShareError(tr("grimoire.sharesetup", "The setup's manifest isn't valid JSON.")) from None
     if not isinstance(meta, dict) or meta.get("format") != FORMAT:
-        raise ShareError("That isn't a Grimoire setup.")
+        raise ShareError(tr("grimoire.sharesetup", "That isn't a Grimoire setup."))
     v = meta.get("format_version")
     if not isinstance(v, int) or isinstance(v, bool) or v < 1:
-        raise ShareError("The setup's manifest is damaged.")
+        raise ShareError(tr("grimoire.sharesetup", "The setup's manifest is damaged."))
     if v > FORMAT_VERSION:
-        raise ShareError("This setup was made by a newer Grimoire; update Grimoire first.")
+        raise ShareError(tr("grimoire.sharesetup", "This setup was made by a newer Grimoire; update Grimoire first."))
     files = meta.get("files")
     if not isinstance(files, list) or len(files) > MAX_FILES:
-        raise ShareError("The setup's manifest is damaged.")
+        raise ShareError(tr("grimoire.sharesetup", "The setup's manifest is damaged."))
     listed = {}
     for f in files:
         ok = (isinstance(f, dict) and isinstance(f.get("path"), str) and isinstance(f.get("size"), int)
               and not isinstance(f.get("size"), bool) and f["size"] >= 0 and isinstance(f.get("sha256"), str)
               and re.fullmatch(r"[0-9a-f]{64}", f["sha256"]))
         if not ok or f["path"] in listed:
-            raise ShareError("The setup's manifest is damaged.")
+            raise ShareError(tr("grimoire.sharesetup", "The setup's manifest is damaged."))
         listed[f["path"]] = f
     meta["files"] = listed
     return meta
@@ -647,10 +653,10 @@ def inspect(source) -> Shared:
             digest = _digest(source)
             infos = z.infolist()
             if len(infos) > MAX_FILES:
-                raise ShareError("The setup holds more files than the safety limit.")
+                raise ShareError(tr("grimoire.sharesetup", "The setup holds more files than the safety limit."))
             names = [i.filename for i in infos]
             if len(set(names)) != len(names):
-                raise ShareError("The setup lists a file twice; not importing it.")
+                raise ShareError(tr("grimoire.sharesetup", "The setup lists a file twice; not importing it."))
             for info in infos:
                 _check_member(info)
             meta = _manifest(z)
@@ -666,12 +672,15 @@ def inspect(source) -> Shared:
                     continue
                 m = listed.pop(name, None)
                 if m is None:
-                    raise ShareError("{name} isn't in the setup's manifest; not importing it.".format(name=name[:80]))
+                    raise ShareError(tr(
+                        "grimoire.sharesetup", "{name} isn't in the setup's manifest; not importing it.")
+                        .format(name=name[:80]))
                 if info.file_size != m["size"] or m["size"] > LIMIT[kind]:
-                    raise ShareError("{name} is larger than it says (or than the limit).".format(name=name[:80]))
+                    raise ShareError(tr("grimoire.sharesetup", "{name} is larger than it says (or than the limit).")
+                                     .format(name=name[:80]))
                 total += m["size"]
                 if total > MAX_WALLPAPERS + MAX_SETUP + MAX_PREVIEW:
-                    raise ShareError("The setup expands larger than the safety limit.")
+                    raise ShareError(tr("grimoire.sharesetup", "The setup expands larger than the safety limit."))
                 buf = io.BytesIO()
                 keep = kind != "wallpaper"
                 head = bytearray()
@@ -683,37 +692,42 @@ def inspect(source) -> Shared:
                         head.extend(chunk[:16])
                 sha, size = _read(z, info, m["size"], sink)
                 if sha != m["sha256"] or size != m["size"]:
-                    raise ShareError("{name} doesn't match the setup's manifest (damaged or altered).".format(
-                        name=name[:80]))
+                    raise ShareError(tr(
+                        "grimoire.sharesetup", "{name} doesn't match the setup's manifest (damaged or altered).")
+                        .format(name=name[:80]))
                 if kind == "setup.json":
                     try:
                         raw = _loads(buf.getvalue())
                     except (ValueError, UnicodeDecodeError, RecursionError):
-                        raise ShareError("The setup's settings aren't valid JSON; not importing it.") from None
+                        raise ShareError(tr("grimoire.sharesetup",
+                                            "The setup's settings aren't valid JSON; not importing it.")) from None
                 elif kind == "preview.png":
                     preview = buf.getvalue() if _magic_ok(name, buf.getvalue()[:16]) else b""
                 else:
                     if not _magic_ok(name, bytes(head)):
-                        raise ShareError("{name} isn't the picture it says it is; not importing it.".format(
-                            name=name[:80]))
+                        raise ShareError(tr(
+                            "grimoire.sharesetup", "{name} isn't the picture it says it is; not importing it.")
+                            .format(name=name[:80]))
                     wallpapers[name[11:]] = (size, sha)
             if raw is None:
-                raise ShareError("That isn't a Grimoire setup (no setup.json).")
+                raise ShareError(tr("grimoire.sharesetup", "That isn't a Grimoire setup (no setup.json)."))
             missing = [p for p in listed if _kind(p)]
             if missing:
-                raise ShareError("The setup is missing {name}, which its manifest lists.".format(name=missing[0][:80]))
-            shared = Shared(title=_text(meta.get("title"), TITLE_MAX) or "Untitled setup",
+                raise ShareError(tr("grimoire.sharesetup", "The setup is missing {name}, which its manifest lists.")
+                                 .format(name=missing[0][:80]))
+            shared = Shared(title=_text(meta.get("title"), TITLE_MAX) or tr("grimoire.sharesetup", "Untitled setup"),
                             author=_text(meta.get("author"), AUTHOR_MAX), setup=clean(raw),
                             created=_text(meta.get("created"), 40), app_version=_text(meta.get("app_version"), 20),
                             preview=preview, wallpapers=wallpapers, ignored=ignored, source=source, digest=digest)
     except zipfile.BadZipFile as e:
-        raise ShareError("The setup is damaged: {error}".format(error=e)) from None
+        raise ShareError(tr("grimoire.sharesetup", "The setup is damaged: {error}").format(error=e)) from None
     except (zipfile.LargeZipFile, NotImplementedError, EOFError, RuntimeError) as e:
-        raise ShareError("The setup can't be read: {error}".format(error=e)) from None
+        raise ShareError(tr("grimoire.sharesetup", "The setup can't be read: {error}").format(error=e)) from None
     except OSError as e:
-        raise ShareError("Couldn't read the setup: {error}".format(error=e.strerror or e)) from None
+        raise ShareError(tr("grimoire.sharesetup", "Couldn't read the setup: {error}")
+                         .format(error=e.strerror or e)) from None
     if not shared.setup:
-        raise ShareError("This setup has nothing Grimoire can use.")
+        raise ShareError(tr("grimoire.sharesetup", "This setup has nothing Grimoire can use."))
     return shared
 
 
@@ -721,7 +735,8 @@ def from_code(text: str) -> Shared:
     """A pasted GS1- code, checked like a file."""
     text = "".join(str(text).split())
     if not text.startswith(CODE_PREFIX) or len(text) > MAX_CODE * 2:
-        raise ShareError("That isn't a Grimoire setup code (they start with {prefix}).".format(prefix=CODE_PREFIX))
+        raise ShareError(tr("grimoire.sharesetup", "That isn't a Grimoire setup code (they start with {prefix}).")
+                         .format(prefix=CODE_PREFIX))
     body = text[len(CODE_PREFIX):]
     try:
         packed = base64.urlsafe_b64decode(body + "=" * (-len(body) % 4))
@@ -731,13 +746,14 @@ def from_code(text: str) -> Shared:
             raise ValueError("too large or cut short")
         data = _loads(raw)
     except (ValueError, TypeError, zlib.error, UnicodeDecodeError, RecursionError):
-        raise ShareError("That setup code is damaged; copy it again.") from None
+        raise ShareError(tr("grimoire.sharesetup", "That setup code is damaged; copy it again.")) from None
     if not isinstance(data, dict) or data.get("v") != FORMAT_VERSION:
-        raise ShareError("That setup code is from a different Grimoire version.")
-    shared = Shared(title=_text(data.get("t"), TITLE_MAX) or "Untitled setup", author=_text(data.get("a"), AUTHOR_MAX),
+        raise ShareError(tr("grimoire.sharesetup", "That setup code is from a different Grimoire version."))
+    shared = Shared(title=_text(data.get("t"), TITLE_MAX) or tr("grimoire.sharesetup", "Untitled setup"),
+                    author=_text(data.get("a"), AUTHOR_MAX),
                     setup=clean(data.get("s")))
     if not shared.setup:
-        raise ShareError("This setup has nothing Grimoire can use.")
+        raise ShareError(tr("grimoire.sharesetup", "This setup has nothing Grimoire can use."))
     return shared
 
 
@@ -763,47 +779,54 @@ def _design_name(key: str, design: str | None) -> str:
         return design.split(":")[-1]
 
 
+def _on(v) -> str:
+    return tr("grimoire.sharesetup", "on") if v else tr("grimoire.sharesetup", "off")
+
+
 def _opts_text(opts: dict) -> str:
-    return ", ".join(f"{k.replace('_', ' ')} {('on' if v else 'off') if isinstance(v, bool) else v}"
+    return ", ".join(f"{k.replace('_', ' ')} {_on(v) if isinstance(v, bool) else v}"
                      for k, v in opts.items())
 
 
 def _crosshair_text(c: dict) -> str:
-    return "{style}, {color}, size {size}".format(style=c.get("style"), color=c.get("color"), size=c.get("size"))
+    return tr("grimoire.sharesetup", "{style}, {color}, size {size}").format(style=c.get("style"), color=c.get("color"),
+                                                                              size=c.get("size"))
 
 
 def _profiles_change(mine: dict, theirs: dict) -> Change:
     _, names = _merge_named(mine, theirs)
     added = [names[k] for k in theirs if names[k] not in mine]
-    return Change("Profiles", ", ".join(mine) or "—",
-                  "adds {names}".format(names=", ".join(added)) if added else ", ".join(mine))
+    return Change(tr("grimoire.sharesetup", "Profiles"), ", ".join(mine) or "—",
+                  tr("grimoire.sharesetup", "adds {names}").format(names=", ".join(added)) if added
+                  else ", ".join(mine))
 
 
 def changes(shared: Shared) -> dict:
     """{spell: [Change]} for each spell the setup touches: what this PC has now → what the setup has."""
     from grimoire.spells.mural.looks import LABELS
+    label = lambda key: tr("grimoire.spells.mural.looks", LABELS[key]) if key in LABELS else key
     now, new, out = current(), shared.setup, {}
     if "mural" in new:
         rows, ntabs = [], (now.get("mural") or {}).get("tabs", {})
         for key, entry in new["mural"]["tabs"].items():
             cur = ntabs.get(key) or {}
-            rows.append(Change(LABELS.get(key, key), _design_name(key, cur.get("design")),
+            rows.append(Change(label(key), _design_name(key, cur.get("design")),
                                _design_name(key, entry["design"])))
             if cur.get("options") != entry["options"] and entry["options"]:
-                rows.append(Change("{tab} options".format(tab=LABELS.get(key, key)), _opts_text(cur.get("options") or {})
-                                   or "—", _opts_text(entry["options"])))
+                rows.append(Change(tr("grimoire.sharesetup", "{tab} options").format(tab=label(key)),
+                                   _opts_text(cur.get("options") or {}) or "—", _opts_text(entry["options"])))
         desk = new["mural"].get("desktop")
         if desk:
             cur = (now.get("mural") or {}).get("desktop") or {}
-            fmt = "{n} wallpapers, every {m} min"
-            rows.insert(0, Change("Wallpaper playlist",
-                                  fmt.format(n=len(cur.get("items", [])), m=cur.get("interval_min", 5)) if cur else "—",
-                                  fmt.format(n=len(desk["items"]), m=desk["interval_min"])))
+            fmt = lambda n, m: tr("grimoire.sharesetup", "%n wallpaper(s), every {m} min", n=n).format(m=m)
+            rows.insert(0, Change(tr("grimoire.sharesetup", "Wallpaper playlist"),
+                                  fmt(len(cur.get("items", [])), cur.get("interval_min", 5)) if cur else "—",
+                                  fmt(len(desk["items"]), desk["interval_min"])))
         out["mural"] = rows
     if "sightc" in new:
         rows, cur = [], now.get("sightc") or {}
         if "crosshair" in new["sightc"]:
-            rows.append(Change("Crosshair", _crosshair_text(cur.get("crosshair") or {}),
+            rows.append(Change(tr("grimoire.sharesetup", "Crosshair"), _crosshair_text(cur.get("crosshair") or {}),
                                _crosshair_text(new["sightc"]["crosshair"])))
         if new["sightc"].get("profiles"):
             rows.append(_profiles_change(cur.get("profiles", {}), new["sightc"]["profiles"]))
@@ -812,15 +835,16 @@ def changes(shared: Shared) -> dict:
         cur = now.get("terminall") or {}
         _, names = _merge_named(cur.get("profiles", {}), new["terminall"]["profiles"])
         out["terminall"] = [_profiles_change(cur.get("profiles", {}), new["terminall"]["profiles"]),
-                            Change("Profile in use", cur.get("profile", "—"), names[new["terminall"]["profile"]])]
+                            Change(tr("grimoire.sharesetup", "Profile in use"), cur.get("profile", "—"),
+                                   names[new["terminall"]["profile"]])]
     if "launchl" in new:
         cur = (now.get("launchl") or {}).get("favorites", [])
-        out["launchl"] = [Change("Favorites order", "{n} favorites".format(n=len(cur)),
-                                 "{n} favorites".format(n=len(new["launchl"]["favorites"])))]
+        out["launchl"] = [Change(tr("grimoire.sharesetup", "Favorites order"),
+                                 tr("grimoire.sharesetup", "%n favorite(s)", n=len(cur)),
+                                 tr("grimoire.sharesetup", "%n favorite(s)", n=len(new["launchl"]["favorites"])))]
     if "tray" in new:
-        on = lambda v: "on" if v else "off"
-        out["tray"] = [Change("CPU and RAM meter", on((now.get("tray") or {}).get("meter", True)),
-                              on(new["tray"]["meter"]))]
+        out["tray"] = [Change(tr("grimoire.sharesetup", "CPU and RAM meter"),
+                              _on((now.get("tray") or {}).get("meter", True)), _on(new["tray"]["meter"]))]
     return out
 
 
@@ -858,7 +882,8 @@ class Result:
 def _atomic(path: Path, data: bytes):
     path.parent.mkdir(parents=True, exist_ok=True)
     if path.is_symlink():
-        raise ShareError("{name} is a link on this PC; not replacing it.".format(name=path.name))
+        raise ShareError(tr("grimoire.sharesetup", "{name} is a link on this PC; not replacing it.")
+                         .format(name=path.name))
     tmp = path.with_name(f".{path.name}.share-tmp")
     try:
         with open(tmp, "wb") as f:
@@ -919,9 +944,11 @@ def _copy_wallpapers(shared: Shared, result: Result) -> dict:
                     f.flush()
                     os.fsync(f.fileno())
                 if got != sha:
-                    raise ShareError("{name} changed while importing; stopped.".format(name=name))
+                    raise ShareError(tr("grimoire.sharesetup", "{name} changed while importing; stopped.")
+                                     .format(name=name))
                 if dest.exists() or dest.is_symlink():
-                    raise ShareError("{name} appeared in your library meanwhile; stopped.".format(name=dest.name))
+                    raise ShareError(tr("grimoire.sharesetup", "{name} appeared in your library meanwhile; stopped.")
+                                     .format(name=dest.name))
                 tmp.replace(dest)
             finally:
                 tmp.unlink(missing_ok=True)
@@ -979,13 +1006,13 @@ def apply(shared: Shared, parts=frozenset(SPELLS), progress=lambda text: None) -
     """Write the chosen parts of a checked setup. A safety backup of the current settings is saved first."""
     from grimoire import backup
     if shared.source is not None and _digest(shared.source) != shared.digest:
-        raise ShareError("The setup file changed since it was checked; open it again.")
+        raise ShareError(tr("grimoire.sharesetup", "The setup file changed since it was checked; open it again."))
     new = shared.setup
-    progress("Saving a safety backup…")
+    progress(tr("grimoire.sharesetup", "Saving a safety backup…"))
     result = Result(backup.safety_backup())
     try:
         if "mural" in parts and "mural" in new:
-            progress("Adding the wallpapers…")
+            progress(tr("grimoire.sharesetup", "Adding the wallpapers…"))
             renamed = _copy_wallpapers(shared, result)
             mural = _rename_pictures(new["mural"], renamed)
             result.look_id = _save_look(shared.title, mural, shared.preview)
@@ -1015,7 +1042,7 @@ def apply(shared: Shared, parts=frozenset(SPELLS), progress=lambda text: None) -
             result.written.append(TRAY.name)
     except (OSError, ShareError, zipfile.BadZipFile) as err:
         msg = err.strerror if isinstance(err, OSError) and err.strerror else str(err)
-        raise ShareError("{error} Your settings from before are saved in {safety}.".format(
+        raise ShareError(tr("grimoire.sharesetup", "{error} Your settings from before are saved in {safety}.").format(
             error=msg, safety=result.safety.name)) from None
     return result
 
@@ -1027,16 +1054,18 @@ def apply_look(result: Result, include_root=frozenset(), progress=None) -> list:
     if result.look_id:
         from grimoire.spells.mural import looks
         _resolve(result.look_id)
-        out += [(looks.LABELS.get(k, "Wallpaper" if k == "desktop" else k), ok, msg)
+        out += [(tr("grimoire.spells.mural.looks", looks.LABELS[k]) if k in looks.LABELS else
+                 tr("grimoire.sharesetup", "Wallpaper") if k == "desktop" else k, ok, msg)
                 for k, ok, msg in looks.restore(result.look_id, include_root, progress)]
     if result.favorites:
         from grimoire.spells.launchl import panel
         rec = panel.load_state().get("replaced") or {}
         if rec.get("favorites_client"):
             panel.write_order(rec["favorites_client"], result.favorites)
-            out.append(("LaunchL", True, "Favorites reordered; LaunchL shows it next time Plasma starts."))
+            out.append(("LaunchL", True, tr("grimoire.sharesetup",
+                                            "Favorites reordered; LaunchL shows it next time Plasma starts.")))
         else:
-            out.append(("LaunchL", True, "Skipped (LaunchL isn't in your panel)."))
+            out.append(("LaunchL", True, tr("grimoire.sharesetup", "Skipped (LaunchL isn't in your panel).")))
     return out
 
 

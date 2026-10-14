@@ -6,7 +6,7 @@ reading a microphone is its own opt-in button, since Plasma shows the mic as in 
 import array
 import math
 
-from PySide6.QtCore import QObject, QProcess, QRectF, QSize, QTimer, Signal
+from PySide6.QtCore import QObject, QProcess, QRectF, QSize, Qt, QTimer, Signal
 from PySide6.QtGui import QColor, QPainter
 from PySide6.QtWidgets import QWidget
 
@@ -89,6 +89,7 @@ class LevelBar(QWidget):
 
     def __init__(self, parent=None):
         super().__init__(parent)
+        self.setLayoutDirection(Qt.LayoutDirection.LeftToRight)   # a chart/canvas: never mirrored in RTL
         self.db = FLOOR
         self.setFixedHeight(4)
 

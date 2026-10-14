@@ -27,6 +27,7 @@ from datetime import datetime, timezone
 from pathlib import Path, PurePosixPath
 
 from grimoire import __version__
+from grimoire.i18n import tr
 from grimoire.paths import CONFIG, DATA
 
 FORMAT = "grimoire-backup"
@@ -103,7 +104,8 @@ def target(name: str) -> Path:
     root = ROOTS[top]
     dest = root / rest
     if not dest.parent.resolve().is_relative_to(root.resolve()):
-        raise BackupError(f"{name} would be written outside Grimoire's folders.")
+        raise BackupError(tr("grimoire.backup", "{name} would be written outside Grimoire's folders.")
+                          .format(name=name))
     return dest
 
 
@@ -185,21 +187,22 @@ def default_name() -> str:
 def _open(source) -> zipfile.ZipFile:
     if isinstance(source, (bytes, bytearray)):
         if len(source) > MAX_ARCHIVE:
-            raise BackupError("The backup is larger than the safety limit.")
+            raise BackupError(tr("grimoire.backup", "The backup is larger than the safety limit."))
         if not zipfile.is_zipfile(io.BytesIO(source)):
-            raise BackupError("That isn't a Grimoire backup (not a zip file).")
+            raise BackupError(tr("grimoire.backup", "That isn't a Grimoire backup (not a zip file)."))
         return zipfile.ZipFile(io.BytesIO(source))
     path = Path(source)
     try:
         st = path.stat()
     except OSError as e:
-        raise BackupError(f"Couldn't open the backup: {e.strerror or e}") from None
+        raise BackupError(tr("grimoire.backup", "Couldn't open the backup: {error}")
+                          .format(error=e.strerror or e)) from None
     if not stat.S_ISREG(st.st_mode):
-        raise BackupError("That isn't a file.")
+        raise BackupError(tr("grimoire.backup", "That isn't a file."))
     if st.st_size > MAX_ARCHIVE:
-        raise BackupError("The backup is larger than the safety limit.")
+        raise BackupError(tr("grimoire.backup", "The backup is larger than the safety limit."))
     if not zipfile.is_zipfile(path):
-        raise BackupError("That isn't a Grimoire backup (not a zip file).")
+        raise BackupError(tr("grimoire.backup", "That isn't a Grimoire backup (not a zip file)."))
     return zipfile.ZipFile(path)
 
 
@@ -214,7 +217,8 @@ def _read(z: zipfile.ZipFile, info: zipfile.ZipInfo, limit: int, sink=None) -> t
         while chunk := f.read(1 << 20):
             n += len(chunk)
             if n > limit:
-                raise BackupError(f"{info.filename} is larger than it says (or than the limit).")
+                raise BackupError(tr("grimoire.backup", "{name} is larger than it says (or than the limit).")
+                                  .format(name=info.filename))
             h.update(chunk)
             if sink:
                 sink(chunk)
@@ -225,47 +229,50 @@ def _check_member(info: zipfile.ZipInfo):
     name = info.filename
     mode = info.external_attr >> 16
     if info.flag_bits & 0x1:
-        raise BackupError("The backup is encrypted; Grimoire doesn't read those.")
+        raise BackupError(tr("grimoire.backup", "The backup is encrypted; Grimoire doesn't read those."))
     if stat.S_ISLNK(mode):
-        raise BackupError(f"The backup contains a link ({name}); not restoring it.")
+        raise BackupError(tr("grimoire.backup", "The backup contains a link ({name}); not restoring it.")
+                          .format(name=name))
     if mode and stat.S_IFMT(mode) not in (0, stat.S_IFREG, stat.S_IFDIR):
-        raise BackupError(f"The backup contains a special file ({name}); not restoring it.")
+        raise BackupError(tr("grimoire.backup", "The backup contains a special file ({name}); not restoring it.")
+                          .format(name=name))
     parts = name.rstrip("/").split("/")
     if (name.startswith("/") or "\\" in name or "\x00" in name or re.match(r"[A-Za-z]:", name)
             or any(s in ("", ".", "..") for s in parts)):
-        raise BackupError(f"The backup contains an unsafe path ({name!r}); not restoring it.")
+        raise BackupError(tr("grimoire.backup", "The backup contains an unsafe path ({name}); not restoring it.")
+                          .format(name=repr(name)))
 
 
 def _manifest(z: zipfile.ZipFile) -> dict:
     try:
         info = z.getinfo("manifest.json")
     except KeyError:
-        raise BackupError("That isn't a Grimoire backup (no manifest.json).") from None
+        raise BackupError(tr("grimoire.backup", "That isn't a Grimoire backup (no manifest.json).")) from None
     if info.file_size > MAX_MANIFEST:
-        raise BackupError("The backup's manifest is too large.")
+        raise BackupError(tr("grimoire.backup", "The backup's manifest is too large."))
     raw = io.BytesIO()
     _read(z, info, MAX_MANIFEST, raw.write)
     try:
         meta = json.loads(raw.getvalue().decode())
     except (ValueError, UnicodeDecodeError, RecursionError):
-        raise BackupError("The backup's manifest isn't valid JSON.") from None
+        raise BackupError(tr("grimoire.backup", "The backup's manifest isn't valid JSON.")) from None
     if not isinstance(meta, dict) or meta.get("format") != FORMAT:
-        raise BackupError("That isn't a Grimoire backup.")
+        raise BackupError(tr("grimoire.backup", "That isn't a Grimoire backup."))
     v = meta.get("format_version")
     if not isinstance(v, int) or isinstance(v, bool) or v < 1:
-        raise BackupError("The backup's manifest is damaged.")
+        raise BackupError(tr("grimoire.backup", "The backup's manifest is damaged."))
     if v > FORMAT_VERSION:
-        raise BackupError("This backup was made by a newer Grimoire; update Grimoire first.")
+        raise BackupError(tr("grimoire.backup", "This backup was made by a newer Grimoire; update Grimoire first."))
     files = meta.get("files")
     if not isinstance(files, list) or len(files) > MAX_FILES:
-        raise BackupError("The backup's manifest is damaged.")
+        raise BackupError(tr("grimoire.backup", "The backup's manifest is damaged."))
     listed = {}
     for f in files:
         ok = (isinstance(f, dict) and isinstance(f.get("path"), str) and isinstance(f.get("size"), int)
               and not isinstance(f.get("size"), bool) and f["size"] >= 0 and isinstance(f.get("sha256"), str)
               and re.fullmatch(r"[0-9a-f]{64}", f["sha256"]))
         if not ok or f["path"] in listed:
-            raise BackupError("The backup's manifest is damaged.")
+            raise BackupError(tr("grimoire.backup", "The backup's manifest is damaged."))
         listed[f["path"]] = f
     meta["files"] = listed
     return meta
@@ -278,10 +285,10 @@ def inspect(source) -> Plan:
             digest = _digest(source)
             infos = z.infolist()
             if len(infos) > MAX_FILES:
-                raise BackupError("The backup holds more files than the safety limit.")
+                raise BackupError(tr("grimoire.backup", "The backup holds more files than the safety limit."))
             names = [i.filename for i in infos]
             if len(set(names)) != len(names):
-                raise BackupError("The backup lists a file twice; not restoring it.")
+                raise BackupError(tr("grimoire.backup", "The backup lists a file twice; not restoring it."))
             for info in infos:
                 _check_member(info)
             meta = _manifest(z)
@@ -298,35 +305,42 @@ def inspect(source) -> Plan:
                     continue
                 m = listed.pop(name, None)
                 if m is None:
-                    raise BackupError(f"{name} isn't in the backup's manifest; not restoring it.")
+                    raise BackupError(tr("grimoire.backup", "{name} isn't in the backup's manifest; not restoring it.")
+                                      .format(name=name))
                 if info.file_size != m["size"] or m["size"] > MAX_SIZE[kind]:
-                    raise BackupError(f"{name} is larger than it says (or than the limit).")
+                    raise BackupError(tr("grimoire.backup", "{name} is larger than it says (or than the limit).")
+                                      .format(name=name))
                 total += m["size"]
                 if total > MAX_TOTAL:
-                    raise BackupError("The backup expands larger than the safety limit.")
+                    raise BackupError(tr("grimoire.backup", "The backup expands larger than the safety limit."))
                 buf = io.BytesIO() if name.endswith(".json") else None
                 sha, size = _read(z, info, m["size"], buf.write if buf else None)
                 if sha != m["sha256"] or size != m["size"]:
-                    raise BackupError(f"{name} doesn't match the backup's manifest (damaged or altered).")
+                    raise BackupError(tr("grimoire.backup", "{name} doesn't match the backup's manifest (damaged or "
+                                                            "altered).").format(name=name))
                 if buf is not None:
                     try:
                         json.loads(buf.getvalue().decode())
                     except (ValueError, UnicodeDecodeError, RecursionError):
-                        raise BackupError(f"{name} isn't valid JSON; not restoring it.") from None
+                        raise BackupError(tr("grimoire.backup", "{name} isn't valid JSON; not restoring it.")
+                                          .format(name=name)) from None
                 plan.entries.append(Entry(name, size, sha, kind))
             missing = [p for p in listed if kind_of(p)]
             if missing:
-                raise BackupError(f"The backup is missing {missing[0]}, which its manifest lists.")
+                raise BackupError(tr("grimoire.backup", "The backup is missing {name}, which its manifest lists.")
+                                  .format(name=missing[0]))
     except zipfile.BadZipFile as e:
-        raise BackupError(f"The backup is damaged: {e}") from None
+        raise BackupError(tr("grimoire.backup", "The backup is damaged: {error}").format(error=e)) from None
     except (zipfile.LargeZipFile, NotImplementedError, EOFError, RuntimeError) as e:
-        raise BackupError(f"The backup can't be read: {e}") from None
+        raise BackupError(tr("grimoire.backup", "The backup can't be read: {error}").format(error=e)) from None
     except OSError as e:
-        raise BackupError(f"Couldn't read the backup: {e.strerror or e}") from None
+        raise BackupError(tr("grimoire.backup", "Couldn't read the backup: {error}")
+                          .format(error=e.strerror or e)) from None
     for e in plan.entries:
         dest = target(e.path)
         if dest.is_symlink() or (dest.exists() and not dest.is_file()):
-            raise BackupError(f"{e.path} is a link or folder on this PC; not replacing it.")
+            raise BackupError(tr("grimoire.backup", "{name} is a link or folder on this PC; not replacing it.")
+                              .format(name=e.path))
         e.status = "new" if not dest.exists() else "unchanged" if _sha(dest) == e.sha256 else "changed"
     plan.entries.sort(key=lambda e: ({"changed": 0, "new": 1, "unchanged": 2}[e.status], e.path))
     return plan
@@ -350,14 +364,15 @@ def restore(plan: Plan, progress=lambda text: None) -> tuple[Path, list[str]]:
     if not todo:
         return None, []
     if _digest(plan.source) != plan.digest:
-        raise BackupError("The backup file changed since it was checked; open it again.")
-    progress("Saving a safety backup…")
+        raise BackupError(tr("grimoire.backup", "The backup file changed since it was checked; open it again."))
+    progress(tr("grimoire.backup", "Saving a safety backup…"))
     safety = safety_backup(include_library=any(e.kind == "library" and e.status == "changed" for e in todo))
     done = []
     try:
         _write_all(plan, todo, done, progress)
     except BackupError as err:
-        raise BackupError(f"{err} Your settings from before are saved in {safety}.") from None
+        raise BackupError(tr("grimoire.backup", "{error} Your settings from before are saved in {path}.")
+                          .format(error=err, path=safety)) from None
     return safety, done
 
 
@@ -365,10 +380,11 @@ def _write_all(plan: Plan, todo: list, done: list, progress):
     try:
         with _open(plan.source) as z:
             for e in todo:
-                progress(f"Restoring {e.path}…")
+                progress(tr("grimoire.backup", "Restoring {name}…").format(name=e.path))
                 dest = target(e.path)
                 if dest.is_symlink():
-                    raise BackupError(f"{e.path} became a link on this PC; stopped.")
+                    raise BackupError(tr("grimoire.backup", "{name} became a link on this PC; stopped.")
+                                      .format(name=e.path))
                 dest.parent.mkdir(parents=True, exist_ok=True)
                 tmp = dest.with_name(f".{dest.name}.restore-tmp")
                 try:
@@ -377,12 +393,17 @@ def _write_all(plan: Plan, todo: list, done: list, progress):
                         f.flush()
                         os.fsync(f.fileno())
                     if sha != e.sha256:
-                        raise BackupError(f"{e.path} changed while restoring; stopped.")
+                        raise BackupError(tr("grimoire.backup", "{name} changed while restoring; stopped.")
+                                          .format(name=e.path))
                     tmp.replace(dest)
                 finally:
                     tmp.unlink(missing_ok=True)       # our own temp file, only left over on failure
                 done.append(e.path)
     except zipfile.BadZipFile as err:
-        raise BackupError(f"The backup is damaged: {err}") from None
+        raise BackupError(tr("grimoire.backup", "The backup is damaged: {error}").format(error=err)) from None
     except OSError as err:
-        raise BackupError(f"Couldn't write {err.filename or 'a file'}: {err.strerror or err}") from None
+        if err.filename:
+            raise BackupError(tr("grimoire.backup", "Couldn't write {name}: {error}")
+                              .format(name=err.filename, error=err.strerror or err)) from None
+        raise BackupError(tr("grimoire.backup", "Couldn't write a file: {error}")
+                          .format(error=err.strerror or err)) from None

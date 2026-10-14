@@ -19,7 +19,8 @@ fallback to the copy in this tree (source() is only for sandbox tests, which run
 
 Tests of install/uninstall: GRIMOIRE_SYSTEM_TEST=1 GRIMOIRE_SYSTEM_PREFIX=<sandbox> puts both system folders under
 the sandbox (ignored unless GRIMOIRE_SYSTEM_TEST is set; never used to find a helper to run).
-This module runs as a plain script too (install.sh, stage.sh), so it imports nothing from grimoire.
+This module runs as a plain script too (install.sh, stage.sh), so it imports nothing from grimoire (but i18n.tr for
+the messages the UI shows, when it can: English without it).
 """
 import base64
 import hashlib
@@ -28,6 +29,12 @@ import stat
 import subprocess
 import sys
 from pathlib import Path
+
+try:
+    from grimoire.i18n import tr
+except ImportError:                                        # run as a plain script: English as written
+    def tr(context: str, text: str, disambiguation: str | None = None, n: int = -1) -> str:
+        return text
 
 HERE = Path(__file__).resolve().parent                     # this copy's grimoire/ package
 PACKAGE_DIR = Path("/usr/libexec/grimoire-linux")
@@ -69,17 +76,17 @@ def unsafe(path: Path) -> str:
         try:
             st = os.lstat(p)
         except OSError as e:
-            return f"{p}: {e.strerror or e}"
+            return tr("grimoire.roothelper", "{path}: {error}").format(path=p, error=e.strerror or e)
         if stat.S_ISLNK(st.st_mode):
-            return f"{p} is a symlink"
+            return tr("grimoire.roothelper", "{path} is a symlink").format(path=p)
         if p == path and not stat.S_ISREG(st.st_mode):
-            return f"{p} isn't a regular file"
+            return tr("grimoire.roothelper", "{path} isn't a regular file").format(path=p)
         if p != path and not stat.S_ISDIR(st.st_mode):
-            return f"{p} isn't a folder"
+            return tr("grimoire.roothelper", "{path} isn't a folder").format(path=p)
         if st.st_uid not in TRUSTED_UIDS:
-            return f"{p} isn't owned by root"
+            return tr("grimoire.roothelper", "{path} isn't owned by root").format(path=p)
         if st.st_mode & 0o022:
-            return f"{p} is writable by group or others"
+            return tr("grimoire.roothelper", "{path} is writable by group or others").format(path=p)
     return ""
 
 
@@ -98,14 +105,20 @@ def find(spell: str) -> Path:
         raise HelperError(f"unknown helper {spell!r}")
     found = [d / name(spell) for d in dirs() if os.path.lexists(d / name(spell))]
     if not found:
-        raise HelperError(f"System helpers aren't installed; {fix_hint()}")
+        raise HelperError(tr("grimoire.roothelper", "System helpers aren't installed; reinstall the grimoire-linux "
+                             "package") if packaged() else
+                          tr("grimoire.roothelper", "System helpers aren't installed; run ./install.sh again (one "
+                             "password prompt)"))
     problems = []
     for p in found:
         why = unsafe(p)
         if not why:
             return p
         problems.append(why)
-    raise HelperError(f"System helpers aren't safe to run ({problems[0]}); {fix_hint()}")
+    raise HelperError((tr("grimoire.roothelper", "System helpers aren't safe to run ({problem}); reinstall the "
+                          "grimoire-linux package") if packaged() else
+                       tr("grimoire.roothelper", "System helpers aren't safe to run ({problem}); run ./install.sh "
+                          "again (one password prompt)")).format(problem=problems[0]))
 
 
 def command(spell: str, *args: str) -> list[str]:

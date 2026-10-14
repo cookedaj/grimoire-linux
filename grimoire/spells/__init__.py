@@ -3,6 +3,8 @@
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Callable
 
+from grimoire.i18n import tr, tr_noop
+
 if TYPE_CHECKING:               # background commands (alert checks, auto-tidy) import spells without loading Qt
     from PySide6.QtWidgets import QWidget
 
@@ -30,19 +32,23 @@ def _sightc():
 def _mural_status() -> str:
     from grimoire.spells.mural.screens import load_state
     state = load_state()
-    names = {"lock": "Lock", "splash": "Splash", "login": "Login", "boot": "Boot", "taskbar": "Taskbar",
-             "terminal": "Terminal", "fonts": "Fonts", "cursor": "Cursor", "colors": "Colors", "style": "Style"}
+    names = {"lock": tr("grimoire.spells", "Lock"), "splash": tr("grimoire.spells", "Splash"),
+             "login": tr("grimoire.spells", "Login"), "boot": tr("grimoire.spells", "Boot"),
+             "taskbar": tr("grimoire.spells", "Taskbar"), "terminal": tr("grimoire.spells", "Terminal"),
+             "fonts": tr("grimoire.spells", "Fonts"), "cursor": tr("grimoire.spells", "Cursor"),
+             "colors": tr("grimoire.spells", "Colors"), "style": tr("grimoire.spells", "Style")}
     bits = [f"{label} · {state[k]['design'].removeprefix('store:').split(':')[-1].replace('_', ' ').title()}"
             for k, label in names.items() if k in state]
     from grimoire.spells.mural.looks import active_name
     look = active_name()
-    bits = ([f"Look · {look}"] if look else []) + bits
-    return "   ".join(bits[:6]) or "Nothing applied yet"
+    bits = ([tr("grimoire.spells", "Look") + f" · {look}"] if look else []) + bits
+    return "   ".join(bits[:6]) or tr("grimoire.spells", "Nothing applied yet")
 
 
 def _sightc_status() -> str:
     from grimoire.spells.sightc import overlay
-    return "Crosshair on · Ctrl+Alt+X hides it" if overlay.running_pid() else "Crosshair off"
+    return tr("grimoire.spells", "Crosshair on · Ctrl+Alt+X hides it") if overlay.running_pid() \
+        else tr("grimoire.spells", "Crosshair off")
 
 
 def _vaultl():
@@ -53,8 +59,10 @@ def _vaultl():
 def _vaultl_status() -> str:
     from grimoire.spells.vaultl import cli, tidy
     moved = sum(1 for e in tidy.history(2000) if e["action"] == "move")
-    return "Default file manager · " + ("Auto-tidy on" if cli.timer_active() else "Auto-tidy off") \
-        + f" · {moved} file(s) sorted so far"
+    return " · ".join([tr("grimoire.spells", "Default file manager"),
+                       tr("grimoire.spells", "Auto-tidy on") if cli.timer_active()
+                       else tr("grimoire.spells", "Auto-tidy off"),
+                       tr("grimoire.spells", "%n file(s) sorted so far", n=moved)])
 
 
 def _optimizel():
@@ -67,7 +75,8 @@ def _optimizel_status() -> str:
     saved = tweaks.load_saved()
     on = sum(t.is_on() for t in tweaks.TWEAKS)
     waiting = sum(bool(tweaks.pending_note(t, saved)) for t in tweaks.TWEAKS)
-    return f"{on} of {len(tweaks.TWEAKS)} optimizations on" + (f" · restart to finish {waiting}" if waiting else "")
+    text = tr("grimoire.spells", "{on} of {total} optimizations on").format(on=on, total=len(tweaks.TWEAKS))
+    return text + (" · " + tr("grimoire.spells", "restart to finish {n}").format(n=waiting) if waiting else "")
 
 
 def _systeml():
@@ -79,8 +88,11 @@ def _systeml_status() -> str:
     import psutil
     from grimoire.spells.systeml import alerts
     mem = psutil.virtual_memory()
-    return f"CPU {psutil.cpu_percent(interval=0.1):.0f}% · RAM {(mem.total - mem.available) / 2**30:.1f} of " \
-        f"{mem.total / 2**30:.0f} GB · " + ("Alerts on" if alerts.enabled() else "Alerts off")
+    return " · ".join([
+        tr("grimoire.spells", "CPU {pct}%").format(pct=f"{psutil.cpu_percent(interval=0.1):.0f}"),
+        tr("grimoire.spells", "RAM {used} of {total} GB").format(used=f"{(mem.total - mem.available) / 2**30:.1f}",
+                                                                 total=f"{mem.total / 2**30:.0f}"),
+        tr("grimoire.spells", "Alerts on") if alerts.enabled() else tr("grimoire.spells", "Alerts off")])
 
 
 def _terminall():
@@ -114,23 +126,37 @@ def _launchl_status() -> str:
 
 
 SPELLS = [
-    Spell("mural", "MuraL", "Every screen and surface: wallpaper, lock, login, boot, taskbar, windows, colors, "
-          "icons, fonts, cursor, terminal, plus the community store", _mural, "mural", _mural_status),
-    Spell("sightc", "SightsL", "Crosshair overlay above every game, click-through", _sightc, "sight", _sightc_status),
-    Spell("vaultl", "VaultL", "Your file manager with tidying built in: places, drives, previews, trash with "
-          "restore, plus auto-sorted Downloads, undo, big files and duplicates", _vaultl, "vault", _vaultl_status),
-    Spell("optimizel", "OptimizeL", "Tunes the PC for speed: CPU, memory, boot, network, startup apps and "
-          "games. Every tweak is a switch that survives restarts and turns back off cleanly",
+    Spell("mural", "MuraL",
+          tr_noop("grimoire.spells", "Every screen and surface: wallpaper, lock, login, boot, taskbar, windows, "
+                                     "colors, icons, fonts, cursor, terminal, plus the community store"),
+          _mural, "mural", _mural_status),
+    Spell("sightc", "SightsL",
+          tr_noop("grimoire.spells", "Crosshair overlay above every game, click-through"),
+          _sightc, "sight", _sightc_status),
+    Spell("vaultl", "VaultL",
+          tr_noop("grimoire.spells", "Your file manager with tidying built in: places, drives, previews, trash with "
+                                     "restore, plus auto-sorted Downloads, undo, big files and duplicates"),
+          _vaultl, "vault", _vaultl_status),
+    Spell("optimizel", "OptimizeL",
+          tr_noop("grimoire.spells", "Tunes the PC for speed: CPU, memory, boot, network, startup apps and games. "
+                                     "Every tweak is a switch that survives restarts and turns back off cleanly"),
           _optimizel, "optimize", _optimizel_status),
-    Spell("systeml", "SystemL", "Your system monitor: live graphs, processes, per-app history, services, startup "
-          "apps, disks and background alerts", _systeml, "system", _systeml_status),
-    Spell("terminall", "TerminalL", "Your terminal: tabs and splits, full color, scrollback search, profiles and "
-          "saved commands, opening right in VaultL's folder", _terminall, "terminall", _terminall_status),
-    Spell("shotl", "ShotL", "Screenshots and screen recordings: region, window or screen, a black & white editor "
-          "to mark them up, and a gallery of every one", _shotl, "shot", _shotl_status),
-    Spell("launchl", "LaunchL", "Your app launcher in Kickoff's place: favorites, categories, places, search with "
-          "files, sums and Grimoire's spells, and the leave buttons. Meta opens it", _launchl, "launchl",
-          _launchl_status),
+    Spell("systeml", "SystemL",
+          tr_noop("grimoire.spells", "Your system monitor: live graphs, processes, per-app history, services, startup "
+                                     "apps, disks and background alerts"),
+          _systeml, "system", _systeml_status),
+    Spell("terminall", "TerminalL",
+          tr_noop("grimoire.spells", "Your terminal: tabs and splits, full color, scrollback search, profiles and "
+                                     "saved commands, opening right in VaultL's folder"),
+          _terminall, "terminall", _terminall_status),
+    Spell("shotl", "ShotL",
+          tr_noop("grimoire.spells", "Screenshots and screen recordings: region, window or screen, a black & white "
+                                     "editor to mark them up, and a gallery of every one"),
+          _shotl, "shot", _shotl_status),
+    Spell("launchl", "LaunchL",
+          tr_noop("grimoire.spells", "Your app launcher in Kickoff's place: favorites, categories, places, search with "
+                                     "files, sums and Grimoire's spells, and the leave buttons. Meta opens it"),
+          _launchl, "launchl", _launchl_status),
 ]
 
 
@@ -144,8 +170,10 @@ def _focusl_status() -> str:
     return store.status_line()
 
 
-SPELLS.append(Spell("focusl", "FocusL", "A focus timer in rounds with breaks: Do Not Disturb, no crosshair and your "
-                    "distracting apps and sites kept away while you focus, plus your streak and stats",
+SPELLS.append(Spell("focusl", "FocusL",
+                    tr_noop("grimoire.spells", "A focus timer in rounds with breaks: Do Not Disturb, no crosshair and "
+                                               "your distracting apps and sites kept away while you focus, plus your "
+                                               "streak and stats"),
                     _focusl, "focus", _focusl_status))
 
 
@@ -159,8 +187,10 @@ def _netl_status() -> str:
     return status_line()
 
 
-SPELLS.append(Spell("netl", "NetL", "Your network: live traffic per interface and per app, connections, Wi-Fi and "
-                    "VPN switches, and daily and monthly usage", _netl, "net", _netl_status))
+SPELLS.append(Spell("netl", "NetL",
+                    tr_noop("grimoire.spells", "Your network: live traffic per interface and per app, connections, "
+                                               "Wi-Fi and VPN switches, and daily and monthly usage"),
+                    _netl, "net", _netl_status))
 
 
 def _gamel():
@@ -173,9 +203,11 @@ def _gamel_status() -> str:
     return status_line()
 
 
-SPELLS.append(Spell("gamel", "GameL", "One library for your Steam, Heroic and Lutris games: covers, search, "
-                    "playtime and a Play button, plus a black & white MangoHud overlay and Performance mode, "
-                    "both switched by hand", _gamel, "game", _gamel_status))
+SPELLS.append(Spell("gamel", "GameL",
+                    tr_noop("grimoire.spells", "One library for your Steam, Heroic and Lutris games: covers, search, "
+                                               "playtime and a Play button, plus a black & white MangoHud overlay and "
+                                               "Performance mode, both switched by hand"),
+                    _gamel, "game", _gamel_status))
 
 
 def _updatel():
@@ -188,8 +220,10 @@ def _updatel_status() -> str:
     return status_line()
 
 
-SPELLS.append(Spell("updatel", "UpdateL", "Every update in one place: system packages, Flatpaks, snaps and firmware, "
-                    "with changelogs, a preview of anything that would be removed, and an optional daily check",
+SPELLS.append(Spell("updatel", "UpdateL",
+                    tr_noop("grimoire.spells", "Every update in one place: system packages, Flatpaks, snaps and "
+                                               "firmware, with changelogs, a preview of anything that would be "
+                                               "removed, and an optional daily check"),
                     _updatel, "updatel", _updatel_status))
 
 
@@ -203,9 +237,10 @@ def _audiol_status() -> str:
     return status_line()
 
 
-SPELLS.append(Spell("audiol", "AudioL", "Your sound on PipeWire: outputs and inputs, each app's volume and device, "
-                    "a system-wide equalizer with presets, and sound card profiles", _audiol, "audio",
-                    _audiol_status))
+SPELLS.append(Spell("audiol", "AudioL",
+                    tr_noop("grimoire.spells", "Your sound on PipeWire: outputs and inputs, each app's volume and "
+                                               "device, a system-wide equalizer with presets, and sound card profiles"),
+                    _audiol, "audio", _audiol_status))
 
 
 def _widgetl():
@@ -218,5 +253,7 @@ def _widgetl_status() -> str:
     return widgets.status()
 
 
-SPELLS.append(Spell("widgetl", "WidgetL", "Desktop widgets in black and white: a clock, your system's readings, the "
-                    "weather and what's playing", _widgetl, "widgets", _widgetl_status))
+SPELLS.append(Spell("widgetl", "WidgetL",
+                    tr_noop("grimoire.spells", "Desktop widgets in black and white: a clock, your system's readings, "
+                                               "the weather and what's playing"),
+                    _widgetl, "widgets", _widgetl_status))

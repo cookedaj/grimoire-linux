@@ -21,6 +21,7 @@ from pathlib import Path
 
 from grimoire import accounts, keystore, paths
 from grimoire.github import Token
+from grimoire.i18n import tr
 
 KEYRING = keystore
 CURRENT: "accounts.Session | None" = None          # this process's live session (tokens in memory)
@@ -188,7 +189,7 @@ def live(backend=None) -> "accounts.Session":
     backend = backend or accounts.BACKEND
     who = active()
     if who is None or who.guest:
-        raise accounts.AccountError("Sign in to use your account.")
+        raise accounts.AccountError(tr("grimoire.session", "Sign in to use your account."))
     if CURRENT is not None and CURRENT.user.id == who.profile and CURRENT.fresh():
         return CURRENT
     refresh = CURRENT.refresh if CURRENT is not None and CURRENT.user.id == who.profile else None
@@ -198,7 +199,7 @@ def live(backend=None) -> "accounts.Session":
         except keystore.KeyringError as e:
             raise accounts.AccountError(str(e)) from None
         if not stored:
-            raise accounts.AccountError("Your sign-in expired. Sign out and sign in again.")
+            raise accounts.AccountError(tr("grimoire.session", "Your sign-in expired. Sign out and sign in again."))
         refresh = Token(stored)
     s = backend.refresh(refresh, who.provider or "password")
     s.user.username = s.user.username or who.username

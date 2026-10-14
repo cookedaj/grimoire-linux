@@ -137,6 +137,7 @@ class Canvas(QWidget):
 
     def __init__(self, editor):
         super().__init__()
+        self.setLayoutDirection(Qt.LayoutDirection.LeftToRight)   # a chart/canvas: never mirrored in RTL
         self.ed = editor
         self.setMinimumSize(320, 220)
         self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)

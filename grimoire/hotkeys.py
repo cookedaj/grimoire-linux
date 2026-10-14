@@ -18,6 +18,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from grimoire import standalone
+from grimoire.i18n import tr, tr_noop
 
 SERVICE, ROOT, IFACE = "org.kde.kglobalaccel", "/kglobalaccel", "org.kde.KGlobalAccel"
 COMPONENT_IFACE = "org.kde.kglobalaccel.Component"
@@ -41,6 +42,11 @@ class Hotkey:
         """KGlobalAccel's actionId: component, action, component friendly name, action friendly name."""
         return [self.component, self.action, self.component_name, self.name]
 
+    @property
+    def label(self) -> str:
+        """The name to show in Grimoire's UI: commands' names translated (KDE keeps getting the English name)."""
+        return tr("grimoire.hotkeys", self.name) if self.kind == "command" else self.name
+
 
 # ---------------------------------------------------------------- the catalog
 def _sightsl() -> list[Hotkey]:
@@ -49,16 +55,17 @@ def _sightsl() -> list[Hotkey]:
             for a, (name, key) in overlay.HOTKEYS.items()]
 
 
-COMMANDS = [   # id, name, bin name + args; shown only when that command exists in bin/
-    ("open", "Open Grimoire Linux", ("grimoire",)),
-    ("tidy", "Tidy Downloads now", ("grimoire-vaultl", "tidy", "run")),
-    ("crosshair", "Show/hide crosshair (start it if it's off)", ("grimoire-sightc", "toggle")),
-    ("terminal", "Open TerminalL", ("grimoire-terminall",)),
-    ("monitor", "Open SystemL", ("grimoire-systeml",)),
-    ("shot-region", "Screenshot a region", ("grimoire-shotl", "region")),
-    ("shot-window", "Screenshot a window", ("grimoire-shotl", "window")),
-    ("shot-full", "Screenshot the whole screen", ("grimoire-shotl", "full")),
-    ("record", "Start/stop screen recording", ("grimoire-shotl", "record", "toggle")),
+COMMANDS = [   # id, name (English for KDE; Hotkey.label translates it), bin name + args; shown only if in bin/
+    ("open", tr_noop("grimoire.hotkeys", "Open Grimoire Linux"), ("grimoire",)),
+    ("tidy", tr_noop("grimoire.hotkeys", "Tidy Downloads now"), ("grimoire-vaultl", "tidy", "run")),
+    ("crosshair", tr_noop("grimoire.hotkeys", "Show/hide crosshair (start it if it's off)"),
+     ("grimoire-sightc", "toggle")),
+    ("terminal", tr_noop("grimoire.hotkeys", "Open TerminalL"), ("grimoire-terminall",)),
+    ("monitor", tr_noop("grimoire.hotkeys", "Open SystemL"), ("grimoire-systeml",)),
+    ("shot-region", tr_noop("grimoire.hotkeys", "Screenshot a region"), ("grimoire-shotl", "region")),
+    ("shot-window", tr_noop("grimoire.hotkeys", "Screenshot a window"), ("grimoire-shotl", "window")),
+    ("shot-full", tr_noop("grimoire.hotkeys", "Screenshot the whole screen"), ("grimoire-shotl", "full")),
+    ("record", tr_noop("grimoire.hotkeys", "Start/stop screen recording"), ("grimoire-shotl", "record", "toggle")),
 ]
 
 
@@ -82,15 +89,17 @@ class Busctl:
         try:
             r = subprocess.run(cmd, capture_output=True, text=True, timeout=5)
         except (OSError, subprocess.SubprocessError) as e:
-            raise HotkeyError(f"Couldn't reach KDE's shortcut service: {e}") from None
+            raise HotkeyError(tr("grimoire.hotkeys", "Couldn't reach KDE's shortcut service: {err}").format(
+                err=e)) from None
         if r.returncode != 0:
-            raise HotkeyError("KDE's shortcut service said: " + (r.stderr.strip() or f"exit {r.returncode}"))
+            raise HotkeyError(tr("grimoire.hotkeys", "KDE's shortcut service said: {msg}").format(
+                msg=r.stderr.strip() or f"exit {r.returncode}"))
         if not r.stdout.strip():
             return []
         try:
             return json.loads(r.stdout).get("data", [])
         except ValueError:
-            raise HotkeyError("KDE's shortcut service sent an unexpected answer.") from None
+            raise HotkeyError(tr("grimoire.hotkeys", "KDE's shortcut service sent an unexpected answer.")) from None
 
 
 BUS = Busctl()
@@ -141,7 +150,8 @@ def check(key: int) -> str:
         return ""
     base, mods = key & 0x01FFFFFF, key & (CTRL | ALT | META)
     special = 0x01000030 <= base <= 0x01000052 or base == 0x01000009 or base >= 0x01000060   # F-keys, Print, media
-    return "" if mods or special else "Add Ctrl, Alt or Meta to it, so it doesn't fire while you type."
+    return "" if mods or special else tr("grimoire.hotkeys", "Add Ctrl, Alt or Meta to it, so it doesn't fire while "
+                                                             "you type.")
 
 
 def conflicts(key: int, hotkey: Hotkey, everything: list[dict]) -> list[str]:
@@ -180,7 +190,8 @@ def apply(h: Hotkey, key: int, everything: list[dict]) -> tuple[int, ...]:
         raise HotkeyError(check(key))
     taken = conflicts(key, h, everything)
     if taken:
-        raise HotkeyError(f"Already used by {taken[0]}" + (f" and {len(taken) - 1} more" if len(taken) > 1 else ""))
+        raise HotkeyError(tr("grimoire.hotkeys", "Already used by {who} and %n more", n=len(taken) - 1).format(
+            who=taken[0]) if len(taken) > 1 else tr("grimoire.hotkeys", "Already used by {who}").format(who=taken[0]))
     if h.kind == "command":
         if key:
             _write_desktop(h)
@@ -194,7 +205,7 @@ def apply(h: Hotkey, key: int, everything: list[dict]) -> tuple[int, ...]:
     got = (BUS.call(ROOT, IFACE, "shortcut", "as", *_as(h.id)) or [[]])[0]
     got = tuple(k for k in got if k)
     if key and key not in got:
-        raise HotkeyError("KDE didn't accept that key (it may be reserved).")
+        raise HotkeyError(tr("grimoire.hotkeys", "KDE didn't accept that key (it may be reserved)."))
     return got
 
 

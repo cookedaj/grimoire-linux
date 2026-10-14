@@ -19,6 +19,7 @@ import urllib.request
 from dataclasses import dataclass
 
 from grimoire import __version__
+from grimoire.i18n import tr
 from grimoire.github_app import client_id
 
 DEVICE_CODE = "https://github.com/login/device/code"
@@ -92,8 +93,8 @@ def _urllib(method: str, url: str, headers: dict, body: bytes | None) -> tuple[i
             data = b""
         return e.code, dict(e.headers or {}), data
     except (urllib.error.URLError, TimeoutError, OSError) as e:
-        raise GitHubError(f"Couldn't reach GitHub (offline?): {getattr(e, 'reason', None) or type(e).__name__}") \
-            from None
+        raise GitHubError(tr("grimoire.github", "Couldn't reach GitHub (offline?): {reason}")
+                          .format(reason=getattr(e, "reason", None) or type(e).__name__)) from None
 
 
 HTTP = _urllib
@@ -113,14 +114,17 @@ def _call(method: str, url: str, token: Token | None = None, form: dict | None =
         headers["Content-Type"] = "application/json"
     code, rh, data = HTTP(method, url, headers, body)
     if len(data) > MAX_BODY:
-        raise GitHubError("GitHub sent more than expected; stopped.")
+        raise GitHubError(tr("grimoire.github", "GitHub sent more than expected; stopped."))
     rh = {k.lower(): v for k, v in rh.items()}
     if code in (403, 429) and (rh.get("x-ratelimit-remaining") == "0" or code == 429 or "retry-after" in rh):
         reset = rh.get("x-ratelimit-reset", "")
-        when = time.strftime(" after %H:%M", time.localtime(int(reset))) if reset.isdigit() else " in a while"
-        raise GitHubError(f"GitHub's rate limit is used up; try again{when}.")
+        if reset.isdigit():
+            raise GitHubError(tr("grimoire.github", "GitHub's rate limit is used up; try again after {time}.")
+                              .format(time=time.strftime("%H:%M", time.localtime(int(reset)))))
+        raise GitHubError(tr("grimoire.github", "GitHub's rate limit is used up; try again in a while."))
     if code == 401 and token is not None:
-        raise GitHubError("GitHub no longer accepts this sign-in (revoked or expired). Sign in again.")
+        raise GitHubError(tr("grimoire.github", "GitHub no longer accepts this sign-in (revoked or expired). Sign in "
+                                                "again."))
     return code, rh, data
 
 
@@ -128,9 +132,9 @@ def _json(data: bytes) -> dict:
     try:
         d = json.loads(data)
     except (ValueError, UnicodeDecodeError):
-        raise GitHubError("GitHub sent an answer that isn't JSON.") from None
+        raise GitHubError(tr("grimoire.github", "GitHub sent an answer that isn't JSON.")) from None
     if not isinstance(d, dict):
-        raise GitHubError("GitHub sent an unexpected answer.")
+        raise GitHubError(tr("grimoire.github", "GitHub sent an unexpected answer."))
     return d
 
 
@@ -143,7 +147,7 @@ def start() -> DeviceCode:
     """Step 1: get a user code to show and the page to type it on."""
     cid = client_id()
     if not cid:
-        raise GitHubError("Sign-in isn't set up yet in this copy of Grimoire.")
+        raise GitHubError(tr("grimoire.github", "Sign-in isn't set up yet in this copy of Grimoire."))
     code, _, data = _call("POST", DEVICE_CODE, form={"client_id": cid, "scope": SCOPE}, accept="application/json")
     d = _json(data)
     if code != 200 or "error" in d:
@@ -152,21 +156,22 @@ def start() -> DeviceCode:
         dc = DeviceCode(str(d["device_code"]), str(d["user_code"]), str(d["verification_uri"]),
                         int(d["expires_in"]), max(1, int(d.get("interval", 5))))
     except (KeyError, TypeError, ValueError):
-        raise GitHubError("GitHub sent an unexpected answer.") from None
+        raise GitHubError(tr("grimoire.github", "GitHub sent an unexpected answer.")) from None
     if not dc.verification_uri.startswith("https://github.com/"):       # only ever open GitHub itself
-        raise GitHubError("GitHub sent an unexpected sign-in page address.")
+        raise GitHubError(tr("grimoire.github", "GitHub sent an unexpected sign-in page address."))
     return dc
 
 
 def _flow_error(err: str) -> str:
     return {
-        "expired_token": "The code expired before it was entered. Start again.",
-        "access_denied": "Sign-in was cancelled on GitHub.",
-        "device_flow_disabled": "Device flow isn't enabled for Grimoire's GitHub app yet.",
-        "incorrect_client_credentials": "GitHub doesn't know Grimoire's client ID; sign-in isn't set up right.",
-        "incorrect_device_code": "GitHub didn't recognise the sign-in code. Start again.",
-        "unsupported_grant_type": "GitHub refused the sign-in method.",
-    }.get(err, f"GitHub refused the sign-in ({err[:60]}).")
+        "expired_token": tr("grimoire.github", "The code expired before it was entered. Start again."),
+        "access_denied": tr("grimoire.github", "Sign-in was cancelled on GitHub."),
+        "device_flow_disabled": tr("grimoire.github", "Device flow isn't enabled for Grimoire's GitHub app yet."),
+        "incorrect_client_credentials": tr("grimoire.github", "GitHub doesn't know Grimoire's client ID; sign-in "
+                                           "isn't set up right."),
+        "incorrect_device_code": tr("grimoire.github", "GitHub didn't recognise the sign-in code. Start again."),
+        "unsupported_grant_type": tr("grimoire.github", "GitHub refused the sign-in method."),
+    }.get(err) or tr("grimoire.github", "GitHub refused the sign-in ({error}).").format(error=err[:60])
 
 
 def poll(dc: DeviceCode, cancelled=lambda: False, sleep=time.sleep, clock=time.monotonic) -> Token:
@@ -176,7 +181,7 @@ def poll(dc: DeviceCode, cancelled=lambda: False, sleep=time.sleep, clock=time.m
     while True:
         sleep(interval)
         if cancelled():
-            raise GitHubError("Sign-in cancelled.")
+            raise GitHubError(tr("grimoire.github", "Sign-in cancelled."))
         if clock() > end:
             raise GitHubError(_flow_error("expired_token"))
         code, _, data = _call("POST", ACCESS_TOKEN, accept="application/json",
@@ -185,7 +190,7 @@ def poll(dc: DeviceCode, cancelled=lambda: False, sleep=time.sleep, clock=time.m
         if d.get("access_token"):
             scopes = {s.strip() for s in str(d.get("scope", "")).split(",")}
             if SCOPE not in scopes:
-                raise GitHubError("GitHub didn't grant access to gists, which backups need.")
+                raise GitHubError(tr("grimoire.github", "GitHub didn't grant access to gists, which backups need."))
             return Token(str(d["access_token"]))
         err = str(d.get("error", f"http {code}"))
         if err == "authorization_pending":
@@ -200,7 +205,7 @@ def poll(dc: DeviceCode, cancelled=lambda: False, sleep=time.sleep, clock=time.m
 def user(token: Token) -> dict:
     code, _, data = _call("GET", f"{API}/user", token)
     if code != 200:
-        raise GitHubError(f"GitHub answered {code} when asked who's signed in.")
+        raise GitHubError(tr("grimoire.github", "GitHub answered {code} when asked who's signed in.").format(code=code))
     d = _json(data)
     return {"login": str(d.get("login", ""))[:40], "name": str(d.get("name") or "")[:80],
             "avatar_url": str(d.get("avatar_url", ""))}
@@ -222,13 +227,13 @@ def find_backup(token: Token) -> str:
     for page in range(1, 11):
         code, _, data = _call("GET", f"{API}/gists?per_page=100&page={page}", token)
         if code != 200:
-            raise GitHubError(f"GitHub answered {code} listing your gists.")
+            raise GitHubError(tr("grimoire.github", "GitHub answered {code} listing your gists.").format(code=code))
         try:
             gists = json.loads(data)
         except ValueError:
-            raise GitHubError("GitHub sent an answer that isn't JSON.") from None
+            raise GitHubError(tr("grimoire.github", "GitHub sent an answer that isn't JSON.")) from None
         if not isinstance(gists, list):
-            raise GitHubError("GitHub sent an unexpected answer.")
+            raise GitHubError(tr("grimoire.github", "GitHub sent an unexpected answer."))
         for g in gists:
             if isinstance(g, dict) and GIST_FILE in (g.get("files") or {}) and not g.get("public"):
                 return str(g.get("id", ""))
@@ -245,48 +250,50 @@ def upload(token: Token, backup: bytes, gist_id: str = "") -> str:
     """Put a backup into the secret gist (made on first use). Returns the gist id."""
     text = base64.b64encode(backup).decode()
     if len(text) > MAX_GIST:
-        raise GitHubError("This backup is too large for a gist (leave the wallpaper library out).")
+        raise GitHubError(tr("grimoire.github", "This backup is too large for a gist (leave the wallpaper library "
+                                                "out)."))
     files = {GIST_FILE: {"content": text}}
     if _gist_id_ok(gist_id):
         code, _, data = _call("PATCH", f"{API}/gists/{gist_id}", token, payload={"files": files})
         if code == 200:
             return gist_id
         if code != 404:                                  # 404: deleted on GitHub meanwhile, so make a new one
-            raise GitHubError(f"GitHub answered {code} updating the backup gist.")
+            raise GitHubError(tr("grimoire.github", "GitHub answered {code} updating the backup gist.")
+                              .format(code=code))
     code, _, data = _call("POST", f"{API}/gists", token,
                           payload={"description": GIST_DESCRIPTION, "public": False, "files": files})
     if code != 201:
-        raise GitHubError(f"GitHub answered {code} creating the backup gist.")
+        raise GitHubError(tr("grimoire.github", "GitHub answered {code} creating the backup gist.").format(code=code))
     gid = str(_json(data).get("id", ""))
     if not _gist_id_ok(gid):
-        raise GitHubError("GitHub sent an unexpected answer.")
+        raise GitHubError(tr("grimoire.github", "GitHub sent an unexpected answer."))
     return gid
 
 
 def download(token: Token, gist_id: str) -> bytes:
     """The backup bytes from the gist (to be checked by backup.inspect like any other file)."""
     if not _gist_id_ok(gist_id):
-        raise GitHubError("No backup on GitHub yet.")
+        raise GitHubError(tr("grimoire.github", "No backup on GitHub yet."))
     code, _, data = _call("GET", f"{API}/gists/{gist_id}", token)
     if code == 404:
-        raise GitHubError("The backup gist is gone from GitHub.")
+        raise GitHubError(tr("grimoire.github", "The backup gist is gone from GitHub."))
     if code != 200:
-        raise GitHubError(f"GitHub answered {code} fetching the backup.")
+        raise GitHubError(tr("grimoire.github", "GitHub answered {code} fetching the backup.").format(code=code))
     f = (_json(data).get("files") or {}).get(GIST_FILE)
     if not isinstance(f, dict):
-        raise GitHubError("That gist doesn't hold a Grimoire backup.")
+        raise GitHubError(tr("grimoire.github", "That gist doesn't hold a Grimoire backup."))
     text = f.get("content") if not f.get("truncated") else None
     if not isinstance(text, str):                        # big files come truncated; fetch the raw one
         raw = urllib.parse.urlparse(str(f.get("raw_url", "")))
         if raw.scheme != "https" or raw.hostname != "gist.githubusercontent.com":
-            raise GitHubError("GitHub sent an unexpected backup address.")
+            raise GitHubError(tr("grimoire.github", "GitHub sent an unexpected backup address."))
         code, _, body = _call("GET", raw.geturl(), accept="text/plain")
         if code != 200:
-            raise GitHubError(f"GitHub answered {code} fetching the backup.")
+            raise GitHubError(tr("grimoire.github", "GitHub answered {code} fetching the backup.").format(code=code))
         text = body.decode("ascii", "replace")
     if len(text) > MAX_GIST:
-        raise GitHubError("The backup on GitHub is larger than the safety limit.")
+        raise GitHubError(tr("grimoire.github", "The backup on GitHub is larger than the safety limit."))
     try:
         return base64.b64decode(text.strip(), validate=True)
     except ValueError:
-        raise GitHubError("The backup on GitHub is damaged (not base64).") from None
+        raise GitHubError(tr("grimoire.github", "The backup on GitHub is damaged (not base64).")) from None

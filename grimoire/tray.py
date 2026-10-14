@@ -20,6 +20,7 @@ from PySide6.QtWidgets import QApplication, QMenu, QSystemTrayIcon
 
 from grimoire import NAME
 from grimoire.glyphs import glyph, meter
+from grimoire.i18n import tr
 from grimoire import paths
 from grimoire.paths import CACHE, CONFIG
 
@@ -92,8 +93,10 @@ def cpu_temp() -> float | None:
 
 
 def tooltip(cpu: float, used: int, total: int, temp: float | None) -> str:
-    return f"CPU {cpu:.0f}%" + (f" · {temp:.0f} °C" if temp is not None else "") \
-        + f"\nRAM {used / 2**30:.1f} of {total / 2**30:.0f} GB"
+    return tr("grimoire.tray", "CPU {pct}%").format(pct=f"{cpu:.0f}") \
+        + (f" · {temp:.0f} °C" if temp is not None else "") + "\n" \
+        + tr("grimoire.tray", "RAM {used} of {total} GB").format(used=f"{used / 2**30:.1f}",
+                                                                 total=f"{total / 2**30:.0f}")
 
 
 def _safely(fn) -> dict:
@@ -144,18 +147,18 @@ class Tray(QObject):
         from grimoire.spells import SPELLS
         m = QMenu()
         m.addSection(NAME)
-        self.a_cross = self._action(m, "Crosshair", self._toggle_crosshair, checkable=True)
-        self._action(m, "Next crosshair profile", self._next_crosshair, "forward")
-        self.a_tidy = self._action(m, "Tidy Downloads now", self._tidy, "tidy")
-        self.a_perf = self._action(m, "Performance mode", self._toggle_perf, checkable=True)
+        self.a_cross = self._action(m, tr("grimoire.tray", "Crosshair"), self._toggle_crosshair, checkable=True)
+        self._action(m, tr("grimoire.tray", "Next crosshair profile"), self._next_crosshair, "forward")
+        self.a_tidy = self._action(m, tr("grimoire.tray", "Tidy Downloads now"), self._tidy, "tidy")
+        self.a_perf = self._action(m, tr("grimoire.tray", "Performance mode"), self._toggle_perf, checkable=True)
         m.addSeparator()
-        self._action(m, "Open Grimoire Linux", lambda: launch("grimoire"), "home")
+        self._action(m, tr("grimoire.tray", "Open Grimoire Linux"), lambda: launch("grimoire"), "home")
         for s in SPELLS:
             self._action(m, s.name, lambda _=False, sid=s.id: launch("grimoire", sid), s.icon)
         m.addSeparator()
-        self.a_meter = self._action(m, "Live CPU/RAM in icon", self._toggle_meter, checkable=True)
-        self.a_login = self._action(m, "Start tray at login", self._toggle_login, checkable=True)
-        self._action(m, "Quit tray", QApplication.quit)
+        self.a_meter = self._action(m, tr("grimoire.tray", "Live CPU/RAM in icon"), self._toggle_meter, checkable=True)
+        self.a_login = self._action(m, tr("grimoire.tray", "Start tray at login"), self._toggle_login, checkable=True)
+        self._action(m, tr("grimoire.tray", "Quit tray"), QApplication.quit)
         m.aboutToShow.connect(self.refresh)
         self.refresh()
         return m
@@ -207,7 +210,8 @@ class Tray(QObject):
         try:
             set_autostart(on)
         except OSError as e:
-            self.notify("Start at login", f"Couldn't change it: {e}")
+            self.notify(tr("grimoire.tray", "Start at login"),
+                        tr("grimoire.tray", "Couldn't change it: {err}").format(err=e))
         self.refresh()
 
     # -- crosshair
@@ -225,40 +229,50 @@ class Tray(QObject):
         from grimoire.jobs import POOL, Job
         from grimoire.spells.vaultl import tidy
         self.a_tidy.setEnabled(False)
-        self.a_tidy.setText("Tidying Downloads…")
+        self.a_tidy.setText(tr("grimoire.tray", "Tidying Downloads…"))
         POOL.start(Job(lambda: _safely(tidy.run), self.tidied.emit))
 
     def _on_tidied(self, r: dict):
         self.a_tidy.setEnabled(True)
-        self.a_tidy.setText("Tidy Downloads now")
-        text = (f"Sorted {r['moved']} file(s), {r['cleaned']} stale one(s) to the Trash" if r["moved"] or r["cleaned"]
-                else "Nothing to sort") + (f"\n{len(r['errors'])} problem(s): {r['errors'][0]}" if r["errors"] else "")
-        self.notify("Downloads tidied", text, "tidy")
+        self.a_tidy.setText(tr("grimoire.tray", "Tidy Downloads now"))
+        if r["moved"] or r["cleaned"]:
+            text = tr("grimoire.tray", "Sorted {files}, {stale} to the Trash").format(
+                files=tr("grimoire.tray", "%n file(s)", n=r["moved"]),
+                stale=tr("grimoire.tray", "%n stale one(s)", n=r["cleaned"]))
+        else:
+            text = tr("grimoire.tray", "Nothing to sort")
+        if r["errors"]:
+            text += "\n" + tr("grimoire.tray", "%n problem(s): {error}", n=len(r["errors"])).format(
+                error=r["errors"][0])
+        self.notify(tr("grimoire.tray", "Downloads tidied"), text, "tidy")
 
     # -- performance mode
     def _toggle_perf(self, on: bool):
         from grimoire.jobs import POOL, Job
         from grimoire.spells.optimizel import perfmode
         self.a_perf.setEnabled(False)
-        self.a_perf.setText("Performance mode…")
+        self.a_perf.setText(tr("grimoire.tray", "Performance mode…"))
         POOL.start(Job(lambda: (on, _safely(perfmode.turn_on if on else perfmode.turn_off)), self.perf_done.emit))
 
     def _on_perf(self, result):
         from grimoire.spells.optimizel import perfmode
         on, r = result
         self.a_perf.setEnabled(True)
-        self.a_perf.setText("Performance mode")
+        self.a_perf.setText(tr("grimoire.tray", "Performance mode"))
         self.refresh()
         if on:
-            text = f"Turned on: {perfmode.describe(r['changed'])}" if r["changed"] else \
-                "Everything it switches was already on (or doesn't apply here)"
+            text = tr("grimoire.tray", "Turned on: {list}").format(list=perfmode.describe(r["changed"])) \
+                if r["changed"] else \
+                tr("grimoire.tray", "Everything it switches was already on (or doesn't apply here)")
         else:
-            text = f"Turned back off: {perfmode.describe(r['changed'])}" if r["changed"] else "Nothing to turn back"
+            text = tr("grimoire.tray", "Turned back off: {list}").format(list=perfmode.describe(r["changed"])) \
+                if r["changed"] else tr("grimoire.tray", "Nothing to turn back")
             if r["left"]:
-                text += f"\nStill on: {perfmode.describe(r['left'])}"
+                text += "\n" + tr("grimoire.tray", "Still on: {list}").format(list=perfmode.describe(r["left"]))
         if r["problems"]:
             text += "\n" + "; ".join(r["problems"])
-        self.notify(f"Performance mode {'on' if on else 'off'}", text, "optimize")
+        self.notify(tr("grimoire.tray", "Performance mode on") if on else tr("grimoire.tray", "Performance mode off"),
+                    text, "optimize")
 
 
 def run():
@@ -280,7 +294,8 @@ def run():
     server.listen(socket_path())
     tray = Tray()
     server.newConnection.connect(lambda: (server.nextPendingConnection().disconnectFromServer(),
-                                          tray.notify(f"{NAME} tray", "Already running, look in the system tray")))
+                                          tray.notify(tr("grimoire.tray", "{name} tray").format(name=NAME),
+                                                      tr("grimoire.tray", "Already running, look in the system tray"))))
     tray.icon.show()
     for sig in (signal.SIGTERM, signal.SIGINT):    # quit cleanly (the icon's 2 s timer lets Python see the signal)
         signal.signal(sig, lambda *_: app.quit())

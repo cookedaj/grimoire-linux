@@ -11,6 +11,7 @@ from PySide6.QtWidgets import (QApplication, QDialog, QFrame, QHBoxLayout, QLabe
 
 from grimoire import NAME, __version__, update
 from grimoire.glyphs import _pixmap
+from grimoire.i18n import tr
 from grimoire.jobs import POOL, Job
 
 
@@ -22,7 +23,7 @@ def _safe(fn):
         except update.UpdateError as e:
             return ("error", str(e))
         except Exception as e:                       # never leave the panel spinning
-            return ("error", f"Something went wrong: {e}")
+            return ("error", tr("grimoire.updateview", "Something went wrong: {error}").format(error=e))
     return run
 
 
@@ -127,7 +128,8 @@ class VersionButton(QToolButton):
         inst = update.installed()
         built = f" · {update.short(inst['sha'])}" if inst.get("sha") != "unknown" else ""
         self.setToolTip(f"{NAME} v{__version__}{built}\n"
-                        + ("Update available: see what's new" if on else "Check for updates"))
+                        + (tr("grimoire.updateview", "Update available: see what's new") if on
+                           else tr("grimoire.updateview", "Check for updates")))
         self.style().unpolish(self)
         self.style().polish(self)
 
@@ -149,11 +151,11 @@ class Banner(QWidget):
         self.text = QLabel()
         self.text.setObjectName("PendingText")
         lay.addWidget(self.text, 1)
-        later = QPushButton("Later")
+        later = QPushButton(tr("grimoire.updateview", "Later"))
         later.setCursor(Qt.CursorShape.PointingHandCursor)
         later.clicked.connect(self._later)
         lay.addWidget(later)
-        see = QPushButton("What's new")
+        see = QPushButton(tr("grimoire.updateview", "What's new"))
         see.setObjectName("Primary")
         see.setCursor(Qt.CursorShape.PointingHandCursor)
         see.clicked.connect(open_panel)
@@ -167,7 +169,10 @@ class Banner(QWidget):
         show = self.updater.available and not update.snoozed(st.latest["sha"])
         if show:
             n = st.total
-            self.text.setText(f"A new version of {NAME} is ready" + (f" · {n} change{'s' * (n != 1)}" if n else ""))
+            text = tr("grimoire.updateview", "A new version of {name} is ready").format(name=NAME)
+            if n:
+                text += " · " + tr("grimoire.updateview", "%n change(s)", n=n)
+            self.text.setText(text)
         self.setVisible(show)
 
     def _later(self):
@@ -209,13 +214,13 @@ class WhatsNew(QDialog):
     def __init__(self, updater: Updater, parent=None):
         super().__init__(parent)
         self.setObjectName("WhatsNew")
-        self.setWindowTitle(f"What's new in {NAME}")
+        self.setWindowTitle(tr("grimoire.updateview", "What's new in {name}").format(name=NAME))
         self.resize(620, 640)
         self.updater = updater
         lay = QVBoxLayout(self)
         lay.setContentsMargins(32, 28, 32, 24)
         lay.setSpacing(6)
-        lay.addWidget(_label("What's new", "PageHeading"))
+        lay.addWidget(_label(tr("grimoire.updateview", "What's new"), "PageHeading"))
         self.versions = _label("", "Muted", selectable=True)
         lay.addWidget(self.versions)
         self.note = _label("", "Muted")
@@ -231,16 +236,16 @@ class WhatsNew(QDialog):
         lay.addWidget(self.message)
         row = QHBoxLayout()
         row.setSpacing(10)
-        self.again = QPushButton("Check for updates")
+        self.again = QPushButton(tr("grimoire.updateview", "Check for updates"))
         self.again.setObjectName("Link")
         self.again.setCursor(Qt.CursorShape.PointingHandCursor)
         self.again.clicked.connect(lambda: self._check(force=True))
         row.addWidget(self.again)
         row.addStretch(1)
-        self.later = QPushButton("Later")
+        self.later = QPushButton(tr("grimoire.updateview", "Later"))
         self.later.clicked.connect(self.close)
         row.addWidget(self.later)
-        self.go = QPushButton("Update now")
+        self.go = QPushButton(tr("grimoire.updateview", "Update now"))
         self.go.setObjectName("Primary")
         self.go.setCursor(Qt.CursorShape.PointingHandCursor)
         self.go.clicked.connect(self._go)
@@ -252,7 +257,7 @@ class WhatsNew(QDialog):
         updater.applied.connect(self._applied)
         self._render()
         if updater.busy:                                  # the launch check is still out
-            self.message.setText("Checking GitHub…")
+            self.message.setText(tr("grimoire.updateview", "Checking GitHub…"))
         elif update.managed():                            # the package manager updates this copy
             self.again.hide()
         elif updater.status is None:                      # first open with nothing known yet
@@ -262,7 +267,7 @@ class WhatsNew(QDialog):
     def _check(self, force):
         if self.updater.busy:
             return
-        self.message.setText("Checking GitHub…")
+        self.message.setText(tr("grimoire.updateview", "Checking GitHub…"))
         self._buttons(busy=True)
         self.updater.check(force)
 
@@ -270,7 +275,7 @@ class WhatsNew(QDialog):
         if self.updater.updated:
             restart()
             return
-        self.message.setText("Starting…")
+        self.message.setText(tr("grimoire.updateview", "Starting…"))
         self._buttons(busy=True)
         self.updater.apply()
 
@@ -285,7 +290,8 @@ class WhatsNew(QDialog):
     def _applied(self, info, error):
         self._render()
         if info is not None:
-            self.message.setText(f"Updated. Restart {NAME} (and any open spell windows) to use the new version.")
+            self.message.setText(tr("grimoire.updateview", "Updated. Restart {name} (and any open spell windows) to "
+                                    "use the new version.").format(name=NAME))
         else:
             self.message.setText(error)
 
@@ -295,9 +301,11 @@ class WhatsNew(QDialog):
         self.again.setEnabled(not busy and not u.updated)
         self.again.setVisible(not u.updated and not update.managed())
         self.go.setEnabled(not busy and (u.available or u.updated))
-        self.go.setText("Restart now" if u.updated else "Update now")
+        self.go.setText(tr("grimoire.updateview", "Restart now") if u.updated
+                        else tr("grimoire.updateview", "Update now"))
         self.go.setVisible(u.updated or u.available or busy)
-        self.later.setText("Later" if (u.available or u.updated) else "Close")
+        self.later.setText(tr("grimoire.updateview", "Later") if (u.available or u.updated)
+                           else tr("grimoire.updateview", "Close"))
 
     def _render(self):
         u, st = self.updater, self.updater.status
@@ -311,8 +319,9 @@ class WhatsNew(QDialog):
             sha = update.installed()["sha"]
             built = f" · {update.short(sha)}" if sha != "unknown" else ""
             self.versions.setText(f"{NAME} v{__version__}" + (built if update.is_installed() else "" if update.managed()
-                                  else " · not installed (run ./install.sh; a git checkout updates with git pull)"))
-            self.note.setText(update.PACKAGE_NOTE if update.managed() else "")
+                                  else " · " + tr("grimoire.updateview", "not installed (run ./install.sh; a git "
+                                                  "checkout updates with git pull)")))
+            self.note.setText(tr("grimoire.update", update.PACKAGE_NOTE) if update.managed() else "")
         else:
             inst, latest = st.installed, st.latest
 
@@ -320,17 +329,23 @@ class WhatsNew(QDialog):
                 return " ".join(x for x in (update.short(d.get("sha", "unknown")), f"({update.day(d.get('date', ''))})"
                                             if update.day(d.get("date", "")) else "") if x)
             if u.updated:
-                self.versions.setText(f"Now on {ver(inst)}")
+                self.versions.setText(tr("grimoire.updateview", "Now on {version}").format(version=ver(inst)))
             elif not st.available and not st.note:
-                when = f" · checked at {time.strftime('%H:%M', time.localtime(st.checked))}" if st.checked else ""
-                self.versions.setText(f"{NAME} is up to date · {ver(inst)}{when}")
+                text = tr("grimoire.updateview", "{name} is up to date").format(name=NAME) + " · " + ver(inst)
+                if st.checked:
+                    text += " · " + tr("grimoire.updateview", "checked at {time}").format(
+                        time=time.strftime("%H:%M", time.localtime(st.checked)))
+                self.versions.setText(text)
             else:
-                self.versions.setText(f"You have {ver(inst)} · latest is {ver(latest)}")
+                self.versions.setText(tr("grimoire.updateview", "You have {installed} · latest is {latest}")
+                                      .format(installed=ver(inst), latest=ver(latest)))
             note = st.note
             if inst.get("dirty") and not u.updated:
-                note = (note + " " if note else "") + "This copy was installed with local changes."
+                note = (note + " " if note else "") + tr("grimoire.updateview",
+                                                         "This copy was installed with local changes.")
             if st.total > len(st.changes) and not u.updated:
-                note = (note + " " if note else "") + f"Showing the newest {len(st.changes)} of {st.total} changes."
+                note = (note + " " if note else "") + tr("grimoire.updateview", "Showing the newest {shown} of %n "
+                                                         "change(s).", n=st.total).format(shown=len(st.changes))
             self.note.setText(note)
             self.note.setVisible(bool(note))
             changes = st.changes if (st.available or u.updated) else []
@@ -342,6 +357,7 @@ class WhatsNew(QDialog):
                     bl.addWidget(line)
                 bl.addWidget(ChangeRow(c))
             if not changes:
-                bl.addWidget(_label("Nothing new on GitHub since your version." if not st.available else "", "Muted"))
+                bl.addWidget(_label(tr("grimoire.updateview", "Nothing new on GitHub since your version.")
+                                    if not st.available else "", "Muted"))
         bl.addStretch(1)
         self.scroll.setWidget(body)
