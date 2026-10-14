@@ -10,11 +10,13 @@ No Qt here: uninstall.sh runs `python3 -m grimoire.spells.launchl restore`.
 import configparser
 import json
 import os
+import re
 import shutil
 import subprocess
 import time
 from pathlib import Path
 
+from grimoire.i18n import tr
 from grimoire.paths import CONFIG, DATA
 
 PLUGIN = "com.cookedaj.grimoire.launchl"
@@ -68,25 +70,30 @@ def install():
     """Install or upgrade the widget with kpackagetool6. Raises RuntimeError with its message on failure."""
     src = source_dir()
     if not (src / "metadata.json").is_file():
-        raise RuntimeError(f"LaunchL's package is missing from {src}")
+        raise RuntimeError(tr("grimoire.spells.launchl.panel", "LaunchL's package is missing from {path}")
+                           .format(path=src))
     mode = "-u" if is_installed() else "-i"
     r = subprocess.run(["kpackagetool6", "--type", "Plasma/Applet", mode, str(src)], capture_output=True, text=True)
     if r.returncode:
-        raise RuntimeError((r.stderr or r.stdout).strip() or "kpackagetool6 failed")
+        raise RuntimeError((r.stderr or r.stdout).strip()
+                           or tr("grimoire.spells.launchl.panel", "kpackagetool6 failed"))
     write_spells()
 
 
 def uninstall_package():
     r = subprocess.run(["kpackagetool6", "--type", "Plasma/Applet", "-r", PLUGIN], capture_output=True, text=True)
     if r.returncode and is_installed():
-        raise RuntimeError((r.stderr or r.stdout).strip() or "kpackagetool6 failed")
+        raise RuntimeError((r.stderr or r.stdout).strip()
+                           or tr("grimoire.spells.launchl.panel", "kpackagetool6 failed"))
 
 
 def write_spells():
     """The spells list LaunchL's search offers ("MuraL", "SightsL", ...), with each spell's icon as a PNG.
-    Icons need Qt; without a display they're simply left out and the widget draws the clover instead."""
+    Icons need Qt; without a display they're simply left out and the widget draws the clover instead. Taglines are
+    in Grimoire's language when it runs (the first clause only: the search shows one short line)."""
     from grimoire.spells import SPELLS
-    entries = [{"id": s.id, "name": s.name, "tagline": s.tagline.split(":")[0].split(".")[0]} for s in SPELLS]
+    entries = [{"id": s.id, "name": s.name,
+                "tagline": re.split(r"[:：.。؛।]", tr("grimoire.spells", s.tagline))[0].strip()} for s in SPELLS]
     try:
         from PySide6.QtWidgets import QApplication
         from grimoire.standalone import app_icon
@@ -115,10 +122,11 @@ def _run(script: str) -> str:
     try:
         r = plasma_script(script)
     except (OSError, subprocess.TimeoutExpired) as err:
-        raise RuntimeError(f"couldn't reach plasmashell: {err}")
+        raise RuntimeError(tr("grimoire.spells.launchl.panel", "couldn't reach plasmashell: {error}").format(error=err))
     out = r.stdout.strip()
     if r.returncode or out.startswith("Error:"):
-        raise RuntimeError((r.stderr or out).strip() or "plasmashell rejected the script")
+        raise RuntimeError((r.stderr or out).strip()
+                           or tr("grimoire.spells.launchl.panel", "plasmashell rejected the script"))
     return out
 
 
@@ -184,13 +192,17 @@ def in_panel(panels: list[dict] | None = None) -> bool:
 
 def status() -> str:
     if not is_installed():
-        return "Not installed"
+        return tr("grimoire.spells.launchl.panel", "Not installed")
     try:
         here = in_panel(scan())
     except (RuntimeError, ValueError):
-        return "Installed · Plasma isn't answering"
-    update = " · update ready" if needs_update() else ""
-    return ("In your panel" if here else "Installed, not in your panel") + update
+        return " · ".join([tr("grimoire.spells.launchl.panel", "Installed"),
+                           tr("grimoire.spells.launchl.panel", "Plasma isn't answering")])
+    bits = [tr("grimoire.spells.launchl.panel", "In your panel") if here
+            else tr("grimoire.spells.launchl.panel", "Installed, not in your panel")]
+    if needs_update():
+        bits.append(tr("grimoire.spells.launchl.panel", "update ready"))
+    return " · ".join(bits)
 
 
 # ---- favorites ------------------------------------------------------------------------------------------------------
@@ -346,10 +358,11 @@ def plan_replace(panels: list[dict] | None = None) -> dict:
     Raises RuntimeError when there's nothing to replace."""
     panels = scan() if panels is None else panels
     if in_panel(panels):
-        raise RuntimeError("LaunchL is already in your panel")
+        raise RuntimeError(tr("grimoire.spells.launchl.panel", "LaunchL is already in your panel"))
     found = find_launcher(panels)
     if not found:
-        raise RuntimeError("no Kickoff, Kicker or Application Dashboard found in your panels")
+        raise RuntimeError(tr("grimoire.spells.launchl.panel",
+                              "no Kickoff, Kicker or Application Dashboard found in your panels"))
     panel, widget, position = found
     client = favorites_client(widget["type"], widget["id"])
     return {"panel": panel["id"], "widget": widget["id"], "type": widget["type"], "position": position,
@@ -363,7 +376,7 @@ def replace(dry_run: bool = False) -> dict:
     """Swap the panel's launcher for LaunchL. The record is saved before the script runs. dry_run returns the
     record with the script in it and changes nothing."""
     if not is_installed():
-        raise RuntimeError("install LaunchL first")
+        raise RuntimeError(tr("grimoire.spells.launchl.panel", "install LaunchL first"))
     record = plan_replace()
     record["script"] = replace_script(record)
     if dry_run:
@@ -396,12 +409,13 @@ def _position_check(record: dict) -> str:
     try:
         panel = next(p for p in scan() if p["id"] == record["panel"])
     except (StopIteration, RuntimeError, ValueError):
-        return "couldn't read the panel back"
+        return tr("grimoire.spells.launchl.panel", "Couldn't read the panel back to check where LaunchL landed.")
     ids = [w["id"] for w in ordered(panel)]
     if record.get("launchl") in ids and ids.index(record["launchl"]) == record["position"]:
         return ""
-    return f"LaunchL landed at position {ids.index(record['launchl']) + 1 if record.get('launchl') in ids else '?'}" \
-        f" instead of {record['position'] + 1}; drag it into place in Edit Mode"
+    return tr("grimoire.spells.launchl.panel",
+              "LaunchL landed at position {got} instead of {wanted}; drag it into place in Edit Mode.").format(
+        got=ids.index(record["launchl"]) + 1 if record.get("launchl") in ids else "?", wanted=record["position"] + 1)
 
 
 def restore(dry_run: bool = False) -> dict:
@@ -409,7 +423,7 @@ def restore(dry_run: bool = False) -> dict:
     had (the same client as the old launcher, so reordering done meanwhile carries over)."""
     record = load_state().get("replaced")
     if not record:
-        raise RuntimeError("there's no recorded launcher to restore")
+        raise RuntimeError(tr("grimoire.spells.launchl.panel", "there's no recorded launcher to restore"))
     favs = favorites(record["favorites_client"]) or record.get("favorites", [])
     script = restore_script(record, favs)
     if dry_run:

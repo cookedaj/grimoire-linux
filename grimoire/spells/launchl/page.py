@@ -3,11 +3,19 @@
 from PySide6.QtCore import QObject, Signal
 from PySide6.QtWidgets import QHBoxLayout, QLabel, QMessageBox, QPushButton, QVBoxLayout, QWidget
 
+from grimoire.i18n import tr, tr_noop
 from grimoire.jobs import POOL, Job
 from grimoire.spells.launchl import panel
 
-NAMES = {"org.kde.plasma.kickoff": "Kickoff", "org.kde.plasma.kicker": "Application Menu",
-         "org.kde.plasma.kickerdash": "Application Dashboard"}
+NAMES = {"org.kde.plasma.kickoff": "Kickoff",
+         "org.kde.plasma.kicker": tr_noop("grimoire.spells.launchl.page", "Application Menu"),
+         "org.kde.plasma.kickerdash": tr_noop("grimoire.spells.launchl.page", "Application Dashboard")}
+
+
+def _name(plugin: str, fallback: str = "") -> str:
+    """A launcher's name as Plasma shows it (Kickoff stays Kickoff)."""
+    name = NAMES.get(plugin)
+    return tr("grimoire.spells.launchl.page", name) if name else (fallback or plugin)
 
 
 def _label(text="", name="", wrap=True) -> QLabel:
@@ -36,13 +44,14 @@ class LaunchLPage(QWidget):
         lay.setContentsMargins(56, 48, 56, 40)
         lay.setSpacing(6)
         lay.addWidget(_label("LaunchL", "PageHeading"))
-        lay.addWidget(_label("Your app launcher in the panel, in black and white: favorites, every app by category, "
-                             "places and recent files, search that also finds files, does sums and unit conversions "
-                             "and runs Grimoire's spells, and the leave buttons. Meta opens it once it's in Kickoff's "
-                             "place.", "Muted"))
+        lay.addWidget(_label(tr("grimoire.spells.launchl.page",
+                                "Your app launcher in the panel, in black and white: favorites, every app by "
+                                "category, places and recent files, search that also finds files, does sums and unit "
+                                "conversions and runs Grimoire's spells, and the leave buttons. Meta opens it once "
+                                "it's in Kickoff's place."), "Muted"))
         lay.addSpacing(24)
 
-        lay.addWidget(_label("WIDGET", "Section"))
+        lay.addWidget(_label(tr("grimoire.spells.launchl.page", "WIDGET"), "Section"))
         self.state = _label("", "")
         lay.addWidget(self.state)
         row = QHBoxLayout()
@@ -53,14 +62,14 @@ class LaunchLPage(QWidget):
         lay.addLayout(row)
         lay.addSpacing(24)
 
-        lay.addWidget(_label("PANEL", "Section"))
+        lay.addWidget(_label(tr("grimoire.spells.launchl.page", "PANEL"), "Section"))
         self.where = _label("", "Muted")
         lay.addWidget(self.where)
         row = QHBoxLayout()
-        self.replace_btn = QPushButton("Replace launcher")
+        self.replace_btn = QPushButton(tr("grimoire.spells.launchl.page", "Replace launcher"))
         self.replace_btn.setObjectName("Primary")
         self.replace_btn.clicked.connect(self._replace)
-        self.restore_btn = QPushButton("Restore Kickoff")
+        self.restore_btn = QPushButton(tr("grimoire.spells.launchl.page", "Restore Kickoff"))
         self.restore_btn.clicked.connect(self._restore)
         row.addWidget(self.replace_btn)
         row.addWidget(self.restore_btn)
@@ -74,7 +83,7 @@ class LaunchLPage(QWidget):
     # ---- state ----------------------------------------------------------------------------------------------------
 
     def refresh(self):
-        self.state.setText("Checking…")
+        self.state.setText(tr("grimoire.spells.launchl.page", "Checking…"))
         self._busy(True)
         POOL.start(Job(self._read, lambda r: self.sig.done.emit(("read", "", r))))
 
@@ -91,32 +100,47 @@ class LaunchLPage(QWidget):
         installed, panels = info["installed"], info["panels"]
         here = panel.in_panel(panels) if panels else False
         record = info["record"].get("replaced")
-        self.state.setText("Not installed" if not installed else
-                           ("In your panel" if here else "Installed, not in your panel")
-                           + (" · an update is ready" if info["update"] else ""))
-        self.install_btn.setText("Install widget" if not installed else
-                                 "Update widget" if info["update"] else "Reinstall widget")
+        if not installed:
+            bits = [tr("grimoire.spells.launchl.page", "Not installed")]
+        else:
+            bits = [tr("grimoire.spells.launchl.page", "In your panel") if here
+                    else tr("grimoire.spells.launchl.page", "Installed, not in your panel")]
+            if info["update"]:
+                bits.append(tr("grimoire.spells.launchl.page", "an update is ready"))
+        self.state.setText(" · ".join(bits))
+        self.install_btn.setText(tr("grimoire.spells.launchl.page", "Install widget") if not installed else
+                                 tr("grimoire.spells.launchl.page", "Update widget") if info["update"]
+                                 else tr("grimoire.spells.launchl.page", "Reinstall widget"))
         found = panel.find_launcher(panels) if panels else None
         if "error" in info:
-            self.where.setText(f"Plasma isn't answering ({info['error']}), so the panel can't be read right now.")
+            self.where.setText(tr("grimoire.spells.launchl.page", "Plasma isn't answering ({error}), so the panel "
+                                  "can't be read right now.").format(error=info["error"]))
         elif record:
-            self.where.setText(f"LaunchL took {NAMES.get(record['type'], record['type'])}'s place (panel "
-                               f"{record['panel']}, position {record['position'] + 1}) on {record['recorded'][:10]}. "
-                               "Restore puts it back exactly there, with its settings.")
+            self.where.setText(tr("grimoire.spells.launchl.page",
+                                  "LaunchL took the place of {launcher} (panel {panel}, position {position}) on "
+                                  "{date}. Restore puts it back exactly there, with its settings.").format(
+                launcher=_name(record["type"]), panel=record["panel"], position=record["position"] + 1,
+                date=record["recorded"][:10]))
         elif here:
-            self.where.setText("LaunchL is in your panel (added by hand). Restore needs a recorded replacement, so "
-                               "use Edit Mode to swap launchers.")
+            self.where.setText(tr("grimoire.spells.launchl.page",
+                                  "LaunchL is in your panel (added by hand). Restore needs a recorded replacement, "
+                                  "so use Edit Mode to swap launchers."))
         elif found:
             p, w, pos = found
-            self.where.setText(f"{NAMES.get(w['type'], w['type'])} is in panel {p['id']} at position {pos + 1}. "
-                               "Replace puts LaunchL in that exact spot, with your favorites in their order and its "
-                               "shortcut, and records everything so Restore can undo it.")
+            self.where.setText(tr("grimoire.spells.launchl.page",
+                                  "{launcher} is in panel {panel} at position {position}. Replace puts LaunchL in "
+                                  "that exact spot, with your favorites in their order and its shortcut, and records "
+                                  "everything so Restore can undo it.").format(
+                launcher=_name(w["type"]), panel=p["id"], position=pos + 1))
         else:
-            self.where.setText("No Kickoff, Application Menu or Dashboard in your panels. Add LaunchL from the "
-                               "panel's Add Widgets (search \"LaunchL\").")
+            self.where.setText(tr("grimoire.spells.launchl.page",
+                                  "No Kickoff, Application Menu or Dashboard in your panels. Add LaunchL from the "
+                                  "panel's Add Widgets (search \"LaunchL\")."))
         self.replace_btn.setEnabled(installed and bool(found) and not here)
         self.restore_btn.setEnabled(bool(record))
-        self.restore_btn.setText(f"Restore {NAMES.get(record['type'], 'Kickoff')}" if record else "Restore Kickoff")
+        self.restore_btn.setText(tr("grimoire.spells.launchl.page", "Restore {launcher}").format(
+            launcher=_name(record["type"], "Kickoff")) if record else tr("grimoire.spells.launchl.page",
+                                                                          "Restore Kickoff"))
         self.install_btn.setEnabled(True)
 
     def _busy(self, on: bool):
@@ -127,7 +151,7 @@ class LaunchLPage(QWidget):
 
     def _start(self, what: str, fn):
         self._busy(True)
-        self.note.setText("Working…")
+        self.note.setText(tr("grimoire.spells.launchl.page", "Working…"))
 
         def guarded():
             try:
@@ -141,18 +165,21 @@ class LaunchLPage(QWidget):
 
     def _replace(self):
         if QMessageBox.question(
-                self, "Replace launcher",
-                "LaunchL takes Kickoff's place in your panel:\n\n"
-                "1. Grimoire records where Kickoff is, its settings and its shortcut.\n"
-                "2. LaunchL is added in the same spot, with your favorites in the same order.\n"
-                "3. Kickoff is removed.\n\nRestore Kickoff puts it back exactly as it was.") \
+                self, tr("grimoire.spells.launchl.page", "Replace launcher"),
+                tr("grimoire.spells.launchl.page",
+                   "LaunchL takes Kickoff's place in your panel:\n\n"
+                   "1. Grimoire records where Kickoff is, its settings and its shortcut.\n"
+                   "2. LaunchL is added in the same spot, with your favorites in the same order.\n"
+                   "3. Kickoff is removed.\n\nRestore Kickoff puts it back exactly as it was.")) \
                 != QMessageBox.StandardButton.Yes:
             return
         self._start("replace", panel.replace)
 
     def _restore(self):
-        if QMessageBox.question(self, "Restore Kickoff", "Put the old launcher back where LaunchL is, with its "
-                                "settings, and remove LaunchL from the panel?") != QMessageBox.StandardButton.Yes:
+        if QMessageBox.question(self, tr("grimoire.spells.launchl.page", "Restore Kickoff"),
+                                tr("grimoire.spells.launchl.page", "Put the old launcher back where LaunchL is, "
+                                   "with its settings, and remove LaunchL from the panel?")) \
+                != QMessageBox.StandardButton.Yes:
             return
         self._start("restore", panel.restore)
 
@@ -162,13 +189,19 @@ class LaunchLPage(QWidget):
             self._show(result)
             return
         if error:
-            self.note.setText(f"Couldn't {what}: {error}")
+            failed = {"install": tr("grimoire.spells.launchl.page", "Couldn't install the widget: {error}"),
+                      "replace": tr("grimoire.spells.launchl.page", "Couldn't replace the launcher: {error}"),
+                      "restore": tr("grimoire.spells.launchl.page", "Couldn't restore the launcher: {error}")}
+            self.note.setText(failed.get(what, "{error}").format(error=error))
         elif what == "install":
-            self.note.setText("Widget installed. Plasma picks up a new version when it next restarts.")
+            self.note.setText(tr("grimoire.spells.launchl.page",
+                                 "Widget installed. Plasma picks up a new version when it next restarts."))
         elif what == "replace":
-            self.note.setText("LaunchL is in your panel. " + (result.get("check") or "Press Meta to open it."))
+            self.note.setText(tr("grimoire.spells.launchl.page", "LaunchL is in your panel. {next}").format(
+                next=result.get("check") or tr("grimoire.spells.launchl.page", "Press Meta to open it.")))
         elif what == "restore":
-            self.note.setText(f"{NAMES.get(result['type'], 'Kickoff')} is back in your panel.")
+            self.note.setText(tr("grimoire.spells.launchl.page", "{launcher} is back in your panel.").format(
+                launcher=_name(result["type"], "Kickoff")))
         self.refresh()
 
     def showEvent(self, e):
