@@ -13,8 +13,8 @@
 # Desktops still showing MuraL's wallpaper are switched to Plasma's own image wallpaper first (MuraL's current
 # picture, copied to ~/Pictures/Wallpapers), so no screen goes blank. With --purge, any wallpaper or lock-screen
 # picture that lives in Grimoire's data is copied there too before that data goes to the Trash.
-# Looks and tweaks you applied (MuraL themes, OptimizeL switches) stay as they are: turn them off in Grimoire first
-# if you want them undone.
+# Looks and tweaks you applied (MuraL themes, OptimizeL switches, AudioL's equalizer, GameL's MangoHud.conf) stay as
+# they are: turn them off in Grimoire first if you want them undone.
 # GRIMOIRE_UNINSTALL_DRY=1 changes nothing: it only reads, and prints what it would do.
 set -euo pipefail
 DATA="${XDG_DATA_HOME:-$HOME/.local/share}"
@@ -62,14 +62,20 @@ safe_picture() {
     # MuraL's current picture (the first still image of its playlist) somewhere that survives the uninstall;
     # empty = let Plasma use its default.
     local first
-    first="$(py 'import json, sys, pathlib
+    first="$(py 'import json, re, sys, pathlib
+root = pathlib.Path(sys.argv[1])
+try:                                  # the account last signed in has its own settings folder (grimoire/paths.py)
+    pid = (json.loads((root / "session.json").read_text()).get("last") or {}).get("id", "")
+except (OSError, ValueError, AttributeError):
+    pid = ""
+folder = root / "profiles" / pid if re.fullmatch(r"[0-9a-f-]{36}", str(pid)) else root
 try:
-    items = json.loads(pathlib.Path(sys.argv[1]).read_text()).get("items", [])
+    items = json.loads((folder / "mural.json").read_text()).get("items", [])
 except (OSError, ValueError, AttributeError):
     items = []
 exts = {".png", ".jpg", ".jpeg", ".webp", ".bmp", ".gif", ".svg", ".avif", ".jxl"}
 print(next((p for p in items if isinstance(p, str) and pathlib.Path(p).suffix.lower() in exts
-            and pathlib.Path(p).is_file()), ""))' "$CONFIG/grimoire/mural.json")"
+            and pathlib.Path(p).is_file()), ""))' "$CONFIG/grimoire")"
     if [ -z "$first" ]; then return; fi
     if in_data "$first"; then keep_copy "$first"; else echo "$first"; fi
 }
