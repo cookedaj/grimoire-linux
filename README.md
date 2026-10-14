@@ -139,6 +139,17 @@ plays on, sound card profiles (HDMI or analog, stereo or surround), and a system
 presets. The EQ is PipeWire's own filter-chain: one more output, "Grimoire EQ", that plays into the device you pick;
 turning it on or off is an explicit **Apply** that restarts only PipeWire's filter-chain service.
 
+### WidgetL: desktop widgets
+
+![WidgetL](docs/screenshots/widgetl.png)
+
+Four Plasma desktop widgets in black and white: a **Clock** with big thin digits and the date (seconds and the
+24-hour clock optional), **System** with CPU, memory, graphics card and temperatures as thin bars or sparklines
+(from Plasma's own sensors), **Weather** for a place you search for or type in (Open-Meteo, no account; it never
+looks up where you are) with line icons and the next five days, and **Now Playing** for any app that plays music or
+video, with the cover in grayscale and the play controls. The page previews each one, installs them and adds them
+to your desktop; `grimoire-widgetl add clock|system|weather|nowplaying` does the same from a terminal.
+
 ### Tray, Settings and updates
 
 ![Tray icon and menu](docs/screenshots/tray.png)
@@ -214,6 +225,7 @@ sudo pacman -S pyside6 python-pillow python-psutil python-pyte python-dbus layer
 Press **Install** on a spell's card on the home page (or `./install.sh --all`), or run `grimoire-mural`,
 `grimoire-sightc`, `grimoire-vaultl`, `grimoire-optimizel`, `grimoire-systeml`, `grimoire-terminall`,
 `grimoire-shotl`, `grimoire-focusl`, `grimoire-netl`, `grimoire-gamel` or `grimoire-audiol` directly. Command-line helpers:
+`grimoire-shotl`, `grimoire-focusl`, `grimoire-netl` or `grimoire-widgetl` directly. Command-line helpers:
 `grimoire-sightc on|off|toggle|next`, `grimoire-vaultl [folder]`, `grimoire-vaultl tidy run|undo|enable|disable|status`,
 `grimoire-systeml alerts check|enable|disable|status`, `grimoire-focusl start|stop|status`,
 `grimoire-gamel list|status|play <launcher:id>`, `grimoire-updatel check|enable|disable|status`, `grimoire update`.
@@ -229,7 +241,7 @@ System Settings → Default Applications).
 ```
 
 It removes the app, commands, menu entries, the wallpaper plugin (switching your desktop to MuraL's current picture first),
-LaunchL (putting Kickoff back first), the timers, the autostart entries and the root helpers in
+LaunchL (putting Kickoff back first), WidgetL's widgets (taking them off the desktop first), the timers, the autostart entries and the root helpers in
 `/usr/local/libexec/grimoire-linux` (one password prompt). Looks and tweaks you applied stay as
 they are, so turn off MuraL themes and OptimizeL switches first if you want them undone. With a package, run
 `/usr/share/grimoire-linux/uninstall.sh` as yourself, then remove the package.

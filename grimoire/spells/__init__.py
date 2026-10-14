@@ -206,3 +206,17 @@ def _audiol_status() -> str:
 SPELLS.append(Spell("audiol", "AudioL", "Your sound on PipeWire: outputs and inputs, each app's volume and device, "
                     "a system-wide equalizer with presets, and sound card profiles", _audiol, "audio",
                     _audiol_status))
+
+
+def _widgetl():
+    from grimoire.spells.widgetl.page import WidgetLPage
+    return WidgetLPage()
+
+
+def _widgetl_status() -> str:
+    from grimoire.spells.widgetl import widgets
+    return widgets.status()
+
+
+SPELLS.append(Spell("widgetl", "WidgetL", "Desktop widgets in black and white: a clock, your system's readings, the "
+                    "weather and what's playing", _widgetl, "widgets", _widgetl_status))

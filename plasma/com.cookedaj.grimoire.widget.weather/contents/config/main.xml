@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kcfg xmlns="http://www.kde.org/standards/kcfg/1.0"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.kde.org/standards/kcfg/1.0
+      http://www.kde.org/standards/kcfg/1.0/kcfg.xsd">
+  <kcfgfile name=""/>
+  <!-- The place is only ever one the user picked (city search or typed coordinates): no IP geolocation. -->
+  <group name="General">
+    <entry name="placeName" type="String">
+      <label>The place's name as shown on the widget</label>
+      <default></default>
+    </entry>
+    <entry name="latitude" type="String">
+      <label>Latitude in decimal degrees (empty: no place yet)</label>
+      <default></default>
+    </entry>
+    <entry name="longitude" type="String">
+      <label>Longitude in decimal degrees (empty: no place yet)</label>
+      <default></default>
+    </entry>
+    <entry name="units" type="String">
+      <label>metric (°C, km/h) or imperial (°F, mph)</label>
+      <default>metric</default>
+    </entry>
+    <entry name="showForecast" type="Bool">
+      <label>Show the next days</label>
+      <default>true</default>
+    </entry>
+    <entry name="backgroundOpacity" type="Int">
+      <label>How dark the panel behind the widget is, 0 for none</label>
+      <default>80</default>
+      <min>0</min>
+      <max>100</max>
+    </entry>
+  </group>
+</kcfg>

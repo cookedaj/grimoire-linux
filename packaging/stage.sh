@@ -17,7 +17,8 @@
 #   /usr/share/polkit-1/actions/      their polkit actions, so the password prompt names Grimoire Linux
 #
 # LaunchL's panel widget isn't installed system-wide: its page installs it for you with kpackagetool6 (from
-# /usr/share/grimoire-linux/plasma) together with the spell list its search reads, and swaps it for Kickoff.
+# /usr/share/grimoire-linux/plasma) together with the spell list its search reads, and swaps it for Kickoff. WidgetL's
+# desktop widgets are the same: its page installs them per user from there.
 # Nothing else per user happens here: timers, autostart entries and hotkeys are written by the app itself when you turn
 # them on, and point at /usr/bin. Run /usr/share/grimoire-linux/uninstall.sh as yourself before removing the package
 # to clear those.

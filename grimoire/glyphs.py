@@ -300,6 +300,12 @@ def _draw(name: str, p: QPainter):
         p.drawRoundedRect(r(3.5, 6.5, 17, 11), 1.5, 1.5)
         p.drawEllipse(QPointF(9, 12), 2, 2); p.drawEllipse(QPointF(15, 12), 2, 2)
         p.drawLine(QPointF(6, 17.5), QPointF(6, 20)); p.drawLine(QPointF(18, 17.5), QPointF(18, 20))
+    elif name == "widgets":                                # four desktop widgets, one of them a clock
+        p.drawRoundedRect(r(3.5, 3.5, 7.5, 7.5), 1.8, 1.8)
+        p.drawEllipse(QPointF(16.75, 7.25), 3.75, 3.75)
+        p.drawLine(QPointF(16.75, 7.25), QPointF(16.75, 5.3)); p.drawLine(QPointF(16.75, 7.25), QPointF(18.3, 7.25))
+        p.drawRoundedRect(r(3.5, 13, 7.5, 7.5), 1.8, 1.8)
+        p.drawRoundedRect(r(13, 13, 7.5, 7.5), 1.8, 1.8)
 
 
 def _pixmap(name: str, color: str, size: int) -> QPixmap:

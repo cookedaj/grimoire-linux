@@ -1,0 +1,22 @@
+{
+    "KPackageStructure": "Plasma/Applet",
+    "KPlugin": {
+        "Authors": [
+            {
+                "Name": "cookedaj"
+            }
+        ],
+        "Category": "Multimedia",
+        "Description": "Grimoire Linux WidgetL: the song or video that's playing, with its cover in grayscale and play controls",
+        "Icon": "grimoire",
+        "Id": "com.cookedaj.grimoire.widget.nowplaying",
+        "License": "GPL-3.0-or-later",
+        "Name": "Now Playing (Grimoire Linux)",
+        "Version": "1.0",
+        "Website": "https://github.com/cookedaj/grimoire-linux"
+    },
+    "X-Plasma-API-Minimum-Version": "6.0",
+    "X-Plasma-FormFactors": [
+        "desktop"
+    ]
+}

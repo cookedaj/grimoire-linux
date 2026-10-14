@@ -1,0 +1,22 @@
+{
+    "KPackageStructure": "Plasma/Applet",
+    "KPlugin": {
+        "Authors": [
+            {
+                "Name": "cookedaj"
+            }
+        ],
+        "Category": "System Information",
+        "Description": "Grimoire Linux WidgetL: cPU, memory, graphics card and temperatures as thin bars or sparklines",
+        "Icon": "grimoire",
+        "Id": "com.cookedaj.grimoire.widget.system",
+        "License": "GPL-3.0-or-later",
+        "Name": "System (Grimoire Linux)",
+        "Version": "1.0",
+        "Website": "https://github.com/cookedaj/grimoire-linux"
+    },
+    "X-Plasma-API-Minimum-Version": "6.0",
+    "X-Plasma-FormFactors": [
+        "desktop"
+    ]
+}

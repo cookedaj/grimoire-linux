@@ -8,6 +8,7 @@
 #     on the home page adds its own; ./install.sh --all adds every spell's launcher)
 #   - copies the MuraL wallpaper plugin and the LaunchL launcher widget into Plasma (LaunchL only takes Kickoff's
 #     place when you ask, on its page)
+#   - copies WidgetL's desktop widgets into Plasma (they only show up once you add them to a desktop)
 #   - adds the Grimoire Tray menu entry (it starts at login only once you turn that on)
 #   - records the commit it came from (app/INSTALLED.json), so Grimoire can tell when there's an update
 #   - installs the root helpers (MuraL, OptimizeL, SystemL, FocusL) root-owned into /usr/local/libexec/grimoire-linux,
@@ -85,6 +86,13 @@ cp "$APP/grimoire/assets/clover5.svg" "$DATA/icons/hicolor/scalable/apps/grimoir
 LAUNCHL="$DATA/plasma/plasmoids/com.cookedaj.grimoire.launchl"
 rm -rf "$LAUNCHL"
 cp -r "$APP/plasma/com.cookedaj.grimoire.launchl" "$LAUNCHL"
+# WidgetL's desktop widgets, the same way (they only appear once you add them to a desktop)
+for widget in "$APP"/plasma/com.cookedaj.grimoire.widget.*; do
+    if [ -f "$widget/metadata.json" ]; then
+        rm -rf "${DATA:?}/plasma/plasmoids/$(basename "$widget")"
+        cp -r "$widget" "$DATA/plasma/plasmoids/"
+    fi
+done
 
 cat > "$DATA/applications/grimoire.desktop" <<EOF
 [Desktop Entry]

@@ -5,6 +5,7 @@
 #   ./uninstall.sh            remove the app, its commands, menu entries, wallpaper plugin, LaunchL widget (putting
 #                             Kickoff back first if LaunchL replaced it), auto-tidy and alert timers and SightsL and
 #                             tray autostart (and stops the tray); keep your settings so a later install picks them up
+#                             WidgetL's desktop widgets are taken off the desktops and panels, then removed
 #   ./uninstall.sh --purge    also move Grimoire's settings, logs and cache to the Trash
 # The root helpers install.sh put in /usr/local/libexec/grimoire-linux (and their polkit file) are removed with one
 # password prompt; cancel it and the exact command to remove them later is printed. A package's own helpers in
@@ -189,6 +190,17 @@ if [ -d "$LAUNCHL" ]; then
         rm -rf "$LAUNCHL"
     else
         echo "LaunchL's widget was kept (see above). Remove it later from the panel, then delete $LAUNCHL."
+    fi
+fi
+
+# WidgetL: take its widgets off the desktops and panels first, then remove them. If Plasma isn't running but the saved
+# layout still has them, they stay, so no desktop is left with "widget not found" boxes.
+if compgen -G "$DATA/plasma/plasmoids/com.cookedaj.grimoire.widget.*" >/dev/null; then
+    if [ ! -d "$CODE/grimoire" ]; then
+        if [ -z "$DRY" ]; then rm -rf "$DATA"/plasma/plasmoids/com.cookedaj.grimoire.widget.*; else
+            echo "[dry] rm -rf $DATA/plasma/plasmoids/com.cookedaj.grimoire.widget.*" >&3; fi
+    elif ! PYTHONPATH="$CODE" python3 -P -m grimoire.spells.widgetl uninstall ${DRY:+--dry-run}; then
+        echo "WidgetL's widgets were kept (see above). Take them off the desktop later, then run ./uninstall.sh again."
     fi
 fi
 

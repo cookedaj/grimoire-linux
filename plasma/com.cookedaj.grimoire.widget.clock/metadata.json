@@ -1,0 +1,22 @@
+{
+    "KPackageStructure": "Plasma/Applet",
+    "KPlugin": {
+        "Authors": [
+            {
+                "Name": "cookedaj"
+            }
+        ],
+        "Category": "Date and Time",
+        "Description": "Grimoire Linux WidgetL: big thin digits and the date, in black and white",
+        "Icon": "grimoire",
+        "Id": "com.cookedaj.grimoire.widget.clock",
+        "License": "GPL-3.0-or-later",
+        "Name": "Clock (Grimoire Linux)",
+        "Version": "1.0",
+        "Website": "https://github.com/cookedaj/grimoire-linux"
+    },
+    "X-Plasma-API-Minimum-Version": "6.0",
+    "X-Plasma-FormFactors": [
+        "desktop"
+    ]
+}
