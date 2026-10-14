@@ -1,0 +1,463 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE TS>
+<TS version="2.1" language="fr" sourcelanguage="en">
+<context>
+    <name>grimoire.spells.gamel.library</name>
+    <message>
+        <location filename="../../grimoire/spells/gamel/library.py"/>
+        <source>Sideloaded</source>
+        <translation>Ajouté à la main</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/library.py"/>
+        <source>Steam hasn&apos;t finished downloading or updating it.</source>
+        <translation>Steam n’a pas fini de le télécharger ou de le mettre à jour.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/library.py"/>
+        <source>Never</source>
+        <translation>Jamais</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/library.py"/>
+        <source>Today</source>
+        <translation>Aujourd’hui</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/library.py"/>
+        <source>Yesterday</source>
+        <translation>Hier</translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../../grimoire/spells/gamel/library.py"/>
+        <source>%n day(s) ago</source>
+        <translation>
+            <numerusform>Il y a %n jour</numerusform>
+            <numerusform>Il y a %n jours</numerusform>
+        </translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/library.py"/>
+        <source>Not known</source>
+        <translation>Inconnu</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/library.py"/>
+        <source>Not played yet</source>
+        <translation>Pas encore joué</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/library.py"/>
+        <source>{minutes} min</source>
+        <translation>{minutes} min</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/library.py"/>
+        <source>{hours} h</source>
+        <translation>{hours} h</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/library.py"/>
+        <source>No games found yet</source>
+        <translation>Aucun jeu trouvé pour l’instant</translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../../grimoire/spells/gamel/library.py"/>
+        <source>%n game(s)</source>
+        <translation>
+            <numerusform>%n jeu</numerusform>
+            <numerusform>%n jeux</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../../grimoire/spells/gamel/library.py"/>
+        <source>%n game(s) · last played {name}</source>
+        <translation>
+            <numerusform>%n jeu · dernier joué : {name}</numerusform>
+            <numerusform>%n jeux · dernier joué : {name}</numerusform>
+        </translation>
+    </message>
+</context>
+<context>
+    <name>grimoire.spells.gamel.overlay</name>
+    <message>
+        <location filename="../../grimoire/spells/gamel/overlay.py"/>
+        <source>Top left</source>
+        <translation>En haut à gauche</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/overlay.py"/>
+        <source>Top right</source>
+        <translation>En haut à droite</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/overlay.py"/>
+        <source>Bottom left</source>
+        <translation>En bas à gauche</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/overlay.py"/>
+        <source>Bottom right</source>
+        <translation>En bas à droite</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/overlay.py"/>
+        <source>Top center</source>
+        <translation>En haut au centre</translation>
+    </message>
+</context>
+<context>
+    <name>grimoire.spells.gamel.page</name>
+    <message>
+        <location filename="../../grimoire/spells/gamel/page.py"/>
+        <source>All games</source>
+        <translation>Tous les jeux</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/page.py"/>
+        <source>Name</source>
+        <translation>Nom</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/page.py"/>
+        <source>Last played</source>
+        <translation>Dernière partie</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/page.py"/>
+        <source>Size</source>
+        <translation>Taille</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/page.py"/>
+        <source>Playtime</source>
+        <translation>Temps de jeu</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/page.py"/>
+        <source>dd MMM yyyy</source>
+        <comment>QLocale date format</comment>
+        <translation>d MMM yyyy</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/page.py"/>
+        <source>Search your games</source>
+        <translation>Rechercher dans vos jeux</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/page.py"/>
+        <source>Sort by</source>
+        <translation>Trier par</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/page.py"/>
+        <source>Covers</source>
+        <translation>Jaquettes</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/page.py"/>
+        <source>List</source>
+        <translation>Liste</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/page.py"/>
+        <source>Look for games again</source>
+        <translation>Rechercher à nouveau les jeux</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/page.py"/>
+        <source>Launcher</source>
+        <translation>Lanceur</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/page.py"/>
+        <source>Folder</source>
+        <translation>Dossier</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/page.py"/>
+        <source>Copy launch option</source>
+        <translation>Copier l’option de lancement</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/page.py"/>
+        <source>Open folder in VaultL</source>
+        <translation>Ouvrir le dossier dans VaultL</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/page.py"/>
+        <source>Play</source>
+        <translation>Jouer</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/page.py"/>
+        <source>No games found. GameL looks for Steam, Heroic and Lutris libraries in their usual places, including their Flatpak versions.</source>
+        <translation>Aucun jeu trouvé. GameL cherche les bibliothèques Steam, Heroic et Lutris à leurs emplacements habituels, y compris dans leurs versions Flatpak.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/page.py"/>
+        <source>No game matches “{query}”.</source>
+        <translation>Aucun jeu ne correspond à « {query} ».</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/page.py"/>
+        <source>Not known</source>
+        <translation>Inconnu</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/page.py"/>
+        <source>Counting…</source>
+        <translation>Calcul…</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/page.py"/>
+        <source>For MangoHud in this game, add “{option}” to its launch options in Steam.</source>
+        <translation>Pour MangoHud dans ce jeu, ajoutez « {option} » à ses options de lancement dans Steam.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/page.py"/>
+        <source>Couldn&apos;t start {name}: {error}</source>
+        <translation>Impossible de lancer {name} : {error}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/page.py"/>
+        <source>Starting {name} through {launcher}, with MangoHud.</source>
+        <translation>Lancement de {name} via {launcher}, avec MangoHud.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/page.py"/>
+        <source>Starting {name} through {launcher}.</source>
+        <translation>Lancement de {name} via {launcher}.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/page.py"/>
+        <source>Couldn&apos;t open VaultL: {error}</source>
+        <translation>Impossible d’ouvrir VaultL : {error}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/page.py"/>
+        <source>MangoHud shows FPS, frame times, CPU and GPU load and temperature, RAM and VRAM over a game, in a black &amp; white style. It&apos;s a manual switch: GameL never turns it, the crosshair, optimizations or anything else on by itself when a game starts.</source>
+        <translation>MangoHud affiche les FPS, les temps d’image, la charge et la température du CPU et du GPU, la RAM et la VRAM par-dessus le jeu, en noir et blanc. C’est un interrupteur manuel : GameL n’active jamais de lui-même ceci, le réticule, les optimisations ou quoi que ce soit d’autre au lancement d’un jeu.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/page.py"/>
+        <source>MangoHud isn&apos;t installed</source>
+        <translation>MangoHud n’est pas installé</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/page.py"/>
+        <source>Install it, then come back here:</source>
+        <translation>Installez-le, puis revenez ici :</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/page.py"/>
+        <source>MangoHud overlay</source>
+        <translation>Surcouche MangoHud</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/page.py"/>
+        <source>On: GameL writes its style to ~/.config/MangoHud/MangoHud.conf and starts Heroic and Lutris games with MANGOHUD=1. Off: games GameL starts don&apos;t get it.</source>
+        <translation>Activé : GameL écrit son style dans ~/.config/MangoHud/MangoHud.conf et lance les jeux Heroic et Lutris avec MANGOHUD=1. Désactivé : les jeux lancés par GameL ne l’ont pas.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/page.py"/>
+        <source>Show or hide key</source>
+        <translation>Touche afficher/masquer</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/page.py"/>
+        <source>Press it in a game to hide the overlay or bring it back</source>
+        <translation>Appuyez dessus en jeu pour masquer la surcouche ou la faire revenir</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/page.py"/>
+        <source>Position</source>
+        <translation>Position</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/page.py"/>
+        <source>Which corner of the screen it sits in</source>
+        <translation>Dans quel coin de l’écran il se place</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/page.py"/>
+        <source>Compact</source>
+        <translation>Compact</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/page.py"/>
+        <source>One thin row along the edge instead of a table</source>
+        <translation>Une fine ligne le long du bord au lieu d’un tableau</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/page.py"/>
+        <source>MangoHud for Steam games</source>
+        <translation>MangoHud pour les jeux Steam</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/page.py"/>
+        <source>Copy</source>
+        <translation>Copier</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/page.py"/>
+        <source>Add a launch option in Steam</source>
+        <translation>Ajouter une option de lancement dans Steam</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/page.py"/>
+        <source>Steam starts its games itself, so GameL can&apos;t hand MangoHud to them. In Steam, right-click a game, choose Properties, and under General put this in Launch options. It uses the same style.</source>
+        <translation>Steam lance ses jeux lui-même, GameL ne peut donc pas leur transmettre MangoHud. Dans Steam, faites un clic droit sur un jeu, choisissez Propriétés, puis sous Général mettez ceci dans Options de lancement. Le style est le même.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/page.py"/>
+        <source>Heroic and Lutris</source>
+        <translation>Heroic et Lutris</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/page.py"/>
+        <source>If Heroic or Lutris is already open, the game starts from that window and may start without MangoHud. Both also have a MangoHud switch in each game&apos;s settings.</source>
+        <translation>Si Heroic ou Lutris est déjà ouvert, le jeu démarre depuis cette fenêtre et peut démarrer sans MangoHud. Les deux ont aussi un interrupteur MangoHud dans les réglages de chaque jeu.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/page.py"/>
+        <source>GameL&apos;s style is in {path}.</source>
+        <translation>Le style de GameL est dans {path}.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/page.py"/>
+        <source>{path} is your own; turning the overlay on moves it aside first.</source>
+        <translation>{path} est le vôtre ; activer la surcouche le met d’abord de côté.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/page.py"/>
+        <source>Couldn&apos;t write MangoHud&apos;s settings: {error}</source>
+        <translation>Impossible d’écrire les réglages de MangoHud : {error}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/page.py"/>
+        <source>Your own MangoHud.conf was kept as {name}.</source>
+        <translation>Votre propre MangoHud.conf a été conservé sous le nom {name}.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/page.py"/>
+        <source>MangoHud overlay on.</source>
+        <translation>Surcouche MangoHud activée.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/page.py"/>
+        <source>MangoHud overlay off.</source>
+        <translation>Surcouche MangoHud désactivée.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/page.py"/>
+        <source>“{key}” isn&apos;t a key MangoHud knows. Use names like Shift_R+F12.</source>
+        <translation>MangoHud ne connaît pas la touche « {key} ». Utilisez des noms comme Shift_R+F12.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/page.py"/>
+        <source>Couldn&apos;t save: {error}</source>
+        <translation>Impossible d’enregistrer : {error}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/page.py"/>
+        <source>A few of OptimizeL&apos;s switches for gaming, turned on together while you play. It&apos;s the same Performance mode as the tray&apos;s. Manual only: starting a game never turns it on, and turning it off puts back only what it changed.</source>
+        <translation>Quelques interrupteurs d’OptimizeL pour le jeu, activés ensemble pendant que vous jouez. C’est le même Mode performance que celui de la barre d’état. Manuel uniquement : lancer un jeu ne l’active jamais, et le désactiver ne rétablit que ce qu’il a changé.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/page.py"/>
+        <source>Switches on: {list}. Turning off split-lock throttling asks for your password.</source>
+        <translation>Active : {list}. Désactiver le bridage split-lock demande votre mot de passe.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/page.py"/>
+        <source>Performance mode</source>
+        <translation>Mode performance</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/page.py"/>
+        <source>Turn off</source>
+        <translation>Désactiver</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/page.py"/>
+        <source>Turn on</source>
+        <translation>Activer</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/page.py"/>
+        <source>On. GameL turned on: {list}.</source>
+        <translation>Activé. GameL a activé : {list}.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/page.py"/>
+        <source>On. Everything it switches was already on, so turning it off changes nothing.</source>
+        <translation>Activé. Tout ce qu’il active l’était déjà, le désactiver ne change donc rien.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/page.py"/>
+        <source>Off.</source>
+        <translation>Désactivé.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/page.py"/>
+        <source>Turning on…</source>
+        <translation>Activation…</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/page.py"/>
+        <source>Turning off…</source>
+        <translation>Désactivation…</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/page.py"/>
+        <source>Turned on: {list}.</source>
+        <translation>Activé : {list}.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/page.py"/>
+        <source>Everything it switches was already on, or doesn&apos;t apply here.</source>
+        <translation>Tout ce qu’il active l’était déjà, ou ne s’applique pas ici.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/page.py"/>
+        <source>Turned back off: {list}.</source>
+        <translation>Désactivé à nouveau : {list}.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/page.py"/>
+        <source>Nothing to turn back.</source>
+        <translation>Rien à rétablir.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/page.py"/>
+        <source>Still on: {list}.</source>
+        <translation>Toujours actif : {list}.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/page.py"/>
+        <source>Problems: {list}</source>
+        <translation>Problèmes : {list}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/page.py"/>
+        <source>LIBRARY</source>
+        <translation>BIBLIOTHÈQUE</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/page.py"/>
+        <source>WHILE YOU PLAY</source>
+        <translation>PENDANT LE JEU</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/page.py"/>
+        <source>Overlay</source>
+        <translation>Surcouche</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/page.py"/>
+        <source>Copied “{option}”. Paste it into the game&apos;s Launch options in Steam.</source>
+        <translation>« {option} » copié. Collez-le dans les Options de lancement du jeu dans Steam.</translation>
+    </message>
+</context>
+</TS>

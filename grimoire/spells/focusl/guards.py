@@ -26,6 +26,7 @@ import time
 import psutil
 
 from grimoire import roothelper
+from grimoire.i18n import tr
 from grimoire.paths import ASSETS, CACHE, HOME
 from grimoire.spells.focusl.store import PROTECTED, log
 
@@ -101,7 +102,7 @@ class Dnd:
             return True
         try:
             n = _bus().get_object("org.freedesktop.Notifications", "/org/freedesktop/Notifications")
-            self.cookie = int(n.Inhibit("grimoire", "Focus session (FocusL)", {},
+            self.cookie = int(n.Inhibit("grimoire", tr("grimoire.spells.focusl.guards", "Focus session (FocusL)"), {},
                                         dbus_interface="org.freedesktop.Notifications", timeout=5))
             return True
         except Exception as e:
@@ -193,12 +194,16 @@ class AppGuard:
                 del self.warned[app]
         for app, pids in found.items():
             if app not in self.warned:
+                title = tr("grimoire.spells.focusl.guards", "Focus time")
                 if self.action == "close":
-                    self.notify("Focus time", f"{app} closes in {self.grace} s. It's on your FocusL block list."
-                                if self.grace else f"Closing {app}: it's on your FocusL block list.", urgent=True)
+                    body = tr("grimoire.spells.focusl.guards", "{app} closes in {seconds} s. It's on your FocusL block "
+                                                               "list.") if self.grace else \
+                        tr("grimoire.spells.focusl.guards", "Closing {app}: it's on your FocusL block list.")
+                    self.notify(title, body.format(app=app, seconds=self.grace), urgent=True)
                     self.warned[app] = now + self.grace
                 else:
-                    self.notify("Focus time", f"{app} is on your FocusL block list.", urgent=True)
+                    self.notify(title, tr("grimoire.spells.focusl.guards", "{app} is on your FocusL block list.")
+                                .format(app=app), urgent=True)
                     self.warned[app] = float("inf")
             if now >= self.warned[app]:
                 for pid in pids:
@@ -233,15 +238,17 @@ def _helper(args: list[str]) -> str:
     except (OSError, subprocess.TimeoutExpired) as e:
         return str(e)
     if r.returncode in (126, 127) and not DRY:
-        return "the password prompt was cancelled"
+        return tr("grimoire.spells.focusl.guards", "the password prompt was cancelled")
     if r.returncode:
         msg = (r.stderr or r.stdout).strip().splitlines()
-        return msg[-1] if msg else f"helper failed ({r.returncode})"
+        if msg:
+            return msg[-1]
+        return tr("grimoire.spells.focusl.guards", "the helper failed ({code})").format(code=r.returncode)
     return ""
 
 
 def block_sites(sites: list[str]) -> str:
-    return _helper(["block", *sites]) if sites else "no sites listed"
+    return _helper(["block", *sites]) if sites else tr("grimoire.spells.focusl.guards", "no sites listed")
 
 
 def unblock_sites() -> str:

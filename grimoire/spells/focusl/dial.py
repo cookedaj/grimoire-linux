@@ -2,11 +2,21 @@
 """FocusL's two drawings: the countdown ring and the focus-minutes bar chart, both in black and white."""
 import datetime as dt
 
-from PySide6.QtCore import QPointF, QRectF, Qt
+from PySide6.QtCore import QDate, QLocale, QPointF, QRectF, Qt
 from PySide6.QtGui import QColor, QFont, QPainter, QPen
 from PySide6.QtWidgets import QSizePolicy, QToolTip, QWidget
 
+from grimoire import i18n
+from grimoire.i18n import tr
 from grimoire.theme import FONT
+
+
+def _day(day: dt.date) -> str:
+    """The weekday under a bar in the app's language: "We" in English (two letters, as before), the short name
+    elsewhere (cutting other scripts to two characters would garble them)."""
+    loc = QLocale()
+    name = loc.dayName(day.isoweekday(), QLocale.FormatType.ShortFormat)
+    return name[:2] if loc.language() == QLocale.Language.English else name
 
 
 class Ring(QWidget):
@@ -47,7 +57,7 @@ class Ring(QWidget):
         f = QFont(FONT)
         f.setPixelSize(max(10, int(side * 0.045)))
         f.setWeight(QFont.Weight.DemiBold)
-        f.setLetterSpacing(QFont.SpacingType.AbsoluteSpacing, side * 0.012)
+        f.setLetterSpacing(QFont.SpacingType.AbsoluteSpacing, i18n.spacing(self.top, side * 0.012))
         p.setFont(f)
         p.setPen(QColor("#8c8c8c"))
         p.drawText(QRectF(box.left(), c.y() - side * 0.25, box.width(), side * 0.08), Qt.AlignmentFlag.AlignCenter,
@@ -120,12 +130,13 @@ class Bars(QWidget):
                 p.setBrush(QColor("#ffffff" if last else "#9a9a9a"))
                 p.drawRoundedRect(QRectF(x, base - max(h, 2), bw, max(h, 2)), 2, 2)
             p.setPen(QColor("#ffffff" if last else "#555555"))
-            p.drawText(QRectF(left + i * slot, base + 5, slot, 14), Qt.AlignmentFlag.AlignCenter,
-                       day.strftime("%a")[:2])
+            p.drawText(QRectF(left + i * slot, base + 5, slot, 14), Qt.AlignmentFlag.AlignCenter, _day(day))
         if peak > 60 or any(m for _, m, _ in self.days):
             p.setPen(QColor("#555555"))
-            p.drawText(QRectF(left, 0, self.width() - 8, 14), Qt.AlignmentFlag.AlignRight,
-                       f"{peak / 60:.1f} h" if peak >= 90 else f"{peak:.0f} min")
+            top = tr("grimoire.spells.focusl.dial", "{hours} h").format(hours=f"{peak / 60:.1f}") if peak >= 90 else \
+                tr("grimoire.spells.focusl.dial", "{minutes} min").format(minutes=f"{peak:.0f}")
+            p.drawText(QRectF(left, 0, self.width() - 8, 14),         # right even in right-to-left, as the chart
+                       Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignAbsolute, top)
         p.end()
 
     def mouseMoveEvent(self, e):
@@ -133,7 +144,11 @@ class Bars(QWidget):
         i = int((e.position().x() - left) // slot) if slot else -1
         if 0 <= i < len(self.days):
             day, minutes, sessions = self.days[i]
-            QToolTip.showText(e.globalPosition().toPoint(), f"{day.strftime('%a %d %b')}\n{minutes:.0f} min of focus"
-                              f"\n{sessions} full session{'' if sessions == 1 else 's'}", self)
+            date = QLocale().toString(QDate(day.year, day.month, day.day),
+                                      tr("grimoire.spells.focusl.dial", "ddd dd MMM", "QLocale date format"))
+            focus = tr("grimoire.spells.focusl.dial", "{minutes} min of focus").format(minutes=f"{minutes:.0f}")
+            full = tr("grimoire.spells.focusl.dial", "%n full session(s)", n=sessions)
+            text = "\n".join((date, focus, full))
+            QToolTip.showText(e.globalPosition().toPoint(), text, self)
         else:
             QToolTip.hideText()

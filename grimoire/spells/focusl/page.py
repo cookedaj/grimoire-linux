@@ -10,10 +10,10 @@ from PySide6.QtCore import QObject, Qt, QTimer, Signal
 from PySide6.QtWidgets import (QComboBox, QFrame, QHBoxLayout, QLabel, QLineEdit, QMenu, QPushButton, QScrollArea,
                                QSpinBox, QVBoxLayout, QWidget)
 
+from grimoire.i18n import tr
 from grimoire.jobs import POOL, Job
 from grimoire.spells.focusl import runner, store
 from grimoire.spells.focusl.dial import Bars, Ring
-from grimoire.spells.focusl.store import PHASES
 from grimoire.widgets import Switch
 
 
@@ -33,9 +33,9 @@ def _spin(lo, hi, suffix, value, on_change) -> QSpinBox:
     s = QSpinBox()
     s.setRange(lo, hi)
     if suffix:
-        s.setSuffix(f" {suffix}")
+        s.setSuffix(" " + suffix)
     s.setValue(value)
-    s.setFixedWidth(96)
+    s.setFixedWidth(max(96, s.fontMetrics().horizontalAdvance("000 " + suffix) + 46))   # same width for all
     s.valueChanged.connect(on_change)
     return s
 
@@ -63,7 +63,9 @@ def _row(title: str, sub: str, *controls, below: QWidget | None = None) -> QFram
 
 
 def _minutes(m: float) -> str:
-    return f"{m / 60:.1f} h" if m >= 60 else f"{m:.0f} min"
+    if m >= 60:
+        return tr("grimoire.spells.focusl.page", "{hours} h").format(hours=f"{m / 60:.1f}")
+    return tr("grimoire.spells.focusl.page", "{minutes} min").format(minutes=f"{m:.0f}")
 
 
 class FocusLPage(QWidget):
@@ -82,16 +84,19 @@ class FocusLPage(QWidget):
         titles = QVBoxLayout()
         titles.setSpacing(2)
         titles.addWidget(_label("FocusL", "Title"))
-        titles.addWidget(_label("Focus in rounds with breaks between. While you focus: Do Not Disturb, no crosshair, "
-                                "and the apps and sites you pick kept away. The timer keeps going when you close "
-                                "Grimoire.", "Subtitle", wrap=True))
+        intro = tr("grimoire.spells.focusl.page", "Focus in rounds with breaks between. While you focus: Do Not "
+                                                  "Disturb, no crosshair, and the apps and sites you pick kept away. "
+                                                  "The timer keeps going when you close Grimoire.")
+        titles.addWidget(_label(intro, "Subtitle", wrap=True))
         root.addLayout(titles)
 
         tiles = QHBoxLayout()
         tiles.setSpacing(12)
         self.tiles = {}
-        for key, label in (("today", "Today"), ("week", "This week"), ("minutes", "Focus time"),
-                           ("streak", "Streak")):
+        for key, label in (("today", tr("grimoire.spells.focusl.page", "Today")),
+                           ("week", tr("grimoire.spells.focusl.page", "This week")),
+                           ("minutes", tr("grimoire.spells.focusl.page", "Focus time")),
+                           ("streak", tr("grimoire.spells.focusl.page", "Streak"))):
             tile = QFrame()
             tile.setObjectName("Stat")
             tl = QVBoxLayout(tile)
@@ -116,11 +121,12 @@ class FocusLPage(QWidget):
         self.primary.setObjectName("Primary")
         self.primary.setMinimumSize(170, 40)
         self.primary.clicked.connect(self._primary)
-        self.skip_btn = QPushButton("Skip")
-        self.skip_btn.setToolTip("End this phase now and go on to the next")
+        self.skip_btn = QPushButton(tr("grimoire.spells.focusl.page", "Skip"))
+        self.skip_btn.setToolTip(tr("grimoire.spells.focusl.page", "End this phase now and go on to the next"))
         self.skip_btn.clicked.connect(lambda: self._send("skip"))
-        self.stop_btn = QPushButton("Stop")
-        self.stop_btn.setToolTip("End the session: Do Not Disturb off, crosshair and sites back")
+        self.stop_btn = QPushButton(tr("grimoire.spells.focusl.page", "Stop"))
+        self.stop_btn.setToolTip(tr("grimoire.spells.focusl.page", "End the session: Do Not Disturb off, crosshair and "
+                                                                   "sites back"))
         self.stop_btn.clicked.connect(self._stop)
         self.buttons.addStretch(1)
         for b in (self.primary, self.skip_btn, self.stop_btn):
@@ -133,9 +139,10 @@ class FocusLPage(QWidget):
         self.leftover.setObjectName("Pending")
         ll = QHBoxLayout(self.leftover)
         ll.setContentsMargins(18, 10, 12, 10)
-        ll.addWidget(_label("Sites are still blocked from a session that stopped before it could clean up.",
-                            "PendingText", wrap=True), 1)
-        self.unblock_btn = QPushButton("Unblock")
+        leftover = tr("grimoire.spells.focusl.page", "Sites are still blocked from a session that stopped before it "
+                                                     "could clean up.")
+        ll.addWidget(_label(leftover, "PendingText", wrap=True), 1)
+        self.unblock_btn = QPushButton(tr("grimoire.spells.focusl.page", "Unblock"))
         self.unblock_btn.setObjectName("Primary")
         self.unblock_btn.clicked.connect(self._unblock)
         ll.addWidget(self.unblock_btn)
@@ -143,7 +150,7 @@ class FocusLPage(QWidget):
         left.addWidget(self.leftover)
 
         chart_head = QHBoxLayout()
-        chart_head.addWidget(_label("Last 14 days", "SectionTitle"))
+        chart_head.addWidget(_label(tr("grimoire.spells.focusl.page", "Last 14 days"), "SectionTitle"))
         chart_head.addStretch(1)
         self.chart_note = _label("", "Muted")
         chart_head.addWidget(self.chart_note)
@@ -176,22 +183,35 @@ class FocusLPage(QWidget):
     # ------------------------------------------------------------ settings
     def _build_settings(self, col: QVBoxLayout):
         s = self.s
-        col.addWidget(_label("Session", "SectionTitle"))
-        for key, title, sub, hi in (("focus", "Focus", "One round of focus", 180),
-                                    ("short", "Short break", "Between rounds", 60),
-                                    ("long", "Long break", "After the last round", 120)):
-            col.addWidget(_row(title, sub, _spin(1, hi, "min", s[key], lambda v, k=key: self._set(k, v))))
-        col.addWidget(_row("Rounds", "Focus rounds before the long break",
+        col.addWidget(_label(tr("grimoire.spells.focusl.page", "Session"), "SectionTitle"))
+        minutes = tr("grimoire.spells.focusl.page", "min")
+        for key, title, sub, hi in (("focus", tr("grimoire.spells.focusl.page", "Focus"),
+                                     tr("grimoire.spells.focusl.page", "One round of focus"), 180),
+                                    ("short", tr("grimoire.spells.focusl.page", "Short break"),
+                                     tr("grimoire.spells.focusl.page", "Between rounds"), 60),
+                                    ("long", tr("grimoire.spells.focusl.page", "Long break"),
+                                     tr("grimoire.spells.focusl.page", "After the last round"), 120)):
+            col.addWidget(_row(title, sub, _spin(1, hi, minutes, s[key], lambda v, k=key: self._set(k, v))))
+        col.addWidget(_row(tr("grimoire.spells.focusl.page", "Rounds"),
+                           tr("grimoire.spells.focusl.page", "Focus rounds before the long break"),
                            _spin(1, 12, "", s["rounds"], lambda v: self._set("rounds", v))))
-        col.addWidget(_row("Start the next phase by itself", "Off: each break and round waits for you",
+        col.addWidget(_row(tr("grimoire.spells.focusl.page", "Start the next phase by itself"),
+                           tr("grimoire.spells.focusl.page", "Off: each break and round waits for you"),
                            self._switch("auto_start")))
-        col.addWidget(_row("Soft chime", "A quiet sound when a phase ends", self._switch("sound")))
+        col.addWidget(_row(tr("grimoire.spells.focusl.page", "Soft chime"),
+                           tr("grimoire.spells.focusl.page", "A quiet sound when a phase ends"),
+                           self._switch("sound")))
 
         col.addSpacing(8)
-        col.addWidget(_label("While you focus", "SectionTitle"))
-        col.addWidget(_row("Do Not Disturb", "Plasma holds notifications back (critical ones still show). Ends "
-                           "with the round, even if FocusL is closed by force", self._switch("dnd")))
-        col.addWidget(_row("Hide the crosshair", "SightsL's overlay goes away, and comes back after if it was on",
+        col.addWidget(_label(tr("grimoire.spells.focusl.page", "While you focus"), "SectionTitle"))
+        col.addWidget(_row(tr("grimoire.spells.focusl.page", "Do Not Disturb"),
+                           tr("grimoire.spells.focusl.page", "Plasma holds notifications back (critical ones still "
+                                                             "show). Ends with the round, even if FocusL is closed by "
+                                                             "force"),
+                           self._switch("dnd")))
+        col.addWidget(_row(tr("grimoire.spells.focusl.page", "Hide the crosshair"),
+                           tr("grimoire.spells.focusl.page", "SightsL's overlay goes away, and comes back after if it "
+                                                             "was on"),
                            self._switch("hide_crosshair")))
 
         apps = QWidget()
@@ -202,33 +222,40 @@ class FocusLPage(QWidget):
         self.apps_edit = QLineEdit(", ".join(s["apps"]))
         self.apps_edit.setPlaceholderText("discord, steam, spotify")
         self.apps_edit.editingFinished.connect(self._save_apps)
-        pick = QPushButton("Running…")
-        pick.setToolTip("Add an app that's open right now")
+        pick = QPushButton(tr("grimoire.spells.focusl.page", "Running…"))
+        pick.setToolTip(tr("grimoire.spells.focusl.page", "Add an app that's open right now"))
         pick.clicked.connect(lambda: self._pick_app(pick))
         line.addWidget(self.apps_edit, 1)
         line.addWidget(pick)
         al.addLayout(line)
         how = QHBoxLayout()
         self.action = QComboBox()
-        self.action.addItem("Warn, then close", "close")
-        self.action.addItem("Only warn", "warn")
+        self.action.addItem(tr("grimoire.spells.focusl.page", "Warn, then close"), "close")
+        self.action.addItem(tr("grimoire.spells.focusl.page", "Only warn"), "warn")
         self.action.setCurrentIndex(0 if s["app_action"] == "close" else 1)
         self.action.currentIndexChanged.connect(lambda _: self._set("app_action", self.action.currentData()))
         how.addWidget(self.action, 1)
-        how.addWidget(_label("after", "Muted"))
-        how.addWidget(_spin(0, 120, "s", s["grace"], lambda v: self._set("grace", v)))
+        how.addWidget(_label(tr("grimoire.spells.focusl.page", "after"), "Muted"))
+        seconds = tr("grimoire.spells.focusl.page", "s", "seconds")
+        how.addWidget(_spin(0, 120, seconds, s["grace"], lambda v: self._set("grace", v)))
         al.addLayout(how)
-        col.addWidget(_row("Block apps", "Process names. A blocked app gets a notification, then a polite quit "
-                           "(the same as closing it) once the grace time is up", self._switch("block_apps"),
-                           below=apps))
+        col.addWidget(_row(tr("grimoire.spells.focusl.page", "Block apps"),
+                           tr("grimoire.spells.focusl.page", "Process names. A blocked app gets a notification, then a "
+                                                             "polite quit (the same as closing it) once the grace time "
+                                                             "is up"),
+                           self._switch("block_apps"), below=apps))
 
         self.sites_edit = QLineEdit(", ".join(s["sites"]))
         self.sites_edit.setPlaceholderText("youtube.com, reddit.com")
         self.sites_edit.editingFinished.connect(self._save_sites)
-        col.addWidget(_row("Block sites", "Every browser, through /etc/hosts. That needs your password once when "
-                           "the session starts and once when it ends, and sites stay blocked through the breaks. "
-                           "Reload open tabs to see it", self._switch("block_sites"), below=self.sites_edit))
-        col.addWidget(_label("Changes apply from the next phase of a running session.", "Muted"))
+        col.addWidget(_row(tr("grimoire.spells.focusl.page", "Block sites"),
+                           tr("grimoire.spells.focusl.page", "Every browser, through /etc/hosts. That needs your "
+                                                             "password once when the session starts and once when it "
+                                                             "ends, and sites stay blocked through the breaks. Reload "
+                                                             "open tabs to see it"),
+                           self._switch("block_sites"), below=self.sites_edit))
+        later = tr("grimoire.spells.focusl.page", "Changes apply from the next phase of a running session.")
+        col.addWidget(_label(later, "Muted", wrap=True))
 
     def _switch(self, key: str) -> Switch:
         sw = Switch()
@@ -241,7 +268,7 @@ class FocusLPage(QWidget):
         try:
             store.save_settings(self.s)
         except OSError as e:
-            self.say(f"Couldn't save the settings: {e}")
+            self.say(tr("grimoire.spells.focusl.page", "Couldn't save the settings: {error}").format(error=e))
         if key in ("focus", "rounds"):
             self.refresh()
 
@@ -251,7 +278,8 @@ class FocusLPage(QWidget):
         bad = [a.strip() for a in raw if not store.clean_app(a)]
         self.apps_edit.setText(", ".join(clean))
         if bad:
-            self.say(f"Left out {', '.join(bad)}: the desktop, shells and Python can't be blocked")
+            self.say(tr("grimoire.spells.focusl.page", "Left out {names}: the desktop, shells and Python can't be "
+                                                       "blocked").format(names=", ".join(bad)))
         if clean != self.s["apps"]:
             self._set("apps", clean)
 
@@ -261,7 +289,8 @@ class FocusLPage(QWidget):
         bad = [a.strip() for a in raw if not store.clean_site(a)]
         self.sites_edit.setText(", ".join(clean))
         if bad:
-            self.say(f"Left out {', '.join(bad)}: not a site name")
+            self.say(tr("grimoire.spells.focusl.page", "Left out {names}: not a site name").format(
+                names=", ".join(bad)))
         if clean != self.s["sites"]:
             self._set("sites", clean)
 
@@ -289,8 +318,11 @@ class FocusLPage(QWidget):
         st = store.live_state()
         if st["phase"] == "idle":
             if runner.start():
-                self.say("Focus started. It keeps going if you close Grimoire."
-                         + (" Your password is asked to block sites." if self.s["block_sites"] else ""))
+                if self.s["block_sites"]:
+                    self.say(tr("grimoire.spells.focusl.page", "Focus started. It keeps going if you close Grimoire. "
+                                                               "Your password is asked to block sites."))
+                else:
+                    self.say(tr("grimoire.spells.focusl.page", "Focus started. It keeps going if you close Grimoire."))
         elif st.get("status") == "running":
             self._send("pause")
         else:
@@ -304,19 +336,24 @@ class FocusLPage(QWidget):
 
     def _stop(self):
         runner.stop()
-        self.say("Session stopped" + (". Your password is asked to unblock the sites."
-                                      if store.live_state().get("sites_blocked") else ""))
+        if store.live_state().get("sites_blocked"):
+            self.say(tr("grimoire.spells.focusl.page", "Session stopped. Your password is asked to unblock the sites."))
+        else:
+            self.say(tr("grimoire.spells.focusl.page", "Session stopped"))
         QTimer.singleShot(700, self.refresh)
 
     def _unblock(self):
         self.unblock_btn.setEnabled(False)
-        self.unblock_btn.setText("Unblocking…")
+        self.unblock_btn.setText(tr("grimoire.spells.focusl.page", "Unblocking…"))
         POOL.start(Job(lambda: runner.recover(sites=True), self.sig.unblocked.emit))
 
     def _unblocked(self, err: str):
         self.unblock_btn.setEnabled(True)
-        self.unblock_btn.setText("Unblock")
-        self.say(f"Couldn't unblock: {err}" if err else "Sites unblocked")
+        self.unblock_btn.setText(tr("grimoire.spells.focusl.page", "Unblock"))
+        if err:
+            self.say(tr("grimoire.spells.focusl.page", "Couldn't unblock: {error}").format(error=err))
+        else:
+            self.say(tr("grimoire.spells.focusl.page", "Sites unblocked"))
         self.refresh()
 
     # ------------------------------------------------------------ display
@@ -329,27 +366,42 @@ class FocusLPage(QWidget):
         rnd = int(st.get("round") or 1)
         if phase == "idle":
             length = self.s["focus"] * 60
-            self.ring.show_state(1.0, store.clock(length), "READY", f"{self.s['rounds']} rounds of "
-                                 f"{self.s['focus']} min", self.s["rounds"], 0, -1, True)
+            bottom = tr("grimoire.spells.focusl.page", "%n round(s) of {minutes} min", n=self.s["rounds"]).format(
+                minutes=self.s["focus"])
+            self.ring.show_state(1.0, store.clock(length), tr("grimoire.spells.focusl.page", "Ready").upper(), bottom,
+                                 self.s["rounds"], 0, -1, True)
         else:
             left = store.left(st)
             length = max(1, st.get("length") or 1)
             done = rnd - 1 + (phase != "focus")
-            top = PHASES[phase].upper() + (f" · {rnd} OF {rounds}" if phase == "focus" else "")
-            if status == "paused":
-                bottom = "Paused"
-            elif status == "waiting":
-                bottom = "Ready when you are"
+            if phase == "focus":
+                top = tr("grimoire.spells.focusl.page", "Focus · {round} of {rounds}").format(round=rnd, rounds=rounds)
             else:
-                bottom = "until " + time.strftime("%H:%M", time.localtime(time.time() + left))
+                top = tr("grimoire.spells.focusl.store", store.PHASES[phase])
+            top = top.upper()
+            if status == "paused":
+                bottom = tr("grimoire.spells.focusl.page", "Paused")
+            elif status == "waiting":
+                bottom = tr("grimoire.spells.focusl.page", "Ready when you are")
+            else:
+                until = time.strftime("%H:%M", time.localtime(time.time() + left))
+                bottom = tr("grimoire.spells.focusl.page", "until {time}").format(time=until)
             self.ring.show_state(left / length, store.clock(left), top, bottom, rounds, done,
                                  rnd - 1 if phase == "focus" else -1, status != "running")
         key = (phase, status)
         if key != self._shown_status:
             self._shown_status = key
-            self.primary.setText({"idle": "Start focus"}.get(phase) or
-                                 {"running": "Pause", "paused": "Resume"}.get(status) or
-                                 f"Start {PHASES[phase].lower()}")
+            if phase != "idle" and status == "running":
+                text = tr("grimoire.spells.focusl.page", "Pause")
+            elif phase != "idle" and status == "paused":
+                text = tr("grimoire.spells.focusl.page", "Resume")
+            elif phase == "short":
+                text = tr("grimoire.spells.focusl.page", "Start short break")
+            elif phase == "long":
+                text = tr("grimoire.spells.focusl.page", "Start long break")
+            else:
+                text = tr("grimoire.spells.focusl.page", "Start focus")
+            self.primary.setText(text)
             self.skip_btn.setVisible(phase != "idle")
             self.stop_btn.setVisible(phase != "idle")
         self.leftover.setVisible(phase == "idle" and bool(st.get("sites_blocked")))
@@ -363,10 +415,14 @@ class FocusLPage(QWidget):
         self.tiles["today"].setText(str(s["today"]))
         self.tiles["week"].setText(str(s["week"]))
         self.tiles["minutes"].setText(_minutes(s["minutes"]))
-        self.tiles["streak"].setText(f"{s['streak']} day{'' if s['streak'] == 1 else 's'}")
+        self.tiles["streak"].setText(tr("grimoire.spells.focusl.page", "%n day(s)", n=s["streak"]))
         self.bars.set_days(s["days"])
         fortnight = sum(m for _, m, _ in s["days"])
-        self.chart_note.setText(f"{_minutes(fortnight)} of focus" if fortnight else "No focus yet")
+        if fortnight:
+            self.chart_note.setText(tr("grimoire.spells.focusl.page", "{time} of focus").format(
+                time=_minutes(fortnight)))
+        else:
+            self.chart_note.setText(tr("grimoire.spells.focusl.page", "No focus yet"))
 
     def say(self, text: str):
         self.toast.setText(text)
