@@ -14,6 +14,7 @@ def main(argv: list[str]):
     from PySide6.QtWidgets import QApplication, QMainWindow, QMessageBox
 
     from grimoire.app import style_app
+    from grimoire.i18n import tr
     from grimoire.standalone import app_icon
 
     app = QApplication(sys.argv[:1])
@@ -39,7 +40,9 @@ def main(argv: list[str]):
         def closeEvent(self, e):
             busy = page.busy() if page.ok else []
             if busy and QMessageBox.question(
-                    self, "TerminalL", f"{', '.join(sorted(set(busy)))} still running. Close TerminalL anyway?",
+                    self, "TerminalL", tr("grimoire.spells.terminall.__main__",
+                                          "Still running: {programs}. Close TerminalL anyway?")
+                    .format(programs=", ".join(sorted(set(busy)))),
                     QMessageBox.StandardButton.Cancel | QMessageBox.StandardButton.Close,
                     QMessageBox.StandardButton.Cancel) != QMessageBox.StandardButton.Close:
                 return e.ignore()

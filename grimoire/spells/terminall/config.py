@@ -2,19 +2,26 @@
 """TerminalL settings: profiles (font, size, cursor shape, scrollback) and saved palette commands, as JSON."""
 import json
 
+from grimoire.i18n import tr_noop
 from grimoire.paths import CONFIG
 
 FILE = CONFIG / "terminall.json"
 CURSORS = ["block", "underline", "bar"]
 PROFILE = {"font": "IBM Plex Mono", "size": 11, "cursor": "block", "scrollback": 10000}
 LIMITS = {"size": (6, 40), "scrollback": (0, 200000)}
-COMMANDS = [
-    {"name": "Disk usage here", "command": "du -sh -- * .[!.]* 2>/dev/null | sort -h"},
-    {"name": "Git status", "command": "git status -sb"},
-    {"name": "Git log, last 20", "command": "git log --oneline --graph -20"},
-    {"name": "Listening ports", "command": "ss -tulpn"},
-    {"name": "Free space", "command": "df -h -x tmpfs -x devtmpfs"},
-    {"name": "Biggest files here", "command": "find . -xdev -type f -printf '%s\\t%p\\n' 2>/dev/null | sort -n | tail -20"},
+COMMANDS = [                                  # names translated where shown (page.Palette)
+    {"name": tr_noop("grimoire.spells.terminall.config", "Disk usage here"),
+     "command": "du -sh -- * .[!.]* 2>/dev/null | sort -h"},
+    {"name": tr_noop("grimoire.spells.terminall.config", "Git status"),
+     "command": "git status -sb"},
+    {"name": tr_noop("grimoire.spells.terminall.config", "Git log, last 20"),
+     "command": "git log --oneline --graph -20"},
+    {"name": tr_noop("grimoire.spells.terminall.config", "Listening ports"),
+     "command": "ss -tulpn"},
+    {"name": tr_noop("grimoire.spells.terminall.config", "Free space"),
+     "command": "df -h -x tmpfs -x devtmpfs"},
+    {"name": tr_noop("grimoire.spells.terminall.config", "Biggest files here"),
+     "command": "find . -xdev -type f -printf '%s\\t%p\\n' 2>/dev/null | sort -n | tail -20"},
 ]
 
 

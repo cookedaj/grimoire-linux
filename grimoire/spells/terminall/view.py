@@ -10,6 +10,7 @@ from PySide6.QtCore import QEvent, QPointF, QRect, QRectF, Qt, QTimer, Signal
 from PySide6.QtGui import QClipboard, QColor, QFont, QFontMetricsF, QGuiApplication, QPainter, QPen
 from PySide6.QtWidgets import QScrollBar, QWidget
 
+from grimoire.i18n import tr
 from grimoire.spells.terminall import emulator, keys
 
 FG, BG = "#f2f2f2", "#000000"
@@ -148,7 +149,7 @@ class TerminalView(QWidget):
             return fg
         cwd = self.session.cwd()
         if cwd is None:
-            return "Shell"
+            return tr("grimoire.spells.terminall.view", "Shell")
         from grimoire.fsutil import tilde
         return tilde(cwd)
 
@@ -201,7 +202,8 @@ class TerminalView(QWidget):
     def paintEvent(self, _):
         scr = self.session.screen
         p = QPainter(self)
-        p.fillRect(self.rect(), QColor(BG))
+        p.setLayoutDirection(Qt.LayoutDirection.LeftToRight)   # a painter starts in the app's direction: in
+        p.fillRect(self.rect(), QColor(BG))                    # Arabic/Urdu, runs would reorder and slide off the grid
         top = self._top()
         cols = scr.columns
         sel = self._sel_range()
