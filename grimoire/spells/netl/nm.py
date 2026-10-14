@@ -17,6 +17,8 @@ import shutil
 import subprocess
 from pathlib import Path
 
+from grimoire.i18n import tr
+
 RUN = subprocess.run          # tests swap this for a stub, so nothing really changes the network
 VPN_TYPES = {"vpn", "wireguard"}
 SKIP_DEVICES = {"loopback", "bridge", "tun", "wifi-p2p", "dummy", "veth"}
@@ -56,11 +58,12 @@ def _rows(*args: str, n: int) -> list[list[str]]:
     return [f for f in (split(l) for l in r.stdout.splitlines() if l) if len(f) >= n] if r.returncode == 0 else []
 
 
-def _check(r: subprocess.CompletedProcess, what: str) -> str:
+def _check(r: subprocess.CompletedProcess, failed: str) -> str:
+    """Raises nmcli's own last line, else failed (a whole sentence) with the exit code."""
     if r.returncode:
         msg = (r.stderr or r.stdout).strip().splitlines()
-        raise RuntimeError((msg[-1].removeprefix("Error: ") if msg else f"{what} failed ({r.returncode})"))
-    return "done"
+        raise RuntimeError((msg[-1].removeprefix("Error: ") if msg else f"{failed} ({r.returncode})"))
+    return tr("grimoire.spells.netl.nm", "done")
 
 
 # ---------------------------------------------------------------- reads
@@ -148,7 +151,7 @@ def _passwd_value(password: str) -> str:
     """The key as nmcli's passwd-file reads it back unchanged: nmcli strips unescaped leading/trailing spaces and
     undoes backslash escapes, so a backslash or a space in the key gets a backslash in front."""
     if "\n" in password or "\r" in password or "\0" in password:
-        raise RuntimeError("the password can't contain line breaks")
+        raise RuntimeError(tr("grimoire.spells.netl.nm", "the password can't contain line breaks"))
     return "".join("\\" + c if c in "\\ \t\f\v" else c for c in password)
 
 
@@ -177,22 +180,23 @@ def connect_wifi(net: dict, password: str | None = None, saved_uuid: str | None 
     if saved_uuid:
         r = _up_with_key(saved_uuid, password) if password else _nmcli("connection", "up", "uuid", saved_uuid,
                                                                        timeout=60)
-        return _check(r, "connect") and f"connected to {net['ssid']}"
+        return _check(r, _failed("connect")) and _connected(net)
     mgmt = key_mgmt(net["security"])
     if mgmt is None:
-        raise RuntimeError(f"{net['security']} networks need Plasma's network settings")
+        raise RuntimeError(tr("grimoire.spells.netl.nm", "{security} networks need Plasma's network settings").format(
+            security=net["security"]))
     dev = ["ifname", net["device"]] if net.get("device") else []
     if mgmt == "none":
-        _check(_nmcli("device", "wifi", "connect", net["ssid"], *dev, timeout=60), "connect")
-        return f"connected to {net['ssid']}"
+        _check(_nmcli("device", "wifi", "connect", net["ssid"], *dev, timeout=60), _failed("connect"))
+        return _connected(net)
     if not password:
-        raise RuntimeError("this network needs a password")
+        raise RuntimeError(tr("grimoire.spells.netl.nm", "this network needs a password"))
     r = _nmcli("connection", "add", "type", "wifi", "con-name", net["ssid"], "ssid", net["ssid"],
                *dev, "wifi-sec.key-mgmt", mgmt)
-    _check(r, "create profile")
+    _check(r, _failed("profile"))
     uuid = _new_uuid(r.stdout)
     if not uuid:
-        raise RuntimeError("NetworkManager didn't say which profile it made")
+        raise RuntimeError(tr("grimoire.spells.netl.nm", "NetworkManager didn't say which profile it made"))
     try:
         r = _up_with_key(uuid, password)
     except Exception:
@@ -200,7 +204,21 @@ def connect_wifi(net: dict, password: str | None = None, saved_uuid: str | None 
         raise
     if r.returncode:
         _nmcli("connection", "delete", "uuid", uuid)      # a profile NetL just made, with a key that didn't work
-    return _check(r, "connect") and f"connected to {net['ssid']}"
+    return _check(r, _failed("connect")) and _connected(net)
+
+
+def _connected(net: dict) -> str:
+    return tr("grimoire.spells.netl.nm", "connected to {network}").format(network=net["ssid"])
+
+
+def _failed(what: str) -> str:
+    """The sentence for an nmcli call that failed without saying why."""
+    return {"connect": tr("grimoire.spells.netl.nm", "Couldn't connect"),
+            "profile": tr("grimoire.spells.netl.nm", "Couldn't create the profile"),
+            "disconnect": tr("grimoire.spells.netl.nm", "Couldn't disconnect"),
+            "wifi": tr("grimoire.spells.netl.nm", "Couldn't switch Wi-Fi"),
+            "airplane": tr("grimoire.spells.netl.nm", "Couldn't switch airplane mode"),
+            "vpn": tr("grimoire.spells.netl.nm", "Couldn't switch the VPN")}[what]
 
 
 def _new_uuid(out: str) -> str:
@@ -210,27 +228,29 @@ def _new_uuid(out: str) -> str:
 
 
 def disconnect(device: str) -> str:
-    return _check(_nmcli("device", "disconnect", device), "disconnect") and f"{device} disconnected"
+    return _check(_nmcli("device", "disconnect", device), _failed("disconnect")) and \
+        tr("grimoire.spells.netl.nm", "{device} disconnected").format(device=device)
 
 
 def set_wifi(on: bool) -> str:
-    _check(_nmcli("radio", "wifi", "on" if on else "off"), "Wi-Fi")
-    return "Wi-Fi on" if on else "Wi-Fi off"
+    _check(_nmcli("radio", "wifi", "on" if on else "off"), _failed("wifi"))
+    return tr("grimoire.spells.netl.nm", "Wi-Fi on") if on else tr("grimoire.spells.netl.nm", "Wi-Fi off")
 
 
 def set_airplane(on: bool) -> str:
     """Every radio NetworkManager handles, plus Bluetooth through rfkill (Plasma's desktop session gives you
     access to /dev/rfkill; when it doesn't, Bluetooth is simply left as it is)."""
-    _check(_nmcli("radio", "all", "off" if on else "on"), "airplane mode")
+    _check(_nmcli("radio", "all", "off" if on else "on"), _failed("airplane"))
     if shutil.which("rfkill"):
         try:
             RUN(["rfkill", "block" if on else "unblock", "bluetooth"], capture_output=True, timeout=10)
         except (OSError, subprocess.TimeoutExpired):
             pass
-    return "airplane mode on" if on else "airplane mode off"
+    return tr("grimoire.spells.netl.nm", "airplane mode on") if on else tr("grimoire.spells.netl.nm",
+                                                                           "airplane mode off")
 
 
 def set_vpn(uuid: str, on: bool) -> str:
     """Up asks for the VPN's secrets through Plasma's own prompt when it needs them."""
-    _check(_nmcli("connection", "up" if on else "down", "uuid", uuid, timeout=90), "VPN")
-    return "connected" if on else "disconnected"
+    _check(_nmcli("connection", "up" if on else "down", "uuid", uuid, timeout=90), _failed("vpn"))
+    return tr("grimoire.spells.netl.nm", "connected") if on else tr("grimoire.spells.netl.nm", "disconnected")

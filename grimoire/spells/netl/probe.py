@@ -24,29 +24,37 @@ from pathlib import Path
 
 import psutil
 
+from grimoire.i18n import tr, tr_noop
 from grimoire.spells.systeml.probe import app_name
 
 SYS = Path("/sys/class/net")
 VIRTUAL = ("veth", "docker", "br-", "virbr", "vnet", "vmnet", "lxc", "cni", "flannel")
 _USERS = re.compile(r'\("((?:[^"\\]|\\.)*)",pid=(\d+),fd=\d+\)')
-SYSTEM = "System & other users"
+SYSTEM = tr_noop("grimoire.spells.netl.probe", "System & other users")     # an id (in the usage file); shown with tr
 
 
 # ---------------------------------------------------------------- interfaces
 def kind(name: str) -> str:
+    """What an interface is, in words (only ever shown)."""
     d = SYS / name
     if name == "lo":
-        return "Loopback"
+        return tr("grimoire.spells.netl.probe", "Loopback")
     if (d / "wireless").exists() or (d / "phy80211").exists():
         return "Wi-Fi"
     if name.startswith(("wg", "tun", "tap", "ppp", "tailscale", "proton", "nordlynx", "mullvad")) \
             or (d / "tun_flags").exists():
         return "VPN"
     if (d / "bridge").exists() or name.startswith(VIRTUAL):
-        return "Virtual"
+        return tr("grimoire.spells.netl.probe", "Virtual")
     if (d / "device").exists():
-        return "Ethernet" if not name.startswith("ww") else "Mobile"
-    return "Other"
+        return tr("grimoire.spells.netl.probe", "Ethernet") if not name.startswith("ww") else \
+            tr("grimoire.spells.netl.probe", "Mobile")
+    return tr("grimoire.spells.netl.probe", "Other")
+
+
+def app_text(app: str) -> str:
+    """An app name as shown: the stand-in for unowned sockets in the app's language."""
+    return tr("grimoire.spells.netl.probe", SYSTEM) if app == SYSTEM else app
 
 
 def physical(name: str) -> bool:
@@ -319,7 +327,8 @@ def ping(host: str, count=4) -> dict:
     loss = re.search(r"([\d.]+)% packet loss", r.stdout)
     rtt = re.search(r"= ([\d.]+)/([\d.]+)/([\d.]+)/", r.stdout)
     if not rtt:
-        return {"host": host, "error": "no answer" if loss else (r.stderr.strip() or "ping failed"),
+        return {"host": host, "error": tr("grimoire.spells.netl.probe", "no answer") if loss else
+                (r.stderr.strip() or tr("grimoire.spells.netl.probe", "ping failed")),
                 "loss": float(loss.group(1)) if loss else 100.0}
     return {"host": host, "min": float(rtt.group(1)), "avg": float(rtt.group(2)), "max": float(rtt.group(3)),
             "loss": float(loss.group(1)) if loss else 0.0}
@@ -330,7 +339,7 @@ PUBLIC_IP = ("https://api.ipify.org", "https://icanhazip.com")
 
 def public_ip() -> str:
     """Your address as the internet sees it: asks a public echo service, only when you press the button."""
-    last = "no answer"
+    last = tr("grimoire.spells.netl.probe", "no answer")
     for url in PUBLIC_IP:
         try:
             req = urllib.request.Request(url, headers={"User-Agent": "Grimoire-NetL"})
@@ -386,6 +395,7 @@ def status_line() -> str:
     rates = f"↓ {human(max(0, down))}/s ↑ {human(max(0, up))}/s"
     p = nm.primary() if nm.available() else None
     if p is None:
-        return f"Offline · {rates}" if not phys else rates
-    what = {"wifi": "Wi-Fi", "ethernet": "Wired", "gsm": "Mobile"}.get(p["type"], p["type"].title())
+        return tr("grimoire.spells.netl.probe", "Offline") + f" · {rates}" if not phys else rates
+    what = {"wifi": "Wi-Fi", "ethernet": tr("grimoire.spells.netl.probe", "Wired"),
+            "gsm": tr("grimoire.spells.netl.probe", "Mobile")}.get(p["type"], p["type"].title())
     return f"{what} · {p['connection']} · {rates}"

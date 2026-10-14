@@ -7,9 +7,11 @@ from PySide6.QtCore import Qt
 from PySide6.QtWidgets import (QCheckBox, QDialog, QFrame, QHBoxLayout, QHeaderView, QLineEdit, QMessageBox,
                                QPushButton, QScrollArea, QVBoxLayout, QWidget)
 
+from grimoire.i18n import tr
 from grimoire.jobs import POOL, Job
 from grimoire.spells.netl import nm, probe
 from grimoire.spells.systeml.alertview import _row
+from grimoire.spells.systeml.bidi import lead
 from grimoire.spells.systeml.graph import Bar
 from grimoire.spells.systeml.page import NumItem, _label, _tree
 from grimoire.widgets import Switch
@@ -33,7 +35,7 @@ class PasswordDialog(QDialog):
 
     def __init__(self, parent, net: dict):
         super().__init__(parent)
-        self.setWindowTitle(f"Join {net['ssid']}")
+        self.setWindowTitle(tr("grimoire.spells.netl.wifiview", "Join {network}").format(network=net["ssid"]))
         self.setObjectName("Page")
         self.setMinimumWidth(420)
         lay = QVBoxLayout(self)
@@ -42,21 +44,25 @@ class PasswordDialog(QDialog):
         name = _label(net["ssid"], "RowTitle")
         name.setTextFormat(Qt.TextFormat.PlainText)       # network names come from whoever runs the access point
         lay.addWidget(name)
-        lay.addWidget(_label(f"{net['security'] or 'Open'} · signal {net['signal']}%. Enter the network's password.",
-                             "Muted", wrap=True))
+        info = _label(tr("grimoire.spells.netl.wifiview", "{security} · signal {signal}%. Enter the network's "
+                         "password.").format(security=net["security"] or tr("grimoire.spells.netl.wifiview", "Open",
+                                                                             "no password"),
+                                             signal=net["signal"]), "Muted", wrap=True)
+        info.setTextFormat(Qt.TextFormat.PlainText)
+        lay.addWidget(info)
         self.edit = QLineEdit()
         self.edit.setEchoMode(QLineEdit.EchoMode.Password)
-        self.edit.setPlaceholderText("Password")
+        self.edit.setPlaceholderText(tr("grimoire.spells.netl.wifiview", "Password"))
         lay.addWidget(self.edit)
-        show = QCheckBox("Show password")
+        show = QCheckBox(tr("grimoire.spells.netl.wifiview", "Show password"))
         show.toggled.connect(lambda on: self.edit.setEchoMode(QLineEdit.EchoMode.Normal if on
                                                               else QLineEdit.EchoMode.Password))
         lay.addWidget(show)
         btns = QHBoxLayout()
         btns.addStretch(1)
-        cancel = QPushButton("Cancel")
+        cancel = QPushButton(tr("grimoire.spells.netl.wifiview", "Cancel"))
         cancel.clicked.connect(self.reject)
-        self.ok = QPushButton("Connect")
+        self.ok = QPushButton(tr("grimoire.spells.netl.wifiview", "Connect"))
         self.ok.setObjectName("Primary")
         self.ok.setDefault(True)
         self.ok.clicked.connect(self.accept)
@@ -103,7 +109,7 @@ class WifiPanel(QScrollArea):
         top.addWidget(self.cur_name)
         top.addWidget(self.cur_badge)
         top.addStretch(1)
-        self.disc_btn = QPushButton("Disconnect")
+        self.disc_btn = QPushButton(tr("grimoire.spells.netl.wifiview", "Disconnect"))
         self.disc_btn.clicked.connect(self._disconnect)
         top.addWidget(self.disc_btn)
         cl.addLayout(top)
@@ -117,26 +123,29 @@ class WifiPanel(QScrollArea):
 
         self.wifi_sw, self.air_sw = Switch(), Switch()
         self.wifi_sub = _label("", "Muted", wrap=True)
-        self.air_sub = _label("Turns off Wi-Fi, mobile broadband and Bluetooth. Wired connections keep working.",
-                              "Muted", wrap=True)
+        self.air_sub = _label(tr("grimoire.spells.netl.wifiview", "Turns off Wi-Fi, mobile broadband and Bluetooth. "
+                                 "Wired connections keep working."), "Muted", wrap=True)
         col.addWidget(_row("Wi-Fi", self.wifi_sub, self.wifi_sw))
-        col.addWidget(_row("Airplane mode", self.air_sub, self.air_sw))
+        col.addWidget(_row(tr("grimoire.spells.netl.wifiview", "Airplane mode"), self.air_sub, self.air_sw))
         self.wifi_sw.toggled.connect(self._wifi)
         self.air_sw.toggled.connect(self._airplane)
 
         head = QHBoxLayout()
-        head.addWidget(_label("Networks", "SectionTitle"))
+        head.addWidget(_label(tr("grimoire.spells.netl.wifiview", "Networks"), "SectionTitle"))
         head.addStretch(1)
-        self.scan_btn = QPushButton("Scan")
-        self.scan_btn.setToolTip("Asks the Wi-Fi card to look for networks again (takes a few seconds)")
+        self.scan_btn = QPushButton(tr("grimoire.spells.netl.wifiview", "Scan"))
+        self.scan_btn.setToolTip(tr("grimoire.spells.netl.wifiview", "Asks the Wi-Fi card to look for networks again "
+                                    "(takes a few seconds)"))
         self.scan_btn.clicked.connect(lambda: self.load(rescan=True))
-        self.join_btn = QPushButton("Connect")
+        self.join_btn = QPushButton(tr("grimoire.spells.netl.wifiview", "Connect"))
         self.join_btn.setObjectName("Primary")
         self.join_btn.clicked.connect(self._join)
         head.addWidget(self.scan_btn)
         head.addWidget(self.join_btn)
         col.addLayout(head)
-        self.nets = _tree(["Network", "Signal", "Security", "Channel", ""])
+        self.nets = _tree([tr("grimoire.spells.netl.wifiview", "Network"), tr("grimoire.spells.netl.wifiview", "Signal"),
+                           tr("grimoire.spells.netl.wifiview", "Security"), tr("grimoire.spells.netl.wifiview", "Channel"),
+                           ""])
         h = self.nets.header()
         h.setStretchLastSection(False)
         h.setSectionResizeMode(0, QHeaderView.ResizeMode.Stretch)
@@ -147,7 +156,7 @@ class WifiPanel(QScrollArea):
         self.nets.itemDoubleClicked.connect(lambda *_: self._join())
         col.addWidget(self.nets)
 
-        col.addWidget(_label("VPN", "SectionTitle"))
+        col.addWidget(lead(_label("VPN", "SectionTitle")))
         self.vpn_box = QVBoxLayout()
         self.vpn_box.setSpacing(8)
         col.addLayout(self.vpn_box)
@@ -162,16 +171,17 @@ class WifiPanel(QScrollArea):
             return
         self._busy = True
         if rescan:
-            self.scan_btn.setText("Scanning…")
+            self.scan_btn.setText(tr("grimoire.spells.netl.wifiview", "Scanning…"))
         POOL.start(Job(lambda: snapshot(rescan), self.page.sig.wifi.emit))
 
     def loaded(self, d: dict):
         self._busy = False
-        self.scan_btn.setText("Scan")
+        self.scan_btn.setText(tr("grimoire.spells.netl.wifiview", "Scan"))
         self.data = d
         if d.get("missing"):
-            self.cur_name.setText("NetworkManager isn't available")
-            self.cur_info.setText("nmcli wasn't found, so NetL can only monitor here.")
+            self.cur_name.setText(tr("grimoire.spells.netl.wifiview", "NetworkManager isn't available"))
+            self.cur_info.setText(tr("grimoire.spells.netl.wifiview", "nmcli wasn't found, so NetL can only monitor "
+                                     "here."))
             for w in (self.wifi_sw, self.air_sw, self.scan_btn, self.join_btn, self.disc_btn):
                 w.setEnabled(False)
             return
@@ -181,23 +191,29 @@ class WifiPanel(QScrollArea):
         self.wifi_sw.setEnabled(r["wifi_hw"])
         self.air_sw.setChecked(nm.airplane(r))
         self._quiet = False
-        self.wifi_sub.setText("No Wi-Fi card found (or it's switched off by a hardware key)." if not r["wifi_hw"]
-                              else f"{len(d['nets'])} network(s) in range" if r["wifi"] else "Off")
+        self.wifi_sub.setText(tr("grimoire.spells.netl.wifiview", "No Wi-Fi card found (or it's switched off by a "
+                                 "hardware key).") if not r["wifi_hw"] else
+                              tr("grimoire.spells.netl.wifiview", "%n network(s) in range", n=len(d["nets"]))
+                              if r["wifi"] else tr("grimoire.spells.netl.wifiview", "Off"))
         wifi_net = next((n for n in d["nets"] if n["active"]), None)
         if prim:
-            kind = {"wifi": "Wi-Fi", "ethernet": "Wired", "gsm": "Mobile"}.get(prim["type"], prim["type"])
+            kind = {"wifi": "Wi-Fi", "ethernet": tr("grimoire.spells.netl.wifiview", "Wired"),
+                    "gsm": tr("grimoire.spells.netl.wifiview", "Mobile")}.get(prim["type"], prim["type"])
             self.cur_name.setText(prim["connection"])
             self.cur_badge.setText(kind.upper())
             self.cur_badge.show()
             bits = [prim["device"]] + d["ips"]
             if wifi_net and prim["type"] == "wifi":
-                bits[1:1] = [f"signal {wifi_net['signal']}%", wifi_net["security"] or "open",
-                             f"channel {wifi_net['chan']}", wifi_net["rate"]]
-            self.cur_info.setText("  ·  ".join(b for b in bits if b))
+                bits[1:1] = [tr("grimoire.spells.netl.wifiview", "signal {signal}%").format(signal=wifi_net["signal"]),
+                             wifi_net["security"] or tr("grimoire.spells.netl.wifiview", "open", "no password"),
+                             tr("grimoire.spells.netl.wifiview", "channel {channel}").format(channel=wifi_net["chan"]),
+                             wifi_net["rate"]]
+            mark = "\u200f" if self.isRightToLeft() else ""        # starts with a device name: keep the line RTL
+            self.cur_info.setText(mark + "  ·  ".join(b for b in bits if b))
         else:
-            self.cur_name.setText("Not connected")
+            self.cur_name.setText(tr("grimoire.spells.netl.wifiview", "Not connected"))
             self.cur_badge.hide()
-            self.cur_info.setText("Pick a network below, or plug in a cable.")
+            self.cur_info.setText(tr("grimoire.spells.netl.wifiview", "Pick a network below, or plug in a cable."))
         self.signal.setVisible(bool(wifi_net and prim and prim["type"] == "wifi"))
         self.signal.set((wifi_net["signal"] if wifi_net else 0) / 100)
         self.disc_btn.setEnabled(bool(prim))
@@ -207,8 +223,10 @@ class WifiPanel(QScrollArea):
         self.nets.clear()
         for n in d["nets"]:
             saved = n["ssid"] in d["saved"]
-            tag = "Connected" if n["active"] else "Saved" if saved else ""
-            it = NumItem([n["ssid"], f"{n['signal']}%", n["security"] or "Open", n["chan"], tag])
+            tag = tr("grimoire.spells.netl.wifiview", "Connected") if n["active"] else \
+                tr("grimoire.spells.netl.wifiview", "Saved") if saved else ""
+            it = NumItem([n["ssid"], f"{n['signal']}%",
+                          n["security"] or tr("grimoire.spells.netl.wifiview", "Open", "no password"), n["chan"], tag])
             for c, v in enumerate([n["ssid"].lower(), n["signal"], n["security"], int(n["chan"] or 0), tag]):
                 it.setData(c, Qt.ItemDataRole.UserRole, v)
             it.setData(0, Qt.ItemDataRole.UserRole + 1, n)
@@ -229,15 +247,17 @@ class WifiPanel(QScrollArea):
             if w:
                 w.deleteLater()
         if not vpns:
-            self.vpn_box.addWidget(_label("No VPN connections set up. Add one (OpenVPN, WireGuard, …) in System "
-                                          "Settings > Wi-Fi & Internet; it shows up here with a switch.", "Muted",
-                                          wrap=True))
+            self.vpn_box.addWidget(_label(tr("grimoire.spells.netl.wifiview", "No VPN connections set up. Add one "
+                                             "(OpenVPN, WireGuard, …) in System Settings > Wi-Fi & Internet; it shows "
+                                             "up here with a switch."), "Muted", wrap=True))
             return
         for v in vpns:
             sw = Switch()
             sw.setChecked(v["active"])
             kind = "WireGuard" if v["type"] == "wireguard" else "VPN"
-            sub = _label(f"{kind} · " + (f"connected on {v['device']}" if v["active"] else "off"), "Muted")
+            state = tr("grimoire.spells.netl.wifiview", "connected on {device}").format(device=v["device"]) \
+                if v["active"] else tr("grimoire.spells.netl.wifiview", "off")
+            sub = _label(("\u200f" if self.isRightToLeft() else "") + f"{kind} · {state}", "Muted")
             sw.toggled.connect(lambda on, v=v: self.page.act(v["name"], lambda: nm.set_vpn(v["uuid"], on),
                                                              then=self.load))
             self.vpn_box.addWidget(_row(v["name"], sub, sw))
@@ -259,20 +279,23 @@ class WifiPanel(QScrollArea):
         password = None
         if not saved and n["security"]:
             if nm.key_mgmt(n["security"]) is None:
-                self.page.say(f"{n['ssid']} uses {n['security']}: join it from Plasma's network settings")
+                self.page.say(tr("grimoire.spells.netl.wifiview", "{network} uses {security}: join it from Plasma's "
+                                 "network settings").format(network=n["ssid"], security=n["security"]))
                 return
             dlg = PasswordDialog(self, n)
             if dlg.exec() != QDialog.DialogCode.Accepted:
                 return
             password = dlg.password()
             dlg.edit.clear()
-        self.page.say(f"Connecting to {n['ssid']}…")
+        self.page.say(tr("grimoire.spells.netl.wifiview", "Connecting to {network}…").format(network=n["ssid"]))
         self.page.act(n["ssid"], lambda: nm.connect_wifi(n, password, saved), then=self.load)
 
     def _disconnect(self):
         prim = self.data.get("primary")
-        if prim and QMessageBox.question(self, "Disconnect", f"Disconnect {prim['connection']}? You'll be offline "
-                                         "until you connect again.") == QMessageBox.StandardButton.Yes:
+        if prim and QMessageBox.question(self, tr("grimoire.spells.netl.wifiview", "Disconnect"),
+                                         tr("grimoire.spells.netl.wifiview", "Disconnect {connection}? You'll be "
+                                            "offline until you connect again.").format(
+                                             connection=prim["connection"])) == QMessageBox.StandardButton.Yes:
             self.page.act(prim["connection"], lambda: nm.disconnect(prim["device"]), then=self.load)
 
     def _wifi(self, on: bool):
@@ -280,7 +303,8 @@ class WifiPanel(QScrollArea):
             return
         prim = self.data.get("primary")
         if not on and prim and prim["type"] == "wifi" and QMessageBox.question(
-                self, "Wi-Fi", f"Turn Wi-Fi off? You're online through {prim['connection']}.") \
+                self, "Wi-Fi", tr("grimoire.spells.netl.wifiview", "Turn Wi-Fi off? You're online through "
+                                  "{connection}.").format(connection=prim["connection"])) \
                 != QMessageBox.StandardButton.Yes:
             self._reset()
             return
@@ -289,11 +313,12 @@ class WifiPanel(QScrollArea):
     def _airplane(self, on: bool):
         if self._quiet:
             return
-        if on and QMessageBox.question(self, "Airplane mode", "Turn on airplane mode? Wi-Fi, mobile broadband and "
-                                       "Bluetooth go off.") != QMessageBox.StandardButton.Yes:
+        if on and QMessageBox.question(self, tr("grimoire.spells.netl.wifiview", "Airplane mode"),
+                                       tr("grimoire.spells.netl.wifiview", "Turn on airplane mode? Wi-Fi, mobile "
+                                          "broadband and Bluetooth go off.")) != QMessageBox.StandardButton.Yes:
             self._reset()
             return
-        self.page.act("Airplane mode", lambda: nm.set_airplane(on), then=self.load)
+        self.page.act(tr("grimoire.spells.netl.wifiview", "Airplane mode"), lambda: nm.set_airplane(on), then=self.load)
 
     def _reset(self):
         """Put the switches back where NetworkManager has them."""
