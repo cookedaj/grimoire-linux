@@ -22,6 +22,7 @@ import re
 import stat
 import time
 import zipfile
+import zlib
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path, PurePosixPath
@@ -329,7 +330,7 @@ def inspect(source) -> Plan:
             if missing:
                 raise BackupError(tr("grimoire.backup", "The backup is missing {name}, which its manifest lists.")
                                   .format(name=missing[0]))
-    except zipfile.BadZipFile as e:
+    except (zipfile.BadZipFile, zlib.error) as e:               # zlib.error: a corrupt compressed member
         raise BackupError(tr("grimoire.backup", "The backup is damaged: {error}").format(error=e)) from None
     except (zipfile.LargeZipFile, NotImplementedError, EOFError, RuntimeError) as e:
         raise BackupError(tr("grimoire.backup", "The backup can't be read: {error}").format(error=e)) from None
@@ -399,7 +400,7 @@ def _write_all(plan: Plan, todo: list, done: list, progress):
                 finally:
                     tmp.unlink(missing_ok=True)       # our own temp file, only left over on failure
                 done.append(e.path)
-    except zipfile.BadZipFile as err:
+    except (zipfile.BadZipFile, zlib.error) as err:
         raise BackupError(tr("grimoire.backup", "The backup is damaged: {error}").format(error=err)) from None
     except OSError as err:
         if err.filename:
