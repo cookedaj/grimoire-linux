@@ -25,6 +25,11 @@ def draw_text(p: QPainter, rect: QRectF, align, s: str):
     p.drawText(rect, align | Qt.AlignmentFlag.AlignAbsolute, s)
 
 
+def _whole(value: str) -> str:
+    """A reading ("14.1 GB") kept in one left-to-right piece next to an Arabic word (else it shows "GB 14.1")."""
+    return f"\u202a{value}\u202c"
+
+
 def _side_by_side(*bits: str) -> str:
     """Bits of chart text in one line, each kept in its own direction (an Arabic note beside "↑ 1.2 MB/s")."""
     bits = [b for b in bits if b]
@@ -120,11 +125,11 @@ class Graph(QWidget):
         p.setPen(INK)
         head = self.fmt(cur_a)
         if self.two and self.b:
-            head = f"{self.labels[0]} {self.fmt(cur_a)}"
+            head = f"{self.labels[0]} {_whole(self.fmt(cur_a))}"
         draw_text(p, QRectF(pad, 28, r.width() - 2 * pad, 30), Qt.AlignmentFlag.AlignLeft, head)
         right = self.note
         if self.two and self.b:
-            right = _side_by_side(f"{self.labels[1]} {self.fmt(self.b[-1])}", self.note)
+            right = _side_by_side(f"{self.labels[1]} {_whole(self.fmt(self.b[-1]))}", self.note)
         p.setFont(_font(12))
         p.setPen(SOFT)
         draw_text(p, QRectF(pad, 36, r.width() - 2 * pad, 20), Qt.AlignmentFlag.AlignRight, right)

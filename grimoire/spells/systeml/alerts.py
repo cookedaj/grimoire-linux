@@ -10,13 +10,15 @@ until it clears (with a little hysteresis, so hovering at the line doesn't flap)
 never crashes: every alert is tried on its own and problems go to the log.
 
 Stuck apps are two cheap signals: windows KWin itself marks "(Not Responding)" (it pings a window when it gets
-focus or you try to close it, and its windows runner finds them by caption in a few ms), and your processes stuck
-in uninterruptible sleep (D state) with no CPU or I/O progress between checks, which is what a frozen network
-share or USB device looks like. A process merely busy at 100% is left alone: games and compilers do that on purpose.
+focus or you try to close it, and its windows runner finds them by caption in a few ms; the mark is in the desktop's
+language, so it's looked up in KWin's own catalog), and your processes stuck in uninterruptible sleep (D state)
+with no CPU or I/O progress between checks, which is what a frozen network share or USB device looks like. A
+process merely busy at 100% is left alone: games and compilers do that on purpose.
 
 The notification texts go through tr(): in SystemL's window they follow the app's language; the timer's process
 loads the same catalogs into a bare QCoreApplication first (load_language), and stays English without PySide6.
 """
+import gettext
 import json
 import os
 import subprocess
@@ -39,7 +41,8 @@ KEEP = 100                       # alerts kept in the history
 SLACK = 30                       # seconds of timer jitter forgiven on "for N minutes"
 FS = {"ext4", "ext3", "btrfs", "xfs", "f2fs", "zfs", "vfat", "exfat", "ntfs", "ntfs3", "fuseblk"}
 SKIP_MOUNTS = ("/snap", "/var/snap", "/var/lib/docker", "/boot")
-NOT_RESPONDING = "(Not Responding)"
+NOT_RESPONDING = "(Not Responding)"            # KWin appends it to a stuck window's caption, in the desktop's language
+KWIN_CONTEXT = "Application is not responding, appended to window title"
 
 DEFAULTS = {
     "cooldown": 30,                                  # minutes before a condition that lasts notifies again
@@ -180,16 +183,47 @@ def _bus():
     return dbus.SessionBus()
 
 
+def _desktop_languages() -> list[str]:
+    """The languages KWin translates into: LANGUAGE (which Plasma sets from its region settings), else the locale."""
+    langs = []
+    for var in ("LANGUAGE", "LC_ALL", "LC_MESSAGES", "LANG"):
+        langs += [x for x in os.environ.get(var, "").split(":") if x and x not in ("C", "POSIX")]
+        if var != "LANGUAGE" and os.environ.get(var):
+            break
+    try:                                         # a timer started before Plasma pushed LANGUAGE into systemd
+        for line in (HOME / ".config/plasma-localerc").read_text().splitlines():
+            if line.startswith("LANGUAGE="):
+                langs += [x for x in line.split("=", 1)[1].strip().split(":") if x]
+    except OSError:
+        pass
+    return list(dict.fromkeys(langs))
+
+
+def not_responding_marks() -> list[str]:
+    """KWin's "(Not Responding)" as the desktop shows it (from KWin's own catalog), plus the English one."""
+    marks = []
+    for lang in _desktop_languages():
+        try:
+            t = gettext.translation("kwin", languages=[lang], fallback=True)
+            marks.append(t.pgettext(KWIN_CONTEXT, NOT_RESPONDING))
+        except Exception:                        # a broken catalog only costs that language
+            continue
+    return list(dict.fromkeys(m.strip() for m in marks + [NOT_RESPONDING] if m.strip()))
+
+
 def unresponsive_windows() -> dict[str, str]:
     """{window id: app caption} for windows KWin marks as not responding; empty when KWin can't be asked."""
-    try:
-        runner = _bus().get_object("org.kde.KWin", "/WindowsRunner")
-        matches = runner.Match(NOT_RESPONDING, dbus_interface="org.kde.krunner1", timeout=3)
-    except Exception as e:                       # no KWin (another desktop, early at login): skip quietly
-        log(f"KWin not reachable: {e}")
-        return {}
-    return {str(m[0]): str(m[1]).removesuffix(NOT_RESPONDING).strip(" —-") for m in matches
-            if str(m[1]).endswith(NOT_RESPONDING)}
+    out = {}
+    for mark in not_responding_marks():
+        try:
+            runner = _bus().get_object("org.kde.KWin", "/WindowsRunner")
+            matches = runner.Match(mark, dbus_interface="org.kde.krunner1", timeout=3)
+        except Exception as e:                   # no KWin (another desktop, early at login): skip quietly
+            log(f"KWin not reachable: {e}")
+            return out
+        out |= {str(m[0]): str(m[1]).removesuffix(mark).strip(" —-") for m in matches
+                if str(m[1]).endswith(mark)}
+    return out
 
 
 def stuck_procs() -> dict[str, dict]:
@@ -414,7 +448,7 @@ _language: list = []                     # the timer's QCoreApplication and tran
 
 def load_language():
     """Translations for a process without a window (the timer): Qt's translators need a QCoreApplication, so make a
-    bare one and load the language's catalogs (the same files i18n.install loads). Without PySide6 the
+    bare one and load SystemL's catalog for the language (the file i18n.install loads). Without PySide6 the
     notifications stay English. Returns what must stay alive while tr() is used."""
     try:
         from PySide6.QtCore import QCoreApplication, QTranslator
@@ -422,13 +456,11 @@ def load_language():
         return None
     from grimoire import i18n
     app = QCoreApplication.instance() or QCoreApplication(["grimoire-systeml"])
-    keep = [app]
-    for qm in i18n.catalogs(i18n.current()):
-        t = QTranslator(app)
-        if t.load(str(qm)):
-            app.installTranslator(t)
-            keep.append(t)
-    return keep
+    t = QTranslator(app)
+    if not t.load(str(i18n.TRANSLATIONS / "systeml" / f"{i18n.current()}.qm")):    # every alert text is SystemL's
+        return [app]                             # missing or broken catalog: English
+    app.installTranslator(t)
+    return [app, t]
 
 
 def main(argv: list[str]):
