@@ -12,6 +12,8 @@ from pathlib import Path
 
 import psutil
 
+from grimoire.i18n import tr
+
 CORES = psutil.cpu_count() or 1
 PAGE = os.sysconf("SC_PAGE_SIZE")
 KTHREADD = 2            # parent of every kernel thread
@@ -180,14 +182,23 @@ def system_info() -> list[tuple[str, str]]:
     except OSError:
         pass
     g = gpu()
-    return [("System", rel.get("PRETTY_NAME", platform.system())), ("Kernel", platform.release()),
-            ("Desktop", f"KDE Plasma {os.environ.get('KDE_SESSION_VERSION', '')} "
-                        f"({os.environ.get('XDG_SESSION_TYPE', '').title()})".replace("  ", " ")),
-            ("CPU", f"{cpu_model()} · {psutil.cpu_count(logical=False)} cores, {CORES} threads"),
-            ("Memory", f"{mem / 2**30:.0f} GB"), ("GPU", g["name"] if g else "—")]
+    cores = cpu_model() + " · " + ", ".join([tr("grimoire.spells.systeml.probe", "%n core(s)",
+                                                 n=psutil.cpu_count(logical=False) or 1),
+                                              tr("grimoire.spells.systeml.probe", "%n thread(s)", n=CORES)])
+    return [(tr("grimoire.spells.systeml.probe", "System"), rel.get("PRETTY_NAME", platform.system())),
+            (tr("grimoire.spells.systeml.probe", "Kernel"), platform.release()),
+            (tr("grimoire.spells.systeml.probe", "Desktop"),
+             f"KDE Plasma {os.environ.get('KDE_SESSION_VERSION', '')} "
+             f"({os.environ.get('XDG_SESSION_TYPE', '').title()})".replace("  ", " ")),
+            (tr("grimoire.spells.systeml.probe", "CPU"), cores),
+            (tr("grimoire.spells.systeml.probe", "Memory"), f"{mem / 2**30:.0f} GB"), ("GPU", g["name"] if g else "—")]
 
 
 def uptime_text(seconds: float) -> str:
     d, rest = divmod(int(seconds), 86400)
     h, m = rest // 3600, rest % 3600 // 60
-    return (f"{d} d " if d else "") + (f"{h} h " if h or d else "") + f"{m} min"
+    if d:
+        return tr("grimoire.spells.systeml.probe", "{d} d {h} h {m} min").format(d=d, h=h, m=m)
+    if h:
+        return tr("grimoire.spells.systeml.probe", "{h} h {m} min").format(h=h, m=m)
+    return tr("grimoire.spells.systeml.probe", "{m} min").format(m=m)

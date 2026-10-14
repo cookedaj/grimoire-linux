@@ -1,6 +1,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 """SystemL's drawing: live line graphs, usage bars and the per-core grid, all in black and white.
 The first series is a solid white line over a faint fill; a second one is a dashed gray line."""
+import re
 from collections import deque
 
 from PySide6.QtCore import QPointF, QRectF, QSize, Qt
@@ -12,6 +13,24 @@ from grimoire.theme import FONT
 POINTS = 120                                 # samples on screen (two minutes at one a second)
 BG, EDGE, GRID = QColor("#0e0e0e"), QColor("#1c1c1c"), QColor("#171717")
 INK, SOFT, DIM = QColor("#f2f2f2"), QColor("#8c8c8c"), QColor("#5a5a5a")
+
+
+RTL_TEXT = re.compile("[\u0590-\u08ff\ufb1d-\ufdff\ufe70-\ufefc]")      # Hebrew, Arabic (and Urdu) letters
+
+
+def draw_text(p: QPainter, rect: QRectF, align, s: str):
+    """Chart text stays where the chart puts it (charts never mirror), while it reads in its own direction: an
+    Arabic label reads right to left, and "1.5 MB/s" alone stays "1.5 MB/s" (an RTL base would show "MB/s 1.5")."""
+    p.setLayoutDirection(Qt.LayoutDirection.RightToLeft if RTL_TEXT.search(s) else Qt.LayoutDirection.LeftToRight)
+    p.drawText(rect, align | Qt.AlignmentFlag.AlignAbsolute, s)
+
+
+def _side_by_side(*bits: str) -> str:
+    """Bits of chart text in one line, each kept in its own direction (an Arabic note beside "↑ 1.2 MB/s")."""
+    bits = [b for b in bits if b]
+    if not any(RTL_TEXT.search(b) for b in bits):
+        return "   ".join(bits)
+    return "   ".join(("\u202b" if RTL_TEXT.search(b) else "\u202a") + b + "\u202c" for b in bits)
 
 
 def _font(px: int, weight=QFont.Weight.Normal, mono=False) -> QFont:
@@ -95,20 +114,20 @@ class Graph(QWidget):
         pad = 16
         p.setFont(_font(11, QFont.Weight.DemiBold))
         p.setPen(DIM)
-        p.drawText(QRectF(pad, 12, r.width() - 2 * pad, 16), Qt.AlignmentFlag.AlignLeft, self.title.upper())
+        draw_text(p, QRectF(pad, 12, r.width() - 2 * pad, 16), Qt.AlignmentFlag.AlignLeft, self.title.upper())
         cur_a = self.a[-1] if self.a else 0.0
         p.setFont(_font(22, QFont.Weight.Light))
         p.setPen(INK)
         head = self.fmt(cur_a)
         if self.two and self.b:
             head = f"{self.labels[0]} {self.fmt(cur_a)}"
-        p.drawText(QRectF(pad, 28, r.width() - 2 * pad, 30), Qt.AlignmentFlag.AlignLeft, head)
+        draw_text(p, QRectF(pad, 28, r.width() - 2 * pad, 30), Qt.AlignmentFlag.AlignLeft, head)
         right = self.note
         if self.two and self.b:
-            right = f"{self.labels[1]} {self.fmt(self.b[-1])}" + (f"   {self.note}" if self.note else "")
+            right = _side_by_side(f"{self.labels[1]} {self.fmt(self.b[-1])}", self.note)
         p.setFont(_font(12))
         p.setPen(SOFT)
-        p.drawText(QRectF(pad, 36, r.width() - 2 * pad, 20), Qt.AlignmentFlag.AlignRight, right)
+        draw_text(p, QRectF(pad, 36, r.width() - 2 * pad, 20), Qt.AlignmentFlag.AlignRight, right)
         area = QRectF(pad, 64, r.width() - 2 * pad, r.height() - 64 - 12)
         top = self._ceiling()
         p.setPen(QPen(GRID, 1))
@@ -118,7 +137,7 @@ class Graph(QWidget):
         if not self.top:
             p.setFont(_font(10, mono=True))
             p.setPen(DIM)
-            p.drawText(QRectF(area.left(), area.top() + 2, area.width() - 2, 14), Qt.AlignmentFlag.AlignRight,
+            draw_text(p, QRectF(area.left(), area.top() + 2, area.width() - 2, 14), Qt.AlignmentFlag.AlignRight,
                        self.fmt(top))
         _plot(p, area, list(self.b), top, dashed=True, fill=False)
         _plot(p, area, list(self.a), top)
@@ -159,9 +178,9 @@ class Spark(QWidget):
         if self.label:
             p.setFont(_font(10, mono=True))
             p.setPen(SOFT)
-            p.drawText(r.adjusted(6, 3, -6, 0), Qt.AlignmentFlag.AlignLeft, self.label)
+            draw_text(p, r.adjusted(6, 3, -6, 0), Qt.AlignmentFlag.AlignLeft, self.label)
             p.setPen(INK)
-            p.drawText(r.adjusted(6, 3, -6, 0), Qt.AlignmentFlag.AlignRight,
+            draw_text(p, r.adjusted(6, 3, -6, 0), Qt.AlignmentFlag.AlignRight,
                        f"{self.a[-1]:.0f}%" if self.a else "")
         p.end()
 
