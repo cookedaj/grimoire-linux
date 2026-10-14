@@ -99,7 +99,7 @@ class MuralPage(QWidget):
         bl.setSpacing(0)
         self.heading = QLabel()
         self.heading.setObjectName("PageHeading")
-        self.heading.setContentsMargins(36, 0, 0, 0)
+        self.heading.setContentsMargins(36, 0, 36, 0)      # both sides: right-to-left languages
         bl.addWidget(self.heading)
         bl.addWidget(self.stack, 1)
         root.addWidget(body, 1)

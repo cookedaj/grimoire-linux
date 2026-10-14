@@ -2,6 +2,7 @@
 """MuraL → Looks tab: saved snapshots of the whole desktop look, restored in one click.
 The work is in looks.py; this is the list on the left and the details + buttons on the right.
 """
+import sys
 from datetime import datetime
 
 from PySide6.QtCore import QDateTime, QLocale, QObject, QSize, Qt, Signal
@@ -35,6 +36,17 @@ def when(iso: str) -> str:
 def part(key: str) -> str:
     """A part of a look (Desktop, Lock screen…) in the user's language."""
     return tr("grimoire.spells.mural.looks", looks.LABELS[key])
+
+
+def design_name(key: str, entry: dict) -> str:
+    """The saved label is English for Grimoire's own designs (it's data): show their translated name instead."""
+    try:
+        cls = looks._tab_class(key)
+        own = getattr(sys.modules[cls.__module__], "DESIGNS", [])
+    except (StopIteration, ImportError, KeyError):
+        own = []
+    d = next((d for d in own if d.id == entry.get("design")), None)
+    return tr(cls.context, d.name) if d else entry.get("label", "")
 
 
 class LooksTab(QWidget):
@@ -181,7 +193,7 @@ class LooksTab(QWidget):
                 n = len(look["desktop"]["items"])
                 lines.append(tr("grimoire.spells.mural.lookstab", "Desktop · %n wallpaper(s)", n=n))
             else:
-                lines.append(f"{part(key)} · {look['tabs'][key].get('label', '')}")
+                lines.append(f"{part(key)} · {design_name(key, look['tabs'][key])}")
         nothing = tr("grimoire.spells.mural.lookstab", "Nothing was applied with MuraL when this was saved.")
         self.contents.setText("\n".join(lines) or nothing)
         for key, box in self.root_boxes.items():

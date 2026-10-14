@@ -2,7 +2,7 @@
 """The Community view inside a MuraL tab: browse the top 100 of a store category and install items."""
 import webbrowser
 
-from PySide6.QtCore import QLocale, QObject, QSize, Qt, QTimer, Signal
+from PySide6.QtCore import QObject, QSize, Qt, QTimer, Signal
 from PySide6.QtGui import QColor, QIcon, QImage, QPainter, QPixmap
 from PySide6.QtWidgets import (QAbstractItemView, QCheckBox, QComboBox, QFrame, QHBoxLayout, QLabel, QLineEdit,
                                QListWidget, QListWidgetItem, QPushButton, QVBoxLayout, QWidget)
@@ -36,7 +36,7 @@ def fit(img: QImage, size: QSize) -> QPixmap:
 
 
 def _label(it: store.Item, installed: bool) -> str:
-    stats = f"{QLocale().toString(it.downloads)} ↓" + (f"  ·  {it.score}%" if it.score else "")
+    stats = f"{it.downloads:,} ↓" + (f"  ·  {it.score}%" if it.score else "")
     return f"{'✓ ' if installed else ''}{it.name}\n{stats}"
 
 

@@ -119,6 +119,7 @@ class Preview(QWidget):
 
     def paintEvent(self, _):
         p = QPainter(self)
+        p.setLayoutDirection(Qt.LayoutDirection.LeftToRight)
         r = QRectF(self.rect())
         cx, cy = self.width() // 2, self.height() // 2            # whole pixels, like the overlay
         self._paint_backdrop(p, r)
