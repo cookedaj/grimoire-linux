@@ -13,6 +13,7 @@ import subprocess
 from dataclasses import dataclass
 from pathlib import Path
 
+from grimoire.i18n import tr, tr_noop
 from grimoire.paths import DATA, ROOT
 
 PREFIX = "com.cookedaj.grimoire.widget."
@@ -21,7 +22,7 @@ PREFIX = "com.cookedaj.grimoire.widget."
 @dataclass(frozen=True)
 class Widget:
     id: str             # clock, system, weather, nowplaying
-    name: str
+    name: str           # tr_noop'd: shown with tr("grimoire.spells.widgetl.widgets", name)
     blurb: str
     size: tuple         # (width, height) it gets when added to the desktop
 
@@ -31,12 +32,18 @@ class Widget:
 
 
 WIDGETS = [
-    Widget("clock", "Clock", "Big thin digits and the date. Seconds and the 24-hour clock are options.", (360, 170)),
-    Widget("system", "System", "CPU, memory, graphics card and temperatures, as thin bars or sparklines.", (300, 206)),
-    Widget("weather", "Weather", "Now and the next five days from Open-Meteo, for a place you pick. No account "
-           "needed.", (340, 220)),
-    Widget("nowplaying", "Now Playing", "What's playing in any app, with the cover in grayscale and play, pause, "
-           "next and previous.", (380, 144)),
+    Widget("clock", tr_noop("grimoire.spells.widgetl.widgets", "Clock"),
+           tr_noop("grimoire.spells.widgetl.widgets", "Big thin digits and the date. Seconds and the 24-hour clock "
+                                                       "are options."), (360, 170)),
+    Widget("system", tr_noop("grimoire.spells.widgetl.widgets", "System"),
+           tr_noop("grimoire.spells.widgetl.widgets", "CPU, memory, graphics card and temperatures, as thin bars or "
+                                                       "sparklines."), (300, 206)),
+    Widget("weather", tr_noop("grimoire.spells.widgetl.widgets", "Weather"),
+           tr_noop("grimoire.spells.widgetl.widgets", "Now and the next five days from Open-Meteo, for a place you "
+                                                       "pick. No account needed."), (340, 220)),
+    Widget("nowplaying", tr_noop("grimoire.spells.widgetl.widgets", "Now Playing"),
+           tr_noop("grimoire.spells.widgetl.widgets", "What's playing in any app, with the cover in grayscale and "
+                                                       "play, pause, next and previous."), (380, 144)),
 ]
 BY_ID = {w.id: w for w in WIDGETS}
 PLUGINS = [w.plugin for w in WIDGETS]
@@ -44,7 +51,8 @@ PLUGINS = [w.plugin for w in WIDGETS]
 
 def get(wid: str) -> Widget:
     if wid not in BY_ID:
-        raise RuntimeError(f"no widget called {wid!r} (pick one of: {', '.join(BY_ID)})")
+        raise RuntimeError(tr("grimoire.spells.widgetl.widgets", "no widget called {name} (pick one of: {ids})").format(
+            name=repr(wid), ids=", ".join(BY_ID)))
     return BY_ID[wid]
 
 
@@ -103,12 +111,14 @@ def install(ids: list[str] | None = None) -> list[str]:
     for wid in ids or [w.id for w in WIDGETS]:
         src = source_dir(get(wid).id)
         if not (src / "metadata.json").is_file():
-            raise RuntimeError(f"the {wid} widget's package is missing from {src}")
+            raise RuntimeError(tr("grimoire.spells.widgetl.widgets", "the {id} widget's package is missing from {path}")
+                               .format(id=wid, path=src))
         if is_installed(wid) and not needs_update(wid):
             continue
         r = kpackagetool("-u" if is_installed(wid) else "-i", str(src))
         if r.returncode:
-            raise RuntimeError((r.stderr or r.stdout).strip() or "kpackagetool6 failed")
+            raise RuntimeError((r.stderr or r.stdout).strip()
+                               or tr("grimoire.spells.widgetl.widgets", "kpackagetool6 failed"))
         done.append(wid)
     return done
 
@@ -139,10 +149,12 @@ def run(script: str, timeout: float = 20) -> str:
     try:
         r = plasma_script(script, timeout)
     except (OSError, subprocess.TimeoutExpired) as err:
-        raise RuntimeError(f"couldn't reach plasmashell: {err}")
+        raise RuntimeError(tr("grimoire.spells.widgetl.widgets", "couldn't reach plasmashell: {error}")
+                           .format(error=err))
     out = r.stdout.strip()
     if r.returncode or out.startswith("Error:"):
-        raise RuntimeError((r.stderr or out).strip() or "plasmashell rejected the script")
+        raise RuntimeError((r.stderr or out).strip()
+                           or tr("grimoire.spells.widgetl.widgets", "plasmashell rejected the script"))
     return out
 
 
@@ -183,16 +195,18 @@ def counts(found: list[dict]) -> dict:
 def status() -> str:
     n = installed_count()
     if not n:
-        return "Not installed"
+        return tr("grimoire.spells.widgetl.widgets", "Not installed")
     try:
         found = scan(timeout=3)          # the home page asks on the UI thread, so don't wait long
     except (RuntimeError, ValueError):
-        return "Installed · Plasma isn't answering"
+        return " · ".join([tr("grimoire.spells.widgetl.widgets", "Installed"),
+                           tr("grimoire.spells.widgetl.widgets", "Plasma isn't answering")])
     on = len(found)
-    line = ("No widgets on your desktop yet" if on == 0 else
-            "1 widget on your desktop" if on == 1 else
-            "{n} widgets on your desktop".format(n=on))
-    return line + (" · update ready" if updates() else "")
+    bits = [tr("grimoire.spells.widgetl.widgets", "No widgets on your desktop yet") if on == 0 else
+            tr("grimoire.spells.widgetl.widgets", "%n widget(s) on your desktop", n=on)]
+    if updates():
+        bits.append(tr("grimoire.spells.widgetl.widgets", "update ready"))
+    return " · ".join(bits)
 
 
 # ---- adding and removing ------------------------------------------------------------------------------------------

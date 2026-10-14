@@ -6,6 +6,7 @@ from PySide6.QtGui import QPixmap
 from PySide6.QtWidgets import (QFrame, QGridLayout, QHBoxLayout, QLabel, QPushButton, QScrollArea, QSizePolicy,
                                QVBoxLayout, QWidget)
 
+from grimoire.i18n import tr, tr_noop
 from grimoire.jobs import POOL, Job
 from grimoire.spells.widgetl import preview, widgets
 
@@ -13,10 +14,14 @@ PREVIEW_W, PREVIEW_H = 380, 210          # the box each preview is fitted into o
 
 # what to say once a widget is on the desktop (whole sentences, ready for translation)
 ADDED = {
-    "clock": "Clock is on your desktop. Right-click it and choose Configure for seconds or the 12-hour clock.",
-    "system": "System is on your desktop. Right-click it and choose Configure for sparklines or Fahrenheit.",
-    "weather": "Weather is on your desktop. Right-click it and choose Configure to pick your place.",
-    "nowplaying": "Now Playing is on your desktop. It follows whatever app is playing.",
+    "clock": tr_noop("grimoire.spells.widgetl.page",
+                     "Clock is on your desktop. Right-click it and choose Configure for seconds or the 12-hour clock."),
+    "system": tr_noop("grimoire.spells.widgetl.page",
+                      "System is on your desktop. Right-click it and choose Configure for sparklines or Fahrenheit."),
+    "weather": tr_noop("grimoire.spells.widgetl.page",
+                       "Weather is on your desktop. Right-click it and choose Configure to pick your place."),
+    "nowplaying": tr_noop("grimoire.spells.widgetl.page",
+                          "Now Playing is on your desktop. It follows whatever app is playing."),
 }
 
 
@@ -41,20 +46,20 @@ class Card(QFrame):
         lay = QVBoxLayout(self)
         lay.setContentsMargins(18, 18, 18, 16)
         lay.setSpacing(6)
-        self.image = QLabel("Rendering the preview…")
+        self.image = QLabel(tr("grimoire.spells.widgetl.page", "Rendering the preview…"))
         self.image.setObjectName("Muted")
         self.image.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.image.setFixedHeight(PREVIEW_H)
         self.image.setMinimumWidth(240)
         lay.addWidget(self.image)
         lay.addSpacing(8)
-        lay.addWidget(_label(w.name, "SectionTitle"))
-        lay.addWidget(_label(w.blurb, "Muted"))
+        lay.addWidget(_label(tr("grimoire.spells.widgetl.widgets", w.name), "SectionTitle"))
+        lay.addWidget(_label(tr("grimoire.spells.widgetl.widgets", w.blurb), "Muted"))
         lay.addStretch(1)
         row = QHBoxLayout()
         self.state = _label("", "Muted", wrap=False)
         row.addWidget(self.state, 1)
-        self.add_btn = QPushButton("Add to desktop")
+        self.add_btn = QPushButton(tr("grimoire.spells.widgetl.page", "Add to desktop"))
         self.add_btn.clicked.connect(lambda: add(w.id))
         row.addWidget(self.add_btn)
         lay.addLayout(row)
@@ -62,11 +67,11 @@ class Card(QFrame):
 
     def set_preview(self, path):
         if not path:
-            self.image.setText("No preview")
+            self.image.setText(tr("grimoire.spells.widgetl.page", "No preview"))
             return
         pm = QPixmap(str(path))
         if pm.isNull():
-            self.image.setText("No preview")
+            self.image.setText(tr("grimoire.spells.widgetl.page", "No preview"))
             return
         pm.setDevicePixelRatio(preview.SCALE)
         size = pm.deviceIndependentSize()
@@ -79,15 +84,13 @@ class Card(QFrame):
 
     def set_state(self, installed: bool, count: int | None):
         if not installed:
-            text = "Not installed yet"
+            text = tr("grimoire.spells.widgetl.page", "Not installed yet")
         elif count is None:
-            text = "Installed"
+            text = tr("grimoire.spells.widgetl.page", "Installed")
         elif count == 0:
-            text = "Not on your desktop"
-        elif count == 1:
-            text = "On your desktop"
+            text = tr("grimoire.spells.widgetl.page", "Not on your desktop")
         else:
-            text = "On your desktop {n} times".format(n=count)
+            text = tr("grimoire.spells.widgetl.page", "On your desktop %n time(s)", n=count)
         self.state.setText(text)
 
 
@@ -112,17 +115,18 @@ class WidgetLPage(QWidget):
         lay.setContentsMargins(56, 48, 56, 40)
         lay.setSpacing(6)
         lay.addWidget(_label("WidgetL", "PageHeading"))
-        lay.addWidget(_label("Desktop widgets in black and white: a clock with big thin digits, your system's "
-                             "readings, the weather for a place you pick, and what's playing. They're Plasma "
-                             "widgets, so once they're on the desktop you move, resize and set them up like any "
-                             "other.", "Muted"))
+        lay.addWidget(_label(tr("grimoire.spells.widgetl.page",
+                                "Desktop widgets in black and white: a clock with big thin digits, your system's "
+                                "readings, the weather for a place you pick, and what's playing. They're Plasma "
+                                "widgets, so once they're on the desktop you move, resize and set them up like any "
+                                "other."), "Muted"))
         lay.addSpacing(24)
 
-        lay.addWidget(_label("WIDGETS", "Section"))
+        lay.addWidget(_label(tr("grimoire.spells.widgetl.page", "WIDGETS"), "Section"))
         self.summary = _label("", "")
         lay.addWidget(self.summary)
         row = QHBoxLayout()
-        self.install_btn = QPushButton("Install widgets")
+        self.install_btn = QPushButton(tr("grimoire.spells.widgetl.page", "Install widgets"))
         self.install_btn.setObjectName("Primary")
         self.install_btn.clicked.connect(self._install)
         row.addWidget(self.install_btn)
@@ -141,8 +145,9 @@ class WidgetLPage(QWidget):
             grid.addWidget(card, i // 2, i % 2)
         lay.addLayout(grid)
         lay.addSpacing(12)
-        lay.addWidget(_label("You can also add them by hand: right-click the desktop, Add or Manage Widgets, and "
-                             "search for \"Grimoire\".", "Muted"))
+        lay.addWidget(_label(tr("grimoire.spells.widgetl.page",
+                                "You can also add them by hand: right-click the desktop, Add or Manage Widgets, "
+                                "and search for \"Grimoire\"."), "Muted"))
         lay.addStretch(1)
         self._previews_started = False
         self.refresh()
@@ -165,25 +170,27 @@ class WidgetLPage(QWidget):
     def _show(self, info: dict):
         installed, updates, counts = info["installed"], info["updates"], info["counts"]
         n, total = sum(installed.values()), len(installed)
+        # separate whole sentences, joined by a space
         if n == 0:
-            text = "Not installed yet. Installing adds them to Plasma's widget list; nothing appears on your " \
-                   "desktop until you add it."
+            said = [tr("grimoire.spells.widgetl.page", "Not installed yet. Installing adds them to Plasma's "
+                       "widget list; nothing appears on your desktop until you add it.")]
         elif n < total:
-            text = "{n} of {total} widgets installed.".format(n=n, total=total)
+            said = [tr("grimoire.spells.widgetl.page", "{n} of {total} widgets installed.").format(n=n, total=total)]
         else:
-            text = "All {total} widgets installed.".format(total=total)
+            said = [tr("grimoire.spells.widgetl.page", "All %n widgets installed.", n=total)]
         if updates:
-            text += " " + "An update is ready."
+            said.append(tr("grimoire.spells.widgetl.page", "An update is ready."))
         if counts is not None:
             on = sum(counts.values())
-            text += " " + ("None of them is on your desktop yet." if on == 0 else
-                           "1 widget is on your desktop." if on == 1 else
-                           "{n} widgets are on your desktop.".format(n=on))
+            said.append(tr("grimoire.spells.widgetl.page", "None of them is on your desktop yet.") if on == 0 else
+                        tr("grimoire.spells.widgetl.page", "%n widget(s) on your desktop.", n=on))
         else:
-            text += " " + "Plasma isn't answering, so the desktop can't be read right now."
-        self.summary.setText(text)
-        self.install_btn.setText("Install widgets" if n == 0 else "Update widgets" if updates or n < total
-                                 else "Widgets up to date")
+            said.append(tr("grimoire.spells.widgetl.page",
+                           "Plasma isn't answering, so the desktop can't be read right now."))
+        self.summary.setText(" ".join(said))
+        self.install_btn.setText(tr("grimoire.spells.widgetl.page", "Install widgets") if n == 0
+                                 else tr("grimoire.spells.widgetl.page", "Update widgets") if updates or n < total
+                                 else tr("grimoire.spells.widgetl.page", "Widgets up to date"))
         self.install_btn.setEnabled(n < total or bool(updates))
         for w in widgets.WIDGETS:
             card = self.cards[w.id]
@@ -208,7 +215,7 @@ class WidgetLPage(QWidget):
 
     def _start(self, what: str, fn):
         self._busy(True)
-        self.note.setText("Working…")
+        self.note.setText(tr("grimoire.spells.widgetl.page", "Working…"))
 
         def guarded():
             try:
@@ -233,14 +240,16 @@ class WidgetLPage(QWidget):
                 self.cards[wid].set_preview(path)
             return
         if error:
-            self.note.setText("Couldn't {what}: {error}".format(what={"install": "install the widgets",
-                                                                       "add": "add the widget"}.get(what, what),
-                                                                 error=error))
+            failed = {"install": tr("grimoire.spells.widgetl.page", "Couldn't install the widgets: {error}"),
+                      "add": tr("grimoire.spells.widgetl.page", "Couldn't add the widget: {error}")}
+            self.note.setText(failed.get(what, "{error}").format(error=error))
         elif what == "install":
-            self.note.setText("Widgets installed. Desktops already showing them pick up the new version when Plasma "
-                              "next restarts." if result else "Everything was already up to date.")
+            self.note.setText(tr("grimoire.spells.widgetl.page", "Widgets installed. Desktops already showing "
+                                 "them pick up the new version when Plasma next restarts.") if result
+                              else tr("grimoire.spells.widgetl.page", "Everything was already up to date."))
         elif what == "add":
-            self.note.setText(ADDED.get(result["widget"], ""))
+            added = ADDED.get(result["widget"])
+            self.note.setText(tr("grimoire.spells.widgetl.page", added) if added else "")
         self.refresh()
 
     def showEvent(self, e):
