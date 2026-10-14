@@ -9,6 +9,7 @@ things that change the system, and those go through small helper scripts that kn
 | `optimizel-root-helper.sh` | system tweaks (sysctl.d, journald, zram, GRUB, services…) | `/var/lib/grimoire-optimizel` |
 | `systeml-root-helper.sh` | other users' processes, system services, emptying swap | (nothing to restore) |
 | `focusl-root-helper.sh` | a marked block of focus-time sites in `/etc/hosts` | `/var/lib/grimoire-focusl`; the block is removed when the session ends |
+| `updatel-root-helper.sh` | `apt-get update`/upgrade of checked package names, system Flatpaks, snaps, fwupd devices | (apt keeps its own log); upgrades are simulated first, removals need `--allow-removals` from a confirmed preview, `kubuntu-desktop`/IBM Plex fonts are never removed |
 
 Every helper validates its arguments and refuses anything else; files it writes carry a Grimoire mark so "off"
 only ever removes what Grimoire put there. Your own files are never deleted: they go to the Trash.
@@ -45,7 +46,8 @@ Nothing is sent anywhere unless you ask, except the update check: every few hour
 API for the newest commit on `main` (no account, no identifiers beyond a normal HTTPS request; turn it off in
 Settings → General or with `GRIMOIRE_NO_UPDATE_CHECK=1`). Packaged installs (.deb, AUR) don't check at all.
 On demand only: the MuraL community store (KDE Store, Wallhaven) when you open it and install, NetL's public IP and
-ping checks when you press them, and GitHub sign-in / gist backup. There is no telemetry and no analytics.
+ping checks when you press them, UpdateL's Check now (Flatpak remotes, fwupd metadata; its optional daily check does
+the same) and changelogs when you open one, and GitHub sign-in / gist backup. There is no telemetry and no analytics.
 
 ## Sign-in and backups: threat model
 

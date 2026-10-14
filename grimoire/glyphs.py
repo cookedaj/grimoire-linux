@@ -264,6 +264,12 @@ def _draw(name: str, p: QPainter):
         for y, x in ((7, 9), (12, 15.5), (17, 11)):
             p.drawLine(QPointF(4, y), QPointF(x - 2, y)); p.drawLine(QPointF(x + 2, y), QPointF(20, y))
             p.drawEllipse(QPointF(x, y), 2, 2)
+    elif name == "updatel":                                # a turning arrow round a box: system updates
+        path = QPainterPath(); path.arcMoveTo(r(3.5, 3.5, 17, 17), 60); path.arcTo(r(3.5, 3.5, 17, 17), 60, 300)
+        p.drawPath(path)
+        head = QPainterPath(QPointF(17.6, 13.4)); head.lineTo(20.5, 10.6); head.lineTo(23, 13.6); p.drawPath(head)
+        p.drawRoundedRect(r(9, 9.5, 6, 5.5), 1, 1)
+        p.drawLine(QPointF(9, 11.5), QPointF(15, 11.5))
 
 
 def _pixmap(name: str, color: str, size: int) -> QPixmap:

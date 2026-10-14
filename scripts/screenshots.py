@@ -242,7 +242,45 @@ def _terminal(page, wait):
     term.session.write(demo.encode())
 
 
+def _updatel(page, wait):
+    """A made-up last check (the page only reads its cache when opened) and a changelog, so nothing goes online."""
+    import time
+    from PySide6.QtCore import Qt
+    from grimoire.spells.updatel import daily
+
+    def it(src, name, cur, new, size, **kw):
+        key = f"{src}:{kw.get('scope', 'system') + ':' if src == 'flatpak' else ''}{kw.get('ref', name)}"
+        return {"key": key, "source": src, "name": name, "title": kw.pop("title", name), "current": cur, "new": new,
+                "size": size, "security": kw.pop("security", False), "scope": "system", "notes": "", **kw}
+    items = [it("apt", "curl", "8.18.0-1ubuntu2.6", "8.18.0-1ubuntu2.7", 412_000, security=True),
+             it("apt", "libcurl4t64", "8.18.0-1ubuntu2.6", "8.18.0-1ubuntu2.7", 389_000, security=True),
+             it("apt", "firefox", "1:1snap1-0ubuntu7", "1:1snap1-0ubuntu8", 82_000),
+             it("apt", "linux-firmware", "20260915.git3c1d-0ubuntu1", "20261002.gitb7e2-0ubuntu1", 512_000_000),
+             it("apt", "mesa-vulkan-drivers", "26.1.4-1ubuntu1", "26.1.5-1ubuntu1", 14_200_000),
+             it("flatpak", "org.blender.Blender", "5.2", "5.2.1", 402_000_000, scope="user",
+                ref="org.blender.Blender/x86_64/stable"),
+             it("flatpak", "org.freedesktop.Platform", "freedesktop-sdk-25.08.16", "freedesktop-sdk-25.08.17",
+                260_100_000, ref="org.freedesktop.Platform/x86_64/25.08", title="org.freedesktop.Platform (25.08)"),
+             it("fwupd", "UEFI dbx", "371", "377", 24_576, device="0" * 40)]
+    daily._write(daily.STATE, {"items": items, "held": [], "missing": ["snap"], "errors": {}, "reboot": None,
+                               "t": time.time() - 2 * 3600, "notified": []})
+    page._apply_state()
+    page.updates.notes["apt:curl=8.18.0-1ubuntu2.7"] = (
+        "curl (8.18.0-1ubuntu2.7) resolute-security; urgency=medium\n\n  * SECURITY UPDATE: authentication bypass "
+        "in LDAP SASL negotiation.\n    - debian/patches/CVE-2026-13608.patch\n\n -- Ubuntu Security Team  Mon, 12 "
+        "Oct 2026 10:00:00 +0000")
+    tree = page.updates.tree
+    for n in range(tree.topLevelItemCount()):
+        row = tree.topLevelItem(n)
+        if row.data(0, Qt.ItemDataRole.UserRole + 1) in ("apt:curl", "apt:libcurl4t64"):
+            row.setCheckState(0, row.checkState(0).Checked)
+        if row.data(0, Qt.ItemDataRole.UserRole + 1) == "apt:curl":
+            tree.setCurrentItem(row)
+
+
 PREPARE = {"vaultl": _vaultl, "terminall": _terminal}
+PREPARE["updatel"] = _updatel
+PAGES.insert(PAGES.index("settings"), "updatel")
 WAIT = {"mural": 6000, "systeml": 30000, "netl": 30000, "optimizel": 5000, "terminall": 3500, "vaultl": 3000}
 
 

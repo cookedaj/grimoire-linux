@@ -161,3 +161,18 @@ def _netl_status() -> str:
 
 SPELLS.append(Spell("netl", "NetL", "Your network: live traffic per interface and per app, connections, Wi-Fi and "
                     "VPN switches, and daily and monthly usage", _netl, "net", _netl_status))
+
+
+def _updatel():
+    from grimoire.spells.updatel.page import UpdateLPage
+    return UpdateLPage()
+
+
+def _updatel_status() -> str:
+    from grimoire.spells.updatel.daily import status_line
+    return status_line()
+
+
+SPELLS.append(Spell("updatel", "UpdateL", "Every update in one place: system packages, Flatpaks, snaps and firmware, "
+                    "with changelogs, a preview of anything that would be removed, and an optional daily check",
+                    _updatel, "updatel", _updatel_status))

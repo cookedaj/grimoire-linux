@@ -162,7 +162,7 @@ release_lock_screen() {
 run pkill -f '^(/usr/bin/)?python3 -m grimoire\.spells\.sightc\.overlay' 2>/dev/null || true   # it relaunches via sys.executable
 run pkill -f '^(/usr/bin/)?python3 -m grimoire\.tray' 2>/dev/null || true
 run pkill -f '^(/usr/bin/)?python3 -m grimoire\.spells\.focusl\.runner' 2>/dev/null || true   # ends a FocusL session cleanly
-for unit in grimoire-tidyl grimoire-systeml-alerts grimoire-netl-usage; do   # VaultL's tidy, SystemL's alerts, NetL's usage
+for unit in grimoire-tidyl grimoire-systeml-alerts grimoire-netl-usage grimoire-updatel-check; do   # VaultL's tidy, SystemL's alerts, NetL's usage, UpdateL's check
     if [ -f "$UNITS/$unit.timer" ]; then
         run systemctl --user disable --now "$unit.timer" 2>/dev/null || true
         run rm -f "$UNITS/$unit.timer" "$UNITS/$unit.service"

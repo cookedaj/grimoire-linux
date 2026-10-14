@@ -110,6 +110,17 @@ A black & white panel launcher in Kickoff's place: favorites, every app by categ
 search that also finds files, does sums and unit conversions and runs Grimoire's spells, plus the leave buttons.
 Meta opens it. **Replace launcher** records your Kickoff first, so **Restore Kickoff** puts back exactly what was there.
 
+### UpdateL: every update in one place
+
+![UpdateL](docs/screenshots/updatel.png)
+
+System packages (APT), Flatpaks (yours and the system's), snaps and firmware (fwupd) in one list, each with its
+installed and new version, size and what's new (the Debian changelog entries, the Flatpak commit, the firmware's
+release notes). Update all, one source or just what you tick; the root part asks for your password once and the log
+streams in. Every APT upgrade is simulated first: anything it would remove is listed and needs a tick, and removing
+`kubuntu-desktop` or the IBM Plex fonts is refused. It also shows held packages and when a restart is needed, and can
+look once a day in the background (never installing) and notify you.
+
 ### Tray, Settings and updates
 
 ![Tray icon and menu](docs/screenshots/tray.png)
@@ -179,7 +190,8 @@ Press **Install** on a spell's card on the home page (or `./install.sh --all`), 
 `grimoire-sightc`, `grimoire-vaultl`, `grimoire-optimizel`, `grimoire-systeml`, `grimoire-terminall`,
 `grimoire-shotl`, `grimoire-focusl` or `grimoire-netl` directly. Command-line helpers:
 `grimoire-sightc on|off|toggle|next`, `grimoire-vaultl [folder]`, `grimoire-vaultl tidy run|undo|enable|disable|status`,
-`grimoire-systeml alerts check|enable|disable|status`, `grimoire-focusl start|stop|status`, `grimoire update`.
+`grimoire-systeml alerts check|enable|disable|status`, `grimoire-focusl start|stop|status`, `grimoire update`,
+`grimoire-updatel check|enable|disable|status`.
 
 To make VaultL the default file manager: `xdg-mime default grimoire-vaultl.desktop inode/directory` (switch back in
 System Settings → Default Applications).
@@ -228,7 +240,7 @@ A source install checks GitHub every few hours (turn it off in Settings → Gene
 ### What about privacy?
 
 No telemetry, no analytics, no accounts needed. The app only goes online when you ask (community store, NetL's
-public-IP and ping checks, GitHub backup) and for the update check, which is one request to GitHub's public API.
+public-IP and ping checks, UpdateL's Check now and changelogs, GitHub backup) and for the update check, which is one request to GitHub's public API.
 
 ### How do I uninstall?
 
