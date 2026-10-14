@@ -55,13 +55,13 @@
     </message>
     <message>
         <location filename="../../grimoire/accounts.py"/>
-        <source>Signed in. You can close this tab and go back to Grimoire Linux.</source>
-        <translation>সাইন ইন হয়েছে। এই ট্যাবটি বন্ধ করে Grimoire Linux-এ ফিরে যেতে পারেন।</translation>
+        <source>sign-in was cancelled</source>
+        <translation>সাইন ইন বাতিল করা হয়েছে</translation>
     </message>
     <message>
         <location filename="../../grimoire/accounts.py"/>
-        <source>sign-in was cancelled</source>
-        <translation>সাইন ইন বাতিল করা হয়েছে</translation>
+        <source>Signed in. You can close this tab and go back to Grimoire Linux.</source>
+        <translation>সাইন ইন হয়েছে। এই ট্যাবটি বন্ধ করে Grimoire Linux-এ ফিরে যেতে পারেন।</translation>
     </message>
     <message>
         <location filename="../../grimoire/accounts.py"/>
@@ -100,7 +100,6 @@
     </message>
     <message>
         <location filename="../../grimoire/accounts.py"/>
-        <location filename="../../grimoire/loginview.py"/>
         <source>Wrong username or password.</source>
         <translation>ভুল ব্যবহারকারীর নাম বা পাসওয়ার্ড।</translation>
     </message>
@@ -1234,6 +1233,11 @@
         <source>Black &amp; white tools for KDE Plasma</source>
         <translation>KDE Plasma-র জন্য সাদা-কালো টুল</translation>
     </message>
+    <message>
+        <location filename="../../grimoire/loginview.py"/>
+        <source>Couldn&apos;t set up your profile: {err}</source>
+        <translation>আপনার প্রোফাইল সেট আপ করা গেল না: {err}</translation>
+    </message>
 </context>
 <context>
     <name>grimoire.roothelper</name>
@@ -1290,6 +1294,11 @@
 </context>
 <context>
     <name>grimoire.session</name>
+    <message>
+        <location filename="../../grimoire/session.py"/>
+        <source>{path} isn&apos;t a private folder of yours; not using it for the guest profile.</source>
+        <translation>{path} আপনার নিজস্ব ব্যক্তিগত ফোল্ডার নয়; অতিথি প্রোফাইলের জন্য এটি ব্যবহার করা হবে না।</translation>
+    </message>
     <message>
         <location filename="../../grimoire/session.py"/>
         <source>Sign in to use your account.</source>

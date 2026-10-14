@@ -20,6 +20,8 @@ import hashlib
 import hmac
 import http.server
 import json
+import math
+import os
 import re
 import secrets
 import threading
@@ -45,7 +47,12 @@ THROTTLE = CACHE / "signin-throttle.json"
 
 
 class AccountError(RuntimeError):
-    """A failure worth showing as is (never carries a token or password)."""
+    """A failure worth showing as is (never carries a token or password). kind is a fixed id for logic that must
+    not compare the (translated) text, e.g. "credentials" for a wrong username or password."""
+
+    def __init__(self, message: str, kind: str = ""):
+        super().__init__(message)
+        self.kind = kind
 
 
 @dataclass
@@ -113,15 +120,22 @@ def normalize_code(code: str) -> str:
 def _throttle_load() -> dict:
     try:
         d = json.loads(THROTTLE.read_text())
-        return d if isinstance(d, dict) else {}
     except (OSError, ValueError):
         return {}
+    if not isinstance(d, dict):
+        return {}
+    out = {}                                         # a damaged entry counts as no entry, never as a crash
+    for k, e in d.items():
+        if isinstance(e, dict) and all(isinstance(e.get(f, 0), (int, float)) and not isinstance(e.get(f, 0), bool)
+                                       and math.isfinite(e.get(f, 0)) for f in ("fails", "until")):
+            out[k] = {"fails": int(e.get("fails", 0)), "until": float(e.get("until", 0))}
+    return out
 
 
 def wait_left(username: str, now=None) -> int:
     """Seconds until this username may try again here (0 = now). The server has its own limits too."""
     e = _throttle_load().get(username.lower()) or {}
-    left = float(e.get("until", 0) if isinstance(e, dict) else 0) - (now or time.time())
+    left = e.get("until", 0) - (now or time.time())
     return max(0, int(left + 0.999))
 
 
@@ -131,14 +145,18 @@ def note_attempt(username: str, ok: bool, now=None):
     if ok:
         d.pop(key, None)
     else:
-        e = d.get(key) if isinstance(d.get(key), dict) else {}
-        fails = int(e.get("fails", 0)) + 1
+        fails = d.get(key, {}).get("fails", 0) + 1
         until = now + min(900, 30 * 2 ** (fails - 5)) if fails >= 5 else 0
         d[key] = {"fails": fails, "until": until}
-    THROTTLE.parent.mkdir(parents=True, exist_ok=True)
-    tmp = THROTTLE.with_suffix(".tmp")
-    tmp.write_text(json.dumps(d))
-    tmp.replace(THROTTLE)
+    tmp = THROTTLE.with_name(f".{THROTTLE.name}.{os.getpid()}.{threading.get_ident()}.tmp")   # one per writer
+    try:
+        THROTTLE.parent.mkdir(parents=True, exist_ok=True)
+        tmp.write_text(json.dumps(d))
+        tmp.replace(THROTTLE)
+    except OSError:
+        pass                                         # best effort: the server has its own limits
+    finally:
+        tmp.unlink(missing_ok=True)
 
 
 # ---------------------------------------------------------------- OAuth (PKCE + loopback redirect)
@@ -158,32 +176,41 @@ PAGE = ("<!doctype html><meta charset=utf-8><title>Grimoire Linux</title><body s
 class Loopback:
     """A one-shot web server on 127.0.0.1 (random port) that waits for the browser to come back with ?code=…
     on /callback/<state>. The random state in the path must match (constant-time), so a page that guesses the port
-    can't feed in a code; and a code is useless without this process's PKCE verifier anyway."""
+    can't feed in a code; and a code is useless without this process's PKCE verifier anyway. Each connection gets
+    its own thread with a short timeout, so an idle one (a browser's preconnect, a local prober) can't hold up the
+    real callback; the first matching request wins."""
 
     def __init__(self):
         self.state = secrets.token_urlsafe(24)
         self.result: tuple[str, str] | None = None             # ("code", value) or ("error", message)
         self.done = threading.Event()
+        lock = threading.Lock()
         outer = self
 
         class Handler(http.server.BaseHTTPRequestHandler):
+            timeout = 10
+
             def do_GET(self):
                 url = urllib.parse.urlparse(self.path)
                 q = urllib.parse.parse_qs(url.query)
                 parts = url.path.split("/")
-                if len(parts) != 3 or parts[1] != "callback" or \
-                        not hmac.compare_digest(parts[2].encode(), outer.state.encode()) or outer.done.is_set():
+                with lock:
+                    first = len(parts) == 3 and parts[1] == "callback" and not outer.done.is_set() and \
+                        hmac.compare_digest(parts[2].encode(), outer.state.encode())
+                    if first and q.get("code"):
+                        outer.result = ("code", q["code"][0][:512])
+                    elif first:
+                        err = (q.get("error_description") or q.get("error")
+                               or [tr("grimoire.accounts", "sign-in was cancelled")])[0]
+                        outer.result = ("error", "".join(c for c in err if c.isprintable())[:120])
+                    if first:
+                        outer.done.set()
+                if not first:
                     self.send_error(404)
                     return
-                if q.get("code"):
-                    outer.result = ("code", q["code"][0][:512])
-                    text = tr("grimoire.accounts",
-                              "Signed in. You can close this tab and go back to Grimoire Linux.")
-                else:
-                    err = (q.get("error_description") or q.get("error")
-                           or [tr("grimoire.accounts", "sign-in was cancelled")])[0][:120]
-                    outer.result = ("error", err)
-                    text = tr("grimoire.accounts", "Sign-in didn't finish. You can close this tab.")
+                text = tr("grimoire.accounts", "Signed in. You can close this tab and go back to Grimoire Linux.") \
+                    if outer.result[0] == "code" else \
+                    tr("grimoire.accounts", "Sign-in didn't finish. You can close this tab.")
                 body = PAGE.format(text=text).encode()
                 self.send_response(200)
                 self.send_header("Content-Type", "text/html; charset=utf-8")
@@ -191,12 +218,17 @@ class Loopback:
                 self.send_header("Cache-Control", "no-store")
                 self.end_headers()
                 self.wfile.write(body)
-                outer.done.set()
 
             def log_message(self, *a):          # the query holds the code: never print requests
                 pass
 
-        self.server = http.server.HTTPServer(("127.0.0.1", 0), Handler)
+        class Server(http.server.ThreadingHTTPServer):
+            daemon_threads = True
+
+            def handle_error(self, request, client_address):    # a dropped connection: never print a traceback
+                pass
+
+        self.server = Server(("127.0.0.1", 0), Handler)
         self.server.timeout = 0.5
         self.port = self.server.server_address[1]
         self.redirect = f"http://127.0.0.1:{self.port}/callback/{self.state}"
@@ -326,9 +358,10 @@ class Supabase(Backend):
     def _error(code: int, d) -> AccountError:
         d = d if isinstance(d, dict) else {}
         err = str(d.get("error_code") or d.get("code") or d.get("error") or "")
+        WRONG = tr("grimoire.accounts", "Wrong username or password.")
         known = {
-            "invalid_credentials": tr("grimoire.accounts", "Wrong username or password."),
-            "invalid_grant": tr("grimoire.accounts", "Wrong username or password."),
+            "invalid_credentials": WRONG,
+            "invalid_grant": WRONG,
             "user_already_exists": tr("grimoire.accounts", "That username is taken. Pick another one."),
             "email_exists": tr("grimoire.accounts", "That username is taken. Pick another one."),
             "weak_password": tr("grimoire.accounts",
@@ -355,7 +388,7 @@ class Supabase(Backend):
             "23505": tr("grimoire.accounts", "That username is taken. Pick another one."),
         }
         if err in known:
-            return AccountError(known[err])
+            return AccountError(known[err], "credentials" if known[err] is WRONG else err)
         if code == 429:
             return AccountError(known["over_request_rate_limit"])
         if code in (401, 403):
@@ -417,7 +450,7 @@ class Supabase(Backend):
 
     def sign_in(self, username, password):
         if username_problem(username):
-            raise AccountError(tr("grimoire.accounts", "Wrong username or password."))
+            raise AccountError(tr("grimoire.accounts", "Wrong username or password."), "credentials")
         code, d = self._call("POST", "/auth/v1/token?grant_type=password",
                              {"email": self._login_email(username), "password": password})
         if code != 200:
@@ -460,9 +493,12 @@ class Supabase(Backend):
         if d.get("ok") and isinstance(d.get("code"), str):
             return d["code"]
         if d.get("error") == "locked":
+            wait = d.get("retry_after")
+            wait = int(wait) if isinstance(wait, (int, float)) and not isinstance(wait, bool) and 0 < wait < 1e6 \
+                else 60
             raise AccountError(tr("grimoire.accounts",
                                   "Too many wrong codes for this username. Try again in %n minute(s).",
-                                  n=max(1, int(d.get("retry_after") or 60) // 60)))
+                                  n=max(1, -(-wait // 60))))
         if d.get("error") == "weak_password":
             raise AccountError(password_problem("") or tr("grimoire.accounts", "Choose a longer password."))
         raise AccountError(tr("grimoire.accounts", "That username and recovery code don't match."))

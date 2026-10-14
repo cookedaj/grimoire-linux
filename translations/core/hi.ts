@@ -55,13 +55,13 @@
     </message>
     <message>
         <location filename="../../grimoire/accounts.py"/>
-        <source>Signed in. You can close this tab and go back to Grimoire Linux.</source>
-        <translation>साइन इन हो गया। आप यह टैब बंद करके Grimoire Linux पर लौट सकते हैं।</translation>
+        <source>sign-in was cancelled</source>
+        <translation>साइन इन रद्द कर दिया गया</translation>
     </message>
     <message>
         <location filename="../../grimoire/accounts.py"/>
-        <source>sign-in was cancelled</source>
-        <translation>साइन इन रद्द कर दिया गया</translation>
+        <source>Signed in. You can close this tab and go back to Grimoire Linux.</source>
+        <translation>साइन इन हो गया। आप यह टैब बंद करके Grimoire Linux पर लौट सकते हैं।</translation>
     </message>
     <message>
         <location filename="../../grimoire/accounts.py"/>
@@ -100,7 +100,6 @@
     </message>
     <message>
         <location filename="../../grimoire/accounts.py"/>
-        <location filename="../../grimoire/loginview.py"/>
         <source>Wrong username or password.</source>
         <translation>गलत उपयोगकर्ता नाम या पासवर्ड।</translation>
     </message>
@@ -1234,6 +1233,11 @@
         <source>Black &amp; white tools for KDE Plasma</source>
         <translation>KDE Plasma के लिए काले और सफ़ेद टूल</translation>
     </message>
+    <message>
+        <location filename="../../grimoire/loginview.py"/>
+        <source>Couldn&apos;t set up your profile: {err}</source>
+        <translation>आपकी प्रोफ़ाइल सेट नहीं हो सकी: {err}</translation>
+    </message>
 </context>
 <context>
     <name>grimoire.roothelper</name>
@@ -1290,6 +1294,11 @@
 </context>
 <context>
     <name>grimoire.session</name>
+    <message>
+        <location filename="../../grimoire/session.py"/>
+        <source>{path} isn&apos;t a private folder of yours; not using it for the guest profile.</source>
+        <translation>{path} आपका निजी फ़ोल्डर नहीं है; इसे अतिथि प्रोफ़ाइल के लिए उपयोग नहीं किया जाएगा।</translation>
+    </message>
     <message>
         <location filename="../../grimoire/session.py"/>
         <source>Sign in to use your account.</source>
