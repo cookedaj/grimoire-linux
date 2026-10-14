@@ -10,6 +10,7 @@ anything happens and then applied in one batch (one password prompt).
 """
 from dataclasses import dataclass
 
+from grimoire.i18n import tr_noop
 from grimoire.spells.optimizel import tweaks
 
 
@@ -20,11 +21,18 @@ class Profile:
     blurb: str
 
 
+# names and blurbs are shown through tr("grimoire.spells.optimizel.profiles", …)
 PROFILES = [
-    Profile("recommended", "Recommended", "Safe tweaks only. Nothing can break; all undo with one click."),
-    Profile("max", "Max performance", "Safe and Aggressive tweaks for speed. Read what each Aggressive one risks."),
-    Profile("battery", "Battery / quiet", "Turns off the tweaks that cost power, heat or fan noise."),
-    Profile("restore", "Restore everything", "Every OptimizeL change off, back to exactly how it was."),
+    Profile("recommended", tr_noop("grimoire.spells.optimizel.profiles", "Recommended"),
+            tr_noop("grimoire.spells.optimizel.profiles",
+                    "Safe tweaks only. Nothing can break; all undo with one click.")),
+    Profile("max", tr_noop("grimoire.spells.optimizel.profiles", "Max performance"),
+            tr_noop("grimoire.spells.optimizel.profiles",
+                    "Safe and Aggressive tweaks for speed. Read what each Aggressive one risks.")),
+    Profile("battery", tr_noop("grimoire.spells.optimizel.profiles", "Battery / quiet"),
+            tr_noop("grimoire.spells.optimizel.profiles", "Turns off the tweaks that cost power, heat or fan noise.")),
+    Profile("restore", tr_noop("grimoire.spells.optimizel.profiles", "Restore everything"),
+            tr_noop("grimoire.spells.optimizel.profiles", "Every OptimizeL change off, back to exactly how it was.")),
 ]
 BY_ID = {p.id: p for p in PROFILES}
 

@@ -19,6 +19,7 @@ from pathlib import Path
 
 from grimoire import roothelper
 from grimoire.fsutil import human
+from grimoire.i18n import tr, tr_noop
 from grimoire.paths import CONFIG, DATA
 
 HELPER = roothelper.source("optimizel")      # this tree's copy: sandbox tests only; pkexec runs the system one
@@ -30,7 +31,10 @@ AUTOSTART = Path(os.environ.get("XDG_CONFIG_HOME", Path.home() / ".config")) / "
 ENV_D = CONFIG.parent / "environment.d"
 MARK = "Grimoire OptimizeL"
 
-WHEN = {"now": "Instant", "restart": "After restart", "logout": "After log out"}
+# shown through tr("grimoire.spells.optimizel.kinds", …)
+WHEN = {"now": tr_noop("grimoire.spells.optimizel.kinds", "Instant"),
+        "restart": tr_noop("grimoire.spells.optimizel.kinds", "After restart"),
+        "logout": tr_noop("grimoire.spells.optimizel.kinds", "After log out")}
 
 
 # ---------------------------------------------------------------- small readers
@@ -189,6 +193,12 @@ class Tweak:
     def disable(self, saved: dict): raise NotImplementedError
     user_side = False              # a root tweak that also has a part done as you, after the helper ran
 
+    def text(self, name: str) -> str:
+        """A catalog text (title, why, target, gain, risk, group, tier) in the UI's language: tweaks.py marks
+        them with tr_noop under its own context."""
+        value = getattr(self, name)
+        return tr("grimoire.spells.optimizel.tweaks", value) if value else ""
+
     def reason(self) -> str:
         return (self.skip() if self.skip else "") or self.unavailable()
 
@@ -224,7 +234,9 @@ class Sysctl(Tweak):
         return all(sysctl(k) == str(v) for k, v in self.values.items())
 
     def unavailable(self):
-        return "" if all(sysctl(k) for k in self.values) else "Your kernel or CPU doesn't have this setting"
+        if all(sysctl(k) for k in self.values):
+            return ""
+        return tr("grimoire.spells.optimizel.kinds", "Your kernel or CPU doesn't have this setting")
 
 
 @dataclass
@@ -247,7 +259,9 @@ class Sysfs(Tweak):
         return all(choice(p) == str(v) for p, v in self.values.items())
 
     def unavailable(self):
-        return "" if all(Path(p).exists() for p in self.values) else "Your kernel doesn't have this setting"
+        if all(Path(p).exists() for p in self.values):
+            return ""
+        return tr("grimoire.spells.optimizel.kinds", "Your kernel doesn't have this setting")
 
 
 @dataclass
@@ -272,11 +286,13 @@ class Udev(Tweak):
 
     def unavailable(self):
         if not disks():
-            return "No disks found"
+            return tr("grimoire.spells.optimizel.kinds", "No disks found")
         if self.attr == "scheduler":
             for d in disks():
                 if self.pick(disk_kind(d)) not in read(d / "queue/scheduler") and disk_kind(d) != "hdd":
-                    return f"Your kernel doesn't offer {self.pick(disk_kind(d))} for {d.name}"
+                    return tr("grimoire.spells.optimizel.kinds",
+                              "Your kernel doesn't offer {scheduler} for {disk}").format(
+                        scheduler=self.pick(disk_kind(d)), disk=d.name)
         return ""
 
     def goal(self):
@@ -296,7 +312,11 @@ class KernelArg(Tweak):
         return ETC / f"default/grub.d/99-grimoire-optimizel-{self.id}.cfg"
 
     def current(self):
-        return self.live() if self.live else ("in use" if self.arg in cmdline() else "not set")
+        if self.live:
+            return self.live()
+        if self.arg in cmdline():
+            return tr("grimoire.spells.optimizel.kinds", "in use")
+        return tr("grimoire.spells.optimizel.kinds", "not set")
 
     def is_on(self):
         return has_mark(self.file)
@@ -309,10 +329,11 @@ class KernelArg(Tweak):
 
     def unavailable(self):
         if not shutil.which("update-grub") or not Path("/etc/default/grub").exists():
-            return "This PC doesn't boot with GRUB"
+            return tr("grimoire.spells.optimizel.kinds", "This PC doesn't boot with GRUB")
         key = self.arg.split("=")[0]
         if any(a.split("=")[0] == key for a in cmdline()) and self.arg not in cmdline():
-            return f"You've set {key} yourself on the boot line"
+            return tr("grimoire.spells.optimizel.kinds",
+                      "You've set {option} yourself on the boot line").format(option=key)
         return ""
 
 
@@ -342,8 +363,10 @@ class Modprobe(Tweak):
 
     def unavailable(self):
         if not nvidia():
-            return "Only for NVIDIA graphics"
-        return "" if nv_param(self.param) else "Your NVIDIA driver doesn't have this option"
+            return tr("grimoire.spells.optimizel.kinds", "Only for NVIDIA graphics")
+        if nv_param(self.param):
+            return ""
+        return tr("grimoire.spells.optimizel.kinds", "Your NVIDIA driver doesn't have this option")
 
 
 @dataclass
@@ -363,7 +386,9 @@ class Units(Tweak):
         return all(unit_state(u) in ("disabled", "masked", "not-found", "static") for u in self.units)
 
     def unavailable(self):
-        return "" if any(unit_state(u) != "not-found" for u in self.units) else "Not installed here"
+        if any(unit_state(u) != "not-found" for u in self.units):
+            return ""
+        return tr("grimoire.spells.optimizel.kinds", "Not installed here")
 
 
 @dataclass
@@ -384,7 +409,9 @@ class Zram(Tweak):
     def current(self):
         swaps = read("/proc/swaps").splitlines()[1:]
         names = ", ".join(f"{Path(s.split()[0]).name} {human(int(s.split()[2]) * 1024)}" for s in swaps)
-        return f"swap: {names or 'none'}   swappiness {sysctl('vm.swappiness')}"
+        names = names or tr("grimoire.spells.optimizel.kinds", "none")
+        return tr("grimoire.spells.optimizel.kinds", "swap: {list}   swappiness {value}").format(
+            list=names, value=sysctl("vm.swappiness"))
 
     def is_on(self):
         p = ETC / "systemd/zram-generator.conf"
@@ -398,7 +425,8 @@ class Zram(Tweak):
 class Earlyoom(Tweak):
     def current(self):
         on = [n for n in ("earlyoom", "systemd-oomd") if unit_active(n + ".service")]
-        return f"running: {', '.join(on)}" if on else "no early out-of-memory guard running"
+        return tr("grimoire.spells.optimizel.kinds", "running: {list}").format(list=", ".join(on)) if on \
+            else tr("grimoire.spells.optimizel.kinds", "no early out-of-memory guard running")
 
     def is_on(self):
         return (STATE / "earlyoom.units").exists()
@@ -421,7 +449,10 @@ class GpuPower(Tweak):
 
     def current(self):
         cur, dflt, mx = self.limits()
-        return f"power limit {cur:.0f} W (default {dflt:.0f}, max {mx:.0f})" if mx else "power limit ?"
+        if not mx:
+            return tr("grimoire.spells.optimizel.kinds", "power limit ?")
+        return tr("grimoire.spells.optimizel.kinds", "power limit {now} W (default {default}, max {max})").format(
+            now=f"{cur:.0f}", default=f"{dflt:.0f}", max=f"{mx:.0f}")
 
     def is_on(self):
         return has_mark(ETC / "systemd/system/grimoire-optimizel-gpupower.service")
@@ -432,11 +463,13 @@ class GpuPower(Tweak):
 
     def unavailable(self):
         if not nvidia() or not shutil.which("nvidia-smi"):
-            return "Only for NVIDIA graphics"
+            return tr("grimoire.spells.optimizel.kinds", "Only for NVIDIA graphics")
         cur, dflt, mx = self.limits()
         if not mx:
-            return "The driver doesn't report a power limit"
-        return "" if mx > dflt else "Your card's maximum is its default; nothing to raise"
+            return tr("grimoire.spells.optimizel.kinds", "The driver doesn't report a power limit")
+        if mx > dflt:
+            return ""
+        return tr("grimoire.spells.optimizel.kinds", "Your card's maximum is its default; nothing to raise")
 
 
 class GameMode(Tweak):
@@ -453,7 +486,9 @@ class GameMode(Tweak):
         return m.group(1) if m else "0"
 
     def current(self):
-        return f"renice {self.renice()}   gamemode group {'yes' if self.in_group() else 'no'}"
+        return (tr("grimoire.spells.optimizel.kinds", "renice {value}   in the gamemode group") if self.in_group()
+                else tr("grimoire.spells.optimizel.kinds",
+                        "renice {value}   not in the gamemode group")).format(value=self.renice())
 
     def is_on(self):
         return (STATE / "gamemode.group").exists()
@@ -463,11 +498,11 @@ class GameMode(Tweak):
 
     def unavailable(self):
         if not shutil.which("gamemoded"):
-            return "GameMode isn't installed (sudo apt install gamemode)"
+            return tr("grimoire.spells.optimizel.kinds", "GameMode isn't installed (sudo apt install gamemode)")
         if not Path("/etc/security/limits.d/10-gamemode.conf").exists():
-            return "This GameMode doesn't allow renicing (no limits.d entry)"
+            return tr("grimoire.spells.optimizel.kinds", "This GameMode doesn't allow renicing (no limits.d entry)")
         if self.ini.exists() and not has_mark(self.ini) and not self.is_on():
-            return "You have your own gamemode.ini; set renice there"
+            return tr("grimoire.spells.optimizel.kinds", "You have your own gamemode.ini; set renice there")
         return ""
 
     def enable(self, saved):
@@ -485,7 +520,9 @@ class GameMode(Tweak):
 class PowerProfile(Tweak):
     def current(self):
         epp = read("/sys/devices/system/cpu/cpu0/cpufreq/energy_performance_preference")
-        return f"profile {sh('powerprofilesctl', 'get') or '?'}" + (f"   EPP {epp}" if epp else "")
+        name = sh("powerprofilesctl", "get") or "?"
+        profile = tr("grimoire.spells.optimizel.kinds", "profile {name}").format(name=name)
+        return profile + (f"   EPP {epp}" if epp else "")
 
     def is_on(self):
         return self.id in load_saved()["orig"] and sh("powerprofilesctl", "get") == "performance"
@@ -495,8 +532,10 @@ class PowerProfile(Tweak):
 
     def unavailable(self):
         if not shutil.which("powerprofilesctl"):
-            return "power-profiles-daemon isn't installed"
-        return "" if "performance" in sh("powerprofilesctl", "list") else "This PC has no performance profile"
+            return tr("grimoire.spells.optimizel.kinds", "power-profiles-daemon isn't installed")
+        if "performance" in sh("powerprofilesctl", "list"):
+            return ""
+        return tr("grimoire.spells.optimizel.kinds", "This PC has no performance profile")
 
     def enable(self, saved):
         saved["orig"].setdefault(self.id, sh("powerprofilesctl", "get") or "balanced")
@@ -520,7 +559,7 @@ class KdeKey(Tweak):
         return kread(self.file, self.kgroup, self.key) or self.default
 
     def current(self):
-        return f"{self.key} {self.live() or 'default'}"
+        return f"{self.key} {self.live() or tr('grimoire.spells.optimizel.kinds', 'default')}"
 
     def is_on(self):
         return self.id in load_saved()["orig"] and kread(self.file, self.kgroup, self.key) == self.value
@@ -552,7 +591,9 @@ class Baloo(Tweak):
         return "disabled" not in (r.stdout + r.stderr)
 
     def current(self):
-        return "indexing " + ("on" if self.indexing() else "off")
+        if self.indexing():
+            return tr("grimoire.spells.optimizel.kinds", "indexing on")
+        return tr("grimoire.spells.optimizel.kinds", "indexing off")
 
     def is_on(self):
         return self.id in load_saved()["orig"] and not self.indexing()
@@ -561,7 +602,7 @@ class Baloo(Tweak):
         return not self.indexing()
 
     def unavailable(self):
-        return "" if shutil.which("balooctl6") else "Baloo isn't installed"
+        return "" if shutil.which("balooctl6") else tr("grimoire.spells.optimizel.kinds", "Baloo isn't installed")
 
     def enable(self, saved):
         saved["orig"][self.id] = "on"
@@ -577,13 +618,15 @@ class ShaderCache(Tweak):
 
     def current(self):
         size = os.environ.get("__GL_SHADER_DISK_CACHE_SIZE")
-        return f"cache limit {human(int(size)) if size and size.isdigit() else 'driver default (1 GB)'}"
+        limit = human(int(size)) if size and size.isdigit() \
+            else tr("grimoire.spells.optimizel.kinds", "driver default (1 GB)")
+        return tr("grimoire.spells.optimizel.kinds", "cache limit {size}").format(size=limit)
 
     def is_on(self):
         return has_mark(self.file)
 
     def unavailable(self):
-        return "" if nvidia() else "Only for NVIDIA graphics"
+        return "" if nvidia() else tr("grimoire.spells.optimizel.kinds", "Only for NVIDIA graphics")
 
     def enable(self, saved):
         ENV_D.mkdir(parents=True, exist_ok=True)
@@ -609,7 +652,9 @@ class Autostart(Tweak):
         return AUTOSTART / f"{self.entry}.desktop"
 
     def current(self):
-        return "starts at login" if not (self.is_on() or self.native()) else "doesn't start at login"
+        if self.is_on() or self.native():
+            return tr("grimoire.spells.optimizel.kinds", "doesn't start at login")
+        return tr("grimoire.spells.optimizel.kinds", "starts at login")
 
     def is_on(self):
         return has_mark(self.mine)
@@ -622,11 +667,11 @@ class Autostart(Tweak):
 
     def unavailable(self):
         if not Path(f"/etc/xdg/autostart/{self.entry}.desktop").exists():
-            return "Not installed here"
+            return tr("grimoire.spells.optimizel.kinds", "Not installed here")
         if self.only_on_metal and sh("systemd-detect-virt") not in ("none", ""):
-            return "This is a virtual machine, so it's needed"
+            return tr("grimoire.spells.optimizel.kinds", "This is a virtual machine, so it's needed")
         if self.mine.exists() and not self.is_on() and not self.native():
-            return "You've customized this entry yourself"
+            return tr("grimoire.spells.optimizel.kinds", "You've customized this entry yourself")
         return ""
 
     def enable(self, saved):

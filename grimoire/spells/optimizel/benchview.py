@@ -3,11 +3,13 @@
 import subprocess
 import time
 
-from PySide6.QtCore import QObject, QRectF, Qt, Signal
+from PySide6.QtCore import QDateTime, QLocale, QObject, QRectF, Qt, Signal
 from PySide6.QtGui import QColor, QPainter
 from PySide6.QtWidgets import (QAbstractItemView, QFrame, QGridLayout, QHBoxLayout, QHeaderView, QLabel, QPushButton,
                                QScrollArea, QSizePolicy, QTableWidget, QTableWidgetItem, QVBoxLayout, QWidget)
 
+from grimoire import i18n
+from grimoire.i18n import tr
 from grimoire.jobs import POOL, Job
 from grimoire.spells.optimizel import bench, tweaks
 
@@ -30,12 +32,17 @@ def _fmt(v, unit: str) -> str:
     if v is None:
         return "–"
     if unit == "s":
-        return f"{v:.2f} s"
-    return f"{v:,.0f} {unit}" if v >= 1000 else f"{v:g} {unit}"
+        return _iso(f"{v:.2f} s")
+    return _iso(f"{v:,.0f} {unit}" if v >= 1000 else f"{v:g} {unit}")
+
+
+def _iso(text: str) -> str:
+    """A number with its unit (or a date) kept in one piece inside a right-to-left line."""
+    return f"\u2068{text}\u2069" if i18n.rtl() else text
 
 
 def _when(ts: float) -> str:
-    return time.strftime("%b %d, %H:%M", time.localtime(ts))
+    return _iso(QLocale().toString(QDateTime.fromSecsSinceEpoch(int(ts)), QLocale.FormatType.ShortFormat))
 
 
 class BootChart(QWidget):
@@ -60,7 +67,8 @@ class BootChart(QWidget):
         w, h = self.width(), self.height()
         if not self.boots:
             p.setPen(QColor("#6f6f6f"))
-            p.drawText(self.rect(), Qt.AlignmentFlag.AlignCenter, "No boots recorded yet")
+            p.drawText(self.rect(), Qt.AlignmentFlag.AlignCenter,
+                       tr("grimoire.spells.optimizel.benchview", "No boots recorded yet"))
             return
         top = max(b.get("boot_total", 0) for b in self.boots) or 1
         n = len(self.boots)
@@ -108,16 +116,17 @@ class BenchView(QWidget):
         head = QHBoxLayout()
         txt = QVBoxLayout()
         txt.setSpacing(2)
-        txt.addWidget(_label("Before and after", "SectionTitle"))
-        txt.addWidget(_label("About 15 seconds of fixed tests, no password: CPU, system calls, memory, a 512 MB disk "
-                             "test in ~/.cache, and how late the scheduler wakes a task while every core is busy (a "
-                             "stand-in for frame pacing). Run it before you change switches, then again after "
-                             "(after a restart for boot and restart-only tweaks). Close games and big downloads "
-                             "first so runs compare fairly.", "Muted", wrap=True))
+        txt.addWidget(_label(tr("grimoire.spells.optimizel.benchview", "Before and after"), "SectionTitle"))
+        txt.addWidget(_label(tr("grimoire.spells.optimizel.benchview",
+                                "About 15 seconds of fixed tests, no password: CPU, system calls, memory, a 512 MB "
+                                "disk test in ~/.cache, and how late the scheduler wakes a task while every core is "
+                                "busy (a stand-in for frame pacing). Run it before you change switches, then again "
+                                "after (after a restart for boot and restart-only tweaks). Close games and big "
+                                "downloads first so runs compare fairly."), "Muted", wrap=True))
         head.addLayout(txt, 1)
-        self.base_btn = QPushButton("Use latest as baseline")
+        self.base_btn = QPushButton(tr("grimoire.spells.optimizel.benchview", "Use latest as baseline"))
         self.base_btn.clicked.connect(self._latest_as_baseline)
-        self.run_btn = QPushButton("Run benchmark")
+        self.run_btn = QPushButton(tr("grimoire.spells.optimizel.benchview", "Run benchmark"))
         self.run_btn.setObjectName("Primary")
         self.run_btn.setMinimumSize(170, 40)
         self.run_btn.clicked.connect(self.run)
@@ -135,9 +144,10 @@ class BenchView(QWidget):
         self.grid.setVerticalSpacing(6)
         col.addWidget(self.table)
 
-        col.addWidget(_label("Boot time, last boots", "SectionTitle"))
-        legend = _label("Bars stack firmware (darkest), boot loader, kernel and services (white). Recorded once per "
-                        "boot whenever OptimizeL opens.", "Muted", wrap=True)
+        col.addWidget(_label(tr("grimoire.spells.optimizel.benchview", "Boot time, last boots"), "SectionTitle"))
+        legend = _label(tr("grimoire.spells.optimizel.benchview",
+                           "Bars stack firmware (darkest), boot loader, kernel and services (white). Recorded "
+                           "once per boot whenever OptimizeL opens."), "Muted", wrap=True)
         col.addWidget(legend)
         chart_box = QFrame()
         chart_box.setObjectName("Row")
@@ -149,10 +159,16 @@ class BenchView(QWidget):
         cl.addWidget(self.boot_hint)
         col.addWidget(chart_box)
 
-        col.addWidget(_label("Runs", "SectionTitle"))
+        col.addWidget(_label(tr("grimoire.spells.optimizel.benchview", "Runs"), "SectionTitle"))
         self.runs = QTableWidget(0, 7)
-        self.runs.setHorizontalHeaderLabels(["When", "Switches on", "All cores", "Syscall", "Disk read", "Wake 99%",
-                                             "Boot"])
+        heads = [tr("grimoire.spells.optimizel.benchview", "When"),
+                 tr("grimoire.spells.optimizel.benchview", "Switches on"),
+                 tr("grimoire.spells.optimizel.benchview", "All cores"),
+                 tr("grimoire.spells.optimizel.benchview", "Syscall"),
+                 tr("grimoire.spells.optimizel.benchview", "Disk read"),
+                 tr("grimoire.spells.optimizel.benchview", "Wake 99%"),
+                 tr("grimoire.spells.optimizel.benchview", "Boot")]
+        self.runs.setHorizontalHeaderLabels(heads)
         self.runs.verticalHeader().hide()
         self.runs.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
         self.runs.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
@@ -162,7 +178,7 @@ class BenchView(QWidget):
         col.addWidget(self.runs)
         pick = QHBoxLayout()
         pick.addStretch(1)
-        self.pick_btn = QPushButton("Use selected run as baseline")
+        self.pick_btn = QPushButton(tr("grimoire.spells.optimizel.benchview", "Use selected run as baseline"))
         self.pick_btn.clicked.connect(self._selected_as_baseline)
         pick.addWidget(self.pick_btn)
         col.addLayout(pick)
@@ -186,14 +202,21 @@ class BenchView(QWidget):
         base = bench.baseline_run(d)
         while self.grid.count():
             self.grid.takeAt(0).widget().deleteLater()
-        heads = ["", "Baseline" + (f"  ·  {_when(base['ts'])}" if base else ""),
-                 "Latest" + (f"  ·  {_when(latest['ts'])}" if latest else ""), "Change"]
+        base_head = tr("grimoire.spells.optimizel.benchview", "Baseline")
+        if base:
+            base_head = tr("grimoire.spells.optimizel.benchview", "Baseline  ·  {when}").format(when=_when(base["ts"]))
+        latest_head = tr("grimoire.spells.optimizel.benchview", "Latest")
+        if latest:
+            latest_head = tr("grimoire.spells.optimizel.benchview", "Latest  ·  {when}").format(
+                when=_when(latest["ts"]))
+        heads = ["", base_head, latest_head,
+                 tr("grimoire.spells.optimizel.benchview", "Change")]
         for c, h in enumerate(heads):
             self.grid.addWidget(_label(h.upper(), "StatLabel"), 0, c)
         row = 1
         boots = d["boots"]
         for group in bench.GROUPS:
-            self.grid.addWidget(_label(group, "RowTitle"), row, 0)
+            self.grid.addWidget(_label(tr("grimoire.spells.optimizel.bench", group), "RowTitle"), row, 0)
             row += 1
             for key, (label, unit, _, g) in bench.METRICS.items():
                 if g != group:
@@ -206,7 +229,7 @@ class BenchView(QWidget):
                     old = base["r"].get(key) if base else None
                     new = latest["r"].get(key) if latest else None
                 ch = bench.change(key, old, new) if base is not latest or group == "Boot" else None
-                self.grid.addWidget(_label(label, "Muted"), row, 0)
+                self.grid.addWidget(_label(tr("grimoire.spells.optimizel.bench", label), "Muted"), row, 0)
                 self.grid.addWidget(_label(_fmt(old, unit), "Value"), row, 1)
                 self.grid.addWidget(_label(_fmt(new, unit), "Value"), row, 2)
                 self.grid.addWidget(_change_label(ch, bench.noise(key)), row, 3)
@@ -215,25 +238,31 @@ class BenchView(QWidget):
         for c in (1, 2, 3):
             self.grid.setColumnStretch(c, 1)
         if boots:
-            self.grid.addWidget(_label("Boot compares the baseline run's boot with this boot; restart after "
-                                       "changing boot tweaks to see their effect.", "Muted", wrap=True), row, 0, 1, 4)
+            self.grid.addWidget(_label(tr("grimoire.spells.optimizel.benchview",
+                                          "Boot compares the baseline run's boot with this boot; restart after "
+                                          "changing boot tweaks to see their effect."), "Muted", wrap=True),
+                                row, 0, 1, 4)
 
         self.chart.set_boots(boots)
         hint = []
         if boots and (boots[-1].get("boot_firmware") or 0) >= 6:
-            hint.append(f"Firmware takes {boots[-1]['boot_firmware']:.1f} s before Linux even starts: turning on "
-                        "Fast Boot in your BIOS/UEFI setup is the biggest boot win left (no switch here can "
-                        "change it).")
+            hint.append(tr("grimoire.spells.optimizel.benchview",
+                           "Firmware takes {seconds} s before Linux even starts: turning on Fast Boot in your "
+                           "BIOS/UEFI setup is the biggest boot win left (no switch here can change it).").format(
+                seconds=f"{boots[-1]['boot_firmware']:.1f}"))
         if getattr(self, "blame", None):
-            hint.append("Slowest units this boot: " + ", ".join(self.blame))
+            hint.append(tr("grimoire.spells.optimizel.benchview",
+                           "Slowest units this boot: {list}").format(list=", ".join(self.blame)))
         self.boot_hint.setText("\n".join(hint))
         self.boot_hint.setVisible(bool(hint))
 
         self.runs.setRowCount(len(runs))
         for i, r in enumerate(reversed(runs)):
             res = r.get("r", {})
-            mark = "  (baseline)" if base and r["ts"] == base["ts"] else ""
-            vals = [_when(r["ts"]) + mark, str(len(r.get("on", []))),
+            when = tr("grimoire.spells.optimizel.benchview",
+                      "{when}  (baseline)").format(when=_when(r["ts"])) if base and r["ts"] == base["ts"] \
+                else _when(r["ts"])
+            vals = [when, str(len(r.get("on", []))),
                     _fmt(res.get("cpu_multi"), "MB/s"), _fmt(res.get("syscall"), "ns"),
                     _fmt(res.get("disk_read"), "MB/s"), _fmt(res.get("wake_p99"), "µs"),
                     _fmt(res.get("boot_total"), "s")]
@@ -241,13 +270,16 @@ class BenchView(QWidget):
                 item = QTableWidgetItem(v)
                 item.setData(Qt.ItemDataRole.UserRole, r["ts"])
                 if c == 1:
-                    item.setToolTip(", ".join(tweaks.BY_ID[t].title for t in r.get("on", []) if t in tweaks.BY_ID))
+                    item.setToolTip(", ".join(tweaks.BY_ID[t].text("title") for t in r.get("on", [])
+                                              if t in tweaks.BY_ID))
                 self.runs.setItem(i, c, item)
         self.base_btn.setEnabled(bool(latest) and not self.running and base is not latest)
         self.pick_btn.setEnabled(bool(runs) and not self.running)
         if not self.running:
-            self.status.setText("No runs yet: run it once now to get a baseline." if not runs else
-                                f"{len(runs)} run(s) stored. Baseline: {_when(base['ts'])}.")
+            self.status.setText(tr("grimoire.spells.optimizel.benchview",
+                                   "No runs yet: run it once now to get a baseline.") if not runs else
+                                tr("grimoire.spells.optimizel.benchview",
+                                   "%n run(s) stored. Baseline: {when}.", n=len(runs)).format(when=_when(base["ts"])))
 
     # ------------------------------------------------------------------ running
     def run(self):
@@ -255,24 +287,28 @@ class BenchView(QWidget):
             return
         self.running = True
         self.run_btn.setEnabled(False)
-        self.run_btn.setText("Running…")
-        self.status.setText("Starting…")
+        self.run_btn.setText(tr("grimoire.spells.optimizel.benchview", "Running…"))
+        self.status.setText(tr("grimoire.spells.optimizel.benchview", "Starting…"))
         sig = self._sig
         POOL.start(Job(lambda: _run_safely(sig.step.emit), sig.finished.emit))
 
     def _on_step(self, step):
-        self.status.setText(f"Testing {step.lower()}…  keep the PC idle for a few seconds.")
+        self.status.setText(tr("grimoire.spells.optimizel.benchview",
+                               "Testing: {step}…  keep the PC idle for a few seconds.").format(
+            step=tr("grimoire.spells.optimizel.bench", step)))
 
     def _on_finished(self, entry):
         self.running = False
         self.run_btn.setEnabled(True)
-        self.run_btn.setText("Run benchmark")
+        self.run_btn.setText(tr("grimoire.spells.optimizel.benchview", "Run benchmark"))
         self.data = bench.load()
         self.refresh()
         if isinstance(entry, str):
-            self.status.setText(f"The benchmark failed: {entry}")
+            self.status.setText(tr("grimoire.spells.optimizel.benchview",
+                                   "The benchmark failed: {error}").format(error=entry))
         elif entry.get("errors"):
-            self.status.setText("Done, but some tests failed: " + "; ".join(entry["errors"]))
+            self.status.setText(tr("grimoire.spells.optimizel.benchview",
+                                   "Done, but some tests failed: {list}").format(list="; ".join(entry["errors"])))
 
     def _latest_as_baseline(self):
         if self.data["runs"]:
@@ -289,7 +325,7 @@ class BenchView(QWidget):
         try:
             bench.save(d)
         except OSError as e:
-            self.status.setText(f"Couldn't save: {e}")
+            self.status.setText(tr("grimoire.spells.optimizel.benchview", "Couldn't save: {error}").format(error=e))
             return
         self.data = d
         self.refresh()
@@ -299,8 +335,11 @@ def _change_label(ch, noise: float) -> QLabel:
     if ch is None:
         return _label("–", "Value")
     if abs(ch) < noise:
-        return _label(f"{ch:+.1f}%  same", "Value")     # within run-to-run noise
-    lab = _label(f"{'▲' if ch > 0 else '▼'} {abs(ch):.1f}% {'better' if ch > 0 else 'worse'}", "Value")
+        return _label(tr("grimoire.spells.optimizel.benchview",                # within run-to-run noise
+                         "{change}  same").format(change=_iso(f"{ch:+.1f}%")), "Value")
+    better = tr("grimoire.spells.optimizel.benchview", "▲ {change} better") if ch > 0 \
+        else tr("grimoire.spells.optimizel.benchview", "▼ {change} worse")
+    lab = _label(better.format(change=_iso(f"{abs(ch):.1f}%")), "Value")
     lab.setProperty("strong", ch > 0)
     return lab
 

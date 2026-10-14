@@ -10,11 +10,13 @@ just those and leaves anything you switched on yourself in OptimizeL alone. All 
 """
 import json
 
+from grimoire.i18n import tr, tr_noop
 from grimoire.paths import DATA
 from grimoire.spells.optimizel import tweaks
 
-NAMES = {"performance": "performance power profile", "baloo": "file indexing paused",
-         "splitlock": "split-lock throttling off"}
+NAMES = {"performance": tr_noop("grimoire.spells.optimizel.perfmode", "performance power profile"),
+         "baloo": tr_noop("grimoire.spells.optimizel.perfmode", "file indexing paused"),
+         "splitlock": tr_noop("grimoire.spells.optimizel.perfmode", "split-lock throttling off")}
 IDS = tuple(NAMES)
 STATE = DATA / "performance-mode.json"
 
@@ -40,7 +42,9 @@ def is_on() -> bool:
 
 
 def describe(ids) -> str:
-    return ", ".join(NAMES.get(i, i) for i in ids)
+    """The switches as a list in the UI's language (the tray and GameL show it)."""
+    sep = tr("grimoire.spells.optimizel.perfmode", ", ", "list separator")
+    return sep.join(tr("grimoire.spells.optimizel.perfmode", NAMES[i]) if i in NAMES else i for i in ids)
 
 
 def turn_on(apply=tweaks.apply) -> dict:
