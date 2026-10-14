@@ -103,7 +103,8 @@ Item {
                 Behavior on opacity { NumberAnimation { duration: Kirigami.Units.shortDuration } }
                 Kirigami.Icon {
                     anchors.verticalCenter: parent.verticalCenter
-                    x: 10
+                    anchors.left: parent.left       // anchors, not x: icon and label swap sides right to left
+                    anchors.leftMargin: 10
                     width: 16
                     height: 16
                     source: b.modelData.icon
@@ -113,7 +114,8 @@ Item {
                 Text {
                     id: label
                     anchors.verticalCenter: parent.verticalCenter
-                    x: 32
+                    anchors.left: parent.left
+                    anchors.leftMargin: 32
                     text: b.modelData.label
                     color: m.pressed ? launchl.ink.bg : launchl.ink.text
                     font.family: launchl.ink.font
