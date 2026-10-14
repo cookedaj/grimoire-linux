@@ -13,10 +13,25 @@ import json
 import shutil
 import subprocess
 
+from grimoire import i18n
+from grimoire.i18n import tr
+
 RUN = subprocess.run          # tests swap this for a stub, so nothing really changes the sound setup
 OWN_PREFIX = "grimoire-audiol"       # AudioL's own level-meter streams, hidden from the Apps list
 EQ_NODE = "grimoire_eq"              # the equalizer's virtual output (eq.py writes it)
 MAX_VOLUME = 150                     # percent, like Plasma's "raise maximum volume"
+
+
+def isolate(text: str) -> str:
+    """A device or app name set into a translated sentence, as its own direction island (FSI…PDI) in a
+    right-to-left language, so "Couldn't change Built-in Speakers: …" keeps its order."""
+    return f"\u2068{text}\u2069" if text and i18n.rtl() else text
+
+
+def lead(text: str) -> str:
+    """A label made of a name only (a device's title): starts right-to-left in a right-to-left language, so it lines
+    up with the translated text around it instead of hugging the other side."""
+    return "\u200f" + text if text and i18n.rtl() else text
 
 
 def available() -> bool:
@@ -147,15 +162,17 @@ def default(snap: dict, kind="outputs") -> dict | None:
 def status_line() -> str:
     """Output · <device> · 45% (or muted), for the home card and the tray."""
     if not available():
-        return "PipeWire not found"
+        return tr("grimoire.spells.audiol.pw", "PipeWire not found")
     try:
         out = default(snapshot())
     except Exception:
-        return "PipeWire not answering"
+        return tr("grimoire.spells.audiol.pw", "PipeWire not answering")
     if not out:
-        return "No output"
-    vol = "muted" if out["mute"] else f"{out['volume']}%"
-    return "Output · {name} · {volume}".format(name=out["label"], volume=vol)
+        return tr("grimoire.spells.audiol.pw", "No output")
+    vol = tr("grimoire.spells.audiol.pw",
+             "muted") if out["mute"] else tr("grimoire.spells.audiol.pw", "{n}%").format(n=out["volume"])
+    return tr("grimoire.spells.audiol.pw", "Output · {name} · {volume}").format(name=isolate(out["label"]),
+                                                                              volume=vol)
 
 
 # ---------------------------------------------------------------- writes

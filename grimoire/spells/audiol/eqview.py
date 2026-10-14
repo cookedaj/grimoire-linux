@@ -8,16 +8,22 @@ service). Moving bands while it runs is live and needs no restart.
 import math
 
 from PySide6.QtCore import QPointF, QRectF, Qt, QTimer, Signal
-from PySide6.QtGui import QColor, QFont, QPainter, QPainterPath, QPen
+from PySide6.QtGui import QColor, QFont, QGuiApplication, QPainter, QPainterPath, QPen
 from PySide6.QtWidgets import (QComboBox, QFrame, QHBoxLayout, QInputDialog, QMessageBox, QPushButton,
                                QSizePolicy, QVBoxLayout, QWidget)
 
+from grimoire.i18n import tr
 from grimoire.spells.audiol import eq, pw
 from grimoire.spells.systeml.page import _label
 from grimoire.widgets import Slider, Switch
 
 LO, HI = 20.0, 20000.0
 STEP = 0.5                                     # dB per scroll notch / drag snap
+
+
+def preset_name(name: str) -> str:
+    """A preset as shown: the built-ins (eq.PRESETS, stored by their English id) translated, yours as you named them."""
+    return tr("grimoire.spells.audiol.eq", name) if name in eq.PRESETS else name
 
 
 def _freq_text(f: float) -> str:
@@ -38,7 +44,9 @@ class EqCurve(QWidget):
         self.setMinimumHeight(260)
         self.setMouseTracking(True)
         self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
-        self.setToolTip("Drag a band up or down, scroll over it, or double-click it to set it back to 0 dB")
+        self.setToolTip(tr("grimoire.spells.audiol.eqview",
+                           "Drag a band up or down, scroll over it, or double-click it to set it back to "
+                           "0 dB"))
 
     def set_curve(self, gains, preamp):
         self.gains, self.preamp = list(gains), preamp
@@ -72,6 +80,7 @@ class EqCurve(QWidget):
     def paintEvent(self, _):
         p = QPainter(self)
         p.setRenderHint(QPainter.RenderHint.Antialiasing)
+        p.setLayoutDirection(Qt.LayoutDirection.LeftToRight)     # "+12", "-3.5 dB" read as numbers in RTL too
         r = self._plot()
         small = QFont(self.font())
         small.setPixelSize(10)
@@ -97,8 +106,12 @@ class EqCurve(QWidget):
             y = self._y(self.preamp)
             p.setPen(QPen(QColor("#8c8c8c"), 1, Qt.PenStyle.DashLine))
             p.drawLine(QPointF(r.left(), y), QPointF(r.right(), y))
-            p.drawText(QRectF(r.right() - 120, y + 2, 116, 14), Qt.AlignmentFlag.AlignRight,
-                       "preamp {db:+.1f} dB".format(db=self.preamp))
+            p.setLayoutDirection(QGuiApplication.layoutDirection())   # a sentence: the language's own direction
+            p.drawText(QRectF(r.right() - 220, y + 2, 216, 14),
+                       Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignAbsolute,
+                       tr("grimoire.spells.audiol.eqview", "preamp {db} dB").format(
+                           db=pw.isolate(f"{self.preamp:+.1f}")))
+            p.setLayoutDirection(Qt.LayoutDirection.LeftToRight)
         path = QPainterPath()
         for k, (f, db) in enumerate(zip(freqs, dbs)):
             pt = QPointF(self._x(f), self._y(max(-eq.LIMIT - 2, min(eq.LIMIT + 2, db))))
@@ -191,7 +204,7 @@ class EqPanel(QWidget):
         self.state = _label("", "Muted", wrap=True)
         text.addWidget(self.state)
         tl.addLayout(text, 1)
-        self.apply_btn = QPushButton("Apply")
+        self.apply_btn = QPushButton(tr("grimoire.spells.audiol.eqview", "Apply"))
         self.apply_btn.setObjectName("Primary")
         self.apply_btn.clicked.connect(self.apply)
         tl.addWidget(self.apply_btn, 0, Qt.AlignmentFlag.AlignVCenter)
@@ -202,19 +215,19 @@ class EqPanel(QWidget):
 
         bar = QHBoxLayout()
         bar.setSpacing(10)
-        bar.addWidget(_label("Preset", "Muted"))
+        bar.addWidget(_label(tr("grimoire.spells.audiol.eqview", "Preset"), "Muted"))
         self.preset = QComboBox()
         self.preset.setMinimumWidth(160)
         self.preset.activated.connect(self._preset_picked)
         bar.addWidget(self.preset)
-        self.save_btn = QPushButton("Save as preset…")
+        self.save_btn = QPushButton(tr("grimoire.spells.audiol.eqview", "Save as preset…"))
         self.save_btn.clicked.connect(self._save_preset)
         bar.addWidget(self.save_btn)
-        self.del_btn = QPushButton("Delete preset")
+        self.del_btn = QPushButton(tr("grimoire.spells.audiol.eqview", "Delete preset"))
         self.del_btn.clicked.connect(self._delete_preset)
         bar.addWidget(self.del_btn)
         bar.addStretch(1)
-        bar.addWidget(_label("Plays into", "Muted"))
+        bar.addWidget(_label(tr("grimoire.spells.audiol.eqview", "Plays into"), "Muted"))
         self.target = QComboBox()
         self.target.setMinimumWidth(260)
         self.target.activated.connect(self._target_picked)
@@ -226,24 +239,25 @@ class EqPanel(QWidget):
         lay.addWidget(self.curve, 1)
 
         pre = QHBoxLayout()
-        pre.addWidget(_label("Preamp", "Muted"))
+        pre.addWidget(_label(tr("grimoire.spells.audiol.eqview", "Preamp"), "Muted"))
         self.pre = Slider(-24, 24, " dB")             # half-dB steps: the slider counts halves
         self.pre.v.setFixedWidth(64)
         self.pre.s.valueChanged.connect(self._pre_changed)
         pre.addWidget(self.pre, 1)
-        auto = QPushButton("Prevent clipping")
-        auto.setToolTip("Lowers the preamp by the biggest boost, so loud parts can't distort")
+        auto = QPushButton(tr("grimoire.spells.audiol.eqview", "Prevent clipping"))
+        auto.setToolTip(tr("grimoire.spells.audiol.eqview",
+                           "Lowers the preamp by the biggest boost, so loud parts can't distort"))
         auto.clicked.connect(self._auto_pre)
         pre.addWidget(auto)
-        flat = QPushButton("Reset")
+        flat = QPushButton(tr("grimoire.spells.audiol.eqview", "Reset"))
         flat.clicked.connect(lambda: self._load_preset("Flat"))
         pre.addWidget(flat)
         lay.addLayout(pre)
-        lay.addWidget(_label(
+        lay.addWidget(_label(tr("grimoire.spells.audiol.eqview",
             "The EQ is one more output, \"Grimoire EQ\", that plays into the device you pick; while it's on it's your "
             "default output. Turning it on or off, or changing its device, takes effect when you press Apply, which "
             "restarts PipeWire's filter-chain service (sound through the EQ pauses for a second). Moving bands while "
-            "it's on changes the sound right away.", "Muted", wrap=True))
+            "it's on changes the sound right away."), "Muted", wrap=True))
 
         self._live = QTimer(self, singleShot=True, interval=120, timeout=self._push_live)
         self._fill_presets()
@@ -262,7 +276,8 @@ class EqPanel(QWidget):
                 self.s["output"] = real["name"]
         names = [(d["label"], d["name"]) for d in self.outputs]
         if self.s["output"] and self.s["output"] not in (n for _, n in names):
-            names.append(("{name} (not connected)".format(name=self.s["output"]), self.s["output"]))
+            names.append((tr("grimoire.spells.audiol.eqview",
+                             "{name} (not connected)").format(name=self.s["output"]), self.s["output"]))
         if names != [(self.target.itemText(i), self.target.itemData(i)) for i in range(self.target.count())]:
             self.target.blockSignals(True)
             self.target.clear()
@@ -285,19 +300,28 @@ class EqPanel(QWidget):
         target_ok = any(d["name"] == self.s["output"] for d in self.outputs)
         label = next((d["label"] for d in self.outputs if d["name"] == self.s["output"]), self.s["output"])
         if self.pending():
-            msg = ("Press Apply to turn it on." if self.s["on"] else "Press Apply to turn it off.") \
-                if self.s["on"] != running else "Press Apply to play it into {device}.".format(device=label)
+            if self.s["on"] != running:
+                msg = tr("grimoire.spells.audiol.eqview",
+                         "Press Apply to turn it on.") if self.s["on"] else tr("grimoire.spells.audiol.eqview",
+                                                                               "Press Apply to turn it off.")
+            else:
+                msg = tr("grimoire.spells.audiol.eqview", "Press Apply to play it into {device}.").format(
+                device=pw.isolate(label))
         elif running:
-            msg = "On · plays into {device}".format(device=label)
+            msg = tr("grimoire.spells.audiol.eqview", "On · plays into {device}").format(device=pw.isolate(label))
             if eq_node is not None and not eq_node["default"]:
-                msg = "On · plays into {device} · not your default output, so only apps you move to it go " \
-                      "through it".format(device=label)
+                msg = tr("grimoire.spells.audiol.eqview",
+                         "On · plays into {device} · not your default output, so only apps you move to it go "
+                         "through it").format(device=pw.isolate(label))
             if not target_ok:
-                msg = "On, but {device} isn't connected: pick another device and press Apply.".format(device=label)
+                msg = tr("grimoire.spells.audiol.eqview",
+                         "On, but {device} isn't connected: pick another device and press Apply.").format(
+                    device=pw.isolate(label))
         else:
-            msg = "Off"
+            msg = tr("grimoire.spells.audiol.eqview", "Off")
         if self.fc is False:
-            msg += "  " + "(This system has no filter-chain service, so Apply restarts PipeWire itself.)"
+            msg += "  " + tr("grimoire.spells.audiol.eqview",
+                             "(This system has no filter-chain service, so Apply restarts PipeWire itself.)")
         self.state.setText(msg)
         self.apply_btn.setVisible(self.pending())
 
@@ -306,8 +330,8 @@ class EqPanel(QWidget):
         self.preset.blockSignals(True)
         self.preset.clear()
         for name in eq.all_presets(self.s):
-            self.preset.addItem(name, name)
-        self.preset.addItem("Custom", "")
+            self.preset.addItem(preset_name(name), name)          # built-ins shown translated, kept by id
+        self.preset.addItem(tr("grimoire.spells.audiol.eqview", "Custom", "preset"), "")
         self.preset.blockSignals(False)
         self._sync_preset()
 
@@ -341,13 +365,16 @@ class EqPanel(QWidget):
             self._sync_preset()
 
     def _save_preset(self):
-        name, ok = QInputDialog.getText(self, "Save preset", "Name for this curve:")
+        name, ok = QInputDialog.getText(self, tr("grimoire.spells.audiol.eqview",
+                                                 "Save preset"), tr("grimoire.spells.audiol.eqview",
+                                                                    "Name for this curve:"))
         name = name.strip()[:60]
         if not ok or not name:
             return
-        if name in eq.PRESETS:
-            QMessageBox.information(self, "Save preset", "{name} is a built-in preset; pick another name.".format(
-                name=name))
+        if name in eq.PRESETS or name in (preset_name(p) for p in eq.PRESETS):
+            QMessageBox.information(self, tr("grimoire.spells.audiol.eqview", "Save preset"),
+                                    tr("grimoire.spells.audiol.eqview",
+                                       "{name} is a built-in preset; pick another name.").format(name=name))
             return
         self.s["presets"][name] = {"gains": list(self.s["gains"]), "preamp": self.s["preamp"]}
         eq.save(self.s)
@@ -394,7 +421,7 @@ class EqPanel(QWidget):
             if eq.installed(path):
                 eq.write(s, path)
             return "updated"
-        self.page.act("Equalizer", work, quiet=True)
+        self.page.act(tr("grimoire.spells.audiol.eqview", "Equalizer"), work, quiet=True)
 
     def _target_picked(self, i: int):
         self.s["output"] = self.target.itemData(i) or ""
@@ -410,7 +437,7 @@ class EqPanel(QWidget):
     def apply(self):
         s = dict(self.s)
         if not s["output"]:
-            self.page.say("Pick the device the equalizer plays into first.")
+            self.page.say(tr("grimoire.spells.audiol.eqview", "Pick the device the equalizer plays into first."))
             return
         fc = self.fc
         self.apply_btn.setEnabled(False)
@@ -420,7 +447,7 @@ class EqPanel(QWidget):
             self.s["restore"], self.s["enabled_unit"] = fresh["restore"], fresh["enabled_unit"]
             self.apply_btn.setEnabled(True)
             self.page.refresh()
-        self.page.act("Equalizer", lambda: turn(s, fc), then=done_then)
+        self.page.act(tr("grimoire.spells.audiol.eqview", "Equalizer"), lambda: turn(s, fc), then=done_then)
 
 
 def _wait_eq(seconds=6.0) -> dict | None:
@@ -453,11 +480,12 @@ def turn(s: dict, fc: bool | None) -> str:
         unit = eq.restart(fc)
         node = _wait_eq()
         if not node:
-            raise RuntimeError("{unit} restarted but the EQ didn't appear; see journalctl --user -u {unit}".format(
-                unit=unit))
+            raise RuntimeError(tr("grimoire.spells.audiol.eqview",
+                                  "{unit} restarted but the EQ didn't appear; see journalctl --user -u {unit}")
+                               .format(unit=unit))
         pw.set_default(node["id"])
         label = next((d["label"] for d in snap["outputs"] if d["name"] == s["output"]), s["output"])
-        return "on, playing into {device}".format(device=label)
+        return tr("grimoire.spells.audiol.eqview", "on, playing into {device}").format(device=pw.isolate(label))
     back_name = s["restore"] or s["output"]
     if current and current["eq"]:
         back = next((d for d in snap["outputs"] if d["name"] == back_name and not d["eq"]), None) \
@@ -470,4 +498,4 @@ def turn(s: dict, fc: bool | None) -> str:
         eq.set_unit_enabled(False)
         s["enabled_unit"] = False
     eq.save(s)
-    return "off"
+    return tr("grimoire.spells.audiol.eqview", "off", "equalizer state")

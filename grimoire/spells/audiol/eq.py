@@ -21,6 +21,7 @@ import shutil
 from pathlib import Path
 
 from grimoire.fsutil import free_name
+from grimoire.i18n import tr_noop
 from grimoire.paths import CONFIG
 from grimoire.spells.audiol import pw
 
@@ -34,12 +35,14 @@ MARK = "# Written by Grimoire Linux AudioL."
 UNIT = "filter-chain.service"
 PIPEWIRE_DIR = Path(os.environ.get("XDG_CONFIG_HOME", Path.home() / ".config")) / "pipewire"
 
-PRESETS = {                        # name: (gains for FREQS, preamp); the preamp keeps boosted bands from clipping
-    "Flat": ([0] * 10, 0.0),
-    "Bass boost": ([6, 5, 4, 2, 0, 0, 0, 0, 0, 0], -6.0),
-    "Vocal": ([-2, -2, -1, 1, 3, 4, 4, 2, 0, -1], -4.0),
-    "Treble": ([0, 0, 0, 0, 0, 1, 2, 4, 5, 6], -6.0),
-    "Loudness": ([5, 4, 2, 0, -1, -1, 0, 2, 4, 4], -5.0),
+# name: (gains for FREQS, preamp); the preamp keeps boosted bands from clipping. The names are stable ids (saved in
+# audiol.json), shown translated by eqview.preset_name.
+PRESETS = {
+    tr_noop("grimoire.spells.audiol.eq", "Flat"): ([0] * 10, 0.0),
+    tr_noop("grimoire.spells.audiol.eq", "Bass boost"): ([6, 5, 4, 2, 0, 0, 0, 0, 0, 0], -6.0),
+    tr_noop("grimoire.spells.audiol.eq", "Vocal"): ([-2, -2, -1, 1, 3, 4, 4, 2, 0, -1], -4.0),
+    tr_noop("grimoire.spells.audiol.eq", "Treble"): ([0, 0, 0, 0, 0, 1, 2, 4, 5, 6], -6.0),
+    tr_noop("grimoire.spells.audiol.eq", "Loudness"): ([5, 4, 2, 0, -1, -1, 0, 2, 4, 4], -5.0),
 }
 DEFAULTS = {"on": False, "gains": [0.0] * 10, "preamp": 0.0, "preset": "Flat", "output": "", "restore": "",
             "presets": {}, "enabled_unit": False}
