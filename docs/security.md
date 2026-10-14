@@ -13,6 +13,10 @@ things that change the system, and those go through small helper scripts that kn
 Every helper validates its arguments and refuses anything else; files it writes carry a Grimoire mark so "off"
 only ever removes what Grimoire put there. Your own files are never deleted: they go to the Trash.
 
+Some spells change per-user services without a password: AudioL's equalizer writes one PipeWire drop-in
+(`~/.config/pipewire/filter-chain.conf.d/grimoire-eq.conf`, marked as Grimoire's) and restarts your
+`filter-chain.service` only when you press Apply.
+
 ### Where the helpers live
 
 pkexec only ever runs a **root-owned system copy** of a helper, never the one in your per-user install

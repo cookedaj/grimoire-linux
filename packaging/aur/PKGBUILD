@@ -37,6 +37,8 @@ optdepends=(
     'gst-plugin-pipewire: ShotL screen recording'
     'networkmanager: NetL Wi-Fi and VPN controls'
     'iproute2: NetL connection list'
+    'wireplumber: AudioL (wpctl)'
+    'libpulse: AudioL moving apps between outputs (pactl)'
     'kde-cli-tools: open files with kioclient'
     'python-numpy: OptimizeL memory benchmark'
     'wl-clipboard: copy screenshots from the command line'

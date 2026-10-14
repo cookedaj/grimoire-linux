@@ -19,7 +19,7 @@ OUT = REPO / "docs" / "screenshots"
 BOX = Path.home() / ".cache" / "grimoire-screenshots"
 W, H = 1440, 900
 PAGES = ["hub", "mural", "sightc", "vaultl", "optimizel", "systeml", "terminall", "shotl", "focusl", "netl", "launchl",
-         "settings", "tray"]
+         "settings", "tray", "audiol"]
 
 
 # ---------------------------------------------------------------- the sandbox
@@ -103,6 +103,7 @@ def render(names: list[str]):
 
     private_addresses()
     offline_stubs()
+    demo_audio()
     OUT.mkdir(parents=True, exist_ok=True)
     win = Window()
     win.resize(W, H)
@@ -162,6 +163,48 @@ def offline_stubs():
     panel.scan = lambda: [{"id": 1, "order": "2;3;4", "widgets": [
         {"id": 2, "type": "org.kde.plasma.kickoff"}, {"id": 3, "type": "org.kde.plasma.icontasks"},
         {"id": 4, "type": "org.kde.plasma.systemtray"}]}]
+
+
+def demo_audio():
+    """AudioL reads the live PipeWire graph, which the sandbox can't reach: show a made-up PC's devices and apps."""
+    from grimoire.spells.audiol import eq, pw
+
+    def dev(i, name, label, vol, default=False, card=None, state="running"):
+        return {"id": i, "serial": i + 100, "name": name, "label": label, "volume": vol, "mute": False, "channels": 2,
+                "state": state, "card": card, "virtual": card is None, "eq": False, "default": default}
+
+    def app(i, name, media, vol, target, state="running"):
+        return {"id": i, "serial": i + 100, "name": name.lower(), "app": name, "media": media, "icon": name.lower(),
+                "binary": "", "pid": None, "volume": vol, "mute": False, "channels": 2, "state": state,
+                "target": target}
+
+    def card(i, label, bus, form, active, profiles):
+        return {"id": i, "name": f"card{i}", "label": label, "bus": bus, "form": form, "profile": active,
+                "profile_name": "", "profiles": [{"index": n, "name": f"p{n}", "label": lab, "available": True,
+                                                  "priority": 100 - n} for n, lab in enumerate(profiles)]}
+    snap = {"outputs": [dev(41, "speakers", "Built-in Speakers", 62, True, 1),
+                        dev(42, "hdmi", "HDMI / DisplayPort", 40, card=2, state="suspended"),
+                        dev(43, "headphones", "USB Headphones", 75, card=3, state="suspended")],
+            "inputs": [dev(51, "mic", "Built-in Microphone", 80, True, 1, state="suspended"),
+                       dev(52, "usbmic", "USB Headphones Microphone", 100, card=3, state="suspended")],
+            "playing": [app(61, "Firefox", "Lo-fi beats to focus to", 100, 41),
+                        app(62, "Spotify", "Spotify", 70, 41, state="idle")],
+            "recording": [], "default_output": "speakers", "default_input": "mic",
+            "cards": [card(1, "Built-in Audio", "pci", "internal", 1, ["Off", "Analog Stereo Duplex", "Analog Stereo "
+                                                                         "Output", "Pro Audio"]),
+                      card(2, "HDMI Audio Controller", "pci", "", 1, ["Off", "Digital Stereo (HDMI) Output",
+                                                                      "Digital Surround 5.1 (HDMI) Output"]),
+                      card(3, "USB Headphones", "usb", "headset", 1, ["Off", "Analog Stereo Output + Mono Input",
+                                                                      "Analog Stereo Output"])]}
+    pw.available = lambda: True
+    pw.snapshot = lambda: snap
+    eq.uses_filter_chain = lambda: True
+    eq.save({**eq.load(), "gains": [4.0, 3.5, 2.0, 0.0, -1.0, -1.0, 0.5, 2.0, 3.5, 3.0], "preamp": -5.0,
+             "preset": "", "output": "speakers"})
+
+
+def _audiol(page, wait):
+    page.show_panel("eq")
 
 
 def seed_shots():
@@ -242,7 +285,7 @@ def _terminal(page, wait):
     term.session.write(demo.encode())
 
 
-PREPARE = {"vaultl": _vaultl, "terminall": _terminal}
+PREPARE = {"vaultl": _vaultl, "terminall": _terminal, "audiol": _audiol}
 WAIT = {"mural": 6000, "systeml": 30000, "netl": 30000, "optimizel": 5000, "terminall": 3500, "vaultl": 3000}
 
 

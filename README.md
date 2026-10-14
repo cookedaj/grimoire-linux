@@ -110,6 +110,15 @@ A black & white panel launcher in Kickoff's place: favorites, every app by categ
 search that also finds files, does sums and unit conversions and runs Grimoire's spells, plus the leave buttons.
 Meta opens it. **Replace launcher** records your Kickoff first, so **Restore Kickoff** puts back exactly what was there.
 
+### AudioL: sound on PipeWire
+
+![AudioL](docs/screenshots/audiol.png)
+
+Your outputs and inputs (default device, volume, mute, a live level meter), each app's volume and the device it
+plays on, sound card profiles (HDMI or analog, stereo or surround), and a system-wide 10-band equalizer with
+presets. The EQ is PipeWire's own filter-chain: one more output, "Grimoire EQ", that plays into the device you pick;
+turning it on or off is an explicit **Apply** that restarts only PipeWire's filter-chain service.
+
 ### Tray, Settings and updates
 
 ![Tray icon and menu](docs/screenshots/tray.png)
@@ -160,7 +169,8 @@ update with your system; the in-app updater is off there.
 
 KDE Plasma 6 (Wayland is best; made on Kubuntu 26.04) and Python 3.12+ with PySide6, Pillow and psutil, plus
 layer-shell-qt (SightsL), Qt Multimedia (video wallpapers), pyte (TerminalL) and dbus-python (GitHub sign-in).
-Optional: ffmpeg (video thumbnails, recordings), Spectacle (ShotL), NetworkManager (NetL controls), rsync.
+Optional: ffmpeg (video thumbnails, recordings), Spectacle (ShotL), NetworkManager (NetL controls), PipeWire's
+`pw-dump`/`wpctl` (AudioL; on every Plasma 6 system), rsync.
 
 ```bash
 # Ubuntu / Kubuntu / Debian
@@ -177,7 +187,7 @@ sudo pacman -S pyside6 python-pillow python-psutil python-pyte python-dbus layer
 
 Press **Install** on a spell's card on the home page (or `./install.sh --all`), or run `grimoire-mural`,
 `grimoire-sightc`, `grimoire-vaultl`, `grimoire-optimizel`, `grimoire-systeml`, `grimoire-terminall`,
-`grimoire-shotl`, `grimoire-focusl` or `grimoire-netl` directly. Command-line helpers:
+`grimoire-shotl`, `grimoire-focusl`, `grimoire-netl` or `grimoire-audiol` directly. Command-line helpers:
 `grimoire-sightc on|off|toggle|next`, `grimoire-vaultl [folder]`, `grimoire-vaultl tidy run|undo|enable|disable|status`,
 `grimoire-systeml alerts check|enable|disable|status`, `grimoire-focusl start|stop|status`, `grimoire update`.
 

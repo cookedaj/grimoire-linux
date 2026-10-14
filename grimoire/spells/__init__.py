@@ -161,3 +161,18 @@ def _netl_status() -> str:
 
 SPELLS.append(Spell("netl", "NetL", "Your network: live traffic per interface and per app, connections, Wi-Fi and "
                     "VPN switches, and daily and monthly usage", _netl, "net", _netl_status))
+
+
+def _audiol():
+    from grimoire.spells.audiol.page import AudioLPage
+    return AudioLPage()
+
+
+def _audiol_status() -> str:
+    from grimoire.spells.audiol.pw import status_line
+    return status_line()
+
+
+SPELLS.append(Spell("audiol", "AudioL", "Your sound on PipeWire: outputs and inputs, each app's volume and device, "
+                    "a system-wide equalizer with presets, and sound card profiles", _audiol, "audio",
+                    _audiol_status))
