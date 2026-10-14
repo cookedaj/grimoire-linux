@@ -18,7 +18,6 @@ def main(argv: list[str]):
     from PySide6.QtWidgets import QApplication, QMainWindow
 
     from grimoire.app import style_app
-    from grimoire.spells.vaultl.page import VaultLPage
     from grimoire.standalone import app_icon
 
     app = QApplication(sys.argv[:1])
@@ -26,6 +25,10 @@ def main(argv: list[str]):
     app.setDesktopFileName("grimoire-vaultl")
     style_app(app)
     app.setWindowIcon(QIcon(app_icon("vault")))
+    from grimoire.loginview import gate
+    if not gate("VaultL", (1280, 800)):              # the account picks the settings folder before the page loads
+        sys.exit(0)
+    from grimoire.spells.vaultl.page import VaultLPage
     arg = argv[0] if argv else ""
     if arg.startswith("file://"):
         arg = unquote(urlparse(arg).path)

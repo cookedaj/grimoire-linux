@@ -106,3 +106,16 @@ SIGTERM/INT/HUP; the page and CLI steer it through `focusl-control.json`), `guar
 org.freedesktop.Notifications, auto-released by Plasma if we die), crosshair, app blocking, sites via its
 `root-helper.sh` (marked block in /etc/hosts; test with `FOCUSL_ROOT=<sandbox>`), `dial.py` ring + bars, `page.py`.
 Test with `FOCUSL_DRY=1` (logs DND/notify/kill/crosshair, hosts helper on a sandbox copy) and a sandbox HOME.
+
+## Accounts
+Sign-in screen + guest mode + first-run setup (not a spell). `paths.py` picks the profile before any spell imports
+(`CONFIG` = `CONFIG_ROOT/profiles/<account uuid>/`, guest `$XDG_RUNTIME_DIR/grimoire/guest-profile`, else
+`CONFIG_ROOT`; `GRIMOIRE_PROFILE` env, else `session.json`'s last account); `paths.activate()` switches it and says
+when a loaded module holds the old one (then `loginview.restart()` re-execs). `accounts.py` backend interface +
+Supabase client (GoTrue/PostgREST over urllib, `HTTP` swappable, username → `<name>@users.grimoire.invalid`,
+PKCE `Loopback`, recovery codes, sync), `supabase_app.py` URL/anon key (env `GRIMOIRE_SUPABASE_URL`/`_ANON_KEY`),
+`session.py` (session.json, profiles, guest lock/wipe, seeding, refresh token in keyring via swappable `KEYRING`),
+`loginview.py` (`gate()` in app/standalone/vaultl/terminall mains; imports there must not bind CONFIG),
+`setupwizard.py`, `accountview.py` (Settings → Account, guest bar, auto-sync). Server SQL in
+`supabase/migrations/`, setup in `supabase/README.md`. Test with `python3 scripts/test_accounts.py
+~/.cache/<sandbox>` (in-process `scripts/fake_supabase.py`, fake keyring); never against a real project.

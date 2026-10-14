@@ -153,12 +153,10 @@ class Home(QWidget):
         lay.addWidget(spaced("SPELLS", 10, 4))
         lay.addSpacing(10)
 
-        grid = QGridLayout()
+        self.grid = grid = QGridLayout()
         grid.setSpacing(16)
         self.cards = [SpellCard(s, lambda s=s: open_spell(s.id)) for s in SPELLS]
-        for i, card in enumerate(self.cards):
-            grid.addWidget(card, i // 2, i % 2)
-        soon = QFrame()
+        self.soon = soon = QFrame()
         soon.setObjectName("CardSoon")
         soon.setMinimumSize(360, 190)
         sl = QVBoxLayout(soon)
@@ -167,17 +165,26 @@ class Home(QWidget):
         t.setObjectName("Muted")
         sl.addWidget(t)
         sl.addStretch(1)
-        n = len(self.cards)
-        grid.addWidget(soon, n // 2, n % 2)
+        self.arrange(set())
         grid.setColumnStretch(0, 1)
         grid.setColumnStretch(1, 1)
         lay.addLayout(grid)
         lay.addStretch(1)
 
+    def arrange(self, hidden: set):
+        """Lay out the cards of the spells not hidden in Settings (or the setup)."""
+        shown = [c for c in self.cards if c.spell.id not in hidden] + [self.soon]
+        for c in self.cards + [self.soon]:
+            self.grid.removeWidget(c)
+            c.setVisible(c in shown)
+        for i, card in enumerate(shown):
+            self.grid.addWidget(card, i // 2, i % 2)
+
     def showEvent(self, e):
         super().showEvent(e)
         for c in self.cards:
-            c.refresh()
+            if c.isVisible():
+                c.refresh()
 
 
 class Window(QMainWindow):
@@ -213,11 +220,27 @@ class Window(QMainWindow):
         self.pages: dict[str, tuple] = {}
         home = QScrollArea()                     # scrolls once there are more spell cards than fit
         home.setWidgetResizable(True)
-        home.setWidget(Home(self.open, Banner(self.updater, self.whats_new)))
+        from grimoire.accountview import AutoSync, GuestBar
+        top = QWidget()                          # the update banner and, for a guest, the guest bar
+        tl = QVBoxLayout(top)
+        tl.setContentsMargins(0, 0, 0, 0)
+        tl.setSpacing(10)
+        tl.addWidget(Banner(self.updater, self.whats_new))
+        tl.addWidget(GuestBar())
+        self.home = Home(self.open, top)
+        home.setWidget(self.home)
         self._add_page("home", "Home", "home", home, rl)
         for spell in SPELLS:
             self._add_page(spell.id, spell.name, spell.icon, None, rl, spell)
         rl.addStretch(1)
+        account = QPushButton()                  # your account: opens Settings → Account
+        account.setObjectName("RailItem")
+        account.setIcon(glyph("login", 22))
+        account.setIconSize(QSize(22, 22))
+        account.setFixedSize(48, 48)
+        account.setToolTip(self._who())
+        account.clicked.connect(lambda: (self.open("settings"), self.pages["settings"][1].show_section("profile")))
+        rl.addWidget(account, 0, Qt.AlignmentFlag.AlignHCenter)
         self._add_page("settings", "Settings", "gear", None, rl,
                        SimpleNamespace(page=lambda: SettingsPage(self.updater, self.whats_new)))
         rl.addWidget(VersionButton(self.updater, self.whats_new), 0, Qt.AlignmentFlag.AlignHCenter)
@@ -225,7 +248,25 @@ class Window(QMainWindow):
         root.addWidget(rail)
         root.addWidget(self.stack, 1)
         self.open("home")
+        self.refresh_spells()
         self.updater.start()
+        self.sync = AutoSync(self)
+
+    @staticmethod
+    def _who() -> str:
+        from grimoire import session
+        who = session.active()
+        if who is None or who.guest:
+            return "Guest: settings won't be kept"
+        return "Signed in as {name}".format(name=who.username or "you")
+
+    def refresh_spells(self):
+        """Show only the spells picked in setup/Settings, in the rail and on the home page."""
+        from grimoire import prefs
+        hidden = set(prefs.load()["hidden_spells"])
+        for spell in SPELLS:
+            self.pages[spell.id][0].setVisible(spell.id not in hidden)
+        self.home.arrange(hidden)
 
     def whats_new(self):
         """The What's new panel (also 'Check for updates'); one per window, kept while it lives."""
@@ -279,6 +320,9 @@ def main():
     app.setApplicationName(NAME)
     app.setDesktopFileName("grimoire")
     style_app(app)
+    from grimoire.loginview import gate
+    if not gate(wizard=True):                # signs in (or guest) before any spell reads its settings
+        sys.exit(0)
     win = Window()
     start = sys.argv[1] if len(sys.argv) > 1 else "home"
     start = {"filel": "vaultl", "tidyl": "vaultl"}.get(start, start)     # old menu actions from before the merge

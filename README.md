@@ -125,6 +125,19 @@ Meta opens it. **Replace launcher** records your Kickoff first, so **Restore Kic
 
 ![Settings](docs/screenshots/settings.png)
 
+### Accounts, guest mode and first-run setup
+
+- **Sign in or continue as a guest.** On first start Grimoire Linux shows its own sign-in screen: a username and
+  password (email optional), or Google / GitHub. Your settings then follow you to every PC you sign in on; each
+  account on a PC has its own settings. **Continue as Guest** (right under the form) works fully offline; guest
+  settings are cleared at the next guest start, and **Create account to keep them** carries them over.
+- **Forgot your password?** Username accounts get a one-time recovery code at sign-up; it sets a new password and
+  gives you a fresh code.
+- **First-run setup:** pick which spells show, optionally put back a saved MuraL look, check the hotkeys and choose
+  a language. Run it again from Settings → General.
+- Accounts run on a Supabase project (see [supabase/README.md](supabase/README.md)); until one is set up, the
+  sign-in screen offers Guest. Threat model: [docs/security.md](docs/security.md).
+
 ## Install
 
 ### From source (recommended)
@@ -227,8 +240,8 @@ A source install checks GitHub every few hours (turn it off in Settings → Gene
 
 ### What about privacy?
 
-No telemetry, no analytics, no accounts needed. The app only goes online when you ask (community store, NetL's
-public-IP and ping checks, GitHub backup) and for the update check, which is one request to GitHub's public API.
+No telemetry, no analytics, and Guest mode needs no account. The app only goes online when you ask (community store, NetL's
+public-IP and ping checks, GitHub backup, your account's sign-in and settings sync) and for the update check, which is one request to GitHub's public API.
 
 ### How do I uninstall?
 

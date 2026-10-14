@@ -19,7 +19,7 @@ from grimoire.jobs import POOL, Job
 from grimoire.widgets import Switch
 
 SECTIONS = [("hotkeys", "Hotkeys", "keyboard"), ("backup", "Backup & restore", "archive"),
-            ("account", "GitHub", "login"), ("general", "General", "sliders")]
+            ("account", "GitHub backup", "link"), ("general", "General", "sliders"), ("profile", "Account", "login")]
 
 
 def _label(text="", name="", wrap=True):
@@ -766,6 +766,8 @@ class GeneralPanel(QWidget):
         self.login.setChecked(prefs.open_at_login())
         self.login.toggled.connect(self._login)
         lay.addWidget(Row("Open Grimoire Linux at login", "Opens the hub when Plasma starts.", [self.login]))
+        lay.addWidget(Row("Setup", "Pick your spells, a look, hotkeys and the language again.", [
+            _button("Choose spells…", lambda: self._setup("spells")), _button("Run setup again", self._setup)]))
         self.status = _label("", "Status")
         self.status.hide()
         lay.addWidget(self.status)
@@ -796,6 +798,11 @@ class GeneralPanel(QWidget):
     def _say(self, text):
         self.status.setText(text)
         self.status.setVisible(bool(text))
+
+    def _setup(self, start="welcome"):
+        from grimoire.setupwizard import SetupDialog
+        if SetupDialog(self.window(), start).exec() and hasattr(self.window(), "refresh_spells"):
+            self.window().refresh_spells()
 
     def _auto(self, on):
         from grimoire import prefs
@@ -857,8 +864,9 @@ class SettingsPage(QWidget):
         self.heading = _label("", "PageHeading")
         right.addWidget(self.heading)
         self.stack = QStackedWidget()
+        from grimoire.accountview import AccountPanel as ProfilePanel
         self.panels = {"hotkeys": HotkeysPanel(), "backup": BackupPanel(), "account": AccountPanel(),
-                       "general": GeneralPanel(updater, whats_new)}
+                       "general": GeneralPanel(updater, whats_new), "profile": ProfilePanel()}
         self.scrolls = {k: _scroll(p) for k, p in self.panels.items()}
         for s in self.scrolls.values():
             self.stack.addWidget(s)

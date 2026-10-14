@@ -45,7 +45,7 @@ Nothing is sent anywhere unless you ask, except the update check: every few hour
 API for the newest commit on `main` (no account, no identifiers beyond a normal HTTPS request; turn it off in
 Settings → General or with `GRIMOIRE_NO_UPDATE_CHECK=1`). Packaged installs (.deb, AUR) don't check at all.
 On demand only: the MuraL community store (KDE Store, Wallhaven) when you open it and install, NetL's public IP and
-ping checks when you press them, and GitHub sign-in / gist backup. There is no telemetry and no analytics.
+ping checks when you press them, GitHub sign-in / gist backup, and your Grimoire account (sign-in, settings sync) when you use one; guests never go online for it. There is no telemetry and no analytics.
 
 ## Sign-in and backups: threat model
 
@@ -69,3 +69,74 @@ ping checks when you press them, and GitHub sign-in / gist backup. There is no t
 - **Network.** All calls run off the UI thread with clear messages for offline, rate limits (GitHub's slow_down and
   hourly limits are respected) and revoked sign-ins. Only github.com, api.github.com, gist.githubusercontent.com and
   avatars.githubusercontent.com are contacted.
+
+## Accounts and guest mode: threat model
+
+Grimoire Linux asks you to sign in or continue as a guest. Accounts live on one Supabase project (managed
+Postgres + Supabase Auth); its schema is in `supabase/migrations/`, its setup in `supabase/README.md`. The client
+is `grimoire/accounts.py` (no extra dependencies, every call off the UI thread), the local side `grimoire/session.py`.
+
+**What an account is for.** Signing in picks which settings folder Grimoire uses on this PC and lets those settings
+follow you to other PCs. It is not encryption and not a lock: anything running as your Linux user can read
+`~/.config/grimoire` (every profile, the guest one too) just as it can read the rest of your home folder. Your
+Linux login is what protects your files; Grimoire doesn't pretend otherwise and doesn't encrypt settings.
+
+**Profiles on this PC.** Each account gets `~/.config/grimoire/profiles/<account id>/` (0700). The first account
+signed in on a PC starts with a *copy* of the settings Grimoire had before accounts (the originals stay put).
+`session.json` (0600, written atomically) remembers the last account (id, username, how it signed in) and
+whether to stay signed in; it holds no token. Timers, the tray and hotkeys use the last signed-in account's
+profile. Machine state (OptimizeL's originals, history) stays shared in `~/.local/share/grimoire`, because it
+describes the PC, not a person.
+
+**Guest.** Works offline and never talks to the account server. Its profile is in `$XDG_RUNTIME_DIR` (memory,
+gone at logout) and is emptied when the next guest session starts, unless another guest window still uses it
+(a file lock decides). "Create account to keep them" copies it into the new account's profile.
+
+**Usernames without email.** Supabase Auth needs an email, so a username account signs in with
+`<username>@users.grimoire.invalid`, an address that can't exist (RFC 2606) and is never mailed; "Confirm
+email" is off for that reason. The email you may type at sign-up is stored on your private profile row
+(only you can read it, through row-level security), never used to sign in and never sent anywhere by Grimoire.
+Because the login address is derived from the username, no endpoint turns a username into an email address.
+Triggers refuse any sign-up whose synthetic address doesn't match its username and any later change of such an
+address, so one account can't take over another username's sign-in.
+
+**Account enumeration.** Sign-up says when a username is taken (it has to). Sign-in answers "wrong username or
+password" for both cases. The recovery function counts failures for unknown usernames too, always runs one
+bcrypt, and answers the same for "no such user" and "wrong code".
+
+**Brute force.** Supabase rate-limits sign-ins and sign-ups per IP (Authentication → Rate Limits). The app
+additionally waits after repeated wrong passwords for a username (5 failures → 30 s, doubling, up to 15 min,
+kept in `~/.cache/grimoire/signin-throttle.json`; a local courtesy, not a security boundary). Passwords need at
+least 10 characters (set the same minimum in Supabase). Captcha (hCaptcha or Cloudflare Turnstile, under
+Authentication → Attack Protection) is available against sign-up spam; this version doesn't show one yet, so
+enabling it would block sign-ups until the app supports it.
+
+**Recovery codes.** Shown once at sign-up (copy, or save as a 0600 text file), 80 random bits, stored only as a
+bcrypt hash in a table the API can't reach. `recover_account()` checks it with a per-username lockout (5 wrong →
+30 s, doubling, up to 15 min), sets the new password (bcrypt, as Supabase Auth stores them), signs the account
+out everywhere and returns a fresh code; the used one stops working. Anyone holding your code can reset your
+password: keep it like a password. Someone with a stolen live session could also issue a new code; signing out
+everywhere (a password reset does that) ends it. Google/GitHub accounts recover through Google/GitHub.
+
+**Row-level security.** `profiles`, `user_settings` and the recovery tables have RLS on; the API roles get only
+the grants they need (`authenticated` may read its own profile, change only its email, and read/write only its
+own settings row; `anon` may only call `recover_account`). Functions that touch `auth` are `security definer` with
+an empty `search_path`, and nothing else is executable by the API roles. The publishable key in the app grants
+nothing beyond these policies; the service-role key is never in the app or the repo.
+
+**OAuth (Google, GitHub).** Through Supabase's providers with PKCE (S256): the app opens your browser at
+`/auth/v1/authorize`, listens once on `127.0.0.1` on a random port at `/callback/<random state>` (compared in
+constant time; other paths get 404), and exchanges the code with its verifier at `/auth/v1/token?grant_type=pkce`.
+A code caught by anything else is useless without the verifier, which never leaves the process. Requests are never
+logged (the query holds the code). Google is asked only for `openid email profile`.
+
+**Tokens.** The access token lives in memory only. The refresh token is stored only in the system keyring
+(KWallet; `application=grimoire, service=account, user=<id>`) and only when "Keep me signed in" is ticked;
+otherwise it's forgotten when Grimoire closes. Tokens print as `Token(…)`, passwords are only passed through, and
+error messages are fixed texts or server error codes, never request or response bodies. Requests to the account
+server never follow redirects (they carry the key and token), and only https is accepted (plain http only for a
+`127.0.0.1` test server).
+
+**Settings sync.** The same `.grimoire-backup` zip as a file (without MuraL's wallpaper library), at most 1 MB,
+in your `user_settings` row. Restoring it goes through the same checks, preview and safety backup as any backup
+file. The older GitHub gist backup stays available in Settings → GitHub backup as an optional extra.
