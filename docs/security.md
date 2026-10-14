@@ -71,3 +71,20 @@ the same) and changelogs when you open one, and GitHub sign-in / gist backup. Th
 - **Network.** All calls run off the UI thread with clear messages for offline, rate limits (GitHub's slow_down and
   hourly limits are respected) and revoked sign-ins. Only github.com, api.github.com, gist.githubusercontent.com and
   avatars.githubusercontent.com are contacted.
+
+## Shared setups
+
+- **What goes out.** A `.grimoire-setup` file or `GS1-` code holds the look only: MuraL designs and options, the
+  wallpaper playlist by file name (pictures only if you tick it), store items by store id, crosshair and terminal
+  profiles, LaunchL's favorites order, the tray meter. Never accounts, tokens, gist ids, tidy rules, history, network
+  or usage data, TerminalL's palette commands or any path. Before writing, every string (title, author, names,
+  options) is checked for your home path, `/home/` paths, your user name, the computer's name and email addresses;
+  a match stops the export and says where it is.
+- **What comes in is untrusted.** Checked like a restore (zip only, size and count caps, allowlisted names, no
+  links, absolute or `..` paths, no encryption, sha256 per file, pictures must really be PNG/JPEG/WebP), then
+  `setup.json` is rebuilt from a schema: unknown keys dropped, numbers clamped, text length-capped with control
+  characters removed and `<` `>` replaced, design and theme ids checked against what Grimoire knows. Palette commands
+  are never read from a shared file. Text from it is only shown as plain text. A safety backup comes first, files are
+  written atomically, pictures never overwrite (a clash becomes "name (2).png"), and nothing changes the desktop or
+  downloads from the store until you click.
+

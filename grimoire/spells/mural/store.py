@@ -126,20 +126,21 @@ def _ocs(cat, sort, search, page) -> list[Item]:
     if search:
         params["search"] = search
     data = json.loads(_get(OCS + "?" + urllib.parse.urlencode(params)))
-    items = []
-    for d in data.get("data", []):
-        files = []
-        for n in range(1, 30):
-            link = d.get(f"downloadlink{n}")
-            if not link:
-                break
-            files.append((link, d.get(f"downloadname{n}") or "", int(d.get(f"downloadsize{n}") or 0)))
-        items.append(Item(id=f"kde-{d['id']}", name=d.get("name", "?"), author=d.get("personid", ""),
-                          downloads=int(d.get("downloads") or 0), score=int(float(d.get("score") or 0)),
-                          preview=d.get("smallpreviewpic1") or d.get("previewpic1") or "",
-                          summary=re.sub(r"<[^>]+>", "", d.get("summary") or "")[:200], files=files,
-                          page=d.get("detailpage", "")))
-    return items
+    return [_ocs_item(d) for d in data.get("data", [])]
+
+
+def _ocs_item(d: dict) -> Item:
+    files = []
+    for n in range(1, 30):
+        link = d.get(f"downloadlink{n}")
+        if not link:
+            break
+        files.append((link, d.get(f"downloadname{n}") or "", int(d.get(f"downloadsize{n}") or 0)))
+    return Item(id=f"kde-{d['id']}", name=d.get("name", "?"), author=d.get("personid", ""),
+                downloads=int(d.get("downloads") or 0), score=int(float(d.get("score") or 0)),
+                preview=d.get("smallpreviewpic1") or d.get("previewpic1") or "",
+                summary=re.sub(r"<[^>]+>", "", d.get("summary") or "")[:200], files=files,
+                page=d.get("detailpage", ""))
 
 
 def _wallhaven(cat, sort, search, page) -> list[Item]:
@@ -149,15 +150,31 @@ def _wallhaven(cat, sort, search, page) -> list[Item]:
     items = []
     for p in (params["page"], params["page"] + 1, params["page"] + 2, params["page"] + 3):   # 24/page → ~96
         data = json.loads(_get(WALLHAVEN + "?" + urllib.parse.urlencode({**params, "page": p})))
-        for d in data.get("data", []):
-            items.append(Item(id=f"wh-{d['id']}", name=f"{d['id']} · {d['resolution']}", author="wallhaven",
-                              downloads=int(d.get("favorites") or 0), preview=d["thumbs"]["small"],
-                              summary=f"{d['resolution']} · {int(d.get('file_size', 0)) // 1024} KB",
-                              files=[(d["path"], d["path"].rsplit("/", 1)[-1], int(d.get("file_size", 0)) // 1024)],
-                              page=d.get("url", "")))
+        items += [_wh_item(d) for d in data.get("data", [])]
         if data.get("meta", {}).get("last_page", 1) <= p:
             break
     return items
+
+
+def _wh_item(d: dict) -> Item:
+    return Item(id=f"wh-{d['id']}", name=f"{d['id']} · {d['resolution']}", author="wallhaven",
+                downloads=int(d.get("favorites") or 0), preview=d["thumbs"]["small"],
+                summary=f"{d['resolution']} · {int(d.get('file_size', 0)) // 1024} KB",
+                files=[(d["path"], d["path"].rsplit("/", 1)[-1], int(d.get("file_size", 0)) // 1024)],
+                page=d.get("url", ""))
+
+
+def fetch(item_id: str) -> Item:
+    """One store item by its id ("kde-123", "wh-abc"), e.g. one a shared setup refers to. Raises RuntimeError."""
+    if m := re.fullmatch(r"kde-(\d{1,12})", item_id):
+        data = json.loads(_get(f"{OCS}/{m[1]}?format=json")).get("data") or []
+        if data:
+            return _ocs_item(data[0])
+    elif m := re.fullmatch(r"wh-([a-z0-9]{1,16})", item_id):
+        data = json.loads(_get(f"https://wallhaven.cc/api/v1/w/{m[1]}")).get("data")
+        if isinstance(data, dict):
+            return _wh_item(data)
+    raise RuntimeError(f"the store doesn't have {item_id[:40]} any more")
 
 
 def thumbnail(url: str) -> Path | None:
