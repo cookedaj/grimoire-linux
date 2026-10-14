@@ -5,6 +5,9 @@ details panel (play, open its folder in VaultL); plus the MangoHud overlay and P
 The library is read on a worker thread each time the page is shown; covers are turned gray (and cached) on a worker
 too. Nothing here changes anything on its own when a game starts.
 """
+import html
+import os
+
 from PySide6.QtCore import QDate, QLocale, QObject, QRectF, QSize, Qt, QTimer, Signal
 from PySide6.QtGui import QColor, QFont, QImage, QPainter, QPixmap
 from PySide6.QtWidgets import (QAbstractItemView, QApplication, QComboBox, QFrame, QGridLayout, QHBoxLayout,
@@ -41,6 +44,7 @@ class _Signals(QObject):
 
 def _label(text="", name="", wrap=False) -> QLabel:
     lab = QLabel(text)
+    lab.setTextFormat(Qt.TextFormat.PlainText)      # game names, paths and errors come from launcher files
     if name:
         lab.setObjectName(name)
     lab.setWordWrap(wrap)
@@ -303,7 +307,7 @@ class LibraryPanel(QWidget):
         self.list.clear()
         for g in self.shown:
             it = QListWidgetItem(self.page.icon(g), g.name)
-            it.setToolTip(g.name)
+            it.setToolTip(f"<p>{html.escape(g.name)}</p>")         # a name is never markup
             it.setSizeHint(QSize(146, 236))
             self.grid.addItem(it)
             row = _Item([g.name, g.source_name, human(self.page.size_of(g)) if self.page.size_of(g) else "–",
@@ -356,12 +360,11 @@ class LibraryPanel(QWidget):
         size = self.page.size_of(g)
         if size:
             self.d["size"].setText(human(size))
-        elif g.path:
+        elif os.path.isabs(g.path):
             self.d["size"].setText(tr("grimoire.spells.gamel.page", "Counting…"))
+            self.page.count_size(g)
         else:
             self.d["size"].setText(tr("grimoire.spells.gamel.page", "Not known"))
-        if not size and g.path:
-            self.page.count_size(g)
         self.d["playtime"].setText(library.hours(g.playtime))
         self.d["last"].setText(_ago(g.last_played))
         self.d_note.setText(g.note)
@@ -371,7 +374,7 @@ class LibraryPanel(QWidget):
                                                              "options in Steam.").format(option=overlay.STEAM_OPTION))
         self.d_hint.setVisible(steam_hint)
         self.copy_btn.setVisible(steam_hint)
-        self.folder_btn.setEnabled(bool(g.path))
+        self.folder_btn.setEnabled(os.path.isabs(g.path))
         self.play_btn.setText(tr("grimoire.spells.gamel.page", "Play"))
 
     def update_size(self, key: str):
@@ -388,7 +391,7 @@ class LibraryPanel(QWidget):
             return
         try:
             launch.play(g)
-        except OSError as e:
+        except (OSError, ValueError) as e:
             self.page.say(tr("grimoire.spells.gamel.page", "Couldn't start {name}: {error}").format(
                 name=g.name, error=e))
             return
@@ -640,7 +643,7 @@ class GameLPage(QWidget):
         self._images: dict[str, QImage] = {}       # _ck(game) -> gray cover, kept across rescans
         self._pix: dict[str, QPixmap] = {}
         self._sizes: dict[str, int] = {}
-        self._counting: set[str] = set()
+        self._counting: str | None = None           # the one game whose folder is being counted
         self._scanning = False
         self._again = False                         # a scan was asked for while one was running
 
@@ -773,14 +776,21 @@ class GameLPage(QWidget):
         return g.size or self._sizes.get(g.key, 0)
 
     def count_size(self, g: Game):
-        if g.key in self._counting or g.key in self._sizes:
+        """Counts only the selected game's folder: picking another one (or leaving the page) stops the count, so
+        arrowing through the list doesn't fill the shared pool with 20-second walks."""
+        if g.key == self._counting or g.key in self._sizes or not os.path.isabs(g.path):
             return
-        self._counting.add(g.key)
-        POOL.start(Job(lambda: (g.key, library.folder_size(g.path)), self.sig.sized.emit))
+        self._counting = g.key
+        key, path = g.key, g.path
+        stop = lambda: self._counting != key                   # noqa: E731 (read on the worker: a str compare)
+        POOL.start(Job(lambda: (key, library.folder_size(path, stop=stop)), self.sig.sized.emit))
 
     def _sized(self, result):
         key, size = result
-        self._counting.discard(key)
+        if self._counting == key:
+            self._counting = None
+        if size is None:                                        # stopped: counted again when picked again
+            return
         self._sizes[key] = size
         self.panels["library"].update_size(key)
 
@@ -795,8 +805,15 @@ class GameLPage(QWidget):
         self.toast.show()
         self._toast_timer.start()
 
+    def hideEvent(self, e):
+        super().hideEvent(e)
+        self._counting = None                                   # stops a folder count still running
+
     def showEvent(self, e):
         super().showEvent(e)
         self.scan()
+        lib = self.panels["library"]
+        if lib.current and not self.size_of(lib.current):
+            self.count_size(lib.current)
         if self.stack.currentWidget() is not self.panels["library"]:
             self.stack.currentWidget().load()

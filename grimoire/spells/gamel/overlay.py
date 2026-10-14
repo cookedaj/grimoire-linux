@@ -114,6 +114,7 @@ def write_conf(s: dict) -> Path | None:
         moved = free_name(path.with_name(path.name + ".before-gamel"))
         path.rename(moved)
     tmp = path.with_name(path.name + ".gamel-tmp")
+    tmp.unlink(missing_ok=True)                # a leftover (or a symlink) there must not be written through
     tmp.write_text(conf_text(s), encoding="utf-8")
     tmp.replace(path)
     return moved

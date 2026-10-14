@@ -26,6 +26,7 @@ STORES = {"legendary": "Epic", "gog": "GOG", "nile": "Amazon",       # store nam
 # (runtimes, Proton builds, anti-cheat runtimes); names and toolmanifest.vdf catch newer ones
 STEAM_TOOLS = {228980, 1070560, 1391110, 1628350, 4183110, 1493710, 2180100, 1826330, 1161040}
 STEAM_TOOL_NAMES = re.compile(r"^(Proton\b|Steam Linux Runtime|Steamworks Common)", re.I)
+ID_RE = re.compile(r"^[0-9]{1,12}$")         # Steam app ids and Lutris game ids (ASCII digits only: they go in URLs)
 
 
 @dataclass
@@ -60,16 +61,22 @@ def _home() -> Path:
 
 def _json(path: Path):
     try:
-        return json.loads(path.read_text(encoding="utf-8", errors="replace"))
-    except (OSError, ValueError):
+        with open(path, "rb") as f:
+            return json.loads(f.read(vdf.MAX_BYTES * 2).decode("utf-8", errors="replace"))
+    except (OSError, ValueError, RecursionError):        # RecursionError: absurdly deep nesting
         return None
 
 
 def _int(v, default=0) -> int:
     try:
         return int(float(v))
-    except (TypeError, ValueError):
+    except (TypeError, ValueError, OverflowError):       # OverflowError: "inf"
         return default
+
+
+def _ts(v) -> float:
+    """A plausible epoch time (seconds), else 0: launcher files can hold anything."""
+    return v if isinstance(v, (int, float)) and 0 < v < 32503680000 else 0       # before the year 3000
 
 
 _UNITS = {"b": 1, "kb": 1024, "kib": 1024, "mb": 1024 ** 2, "mib": 1024 ** 2, "gb": 1024 ** 3, "gib": 1024 ** 3,
@@ -79,13 +86,13 @@ _UNITS = {"b": 1, "kb": 1024, "kib": 1024, "mb": 1024 ** 2, "mib": 1024 ** 2, "g
 def parse_size(v) -> int:
     """12345, "12345" or "12.3 GiB" -> bytes (0 if it can't tell)."""
     if isinstance(v, (int, float)):
-        return max(0, int(v))
+        return max(0, _int(v))
     m = re.match(r"^\s*([\d.]+)\s*([a-z]*)\s*$", str(v or ""), re.I)
     if not m:
         return 0
     try:
         return int(float(m.group(1)) * _UNITS.get(m.group(2).lower() or "b", 0))
-    except ValueError:
+    except (ValueError, OverflowError):
         return 0
 
 
@@ -112,7 +119,7 @@ def steam_roots() -> list[tuple[Path, bool]]:
 def steam_libraries(root: Path) -> list[Path]:
     libs = [root]
     for f in (root / "steamapps/libraryfolders.vdf", root / "config/libraryfolders.vdf"):
-        folders = vdf.find(vdf.load(f), "libraryfolders") or {}
+        folders = vdf.block(vdf.load(f), "libraryfolders")
         for v in folders.values():
             path = v.get("path") if isinstance(v, dict) else v if isinstance(v, str) and "/" in v else None
             if path:
@@ -137,8 +144,8 @@ def steam_playtimes(root: Path) -> dict[str, tuple[float, float]]:
     except OSError:
         return out
     for u in users:
-        apps = vdf.find(vdf.load(u / "config/localconfig.vdf"), "UserLocalConfigStore", "Software", "Valve",
-                        "Steam", "apps") or {}
+        apps = vdf.block(vdf.load(u / "config/localconfig.vdf"), "UserLocalConfigStore", "Software", "Valve",
+                         "Steam", "apps")
         for appid, d in apps.items():
             if isinstance(d, dict):
                 last, mins = _int(d.get("LastPlayed")), _int(d.get("Playtime"))
@@ -175,9 +182,9 @@ def scan_steam() -> list[Game]:
         played = steam_playtimes(root)
         for lib in steam_libraries(root):
             for acf in sorted((lib / "steamapps").glob("appmanifest_*.acf")):
-                st = vdf.find(vdf.load(acf), "AppState") or {}
+                st = vdf.block(vdf.load(acf), "AppState")
                 appid, name = str(st.get("appid") or ""), str(st.get("name") or "")
-                if not appid.isdigit() or not name or appid in games:
+                if not ID_RE.match(appid) or not name or appid in games:
                     continue
                 folder = lib / "steamapps/common" / str(st.get("installdir") or name)
                 if is_steam_tool(appid, name, folder):
@@ -187,7 +194,7 @@ def scan_steam() -> list[Game]:
                 note = "" if flags & 4 else tr("grimoire.spells.gamel.library",
                                                     "Steam hasn't finished downloading or updating it.")
                 games[appid] = Game("steam", appid, name, str(folder), _int(st.get("SizeOnDisk")),
-                                    max(last, _int(st.get("LastPlayed"))), mins,
+                                    _ts(max(last, _int(st.get("LastPlayed")))), mins,
                                     steam_cover(root, appid), flatpak=flat, note=note)
     return list(games.values())
 
@@ -203,10 +210,10 @@ def heroic_roots() -> list[tuple[Path, bool]]:
 
 def _iso(v) -> float:
     if isinstance(v, (int, float)):
-        return v / 1000 if v > 1e11 else float(v)
+        return _ts(v / 1000 if v > 1e11 else float(v))
     try:
-        return datetime.fromisoformat(str(v).replace("Z", "+00:00")).timestamp()
-    except ValueError:
+        return _ts(datetime.fromisoformat(str(v).replace("Z", "+00:00")).timestamp())
+    except (ValueError, OverflowError, OSError):
         return 0
 
 
@@ -316,11 +323,11 @@ def scan_lutris() -> list[Game]:
     for data, flat in lutris_dirs():
         for r in _lutris_rows(data / "pga.db"):
             gid = str(r.get("id") or "")
-            if not gid or gid in games or not r.get("name"):
+            if not ID_RE.match(gid) or gid in games or not r.get("name"):
                 continue
             hours = r.get("playtime")
             games[gid] = Game("lutris", gid, str(r["name"]), str(r.get("directory") or ""), 0,
-                              _int(r.get("lastplayed")),
+                              _ts(_int(r.get("lastplayed"))),
                               float(hours) * 60 if isinstance(hours, (int, float)) else 0,
                               lutris_cover(data, str(r.get("slug") or "")), store=str(r.get("runner") or ""),
                               flatpak=flat, extra={"slug": r.get("slug") or ""})
@@ -353,10 +360,13 @@ def sort_games(games: list[Game], by: str) -> list[Game]:
     return sorted(games, key=name)
 
 
-def folder_size(path: str, budget: float = 20.0) -> int:
-    """Bytes under path (symlinks not followed), giving up after `budget` seconds with what it counted."""
+def folder_size(path: str, budget: float = 20.0, stop=lambda: False) -> int | None:
+    """Bytes under path (symlinks not followed), giving up after `budget` seconds with what it counted;
+    None as soon as stop() says the answer isn't wanted any more."""
     total, stack, end = 0, [path], time.monotonic() + budget
     while stack and time.monotonic() < end:
+        if stop():
+            return None
         try:
             with os.scandir(stack.pop()) as it:
                 for e in it:
@@ -377,14 +387,18 @@ def ago(ts: float, now: float | None = None, date=lambda d: d.strftime("%d %b %Y
     if not ts:
         return tr("grimoire.spells.gamel.library", "Never")
     now = now or time.time()
-    days = (datetime.fromtimestamp(now).date() - datetime.fromtimestamp(ts).date()).days
+    try:
+        then = datetime.fromtimestamp(ts).date()
+    except (ValueError, OverflowError, OSError):
+        return tr("grimoire.spells.gamel.library", "Never")
+    days = (datetime.fromtimestamp(now).date() - then).days
     if days <= 0:
         return tr("grimoire.spells.gamel.library", "Today")
     if days == 1:
         return tr("grimoire.spells.gamel.library", "Yesterday")
     if days < 30:
         return tr("grimoire.spells.gamel.library", "%n day(s) ago", n=days)
-    return date(datetime.fromtimestamp(ts).date())
+    return date(then)
 
 
 def hours(minutes: float | None) -> str:
