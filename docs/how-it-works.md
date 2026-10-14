@@ -93,6 +93,7 @@ grimoire/            the app (PySide6)
   spells/focusl/     FocusL timer state, background runner, guards (DND, apps, sites), root helper, page
   spells/launchl/    LaunchL install / replace / restore, page, CLI
   spells/gamel/      GameL library readers (Steam VDF, Heroic, Lutris), launching, MangoHud style, page, CLI
+  spells/updatel/    UpdateL sources (APT, Flatpak, Snap, fwupd), runs, daily check/timer, root helper, page
 plasma/              the MuraL wallpaper plugin and the LaunchL panel widget
 bin/                 launchers
 install.sh           copies the app into ~/.local/share/grimoire/app and links it in

@@ -1,9 +1,10 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 """The root helpers, run only from root-owned system copies.
 
-Each spell that needs root (MuraL, OptimizeL, SystemL, FocusL) has a whitelisted root-helper.sh. pkexec runs it as
-root, so the copy it runs must be one only root can change: the per-user app in ~/.local/share is writable by any
-process running as you, and a helper edited there would get root at the next password prompt. So the helpers live in
+Each spell that needs root (MuraL, OptimizeL, SystemL, FocusL, UpdateL) has a whitelisted root-helper.sh. pkexec
+runs it as root, so the copy it runs must be one only root can change: the per-user app in ~/.local/share is writable
+by any process running as you, and a helper edited there would get root at the next password prompt. So the helpers
+live in
 
     /usr/libexec/grimoire-linux/<spell>-root-helper.sh          distro packages (.deb, AUR)
     /usr/local/libexec/grimoire-linux/<spell>-root-helper.sh    ./install.sh (one password prompt when they change)
@@ -40,6 +41,7 @@ SPELLS = {
     "optimizel": "Grimoire Linux OptimizeL needs your password to change system settings",
     "systeml": "Grimoire Linux SystemL needs your password to manage processes, services or swap",
     "focusl": "Grimoire Linux FocusL needs your password to block or unblock sites in /etc/hosts",
+    "updatel": "Grimoire Linux UpdateL needs your password to install system updates",
 }
 
 
@@ -248,8 +250,8 @@ def install(dry: bool = False) -> int:
     for f in todo:
         print(f"  {(pol_dir if f.endswith('.policy') else directory) / f}")
     print("Installing them asks for your password once (pkexec).")
-    later = "Root features (MuraL login/boot themes, OptimizeL system tweaks, SystemL root actions, FocusL sites) " \
-            "stay unavailable until you run ./install.sh again."
+    later = "Root features (MuraL login/boot themes, OptimizeL system tweaks, SystemL root actions, FocusL sites, " \
+            "UpdateL system updates) stay unavailable until you run ./install.sh again."
     if dry:
         print("[dry] pkexec /bin/sh -c <install step> …")
         return 0

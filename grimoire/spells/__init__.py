@@ -176,3 +176,18 @@ def _gamel_status() -> str:
 SPELLS.append(Spell("gamel", "GameL", "One library for your Steam, Heroic and Lutris games: covers, search, "
                     "playtime and a Play button, plus a black & white MangoHud overlay and Performance mode, "
                     "both switched by hand", _gamel, "game", _gamel_status))
+
+
+def _updatel():
+    from grimoire.spells.updatel.page import UpdateLPage
+    return UpdateLPage()
+
+
+def _updatel_status() -> str:
+    from grimoire.spells.updatel.daily import status_line
+    return status_line()
+
+
+SPELLS.append(Spell("updatel", "UpdateL", "Every update in one place: system packages, Flatpaks, snaps and firmware, "
+                    "with changelogs, a preview of anything that would be removed, and an optional daily check",
+                    _updatel, "updatel", _updatel_status))
