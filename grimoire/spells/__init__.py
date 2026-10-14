@@ -191,3 +191,18 @@ def _updatel_status() -> str:
 SPELLS.append(Spell("updatel", "UpdateL", "Every update in one place: system packages, Flatpaks, snaps and firmware, "
                     "with changelogs, a preview of anything that would be removed, and an optional daily check",
                     _updatel, "updatel", _updatel_status))
+
+
+def _audiol():
+    from grimoire.spells.audiol.page import AudioLPage
+    return AudioLPage()
+
+
+def _audiol_status() -> str:
+    from grimoire.spells.audiol.pw import status_line
+    return status_line()
+
+
+SPELLS.append(Spell("audiol", "AudioL", "Your sound on PipeWire: outputs and inputs, each app's volume and device, "
+                    "a system-wide equalizer with presets, and sound card profiles", _audiol, "audio",
+                    _audiol_status))

@@ -283,6 +283,23 @@ def _draw(name: str, p: QPainter):
             p.drawLine(QPointF(*a), QPointF(*b))
         for c in ((6, 12), (18, 5.8), (18, 18.2)):
             p.drawEllipse(QPointF(*c), 2.4, 2.4)
+    elif name in ("audio", "muted"):                       # a speaker with sound waves, or crossed out
+        cone = QPainterPath(QPointF(4, 9.5)); cone.lineTo(7.5, 9.5); cone.lineTo(12, 5.5); cone.lineTo(12, 18.5)
+        cone.lineTo(7.5, 14.5); cone.lineTo(4, 14.5); cone.closeSubpath(); p.drawPath(cone)
+        if name == "audio":
+            for rad in (3.5, 7):
+                path = QPainterPath(); path.arcMoveTo(r(12 - rad, 12 - rad, rad * 2, rad * 2), -50)
+                path.arcTo(r(12 - rad, 12 - rad, rad * 2, rad * 2), -50, 100); p.drawPath(path)
+        else:
+            p.drawLine(QPointF(15, 9.5), QPointF(20, 14.5)); p.drawLine(QPointF(20, 9.5), QPointF(15, 14.5))
+    elif name == "mic":                                    # a microphone on its stand
+        p.drawRoundedRect(r(9, 3.5, 6, 10.5), 3, 3)
+        path = QPainterPath(QPointF(6, 11)); path.cubicTo(6, 19, 18, 19, 18, 11); p.drawPath(path)
+        p.drawLine(QPointF(12, 17), QPointF(12, 20.5)); p.drawLine(QPointF(9, 20.5), QPointF(15, 20.5))
+    elif name == "card":                                   # a sound card: a board with two jacks
+        p.drawRoundedRect(r(3.5, 6.5, 17, 11), 1.5, 1.5)
+        p.drawEllipse(QPointF(9, 12), 2, 2); p.drawEllipse(QPointF(15, 12), 2, 2)
+        p.drawLine(QPointF(6, 17.5), QPointF(6, 20)); p.drawLine(QPointF(18, 17.5), QPointF(18, 20))
 
 
 def _pixmap(name: str, color: str, size: int) -> QPixmap:

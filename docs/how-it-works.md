@@ -64,6 +64,15 @@ what goes over the network, see [security.md](security.md).
   write is moved aside to `MangoHud.conf.before-gamel` first) and adds `MANGOHUD=1` to Heroic and Lutris games it
   starts; Steam games need `mangohud %command%` in their launch options, since Steam starts them itself. Settings
   are in `~/.config/grimoire/gamel.json`. Nothing changes on its own when a game starts.
+- **AudioL** reads PipeWire with one `pw-dump` every 1.5 s, only while its window is on screen, and changes things
+  as you with WirePlumber's `wpctl` (default device, volume, mute, card profile) and `pactl move-sink-input` (or
+  `pw-metadata target.object` without pactl) to move an app. Volumes use the same cube-root scale as Plasma's
+  applet. Level meters are `pw-record` reading a device's monitor at 8 kHz; the microphone's only when you press
+  Test level. The equalizer is a PipeWire filter-chain (builtin biquads: a preamp and ten bands) written to
+  `~/.config/pipewire/filter-chain.conf.d/grimoire-eq.conf` (checked first with `spa-json-dump`); **Apply** restarts
+  `filter-chain.service` (or `pipewire.service` on systems without it) and makes "Grimoire EQ" the default output,
+  remembering the one before. Moving bands while it runs is live (`pw-cli set-param … Props`). Turning it off sets
+  the old output back and moves the drop-in to `~/.config/grimoire/audiol/`. Settings: `~/.config/grimoire/audiol.json`.
 
 ## Installs
 
