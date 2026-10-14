@@ -678,6 +678,34 @@
     </message>
 </context>
 <context>
+    <name>grimoire.fsutil</name>
+    <message>
+        <location filename="../../grimoire/fsutil.py"/>
+        <source>{n} B</source>
+        <translation>{n} बाइट</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/fsutil.py"/>
+        <source>{n} KB</source>
+        <translation>{n} केबी</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/fsutil.py"/>
+        <source>{n} MB</source>
+        <translation>{n} एमबी</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/fsutil.py"/>
+        <source>{n} GB</source>
+        <translation>{n} जीबी</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/fsutil.py"/>
+        <source>{n} TB</source>
+        <translation>{n} टीबी</translation>
+    </message>
+</context>
+<context>
     <name>grimoire.github</name>
     <message>
         <location filename="../../grimoire/github.py"/>

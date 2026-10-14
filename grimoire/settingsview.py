@@ -353,10 +353,8 @@ def _when(iso: str) -> str:
 
 
 def _size(n: int) -> str:
-    for unit in ("B", "KB", "MB", "GB"):
-        if n < 1024 or unit == "GB":
-            return f"{n:.0f} {unit}" if unit == "B" else f"{n:.1f} {unit}"
-        n /= 1024
+    from grimoire.fsutil import human
+    return human(n)
 
 
 def restore_flow(widget, source, origin, report, after=lambda: None):

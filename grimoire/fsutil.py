@@ -1,9 +1,15 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 """File helpers shared by several spells: safe names, the Trash, and friendly sizes/paths."""
 import subprocess
+import sys
 from pathlib import Path
 
+from grimoire.i18n import tr, tr_noop
 from grimoire.paths import HOME
+
+UNITS = {"B": tr_noop("grimoire.fsutil", "{n} B"), "KB": tr_noop("grimoire.fsutil", "{n} KB"),
+         "MB": tr_noop("grimoire.fsutil", "{n} MB"), "GB": tr_noop("grimoire.fsutil", "{n} GB"),
+         "TB": tr_noop("grimoire.fsutil", "{n} TB")}
 
 
 def free_name(dest: Path) -> Path:
@@ -27,12 +33,20 @@ def trash(path: Path):
 
 
 def human(n: float) -> str:
-    """1536 -> '1.5 KB'."""
-    for unit in ("B", "KB", "MB", "GB"):
-        if n < 1024:
-            return f"{n:.0f} {unit}" if unit == "B" else f"{n:.1f} {unit}"
+    """1536 -> '1.5 KB'. In a process that loaded a language (i18n.install / install_catalogs) the number and unit
+    follow it ('1,5 Ko'); otherwise, and always in English, exactly as above, with no Qt import (CLI use)."""
+    for unit in UNITS:
+        if n < 1024 or unit == "TB":
+            break
         n /= 1024
-    return f"{n:.1f} TB"
+    digits = 0 if unit == "B" else 1
+    from grimoire import i18n
+    if i18n.loaded() in ("", "en") or "PySide6.QtCore" not in sys.modules:
+        return f"{n:.{digits}f} {unit}"
+    from PySide6.QtCore import QLocale
+    loc = QLocale()                                # i18n set the default to the language in use
+    loc.setNumberOptions(QLocale.NumberOption.OmitGroupSeparator)
+    return tr("grimoire.fsutil", UNITS[unit]).format(n=loc.toString(float(n), "f", digits))
 
 
 def tilde(p: Path | str) -> str:

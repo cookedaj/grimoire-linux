@@ -679,6 +679,34 @@
     </message>
 </context>
 <context>
+    <name>grimoire.fsutil</name>
+    <message>
+        <location filename="../../grimoire/fsutil.py"/>
+        <source>{n} B</source>
+        <translation>{n} Б</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/fsutil.py"/>
+        <source>{n} KB</source>
+        <translation>{n} КБ</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/fsutil.py"/>
+        <source>{n} MB</source>
+        <translation>{n} МБ</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/fsutil.py"/>
+        <source>{n} GB</source>
+        <translation>{n} ГБ</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/fsutil.py"/>
+        <source>{n} TB</source>
+        <translation>{n} ТБ</translation>
+    </message>
+</context>
+<context>
     <name>grimoire.github</name>
     <message>
         <location filename="../../grimoire/github.py"/>

@@ -167,7 +167,18 @@ Wrapping strings (every user-visible string; phase 2 = one area per spell, each 
 - RTL (ar, ur): layouts mirror by themselves; Switch and back/forward glyphs (`i18n.mirrored()`) flip; charts,
   meters, the terminal and canvases call `setLayoutDirection(LeftToRight)` and plot left to right (QPainter text
   alignment still follows the app direction). `import` prefixes U+200F to ar/ur translations that start with Latin,
-  a digit or a `{field}` so the line still reads right to left.
+  a digit or a `{field}` so the line still reads right to left. Inside a translated sentence, wrap paths, sizes,
+  numbers with units, versions, commands and key names in `i18n.ltr(x)` (LRI…PDI) and names/titles from users or
+  other programs in `i18n.isolate(x)` (FSI…PDI); both return the text unchanged in LTR languages (spells' private
+  `ltr`/`isolate` copies can switch to these).
+- Segmented buttons (objectName "Segment" in a row): call `widgets.segments(buttons)`, which sets the `seg`
+  property theme.py styles (rounded outer ends, one border between, mirrored for RTL). Never `setProperty("pos", …)`:
+  `pos` is QWidget's own position property, so it silently stays a QPoint and the selector never matches.
+- Processes without windows (timers, CLI, background runners) call `i18n.install_catalogs([areas])` before tr():
+  it makes/uses a bare QCoreApplication (QtCore only), loads core + those areas (None = all) and QLocale's default.
+  Never in a process that makes a QApplication later (that goes through `style_app()`).
+- Sizes: `fsutil.human(n)` follows the loaded language (QLocale decimal separator, units from the core catalog:
+  "1,5 Ko") once `i18n.install()`/`install_catalogs()` ran; in English or without Qt it is exactly "1.5 KB".
 - Letter spacing breaks Arabic/Devanagari/Bengali words apart: use `i18n.spacing(text, px)` for
   `QFont.setLetterSpacing` and pass stylesheets with `letter-spacing` through `i18n.qss(css)`. Avoid fixed widths and
   heights around text (translations run 30-60% longer).
