@@ -2,6 +2,7 @@
 """ShotL page: capture buttons and options on top, then either the gallery of past shots and recordings or the
 editor. Grimoire's window hides while a capture is taken, so it's never in the picture."""
 import hashlib
+import html
 import subprocess
 import time
 from pathlib import Path
@@ -14,6 +15,7 @@ from PySide6.QtWidgets import (QAbstractItemView, QButtonGroup, QCheckBox, QComb
                                QSizePolicy, QStackedWidget, QToolButton, QVBoxLayout, QWidget)
 
 from grimoire.fsutil import human, tilde, trash
+from grimoire.i18n import tr
 from grimoire.jobs import POOL, Job
 from grimoire.spells.shotl import capture, record, region, shots
 from grimoire.spells.shotl.editor import Editor
@@ -42,6 +44,37 @@ def _label(text="", name="", wrap=False) -> QLabel:
         lab.setObjectName(name)
     lab.setWordWrap(wrap)
     return lab
+
+
+class _PathButton(QPushButton):
+    """The shots folder as a link that elides in the middle when a longer language needs the row's room."""
+
+    def __init__(self):
+        super().__init__()
+        self.path = ""
+        self.setMinimumWidth(90)
+
+    def set_path(self, path: str):
+        self.path = path
+        self._fit()
+        self.updateGeometry()
+
+    def _chrome(self) -> int:                  # icon, padding and frame: the width that isn't text
+        return super().sizeHint().width() - self.fontMetrics().horizontalAdvance(self.text())
+
+    def sizeHint(self) -> QSize:
+        hint = super().sizeHint()
+        return QSize(self._chrome() + self.fontMetrics().horizontalAdvance(self.path) + 2, hint.height())
+
+    def _fit(self):
+        room = max(20, self.width() - self._chrome() - 2) if self.isVisible() else 1 << 20
+        text = shots.ltr(self.fontMetrics().elidedText(self.path, Qt.TextElideMode.ElideMiddle, room))
+        if text != self.text():
+            self.setText(text)
+
+    def resizeEvent(self, e):
+        super().resizeEvent(e)
+        self._fit()
 
 
 def _repolish(w: QWidget):
@@ -119,25 +152,29 @@ class ShotLPage(QWidget):
         titles = QVBoxLayout()
         titles.setSpacing(2)
         titles.addWidget(_label("ShotL", "Title"))
-        titles.addWidget(_label("Screenshots and screen recordings, an editor to mark them up, and every one you've "
-                                "taken.", "Subtitle", wrap=True))
+        titles.addWidget(_label(tr("grimoire.spells.shotl.page", "Screenshots and screen recordings, an editor to mark "
+                                   "them up, and every one you've taken."), "Subtitle", wrap=True))
         head.addLayout(titles, 1)
         root.addLayout(head)
 
         # capture buttons
         row = QHBoxLayout()
         row.setSpacing(10)
-        self.region_btn = self._capture_btn("region", "Region", "Drag out part of the screen")
+        self.region_btn = self._capture_btn("region", tr("grimoire.spells.shotl.page", "Region"),
+                                            tr("grimoire.spells.shotl.page", "Drag out part of the screen"))
         self.region_btn.clicked.connect(lambda: self.capture("region"))
-        self.window_btn = self._capture_btn("window", "Window", "The active window (the one you used before "
-                                            "ShotL; use the delay to pick another)")
+        self.window_btn = self._capture_btn("window", tr("grimoire.spells.shotl.page", "Window"),
+                                            tr("grimoire.spells.shotl.page", "The active window (the one you used "
+                                               "before ShotL; use the delay to pick another)"))
         self.window_btn.clicked.connect(lambda: self.capture("window"))
-        self.screen_btn = self._capture_btn("desktop", "Screen", "All screens, or one of them")
+        self.screen_btn = self._capture_btn("desktop", tr("grimoire.spells.shotl.page", "Screen"),
+                                            tr("grimoire.spells.shotl.page", "All screens, or one of them"))
         self.screen_btn.setPopupMode(QToolButton.ToolButtonPopupMode.InstantPopup)
         self.screen_menu = QMenu(self)
         self.screen_menu.aboutToShow.connect(self._fill_screens)
         self.screen_btn.setMenu(self.screen_menu)
-        self.record_btn = self._capture_btn("record", "Record", "Record a screen or a window")
+        self.record_btn = self._capture_btn("record", tr("grimoire.spells.shotl.page", "Record"),
+                                            tr("grimoire.spells.shotl.page", "Record a screen or a window"))
         self.record_btn.clicked.connect(self.toggle_record)
         for b in (self.region_btn, self.window_btn, self.screen_btn, self.record_btn):
             row.addWidget(b, 1)
@@ -148,10 +185,11 @@ class ShotLPage(QWidget):
         opts = QHBoxLayout(self.opts_w)
         opts.setContentsMargins(0, 0, 0, 0)
         opts.setSpacing(10)
-        opts.addWidget(_label("DELAY", "Section"))
+        opts.addWidget(_label(tr("grimoire.spells.shotl.page", "DELAY"), "Section"))
         self.delays = QButtonGroup(self)
         for i, d in enumerate(DELAYS):
-            b = QPushButton(f"{d} s" if d else "Off")
+            b = QPushButton(tr("grimoire.spells.shotl.page", "{n} s", "seconds").format(n=d) if d
+                            else tr("grimoire.spells.shotl.page", "Off", "no delay"))
             b.setObjectName("Segment")
             b.setProperty("pos", "first" if i == 0 else "last" if i == len(DELAYS) - 1 else "mid")
             b.setCheckable(True)
@@ -160,28 +198,30 @@ class ShotLPage(QWidget):
             self.delays.addButton(b)
             opts.addWidget(b)
         opts.addSpacing(14)
-        opts.addWidget(_label("AFTER", "Section"))
+        opts.addWidget(_label(tr("grimoire.spells.shotl.page", "AFTER"), "Section"))
         self.after = QComboBox()
         for k, v in shots.AFTER.items():
-            self.after.addItem(v, k)
+            self.after.addItem(tr("grimoire.spells.shotl.shots", v), k)
         self.after.setCurrentIndex(list(shots.AFTER).index(self.settings["after"]))
         self.after.currentIndexChanged.connect(lambda _: self._set(after=self.after.currentData()))
         opts.addWidget(self.after)
         opts.addSpacing(14)
-        self.pointer = QCheckBox("Pointer in shots")
+        self.pointer = QCheckBox(tr("grimoire.spells.shotl.page", "Pointer in shots"))
         self.pointer.setChecked(self.settings["pointer"])
         self.pointer.toggled.connect(lambda on: self._set(pointer=on))
-        self.sound = QCheckBox("Sound in recordings")
-        self.sound.setToolTip("Records what's playing (your default output), not the microphone")
+        self.sound = QCheckBox(tr("grimoire.spells.shotl.page", "Sound in recordings"))
+        self.sound.setToolTip(tr("grimoire.spells.shotl.page",
+                                 "Records what's playing (your default output), not the microphone"))
         self.sound.setChecked(self.settings["sound"])
         self.sound.toggled.connect(lambda on: self._set(sound=on))
         opts.addWidget(self.pointer)
         opts.addWidget(self.sound)
         opts.addStretch(1)
-        self.folder_btn = QPushButton()
+        self.folder_btn = _PathButton()
         self.folder_btn.setObjectName("Link")
         self.folder_btn.setIcon(icon("folder", 16))
-        self.folder_btn.setToolTip("Where shots and recordings are saved. Click to change")
+        self.folder_btn.setToolTip(tr("grimoire.spells.shotl.page",
+                                      "Where shots and recordings are saved. Click to change"))
         self.folder_btn.clicked.connect(self._pick_folder)
         opts.addWidget(self.folder_btn)
         root.addWidget(self.opts_w)
@@ -201,7 +241,7 @@ class ShotLPage(QWidget):
         self.hint = _label("", "Muted", wrap=True)
         self.hint.setTextFormat(Qt.TextFormat.RichText)
         foot.addWidget(self.hint, 1)
-        self.toast = _label("", "Toast", wrap=True)
+        self.toast = _label("", "Toast")             # one line: a wrapped toast got clipped at the foot
         self.toast.hide()
         foot.addWidget(self.toast, 0, Qt.AlignmentFlag.AlignRight)
         root.addLayout(foot)
@@ -235,7 +275,9 @@ class ShotLPage(QWidget):
         bar = QHBoxLayout()
         bar.setSpacing(0)
         self.tabs = QButtonGroup(self)
-        for key, text in (("all", "All"), ("shots", "Screenshots"), ("videos", "Recordings")):
+        for key, text in (("all", tr("grimoire.spells.shotl.page", "All")),
+                          ("shots", tr("grimoire.spells.shotl.page", "Screenshots")),
+                          ("videos", tr("grimoire.spells.shotl.page", "Recordings"))):
             b = QPushButton(text)
             b.setObjectName("Tab")
             b.setCheckable(True)
@@ -249,11 +291,12 @@ class ShotLPage(QWidget):
         bar.addStretch(1)
         self.actions = {}
         for key, glyph_name, tip, slot in (
-                ("open", "play", "Open in its app", self.open_selected),
-                ("edit", "edit", "Edit a copy in ShotL", self.edit_selected),
-                ("copy", "copies", "Copy (paste the file or the picture)", self.copy_selected),
-                ("folder", "folder", "Show in VaultL", self.show_in_vault),
-                ("trash", "trash", "Move to the Trash", self.trash_selected)):
+                ("open", "play", tr("grimoire.spells.shotl.page", "Open in its app"), self.open_selected),
+                ("edit", "edit", tr("grimoire.spells.shotl.page", "Edit a copy in ShotL"), self.edit_selected),
+                ("copy", "copies", tr("grimoire.spells.shotl.page", "Copy (paste the file or the picture)"),
+                 self.copy_selected),
+                ("folder", "folder", tr("grimoire.spells.shotl.page", "Show in VaultL"), self.show_in_vault),
+                ("trash", "trash", tr("grimoire.spells.shotl.page", "Move to the Trash"), self.trash_selected)):
             t = QToolButton()
             t.setObjectName("Tool")
             t.setIcon(icon(glyph_name, 18))
@@ -280,8 +323,8 @@ class ShotLPage(QWidget):
         self.list.itemDoubleClicked.connect(lambda it: self.edit_selected() if not it.data(Qt.ItemDataRole.UserRole + 1)
                                             else self.open_selected())
         self.list.itemSelectionChanged.connect(self._update_actions)
-        self.empty = _label("Nothing captured yet. Pick Region, Window or Screen above, or bind a key to "
-                            "grimoire-shotl (see below).", "Muted", wrap=True)
+        self.empty = _label(tr("grimoire.spells.shotl.page", "Nothing captured yet. Pick Region, Window or Screen "
+                               "above, or bind a key to grimoire-shotl (see below)."), "Muted", wrap=True)
         self.empty.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.views = QStackedWidget()
         self.views.addWidget(self.list)
@@ -295,10 +338,11 @@ class ShotLPage(QWidget):
         shots.update(**changes)
 
     def _update_folder(self):
-        self.folder_btn.setText(tilde(shots.folder(self.settings)))
+        self.folder_btn.set_path(tilde(shots.folder(self.settings)))
 
     def _pick_folder(self):
-        d = QFileDialog.getExistingDirectory(self, "Save shots in", str(shots.folder(self.settings)))
+        d = QFileDialog.getExistingDirectory(self, tr("grimoire.spells.shotl.page", "Save shots in"),
+                                             str(shots.folder(self.settings)))
         if d:
             default = shots.pictures() / "Screenshots"
             self._set(folder="" if Path(d) == default else d)
@@ -306,14 +350,18 @@ class ShotLPage(QWidget):
 
     def _update_hint(self):
         def key(t):
-            return f"<span style='font-family: IBM Plex Mono; color: #d0d0d0'>{t}</span>"
+            return f"<span style='font-family: IBM Plex Mono; color: #d0d0d0; white-space: nowrap'>{t}</span>"
         how = capture.backend()
-        stills = {"spectacle": "Shots via Spectacle", "portal": "Shots via the desktop portal (whole screen only)",
-                  "": "No screenshot tool found: install Spectacle"}[how]
-        self.hint.setText(f"{stills} · Recordings: {record.describe()}<br>Hotkeys: System Settings → Keyboard → "
-                          f"Shortcuts → Add New → Command, then {key('grimoire-shotl region')}, "
-                          f"{key('grimoire-shotl window')}, {key('grimoire-shotl full')} or "
-                          f"{key('grimoire-shotl record')} (press again to stop)")
+        stills = (tr("grimoire.spells.shotl.page", "Shots via Spectacle") if how == "spectacle"
+                  else tr("grimoire.spells.shotl.page", "Shots via the desktop portal (whole screen only)")
+                  if how == "portal"
+                  else tr("grimoire.spells.shotl.page", "No screenshot tool found: install Spectacle"))
+        recs = tr("grimoire.spells.shotl.page", "Recordings: {how}").format(how=html.escape(record.describe()))
+        keys = tr("grimoire.spells.shotl.page", "Hotkeys: System Settings → Keyboard → Shortcuts → Add New → "
+                  "Command, then {region}, {window}, {full} or {record} (press again to stop)").format(
+            region=key("grimoire-shotl region"), window=key("grimoire-shotl window"),
+            full=key("grimoire-shotl full"), record=key("grimoire-shotl record"))
+        self.hint.setText(f"{html.escape(stills)} · {recs}<br>{keys}")
 
     def say(self, text: str):
         self.toast.setText(text)
@@ -325,8 +373,8 @@ class ShotLPage(QWidget):
         from PySide6.QtGui import QGuiApplication
         m = self.screen_menu
         m.clear()
-        m.addAction("All screens", lambda: self.capture("full"))
-        m.addAction("Screen under the pointer", lambda: self.capture("screen"))
+        m.addAction(tr("grimoire.spells.shotl.page", "All screens"), lambda: self.capture("full"))
+        m.addAction(tr("grimoire.spells.shotl.page", "Screen under the pointer"), lambda: self.capture("screen"))
         screens = QGuiApplication.screens()
         if len(screens) > 1:
             m.addSeparator()
@@ -337,7 +385,8 @@ class ShotLPage(QWidget):
     def capture(self, mode: str, screen=None):
         """Hide our window, wait for it (and the delay) to clear the screen, then grab."""
         if not capture.backend():
-            self.say("No screenshot tool found: install Spectacle (sudo apt install kde-spectacle)")
+            self.say(tr("grimoire.spells.shotl.page", "No screenshot tool found: install Spectacle ({command})")
+                     .format(command="sudo apt install kde-spectacle"))
             return
         if self.stack.currentIndex() == 1 and not self.editor.request_close():
             return
@@ -376,12 +425,13 @@ class ShotLPage(QWidget):
         dest = shots.new_path()
         if not img.save(str(dest), "PNG"):
             shots.release(dest)
-            self.say(f"Couldn't write {tilde(dest)}")
+            self.say(tr("grimoire.spells.shotl.page", "Couldn't write {path}").format(path=shots.ltr(tilde(dest))))
             return
         shots.add(dest)
         if after == "copy":
             capture.copy_image(img)
-        self.say(("Copied and saved " if after == "copy" else "Saved ") + tilde(dest))
+        self.say((tr("grimoire.spells.shotl.page", "Copied and saved {path}") if after == "copy"
+                  else tr("grimoire.spells.shotl.page", "Saved {path}")).format(path=shots.ltr(tilde(dest))))
         self.refresh()
 
     def _mode_changed(self, i: int):
@@ -396,11 +446,12 @@ class ShotLPage(QWidget):
     # ================================================================== recording
     def toggle_record(self):
         if record.stop():
-            self.say("Finishing the recording…")
+            self.say(tr("grimoire.spells.shotl.page", "Finishing the recording…"))
             QTimer.singleShot(1500, self.refresh)
         else:
             msg = record.start(sound=self.settings["sound"])
-            self.say(msg or "Pick a screen or window if KDE asks; press Stop (or grimoire-shotl record) to finish")
+            self.say(msg or tr("grimoire.spells.shotl.page", "Pick a screen or window if KDE asks; press Stop (or "
+                                  "grimoire-shotl record) to finish"))
         self._show_record()
         self._rec_timer.start()
 
@@ -409,10 +460,10 @@ class ShotLPage(QWidget):
         b = self.record_btn
         if st:
             secs = int(time.time() - st["started"])
-            b.setText(f"Stop  {secs // 60}:{secs % 60:02d}")
+            b.setText(tr("grimoire.spells.shotl.page", "Stop  {time}").format(time=f"{secs // 60}:{secs % 60:02d}"))
             b.setIcon(icon("stop", 26))
         else:
-            b.setText("Record")
+            b.setText(tr("grimoire.spells.shotl.page", "Record"))
             b.setIcon(icon("record", 26))
             if self._rec_timer.isActive() and not self.isVisible():
                 self._rec_timer.stop()
@@ -471,7 +522,7 @@ class ShotLPage(QWidget):
                 POOL.start(Job(lambda p=path, v=e["video"]: (str(p), _thumb(p, v)),
                                lambda r, k=key: self._sig.thumb.emit(k, r[1])))
         total = len(items)
-        self.count.setText(f"{total} item{'s' if total != 1 else ''}")
+        self.count.setText(tr("grimoire.spells.shotl.page", "%n item(s)", n=total))
         self.views.setCurrentIndex(0 if total else 1)
         self._update_actions()
 
@@ -509,8 +560,11 @@ class ShotLPage(QWidget):
             return
         self._update_actions()
         m = QMenu(self)
-        for key, text in (("open", "Open"), ("edit", "Edit"), ("copy", "Copy"), ("folder", "Show in VaultL"),
-                          ("trash", "Move to Trash")):
+        for key, text in (("open", tr("grimoire.spells.shotl.page", "Open", "verb")),
+                          ("edit", tr("grimoire.spells.shotl.page", "Edit", "verb")),
+                          ("copy", tr("grimoire.spells.shotl.page", "Copy", "verb")),
+                          ("folder", tr("grimoire.spells.shotl.page", "Show in VaultL")),
+                          ("trash", tr("grimoire.spells.shotl.page", "Move to Trash"))):
             a = m.addAction(text, self.actions[key].click)
             a.setEnabled(self.actions[key].isEnabled())
         m.exec(self.list.viewport().mapToGlobal(pos))
@@ -523,7 +577,7 @@ class ShotLPage(QWidget):
         for p in self.selected()[:1]:
             img = QImage(str(p))
             if img.isNull():
-                self.say(f"Couldn't open {p.name}")
+                self.say(tr("grimoire.spells.shotl.page", "Couldn't open {name}").format(name=shots.ltr(p.name)))
                 return
             self.editor.load(img, source=p)
             self.stack.setCurrentIndex(1)
@@ -532,7 +586,7 @@ class ShotLPage(QWidget):
     def copy_selected(self):
         for p in self.selected()[:1]:
             capture.copy_file(p)
-            self.say(f"Copied {p.name}")
+            self.say(tr("grimoire.spells.shotl.page", "Copied {name}").format(name=shots.ltr(p.name)))
 
     def show_in_vault(self):
         from grimoire import tray
@@ -540,7 +594,7 @@ class ShotLPage(QWidget):
             try:
                 tray.launch("grimoire-vaultl", str(p))
             except OSError as e:
-                self.say(f"Couldn't open VaultL: {e}")
+                self.say(tr("grimoire.spells.shotl.page", "Couldn't open VaultL: {error}").format(error=e))
 
     def trash_selected(self):
         done, errors = 0, []
@@ -550,5 +604,5 @@ class ShotLPage(QWidget):
                 done += 1
             except OSError as e:
                 errors.append(str(e))
-        self.say(f"Moved {done} to the Trash" + (f" · {errors[0]}" if errors else ""))
+        self.say(" · ".join([tr("grimoire.spells.shotl.page", "Moved %n item(s) to the Trash", n=done)] + errors[:1]))
         self.refresh()

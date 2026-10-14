@@ -7,6 +7,8 @@ import shutil
 from pathlib import Path
 from urllib.parse import unquote, urlparse
 
+from grimoire.i18n import tr
+
 BUS = "org.freedesktop.portal.Desktop"
 PATH = "/org/freedesktop/portal/desktop"
 SCREENCAST = "org.freedesktop.portal.ScreenCast"
@@ -59,11 +61,11 @@ def request(iface: str, method: str, *args, options: dict | None = None, timeout
     finally:
         match.remove()
     if "code" not in answer:
-        raise PortalError("the portal didn't answer")
+        raise PortalError(tr("grimoire.spells.shotl.portal", "the portal didn't answer"))
     if answer["code"] == 1:
         raise PortalError("cancelled")
     if answer["code"]:
-        raise PortalError("the portal refused")
+        raise PortalError(tr("grimoire.spells.shotl.portal", "the portal refused"))
     return answer["results"]
 
 
@@ -72,7 +74,7 @@ def screenshot(out: Path):
     res = request("org.freedesktop.portal.Screenshot", "Screenshot", "", options={"interactive": False})
     src = Path(unquote(urlparse(str(res.get("uri", ""))).path))
     if not src.is_file():
-        raise PortalError("the portal returned no image")
+        raise PortalError(tr("grimoire.spells.shotl.portal", "the portal returned no image"))
     shutil.copyfile(src, out)
 
 
@@ -90,7 +92,7 @@ def screencast(restore_token="", pointer=True, types=MONITOR | WINDOW):
     res = request(SCREENCAST, "Start", dbus.ObjectPath(sess), "")
     streams = res.get("streams") or []
     if not streams:
-        raise PortalError("nothing was picked to record")
+        raise PortalError(tr("grimoire.spells.shotl.portal", "nothing was picked to record"))
     node, props = streams[0]
     size = tuple(int(x) for x in props["size"]) if "size" in props else None
     fd = b.get_object(BUS, PATH).OpenPipeWireRemote(dbus.ObjectPath(sess), dbus.Dictionary({}, signature="sv"),

@@ -8,15 +8,23 @@ import time
 from pathlib import Path
 
 from grimoire.fsutil import free_name
+from grimoire.i18n import tr, tr_noop
 from grimoire.paths import CACHE, CONFIG, DATA
 
 SETTINGS = CONFIG / "shotl.json"
 HISTORY = DATA / "shotl-history.json"
 TEMP = CACHE / "shotl"                         # raw grabs before they're saved, video thumbnails
-AFTER = {"edit": "Open the editor", "copy": "Copy and save", "save": "Save only"}
+AFTER = {"edit": tr_noop("grimoire.spells.shotl.shots", "Open the editor"),        # tr() where shown
+         "copy": tr_noop("grimoire.spells.shotl.shots", "Copy and save"),
+         "save": tr_noop("grimoire.spells.shotl.shots", "Save only")}
 DEFAULTS = {"folder": "", "after": "edit", "delay": 0, "pointer": False, "sound": False, "restore_token": ""}
 KEEP = 1000                                    # history entries kept (files stay; only the list is trimmed)
 VIDEO = {".mp4", ".webm", ".mkv"}
+
+
+def ltr(text: str) -> str:
+    """A path or file name isolated as left-to-right text, so "~/" stays in front inside an Arabic/Urdu sentence."""
+    return "\u2066" + text + "\u2069"
 
 
 def load() -> dict:
@@ -111,11 +119,13 @@ def entries() -> list[dict]:
 
 def ago(t: float) -> str:
     s = max(0, time.time() - t)
-    for unit, n in (("day", 86400), ("h", 3600), ("min", 60)):
-        if s >= n:
-            k = int(s // n)
-            return f"{k} {unit}{'s' if unit == 'day' and k > 1 else ''} ago"
-    return "just now"
+    if s >= 86400:
+        return tr("grimoire.spells.shotl.shots", "%n day(s) ago", n=int(s // 86400))
+    if s >= 3600:
+        return tr("grimoire.spells.shotl.shots", "%n h ago", "hours", n=int(s // 3600))
+    if s >= 60:
+        return tr("grimoire.spells.shotl.shots", "%n min ago", "minutes", n=int(s // 60))
+    return tr("grimoire.spells.shotl.shots", "just now")
 
 
 def status() -> str:
@@ -124,11 +134,11 @@ def status() -> str:
     items = entries()
     shots = sum(not e["video"] for e in items)
     vids = len(items) - shots
-    bits = [f"{shots} shot{'s' if shots != 1 else ''}"]
+    bits = [tr("grimoire.spells.shotl.shots", "%n shot(s)", n=shots)]
     if vids:
-        bits.append(f"{vids} recording{'s' if vids != 1 else ''}")
+        bits.append(tr("grimoire.spells.shotl.shots", "%n recording(s)", n=vids))
     if rec:
-        bits.insert(0, "Recording now")
+        bits.insert(0, tr("grimoire.spells.shotl.shots", "Recording now"))
     elif items:
-        bits.append(f"last {ago(items[0]['time'])}")
+        bits.append(tr("grimoire.spells.shotl.shots", "last {when}").format(when=ago(items[0]["time"])))
     return " · ".join(bits)

@@ -7,16 +7,22 @@ from pathlib import Path
 
 from PySide6.QtCore import QPointF, QRectF, QSize, Qt, Signal
 from PySide6.QtGui import QColor, QFont, QImage, QKeySequence, QPainter, QPainterPath, QPen, QPolygonF, QShortcut
-from PySide6.QtWidgets import (QButtonGroup, QFileDialog, QFrame, QHBoxLayout, QLabel, QLineEdit, QMessageBox,
-                               QPushButton, QSizePolicy, QToolButton, QVBoxLayout, QWidget)
+from PySide6.QtWidgets import (QBoxLayout, QButtonGroup, QFileDialog, QFrame, QHBoxLayout, QLabel, QLineEdit,
+                               QMessageBox, QPushButton, QSizePolicy, QToolButton, QVBoxLayout, QWidget)
 
 from grimoire.fsutil import tilde
+from grimoire.i18n import tr, tr_noop
 from grimoire.spells.shotl import capture, shots
 from grimoire.spells.shotl.icons import icon
 from grimoire.theme import FONT
 
-TOOLS = [("crop", "Crop  (C)"), ("arrow", "Arrow  (A)"), ("box", "Box  (B)"), ("pen", "Freehand  (P)"),
-         ("text", "Text  (T)"), ("pixelate", "Pixelate a region  (X)"), ("highlight", "Highlight  (H)")]
+TOOLS = [("crop", tr_noop("grimoire.spells.shotl.editor", "Crop  (C)")),          # tips: tr() where shown
+         ("arrow", tr_noop("grimoire.spells.shotl.editor", "Arrow  (A)")),
+         ("box", tr_noop("grimoire.spells.shotl.editor", "Box  (B)")),
+         ("pen", tr_noop("grimoire.spells.shotl.editor", "Freehand  (P)")),
+         ("text", tr_noop("grimoire.spells.shotl.editor", "Text  (T)")),
+         ("pixelate", tr_noop("grimoire.spells.shotl.editor", "Pixelate a region  (X)")),
+         ("highlight", tr_noop("grimoire.spells.shotl.editor", "Highlight  (H)"))]
 KEYS = {"C": "crop", "A": "arrow", "B": "box", "P": "pen", "T": "text", "X": "pixelate", "H": "highlight"}
 COLORS = ["#ffffff", "#c8c8c8", "#8c8c8c", "#4a4a4a", "#000000"]       # black & white only, by design
 SIZES = {"S": 3, "M": 6, "L": 10}
@@ -228,7 +234,7 @@ class Canvas(QWidget):
         c = self.ed.color
         self.entry.setStyleSheet(f"QLineEdit#CanvasText {{ background: rgba(0,0,0,90); color: {c}; "
                                  f"border: 1px dashed #8c8c8c; border-radius: 0; padding: 0 2px; }}")
-        self.entry.setPlaceholderText("Type, then Enter")
+        self.entry.setPlaceholderText(tr("grimoire.spells.shotl.editor", "Type, then Enter"))
         self.entry.move(wpos.toPoint() - self.entry.rect().topLeft())
         self.entry.resize(max(220, int(self.width() - wpos.x() - 8)) if wpos.x() < self.width() - 230 else 220,
                           self.entry.sizeHint().height())
@@ -277,12 +283,16 @@ class Editor(QWidget):
         lay.setSpacing(10)
         bar = QFrame()
         bar.setObjectName("Row")
-        bl = QHBoxLayout(bar)
-        bl.setContentsMargins(8, 6, 8, 6)
+        self.bar_lay = QBoxLayout(QBoxLayout.Direction.LeftToRight, bar)
+        self.bar_lay.setContentsMargins(8, 6, 8, 6)
+        self.bar_lay.setSpacing(2)
+        self._tools_w = QWidget()
+        bl = QHBoxLayout(self._tools_w)
+        bl.setContentsMargins(0, 0, 0, 0)
         bl.setSpacing(2)
         self.tools = QButtonGroup(self)
         for name, tip in TOOLS:
-            b = self._tool(name, tip, checkable=True)
+            b = self._tool(name, tr("grimoire.spells.shotl.editor", tip), checkable=True)
             b.setChecked(name == self.tool)
             b.clicked.connect(lambda _=False, n=name: self.set_tool(n))
             self.tools.addButton(b)
@@ -295,7 +305,9 @@ class Editor(QWidget):
             s.setCheckable(True)
             s.setChecked(c == self.color)
             s.setFixedSize(26, 26)
-            s.setToolTip({"#ffffff": "White", "#000000": "Black"}.get(c, "Gray"))
+            s.setToolTip(tr("grimoire.spells.shotl.editor", "White") if c == "#ffffff"
+                         else tr("grimoire.spells.shotl.editor", "Black") if c == "#000000"
+                         else tr("grimoire.spells.shotl.editor", "Gray"))
             s.setStyleSheet(f"QToolButton#Swatch {{ background: {c}; border: 2px solid #2e2e2e; border-radius: 13px; }}"
                             f"QToolButton#Swatch:checked {{ border: 2px solid #ffffff; }}"
                             f"QToolButton#Swatch:hover {{ border-color: #8a8a8a; }}")
@@ -304,37 +316,47 @@ class Editor(QWidget):
             bl.addWidget(s)
         bl.addWidget(self._sep())
         self.sizes = QButtonGroup(self)
+        names = {"S": tr("grimoire.spells.shotl.editor", "S", "small size"),
+                 "M": tr("grimoire.spells.shotl.editor", "M", "medium size"),
+                 "L": tr("grimoire.spells.shotl.editor", "L", "large size")}
         for i, (label, w) in enumerate(SIZES.items()):
-            b = QPushButton(label)
+            b = QPushButton(names[label])
             b.setObjectName("Segment")
             b.setProperty("pos", ("first", "mid", "last")[i])
             b.setCheckable(True)
             b.setChecked(w == self.width)
-            b.setToolTip("Line and text size")
+            b.setToolTip(tr("grimoire.spells.shotl.editor", "Line and text size"))
             b.clicked.connect(lambda _=False, v=w: setattr(self, "width", v))
             self.sizes.addButton(b)
             bl.addWidget(b)
         bl.addWidget(self._sep())
-        self.undo_btn = self._tool("undo", "Undo  (Ctrl+Z)")
+        self.undo_btn = self._tool("undo", tr("grimoire.spells.shotl.editor", "Undo  (Ctrl+Z)"))
         self.undo_btn.clicked.connect(self.undo)
-        self.redo_btn = self._tool("redo", "Redo  (Ctrl+Shift+Z)")
+        self.redo_btn = self._tool("redo", tr("grimoire.spells.shotl.editor", "Redo  (Ctrl+Shift+Z)"))
         self.redo_btn.clicked.connect(self.redo)
         bl.addWidget(self.undo_btn)
         bl.addWidget(self.redo_btn)
         bl.addStretch(1)
-        self.copy_btn = QPushButton("Copy")
-        self.copy_btn.setToolTip("Copy the image  (Ctrl+C)")
+        self.copy_btn = QPushButton(tr("grimoire.spells.shotl.editor", "Copy"))
+        self.copy_btn.setToolTip(tr("grimoire.spells.shotl.editor", "Copy the image  (Ctrl+C)"))
         self.copy_btn.clicked.connect(self.copy)
-        self.save_as_btn = QPushButton("Save as…")
+        self.save_as_btn = QPushButton(tr("grimoire.spells.shotl.editor", "Save as…"))
         self.save_as_btn.clicked.connect(self.save_as)
-        self.save_btn = QPushButton("Save")
+        self.save_btn = QPushButton(tr("grimoire.spells.shotl.editor", "Save"))
         self.save_btn.setObjectName("Primary")
-        self.save_btn.setToolTip("Save into your shots folder  (Ctrl+S)")
+        self.save_btn.setToolTip(tr("grimoire.spells.shotl.editor", "Save into your shots folder  (Ctrl+S)"))
         self.save_btn.clicked.connect(self.save)
-        self.close_btn = QPushButton("Done")
+        self.close_btn = QPushButton(tr("grimoire.spells.shotl.editor", "Done"))
         self.close_btn.clicked.connect(self.request_close)
+        self._acts_w = QWidget()
+        al = QHBoxLayout(self._acts_w)
+        al.setContentsMargins(0, 0, 0, 0)
+        al.setSpacing(2)
         for b in (self.copy_btn, self.save_as_btn, self.save_btn, self.close_btn):
-            bl.addWidget(b)
+            al.addWidget(b)
+        self.bar_lay.addWidget(self._tools_w, 1)
+        self.bar_lay.addWidget(self._acts_w, 0, Qt.AlignmentFlag.AlignTrailing)
+        bar.setMinimumWidth(max(self._tools_w.sizeHint().width(), self._acts_w.sizeHint().width()) + 16)
         lay.addWidget(bar)
         self.canvas = Canvas(self)
         lay.addWidget(self.canvas, 1)
@@ -352,6 +374,15 @@ class Editor(QWidget):
                       context=Qt.ShortcutContext.WidgetShortcut)
         self.canvas.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
         self._refresh()
+
+    def resizeEvent(self, e):
+        """In longer languages the save buttons drop to a second row instead of making the window wider."""
+        need = self._tools_w.sizeHint().width() + self._acts_w.sizeHint().width() + 18
+        d = QBoxLayout.Direction.LeftToRight if self.contentsRect().width() >= need \
+            else QBoxLayout.Direction.TopToBottom
+        if self.bar_lay.direction() != d:
+            self.bar_lay.setDirection(d)
+        super().resizeEvent(e)
 
     def _tool(self, name, tip, checkable=False) -> QToolButton:
         b = QToolButton()
@@ -417,9 +448,11 @@ class Editor(QWidget):
         self.rendered = render(self.base, self.ops)
         self.undo_btn.setEnabled(bool(self.ops))
         self.redo_btn.setEnabled(bool(self.redo_ops))
-        where = tilde(self.source) if self.source else "Not saved yet"
-        edits = f"  ·  {len(self.ops)} edit{'s' if len(self.ops) != 1 else ''}" if self.ops else ""
-        self.info.setText(f"{self.rendered.width()} × {self.rendered.height()}  ·  {where}{edits}")
+        bits = [f"{self.rendered.width()} × {self.rendered.height()}",
+                shots.ltr(tilde(self.source)) if self.source else tr("grimoire.spells.shotl.editor", "Not saved yet")]
+        if self.ops:
+            bits.append(tr("grimoire.spells.shotl.editor", "%n edit(s)", n=len(self.ops)))
+        self.info.setText("  ·  ".join(bits))
         self.canvas.update()
 
     def image(self) -> QImage:
@@ -431,14 +464,15 @@ class Editor(QWidget):
         capture.copy_image(self.image())
         if not self.source:                        # copying a fresh capture counts as dealing with it
             self.saved_at, self.handled = len(self.ops), True
-        self.toast.emit("Copied to the clipboard")
+        self.toast.emit(tr("grimoire.spells.shotl.editor", "Copied to the clipboard"))
 
     def _write(self, dest: Path) -> bool:
         dest.parent.mkdir(parents=True, exist_ok=True)
         fmt = "JPG" if dest.suffix.lower() in (".jpg", ".jpeg") else "PNG"
         if not self.image().save(str(dest), fmt):
             shots.release(dest)
-            QMessageBox.warning(self, "ShotL", f"Couldn't write {tilde(dest)}")
+            QMessageBox.warning(self, "ShotL", tr("grimoire.spells.shotl.editor", "Couldn't write {path}")
+                                .format(path=shots.ltr(tilde(dest))))
             return False
         self.source = dest
         self.saved_at = len(self.ops)
@@ -446,13 +480,14 @@ class Editor(QWidget):
         shots.add(dest)
         self._refresh()
         self.saved.emit(dest)
-        self.toast.emit(f"Saved {tilde(dest)}")
+        self.toast.emit(tr("grimoire.spells.shotl.editor", "Saved {path}").format(path=shots.ltr(tilde(dest))))
         return True
 
     def save(self) -> bool:
         """A fresh capture gets a dated name; an edited file is saved beside it as 'name (2).png', never over it."""
         if self.source and not self.unsaved():
-            self.toast.emit(f"Already saved as {tilde(self.source)}")
+            self.toast.emit(tr("grimoire.spells.shotl.editor", "Already saved as {path}")
+                            .format(path=shots.ltr(tilde(self.source))))
             return True
         if not self.source:
             return self._write(shots.new_path())
@@ -463,7 +498,9 @@ class Editor(QWidget):
 
     def save_as(self) -> bool:
         start = str(self.source or shots.new_path(reserve=False))
-        name, _ = QFileDialog.getSaveFileName(self, "Save screenshot", start, "PNG image (*.png);;JPEG image (*.jpg)",
+        kinds = ";;".join((tr("grimoire.spells.shotl.editor", "PNG image") + " (*.png)",
+                           tr("grimoire.spells.shotl.editor", "JPEG image") + " (*.jpg)"))
+        name, _ = QFileDialog.getSaveFileName(self, tr("grimoire.spells.shotl.editor", "Save screenshot"), start, kinds,
                                               options=QFileDialog.Option.DontConfirmOverwrite)
         if not name:
             return False
@@ -485,8 +522,9 @@ class Editor(QWidget):
         """Ask before dropping unsaved work. True when it's fine to close."""
         self.canvas.commit_text()
         if self.unsaved():
-            what = "this screenshot" if not self.source else "your edits"
-            box = QMessageBox(QMessageBox.Icon.Question, "ShotL", f"Save {what} before closing?",
+            ask = tr("grimoire.spells.shotl.editor", "Save this screenshot before closing?") if not self.source \
+                else tr("grimoire.spells.shotl.editor", "Save your edits before closing?")
+            box = QMessageBox(QMessageBox.Icon.Question, "ShotL", ask,
                               QMessageBox.StandardButton.Save | QMessageBox.StandardButton.Discard
                               | QMessageBox.StandardButton.Cancel, self)
             ans = box.exec()

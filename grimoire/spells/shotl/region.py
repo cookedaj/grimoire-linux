@@ -6,6 +6,7 @@ from PySide6.QtCore import QEventLoop, QPoint, QRect, QRectF, Qt, Signal
 from PySide6.QtGui import QColor, QFont, QGuiApplication, QPainter, QPen
 from PySide6.QtWidgets import QWidget
 
+from grimoire.i18n import tr
 from grimoire.spells.shotl.capture import screen_rect
 from grimoire.theme import FONT
 
@@ -53,7 +54,8 @@ class _Screen(QWidget):
             g = self._to_grab(self.sel)
             self._chip(p, f"{g.width()} × {g.height()}", self.sel.bottomLeft() + QPoint(0, 8))
         else:
-            hint = "Drag to pick a region  ·  Space or double click: whole screen  ·  Esc: cancel"
+            hint = tr("grimoire.spells.shotl.region",
+                      "Drag to pick a region  ·  Space or double click: whole screen  ·  Esc: cancel")
             self._chip(p, hint, QPoint(self.width() // 2 - p.fontMetrics().horizontalAdvance(hint) // 2 - 10, 40))
         if self.mouse.x() >= 0 and not self.start:     # thin crosshair guides
             p.setPen(QPen(QColor(255, 255, 255, 70), 1))

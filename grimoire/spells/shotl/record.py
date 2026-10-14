@@ -18,6 +18,7 @@ import sys
 import time
 from pathlib import Path
 
+from grimoire.i18n import tr
 from grimoire.spells.shotl import shots
 
 STATE = shots.TEMP / "recording.json"        # {"pid", "path", "started"} while the recorder runs
@@ -71,11 +72,16 @@ def describe() -> str:
     """One line for the page: how recordings are made here."""
     how = backend()
     if how == "portal":
-        return {"nvenc": "MP4, H.264 on the graphics card", "x264": "MP4, H.264 on the CPU",
-                "vp8": "WebM, VP8 (install ffmpeg for MP4)"}[encoder()]
+        enc = encoder()
+        if enc == "nvenc":
+            return tr("grimoire.spells.shotl.record", "MP4, H.264 on the graphics card")
+        if enc == "x264":
+            return tr("grimoire.spells.shotl.record", "MP4, H.264 on the CPU")
+        return tr("grimoire.spells.shotl.record", "WebM, VP8 (install ffmpeg for MP4)")
     if how == "spectacle":
-        return "with Spectacle (install python3-gi and gstreamer1.0-pipewire for ShotL's own recorder)"
-    return "unavailable: install gstreamer1.0-pipewire and python3-gi, or Spectacle"
+        return tr("grimoire.spells.shotl.record",
+                  "with Spectacle (install python3-gi and gstreamer1.0-pipewire for ShotL's own recorder)")
+    return tr("grimoire.spells.shotl.record", "unavailable: install gstreamer1.0-pipewire and python3-gi, or Spectacle")
 
 
 # ---------------------------------------------------------------- control (used by the page and the CLI)
@@ -92,14 +98,15 @@ def state() -> dict | None:
 def start(sound=False, pointer=True, pick=False) -> str:
     """Launch the recorder in the background. Returns '' or a message for the user."""
     if state():
-        return "Already recording"
+        return tr("grimoire.spells.shotl.record", "Already recording")
     how = backend()
     if how == "spectacle":
         subprocess.Popen(["spectacle", "--record", "screen"], start_new_session=True, stdin=subprocess.DEVNULL,
                          stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-        return "Recording with Spectacle: stop it from its icon in the system tray"
+        return tr("grimoire.spells.shotl.record", "Recording with Spectacle: stop it from its icon in the system tray")
     if not how:
-        return "Recording isn't available: " + describe().split(": ", 1)[-1]
+        return tr("grimoire.spells.shotl.record",
+                  "Recording isn't available: install gstreamer1.0-pipewire and python3-gi, or Spectacle")
     root = Path(__file__).resolve().parents[3]
     env = dict(os.environ, PYTHONPATH=str(root) + (":" + os.environ["PYTHONPATH"] if "PYTHONPATH" in os.environ else ""))
     args = [sys.executable, "-m", "grimoire.spells.shotl.record", "run"] + ["--sound"] * sound \
@@ -122,6 +129,25 @@ def stop() -> bool:
 
 
 # ---------------------------------------------------------------- the recorder process
+def _translations():
+    """The recorder runs without a Qt app: load this language's catalogs into a bare QCoreApplication so its
+    notifications aren't English (the hub and the CLI already have theirs from style_app)."""
+    try:
+        from PySide6.QtCore import QCoreApplication, QTranslator
+    except ImportError:
+        return
+    if QCoreApplication.instance() is not None:
+        return
+    from grimoire import i18n
+    os.environ["QT_NO_GLIB"] = "1"             # Qt keeps its own event dispatcher, off the GLib loop we record on
+    app = QCoreApplication(sys.argv[:1])
+    for qm in i18n.catalogs(i18n.current()):
+        t = QTranslator(app)
+        if t.load(str(qm)):
+            app.installTranslator(t)
+    _cache["app"] = app                        # Qt holds the app and translators by pointer only
+
+
 def _notify(title: str, body: str):
     try:
         import dbus
@@ -242,6 +268,7 @@ def encode(src: str, out: Path, size=None, sound=False, on_ready=None, stop_afte
 
 def run(argv: list[str]) -> int:
     from grimoire.spells.shotl import portal
+    _translations()                            # before the portal: its errors end up in a notification
     if state():
         print("already recording", flush=True)
         return 1
@@ -256,7 +283,7 @@ def run(argv: list[str]) -> int:
             sess, fd, node, size, new = portal.screencast("", pointer="--pointer" in argv)    # stale token
     except portal.PortalError as e:
         if str(e) != "cancelled":
-            _notify("Recording didn't start", str(e))
+            _notify(tr("grimoire.spells.shotl.record", "Recording didn't start"), str(e))
         print(f"portal: {e}", flush=True)
         return 1
     if new:
@@ -275,9 +302,10 @@ def run(argv: list[str]) -> int:
     if saved:
         shots.add(out)
         from grimoire.fsutil import tilde
-        _notify("Recording saved", tilde(out))
+        _notify(tr("grimoire.spells.shotl.record", "Recording saved"), shots.ltr(tilde(out)))
         return 0
-    _notify("Recording failed", f"Nothing was written; see {LOG}")
+    _notify(tr("grimoire.spells.shotl.record", "Recording failed"),
+            tr("grimoire.spells.shotl.record", "Nothing was written; see {log}").format(log=LOG))
     return 1
 
 
