@@ -137,36 +137,45 @@ PKCE `Loopback`, recovery codes, sync), `supabase_app.py` URL/anon key (env `GRI
 ## Languages (i18n)
 `grimoire/i18n.py`: `LANGUAGES` (en, zh_CN, hi, es, fr, ar, bn, pt = Brazilian wording, ru, ur; code → native name),
 `current()` (env `GRIMOIRE_LANG`, else the profile's `settings.json` "locale", else `CONFIG_ROOT/language` = last
-choice on this PC, else the desktop's `LANG`, else en), `choose(code)`, `install(app)` (called by `style_app()`:
-one QTranslator per area catalog `translations/<area>/<lang>.qm` + Qt's `qtbase_<lang>.qm`, right-to-left for ar/ur,
-font fallbacks as `QFont` substitutions of "IBM Plex Sans"/"IBM Plex Mono": Plex Arabic/Devanagari, Noto Nastaliq
-Urdu, Noto Sans Bengali, Noto Sans CJK SC). A change applies on restart (`settingsview.restart_now()`/
-`offer_restart()`; `loginview.gate()` restarts once when the signed-in profile's language differs).
-Every QApplication must go through `style_app()` (hub, standalone windows, tray, spell `__main__`s).
+choice on this PC, else the desktop's `LANG`, else en; never imports prefs, so it binds no CONFIG before the gate),
+`choose(code)`, `install(app)` (called by `style_app()`: one QTranslator per area catalog
+`translations/<area>/<lang>.qm` + Qt's `qtbase_<lang>.qm`, right-to-left for ar/ur, font fallbacks as `QFont`
+substitutions of "IBM Plex Sans"/"IBM Plex Mono": Plex Arabic/Devanagari, Noto Naskh Arabic UI for Urdu (Nastaliq
+only in big headings via `URDU_QSS`: its 2.5x line height overflows rows), Noto Sans Bengali, Noto Sans CJK SC).
+A change applies on restart (`settingsview.restart_now()`/`offer_restart()`; `loginview.gate()` restarts once when
+the signed-in profile's language differs). Every QApplication goes through `style_app()` (hub, standalone windows,
+tray, spell `__main__`s). The .qm files are committed (installs need no Qt tools); packages ship `translations/`.
 
 Wrapping strings (every user-visible string; phase 2 = one area per spell, each agent touches only its area):
 - `from grimoire.i18n import tr` and `tr("<context>", "Text")`. The context is the module's dotted name as a
   **string literal** (`"grimoire.app"`, `"grimoire.spells.vaultl.page"`); it decides the catalog:
-  `grimoire.spells.<area>.…` → `translations/<area>/`, anything else → `translations/core/`. Never a variable or an
-  f-string as context or text (`scripts/i18n.py` reads literals with `ast`; adjacent literals joined are fine).
+  `grimoire.spells.<area>.…` → `translations/<area>/`, anything else → `translations/core/` (spell taglines and the
+  status lines in `spells/__init__.py` use `"grimoire.spells"` = core). Never a variable or an f-string as context
+  or text (`scripts/i18n.py` reads literals with `ast`; adjacent literals joined are fine).
 - Placeholders: `tr(ctx, "Signed in as {name}").format(name=…)` (format after tr, named fields, whole sentences;
-  never glue translated fragments together, never `+` a sentence from parts).
-- Plurals: `tr(ctx, "%n file(s) moved", n=count)` (with `.format()` after if needed); then give the English forms
-  too (`export <area> en` → fill → `import`), en.ts holds only plurals.
+  never glue translated fragments together, never `+` a sentence from parts; " · " joins of separate bits are ok).
+- Plurals: `tr(ctx, "%n file(s) moved", n=count)` (`.format()` after if needed). Qt plural forms: zh_CN 1;
+  en/hi/es/fr/bn/pt/ur 2; ru 3 (one/few/many); ar 6 (zero/one/two/few/many/other). Then write the English forms
+  (`export <area> en` → fill → `import`); en.ts holds only plurals.
 - Disambiguation for a short word used two ways: `tr(ctx, "Open", "verb")`.
 - Text made at import time (module-level tables, dataclass defaults, `Spell(...)` taglines): mark with
-  `tr_noop(ctx, "Text")` and translate where shown with `tr(ctx, value)` (same context).
+  `tr_noop(ctx, "Text")` and translate where shown with `tr(ctx, value)` (same context literal).
 - Don't wrap: spell/product names (MuraL, Grimoire Linux), commands, paths, file names, config keys, log/CLI/terminal
-  output, desktop-entry fields, polkit messages, text sent to other programs. Do wrap error messages in Qt-free
-  modules that reach the UI (`tr` works without Qt; it returns English there).
-- RTL (ar, ur): layouts mirror by themselves. Custom painting does not: keep graphs, meters, the terminal and
-  previews unmirrored (left-to-right numbers/time axes), but mirror direction glyphs (`i18n.mirrored()`:
-  back/forward). Use `Qt.AlignmentFlag.AlignLeft` (mirrors) not `AlignAbsolute`; avoid fixed widths and
-  heights around text (translations run 30-60% longer; Nastaliq is tall).
-- Workflow for an area: `python3 scripts/i18n.py update <area>` (writes all `translations/<area>/<lang>.ts`), translate
-  (`export <area> <lang> > todo.json`, fill `translation` — a list of plural forms where `forms` is given — then
-  `import <area> <lang> todo.json`, or edit the .ts in Qt Linguist), `check <area>`, `release <area>` (lrelease from
-  qt6-l10n-tools; the .qm files are committed so installs need no Qt tools), `stats`. Translators keep product
-  names, `{placeholders}`, `%n`, shortcuts (Ctrl+F) and `→` paths (ar/ur use `←`).
-- Test a language offscreen: `GRIMOIRE_LANG=ar QT_QPA_PLATFORM=offscreen` with a sandbox HOME, build the widget
-  after `style_app(app)`, `grab()` and look: no tofu boxes, no clipped text, RTL mirrored, graphs not.
+  output, desktop-entry fields, polkit messages, text sent to other programs or KDE. Do wrap error messages in
+  Qt-free modules that reach the UI (`tr` works without Qt; it returns English there).
+- Never compare a widget's text to decide logic (it's translated); keep ids in data.
+- RTL (ar, ur): layouts mirror by themselves; Switch and back/forward glyphs (`i18n.mirrored()`) flip; charts,
+  meters, the terminal and canvases call `setLayoutDirection(LeftToRight)` and plot left to right (QPainter text
+  alignment still follows the app direction). `import` prefixes U+200F to ar/ur translations that start with Latin,
+  a digit or a `{field}` so the line still reads right to left.
+- Letter spacing breaks Arabic/Devanagari/Bengali words apart: use `i18n.spacing(text, px)` for
+  `QFont.setLetterSpacing` and pass stylesheets with `letter-spacing` through `i18n.qss(css)`. Avoid fixed widths and
+  heights around text (translations run 30-60% longer).
+- Workflow for an area: `python3 scripts/i18n.py update <area>` (writes `translations/<area>/<lang>.ts` for all ten),
+  translate (`export <area> <lang> > todo.json`, fill each `translation` — a list in the `forms` order for plurals —
+  then `import <area> <lang> todo.json`; or Qt Linguist on the .ts), `check <area>` (placeholders, %n, format()
+  errors, extraction problems), `release <area>` (lrelease from qt6-l10n-tools), `stats [area]` (0 unfinished before
+  committing). Translators keep product names, `{placeholders}`, `%n`, shortcuts (Ctrl+F); ar/ur write `←` for `→`.
+- Test a language offscreen: `GRIMOIRE_LANG=ar QT_QPA_PLATFORM=offscreen` with a sandbox HOME/XDG dirs, build the
+  widget after `style_app(app)`, `grab()` and look: no tofu boxes, no clipped text, RTL mirrored, graphs not. Check
+  en, zh_CN, hi, ar, ur, bn, ru at least.

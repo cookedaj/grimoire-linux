@@ -189,7 +189,7 @@ to your desktop; `grimoire-widgetl add clock|system|weather|nowplaying` does the
 Grimoire Linux speaks English, 中文（简体） (Simplified Chinese), हिन्दी (Hindi), Español (Spanish), Français
 (French), العربية (Arabic), বাংলা (Bengali), Português (Brazilian Portuguese), Русский (Russian) and اردو (Urdu).
 Pick one in the first-run setup or in Settings → General (it applies after a restart). Arabic and Urdu lay the app
-out right to left; Urdu uses Nastaliq. Text in these scripts needs the Noto fonts (`fonts-noto-core`,
+out right to left; Urdu headings use Nastaliq. Text in these scripts needs the Noto fonts (`fonts-noto-core`,
 `fonts-noto-cjk`; already on Kubuntu).
 
 The translations are machine-made, so some wording will be off. Native speakers are very welcome to fix them: edit
