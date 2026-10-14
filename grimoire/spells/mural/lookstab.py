@@ -13,7 +13,7 @@ from PySide6.QtWidgets import (QAbstractItemView, QCheckBox, QFrame, QHBoxLayout
 from grimoire.i18n import tr
 from grimoire.jobs import POOL, Job
 from grimoire.spells.mural import looks
-from grimoire.spells.mural.screens import THUMB, placeholder
+from grimoire.spells.mural.screens import THUMB, WrapCheck, placeholder
 
 ID_ROLE = Qt.ItemDataRole.UserRole
 
@@ -113,12 +113,14 @@ class LooksTab(QWidget):
         self.contents = QLabel()
         self.contents.setObjectName("Muted")
         self.contents.setWordWrap(True)
+        for lab in (self.name, self.contents):    # a shared setup's look name is someone else's text: never HTML
+            lab.setTextFormat(Qt.TextFormat.PlainText)
         pl.addWidget(self.name)
         pl.addWidget(self.contents)
         pl.addSpacing(6)
         self.root_boxes: dict[str, QCheckBox] = {}
         for key in sorted(looks.ROOT, key=looks.ORDER.index):
-            box = QCheckBox(tr("grimoire.spells.mural.lookstab", "Also restore {part}\n(asks for your password)")
+            box = WrapCheck(tr("grimoire.spells.mural.lookstab", "Also restore {part}\n(asks for your password)")
                             .format(part=part(key).lower()))
             self.root_boxes[key] = box
             pl.addWidget(box)
@@ -126,6 +128,7 @@ class LooksTab(QWidget):
         self.status = QLabel()
         self.status.setObjectName("Muted")
         self.status.setWordWrap(True)
+        self.status.setTextFormat(Qt.TextFormat.PlainText)
         pl.addWidget(self.status)
         row = QHBoxLayout()
         self.rename_btn = QPushButton(tr("grimoire.spells.mural.lookstab", "Rename"))

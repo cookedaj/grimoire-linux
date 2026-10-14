@@ -4,12 +4,12 @@ border, outline, hide title bar when maximized). Applies live through KWin.
 """
 from PySide6.QtCore import QRectF, Qt
 from PySide6.QtGui import QColor, QFont, QImage, QPainter, QPainterPath, QPen
-from PySide6.QtWidgets import QCheckBox, QGridLayout, QLabel
+from PySide6.QtWidgets import QGridLayout, QLabel
 
 from grimoire.i18n import tr, tr_noop
 from grimoire.spells.mural.backdrop import wallpaper
 from grimoire.spells.mural.kde import kread, kwin_reconfigure, kwrite
-from grimoire.spells.mural.screens import Choice, Design, ScreenTab, community_designs, community_entry
+from grimoire.spells.mural.screens import Choice, Design, ScreenTab, WrapCheck, community_designs, community_entry
 
 #            left  right   (KWin codes: M menu, S on-all-desktops, H help, I minimize, A maximize, X close)
 LAYOUTS = {
@@ -171,7 +171,7 @@ class WindowsTab(ScreenTab):
             grid.addWidget(QLabel(name), r, 0)
             grid.addWidget(c, r, 1)
         lay.addLayout(grid)
-        self.borderless_max = QCheckBox(tr("grimoire.spells.mural.windows", "Hide title bar when maximized"))
+        self.borderless_max = WrapCheck(tr("grimoire.spells.mural.windows", "Hide title bar when maximized"))
         self.borderless_max.toggled.connect(self.changed)
         lay.addWidget(self.borderless_max)
 

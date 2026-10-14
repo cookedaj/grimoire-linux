@@ -6,14 +6,14 @@ Every role (links, warnings, focus…) maps to a gray, so nothing on screen keep
 """
 from PySide6.QtCore import QRectF, Qt
 from PySide6.QtGui import QColor, QFont, QFontMetricsF, QImage, QPainter, QPainterPath
-from PySide6.QtWidgets import QGridLayout, QLabel, QPushButton
+from PySide6.QtWidgets import QGridLayout, QLabel
 
 from grimoire.i18n import tr, tr_noop
 
 from grimoire.paths import DATA, HOME
 from grimoire.spells.mural.backdrop import wallpaper as _wallpaper
 from grimoire.spells.mural.kde import kread, run_tool
-from grimoire.spells.mural.screens import Choice, Design, ScreenTab, community_designs, community_entry
+from grimoire.spells.mural.screens import Choice, Design, ScreenTab, WrapButton, community_designs, community_entry
 
 SCHEMES = HOME / ".local/share/color-schemes"
 PREVIOUS = DATA / "mural" / "colors-previous.txt"
@@ -254,7 +254,7 @@ class ColorsTab(ScreenTab):
         grid.addWidget(self.accent, 1, 1)
         lay.addLayout(grid)
         lay.addSpacing(6)
-        restore = QPushButton(tr("grimoire.spells.mural.colors", "Restore previous colors"))
+        restore = WrapButton(tr("grimoire.spells.mural.colors", "Restore previous colors"))
         restore.clicked.connect(self._restore)
         lay.addWidget(restore)
 

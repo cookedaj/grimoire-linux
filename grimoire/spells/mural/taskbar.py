@@ -13,14 +13,14 @@ import time
 from PySide6.QtCore import QRectF, Qt
 from PySide6.QtGui import QColor, QFont, QImage, QPainter, QPainterPath
 from PySide6.QtSvg import QSvgRenderer
-from PySide6.QtWidgets import QCheckBox, QGridLayout, QLabel, QPushButton
+from PySide6.QtWidgets import QGridLayout, QLabel
 
 from grimoire.i18n import tr, tr_noop
 from grimoire.paths import ASSETS, DATA
 from grimoire.spells.mural import plasmastyle
 from grimoire.spells.mural.backdrop import wallpaper as _wallpaper
 from grimoire.spells.mural.kde import kread, kwrite, plasma_script
-from grimoire.spells.mural.screens import Choice, Design, ScreenTab
+from grimoire.spells.mural.screens import Choice, Design, ScreenTab, WrapButton, WrapCheck
 from grimoire.widgets import Slider
 
 ORIGINAL = DATA / "mural" / "taskbar-original.json"
@@ -192,13 +192,13 @@ class TaskbarTab(ScreenTab):
         grid.addWidget(QLabel(tr("grimoire.spells.mural.taskbar", "Opacity")), 2, 0)
         grid.addWidget(self.opacity, 2, 1)
         lay.addLayout(grid)
-        self.floating = QCheckBox(tr("grimoire.spells.mural.taskbar", "Floating (gap + rounded corners)"))
-        self.autohide = QCheckBox(tr("grimoire.spells.mural.taskbar", "Auto-hide"))
+        self.floating = WrapCheck(tr("grimoire.spells.mural.taskbar", "Floating (gap + rounded corners)"))
+        self.autohide = WrapCheck(tr("grimoire.spells.mural.taskbar", "Auto-hide"))
         for c in (self.floating, self.autohide):
             c.toggled.connect(self.changed)
             lay.addWidget(c)
         lay.addSpacing(6)
-        restore = QPushButton(tr("grimoire.spells.mural.taskbar", "Restore original taskbar"))
+        restore = WrapButton(tr("grimoire.spells.mural.taskbar", "Restore original taskbar"))
         restore.clicked.connect(self._restore)
         lay.addWidget(restore)
 

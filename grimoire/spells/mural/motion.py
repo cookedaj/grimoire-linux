@@ -6,11 +6,11 @@ import subprocess
 
 from PySide6.QtCore import QPointF, QRectF, Qt
 from PySide6.QtGui import QColor, QFont, QImage, QPainter, QPainterPath, QPen
-from PySide6.QtWidgets import QCheckBox, QGridLayout, QLabel
+from PySide6.QtWidgets import QGridLayout, QLabel
 
 from grimoire.i18n import tr, tr_noop
 from grimoire.spells.mural.kde import kwin_reconfigure, kwrite
-from grimoire.spells.mural.screens import Design, ScreenTab
+from grimoire.spells.mural.screens import Design, ScreenTab, WrapCheck
 from grimoire.widgets import Slider
 
 # effect groups: only one of each group runs
@@ -151,7 +151,7 @@ class MotionTab(ScreenTab):
         grid.addWidget(QLabel(tr("grimoire.spells.mural.motion", "Grain")), 1, 0)
         grid.addWidget(self.noise, 1, 1)
         lay.addLayout(grid)
-        self.wobbly = QCheckBox(tr("grimoire.spells.mural.motion", "Wobbly windows"))
+        self.wobbly = WrapCheck(tr("grimoire.spells.mural.motion", "Wobbly windows"))
         self.wobbly.toggled.connect(self.changed)
         lay.addWidget(self.wobbly)
 

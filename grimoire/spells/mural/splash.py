@@ -14,13 +14,13 @@ import sys
 from pathlib import Path
 
 from PySide6.QtGui import QImage
-from PySide6.QtWidgets import QCheckBox, QGridLayout, QLabel, QLineEdit, QPushButton
+from PySide6.QtWidgets import QGridLayout, QLabel, QLineEdit
 
 from grimoire.i18n import tr, tr_noop
 from grimoire.paths import ASSETS, CACHE, HOME
 from grimoire.spells.mural.kde import kwrite
-from grimoire.spells.mural.screens import (Choice, Design, ScreenTab, community_designs, community_entry,
-                                           render_lock)
+from grimoire.spells.mural.screens import (Choice, Design, ScreenTab, WrapButton, WrapCheck, community_designs,
+                                           community_entry, render_lock)
 
 TEMPLATES = Path(__file__).with_name("splash_designs")
 PACKAGE_ID = "com.cookedaj.grimoire.splash"
@@ -107,11 +107,11 @@ class SplashTab(ScreenTab):
         grid.addWidget(QLabel(tr("grimoire.spells.mural.splash", "Speed")), 1, 0)
         grid.addWidget(self.speed, 1, 1)
         lay.addLayout(grid)
-        self.show_tagline = QCheckBox(tr("grimoire.spells.mural.splash", "Show tagline"))
+        self.show_tagline = WrapCheck(tr("grimoire.spells.mural.splash", "Show tagline"))
         self.show_tagline.toggled.connect(self.changed)
         lay.addWidget(self.show_tagline)
         lay.addSpacing(6)
-        play = QPushButton(tr("grimoire.spells.mural.splash", "Play it now"))
+        play = WrapButton(tr("grimoire.spells.mural.splash", "Play it now"))
         play.setToolTip(tr("grimoire.spells.mural.splash", "Runs this splash in a window for a few seconds"))
         play.clicked.connect(self._play)
         lay.addWidget(play)

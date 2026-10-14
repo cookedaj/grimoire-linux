@@ -16,10 +16,11 @@ import json
 import threading
 from dataclasses import dataclass
 
-from PySide6.QtCore import QObject, QSize, Qt, QTimer, Signal
-from PySide6.QtGui import QColor, QIcon, QImage, QPainter, QPixmap
-from PySide6.QtWidgets import (QAbstractItemView, QComboBox, QFrame, QHBoxLayout, QLabel, QListWidget, QListWidgetItem,
-                               QPushButton, QSizePolicy, QStackedWidget, QVBoxLayout, QWidget)
+from PySide6.QtCore import QEvent, QObject, QSize, Qt, QTimer, Signal
+from PySide6.QtGui import QColor, QFont, QIcon, QImage, QPainter, QPixmap, QTextLayout, QTextOption
+from PySide6.QtWidgets import (QAbstractButton, QAbstractItemView, QCheckBox, QComboBox, QFrame, QHBoxLayout, QLabel,
+                               QListWidget, QListWidgetItem, QPushButton, QSizePolicy, QStackedWidget, QVBoxLayout,
+                               QWidget)
 
 from grimoire.i18n import tr
 from grimoire.jobs import POOL, Job
@@ -55,6 +56,71 @@ class Choice(QComboBox):
         i = self.findData(value)
         if i >= 0:
             self.setCurrentIndex(i)
+
+
+def _lines(text: str, font: QFont, width: float) -> str:
+    """text broken into lines that fit width; QTextLayout picks break points that suit any script."""
+    out = []
+    for para in text.split("\n"):
+        layout = QTextLayout(para, font)
+        option = QTextOption()
+        option.setWrapMode(QTextOption.WrapMode.WrapAtWordBoundaryOrAnywhere)
+        layout.setTextOption(option)
+        layout.beginLayout()
+        while (line := layout.createLine()).isValid():
+            line.setLineWidth(width)
+            out.append(para[line.textStart():line.textStart() + line.textLength()].strip())
+        layout.endLayout()
+    return "\n".join(out)
+
+
+class _Wrapping:
+    """A button whose label wraps instead of being cut off: translations run long and the options panel is fixed.
+    The width comes from the layout (Ignored policy); the label is rewrapped to it on every resize."""
+    _base = QAbstractButton
+
+    def _setup(self, text: str):
+        self._full, self._overhead = text, None
+        self.setSizePolicy(QSizePolicy.Policy.Ignored, QSizePolicy.Policy.Fixed)
+
+    def setText(self, text: str):
+        self._full, self._overhead = text, None
+        self._rewrap()
+
+    def _rewrap(self):
+        fm = self.fontMetrics()
+        widest = lambda t: max(fm.horizontalAdvance(l) for l in t.split("\n"))
+        if self._overhead is None:                # indicator, padding: measured on the whole text
+            self._base.setText(self, self._full)
+            self._overhead = self._base.sizeHint(self).width() - widest(self._full)
+        room = self.width() - self._overhead - 2
+        fits = self.width() <= 0 or widest(self._full) <= room
+        self._base.setText(self, self._full if fits else _lines(self._full, self.font(), max(40, room)))
+
+    def resizeEvent(self, e):
+        self._base.resizeEvent(self, e)
+        self._rewrap()
+
+    def changeEvent(self, e):
+        self._base.changeEvent(self, e)
+        if e.type() in (QEvent.Type.FontChange, QEvent.Type.StyleChange):
+            self._overhead = None
+
+
+class WrapCheck(_Wrapping, QCheckBox):
+    _base = QCheckBox
+
+    def __init__(self, text: str):
+        QCheckBox.__init__(self, text)
+        self._setup(text)
+
+
+class WrapButton(_Wrapping, QPushButton):
+    _base = QPushButton
+
+    def __init__(self, text: str):
+        QPushButton.__init__(self, text)
+        self._setup(text)
 
 
 def load_state() -> dict:
@@ -231,6 +297,8 @@ class ScreenTab(QWidget):
         self.blurb = QLabel()
         self.blurb.setObjectName("Muted")
         self.blurb.setWordWrap(True)
+        for lab in (self.name, self.blurb):       # community names and authors come from the store: never as HTML
+            lab.setTextFormat(Qt.TextFormat.PlainText)
         pl.addWidget(self.name)
         pl.addWidget(self.blurb)
         pl.addSpacing(10)
@@ -239,6 +307,7 @@ class ScreenTab(QWidget):
         self.status = QLabel()
         self.status.setObjectName("Muted")
         self.status.setWordWrap(True)
+        self.status.setTextFormat(Qt.TextFormat.PlainText)       # error messages can quote file names from downloads
         pl.addWidget(self.status)
         self.apply_btn = QPushButton(self.shown(self.apply_label) or tr("grimoire.spells.mural.screens", "Apply"))
         self.apply_btn.setObjectName("Primary")
