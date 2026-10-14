@@ -4,7 +4,7 @@ import sys
 from datetime import datetime
 from types import SimpleNamespace
 
-from PySide6.QtCore import QSize, Qt
+from PySide6.QtCore import QSize, Qt, QTimer
 from PySide6.QtGui import QColor, QFont, QIcon, QPalette
 from PySide6.QtWidgets import (QApplication, QButtonGroup, QCheckBox, QFrame, QGridLayout, QHBoxLayout, QLabel,
                                QMainWindow, QMessageBox, QPushButton, QScrollArea, QStackedWidget, QVBoxLayout,
@@ -213,14 +213,28 @@ class Window(QMainWindow):
         rail.setObjectName("Rail")
         rail.setFixedWidth(72)
         rl = QVBoxLayout(rail)
-        rl.setContentsMargins(12, 22, 12, 16)
+        rl.setContentsMargins(0, 22, 0, 16)
         rl.setSpacing(8)
         logo = QLabel()
         logo.setPixmap(clover(34))
         logo.setAlignment(Qt.AlignmentFlag.AlignHCenter)
         logo.setToolTip(NAME)
         rl.addWidget(logo)
-        rl.addSpacing(22)
+        rl.addSpacing(14)
+        # home + one button per spell scroll (a thin bar when they don't fit, e.g. the minimum window height);
+        # the account, Settings and the version stay pinned at the foot
+        self.rail_scroll = scroll = QScrollArea()
+        scroll.setObjectName("RailScroll")
+        scroll.setWidgetResizable(True)
+        scroll.setFrameShape(QFrame.Shape.NoFrame)
+        scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+        spells = QWidget()
+        spells.setObjectName("RailSpells")
+        sl = QVBoxLayout(spells)
+        sl.setContentsMargins(0, 8, 0, 8)
+        sl.setSpacing(8)
+        scroll.setWidget(spells)
+        rl.addWidget(scroll, 1)
 
         self.updater = Updater(self)
         self._whatsnew = None
@@ -238,10 +252,11 @@ class Window(QMainWindow):
         tl.addWidget(GuestBar())
         self.home = Home(self.open, top)
         home.setWidget(self.home)
-        self._add_page("home", tr("grimoire.app", "Home"), "home", home, rl)
+        self._add_page("home", tr("grimoire.app", "Home"), "home", home, sl)
         for spell in SPELLS:
-            self._add_page(spell.id, spell.name, spell.icon, None, rl, spell)
-        rl.addStretch(1)
+            self._add_page(spell.id, spell.name, spell.icon, None, sl, spell)
+        sl.addStretch(1)
+        rl.addSpacing(8)
         account = QPushButton()                  # your account: opens Settings → Account
         account.setObjectName("RailItem")
         account.setIcon(glyph("login", 22))
@@ -307,6 +322,8 @@ class Window(QMainWindow):
             self.stack.addWidget(widget)
         self.stack.setCurrentWidget(widget)
         btn.setChecked(True)
+        if btn.parentWidget() is self.rail_scroll.widget():     # after the rail is laid out (open() may run first)
+            QTimer.singleShot(0, lambda: self.rail_scroll.ensureWidgetVisible(btn, 0, 8))
 
 
 def style_app(app: QApplication):
