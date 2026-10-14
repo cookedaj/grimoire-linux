@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+# SPDX-License-Identifier: GPL-3.0-or-later
+# WidgetL in its own window:          grimoire-widgetl
+# the widgets from a terminal:        grimoire-widgetl status|list|install|add ID|remove|uninstall [--dry-run]
+DIR="$(cd "$(dirname "$(readlink -f "$0")")/.." && pwd)"
+export PYTHONPATH="$DIR${PYTHONPATH:+:$PYTHONPATH}"
+export PYTHONSAFEPATH=1       # never import a grimoire/ folder from the current directory instead
+if [ $# -gt 0 ]; then
+    exec python3 -m grimoire.spells.widgetl "$@"
+fi
+exec python3 -m grimoire.standalone widgetl

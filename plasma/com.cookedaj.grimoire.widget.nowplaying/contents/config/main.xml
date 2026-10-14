@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kcfg xmlns="http://www.kde.org/standards/kcfg/1.0"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.kde.org/standards/kcfg/1.0
+      http://www.kde.org/standards/kcfg/1.0/kcfg.xsd">
+  <kcfgfile name=""/>
+  <group name="General">
+    <entry name="grayscaleCover" type="Bool">
+      <label>Show the cover in grayscale</label>
+      <default>true</default>
+    </entry>
+    <entry name="showAlbum" type="Bool">
+      <label>Show the album after the artist</label>
+      <default>true</default>
+    </entry>
+    <entry name="backgroundOpacity" type="Int">
+      <label>How dark the panel behind the widget is, 0 for none</label>
+      <default>80</default>
+      <min>0</min>
+      <max>100</max>
+    </entry>
+  </group>
+</kcfg>

@@ -55,6 +55,12 @@ what goes over the network, see [security.md](security.md).
   the same ones Kickoff uses). Its page installs the widget with `kpackagetool6` and can swap it in for Kickoff:
   it records the panel, position, settings, shortcut and favorites order first, so **Restore Kickoff** puts back
   exactly what was there. `uninstall.sh` restores Kickoff before removing the widget.
+- **WidgetL** is four Plasma desktop widgets (`plasma/com.cookedaj.grimoire.widget.*`). Each draws itself in a plain
+  QtQuick `Face.qml`, which the page also renders offscreen with sample data as its preview; `main.qml` feeds it from
+  Plasma's sensor service (System), Open-Meteo over HTTPS every 30 minutes for the place you picked (Weather; the
+  city search runs only when you press Search) and Plasma's MPRIS model (Now Playing). The page installs them with
+  `kpackagetool6` and adds one to the desktop with a desktop script; `uninstall.sh` takes them off every desktop and
+  panel before removing them.
 
 ## Installs
 
@@ -83,7 +89,8 @@ grimoire/            the app (PySide6)
   spells/shotl/      ShotL capture, region picker, editor, recorder, gallery page, CLI
   spells/focusl/     FocusL timer state, background runner, guards (DND, apps, sites), root helper, page
   spells/launchl/    LaunchL install / replace / restore, page, CLI
-plasma/              the MuraL wallpaper plugin and the LaunchL panel widget
+  spells/widgetl/    WidgetL install / add / remove, face previews, page, CLI
+plasma/              the MuraL wallpaper plugin, the LaunchL panel widget and WidgetL's desktop widgets
 bin/                 launchers
 install.sh           copies the app into ~/.local/share/grimoire/app and links it in
 uninstall.sh         removes it again (--purge also clears settings)

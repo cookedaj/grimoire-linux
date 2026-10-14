@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kcfg xmlns="http://www.kde.org/standards/kcfg/1.0"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.kde.org/standards/kcfg/1.0
+      http://www.kde.org/standards/kcfg/1.0/kcfg.xsd">
+  <kcfgfile name=""/>
+  <group name="General">
+    <entry name="use24h" type="Bool">
+      <label>Show the time in 24-hour format</label>
+      <default>true</default>
+    </entry>
+    <entry name="showSeconds" type="Bool">
+      <label>Show the seconds</label>
+      <default>false</default>
+    </entry>
+    <entry name="showDate" type="Bool">
+      <label>Show the date under the time</label>
+      <default>true</default>
+    </entry>
+    <entry name="backgroundOpacity" type="Int">
+      <label>How dark the panel behind the widget is, 0 for none</label>
+      <default>80</default>
+      <min>0</min>
+      <max>100</max>
+    </entry>
+  </group>
+</kcfg>

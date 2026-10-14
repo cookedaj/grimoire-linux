@@ -46,6 +46,9 @@ API for the newest commit on `main` (no account, no identifiers beyond a normal 
 Settings → General or with `GRIMOIRE_NO_UPDATE_CHECK=1`). Packaged installs (.deb, AUR) don't check at all.
 On demand only: the MuraL community store (KDE Store, Wallhaven) when you open it and install, NetL's public IP and
 ping checks when you press them, and GitHub sign-in / gist backup. There is no telemetry and no analytics.
+Once you put WidgetL's Weather widget on the desktop and pick a place, it asks Open-Meteo (api.open-meteo.com) for
+the forecast at that place's coordinates every 30 minutes; its city search (geocoding-api.open-meteo.com) sends what you
+typed, only when you press Search. Your location is never looked up from your IP address.
 
 ## Sign-in and backups: threat model
 

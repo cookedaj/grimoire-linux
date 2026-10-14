@@ -19,7 +19,7 @@ OUT = REPO / "docs" / "screenshots"
 BOX = Path.home() / ".cache" / "grimoire-screenshots"
 W, H = 1440, 900
 PAGES = ["hub", "mural", "sightc", "vaultl", "optimizel", "systeml", "terminall", "shotl", "focusl", "netl", "launchl",
-         "settings", "tray"]
+         "settings", "tray", "widgetl"]
 
 
 # ---------------------------------------------------------------- the sandbox
@@ -162,6 +162,11 @@ def offline_stubs():
     panel.scan = lambda: [{"id": 1, "order": "2;3;4", "widgets": [
         {"id": 2, "type": "org.kde.plasma.kickoff"}, {"id": 3, "type": "org.kde.plasma.icontasks"},
         {"id": 4, "type": "org.kde.plasma.systemtray"}]}]
+    from grimoire.spells.widgetl import widgets
+    widgets.is_installed = lambda wid: True
+    widgets.needs_update = lambda wid: False
+    widgets.scan = lambda timeout=20: [{"kind": "desktop", "containment": 1, "screen": 0, "widget": 30,
+                                        "type": widgets.PREFIX + "clock"}]
 
 
 def seed_shots():
@@ -243,7 +248,7 @@ def _terminal(page, wait):
 
 
 PREPARE = {"vaultl": _vaultl, "terminall": _terminal}
-WAIT = {"mural": 6000, "systeml": 30000, "netl": 30000, "optimizel": 5000, "terminall": 3500, "vaultl": 3000}
+WAIT = {"widgetl": 5000, "mural": 6000, "systeml": 30000, "netl": 30000, "optimizel": 5000, "terminall": 3500, "vaultl": 3000}
 
 
 def main():

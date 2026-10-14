@@ -161,3 +161,17 @@ def _netl_status() -> str:
 
 SPELLS.append(Spell("netl", "NetL", "Your network: live traffic per interface and per app, connections, Wi-Fi and "
                     "VPN switches, and daily and monthly usage", _netl, "net", _netl_status))
+
+
+def _widgetl():
+    from grimoire.spells.widgetl.page import WidgetLPage
+    return WidgetLPage()
+
+
+def _widgetl_status() -> str:
+    from grimoire.spells.widgetl import widgets
+    return widgets.status()
+
+
+SPELLS.append(Spell("widgetl", "WidgetL", "Desktop widgets in black and white: a clock, your system's readings, the "
+                    "weather and what's playing", _widgetl, "widgets", _widgetl_status))
