@@ -7,6 +7,7 @@ Writes go through pw.py (wpctl/pactl as you) and report back in the toast.
 """
 import time
 
+from PySide6 import QtGui
 from PySide6.QtCore import QObject, QSize, Qt, QTimer, Signal
 from PySide6.QtWidgets import (QComboBox, QFrame, QHBoxLayout, QLabel, QPushButton, QScrollArea, QSizePolicy,
                                QStackedWidget, QToolButton, QVBoxLayout, QWidget)
@@ -103,6 +104,8 @@ class VolumeRow(QFrame):
         text.addLayout(head)
         self.sub = _label("", "Muted")
         self.sub.setSizePolicy(QSizePolicy.Policy.Ignored, QSizePolicy.Policy.Preferred)
+        for lab in (self.title, self.sub):          # app, device and track names are set by the apps themselves
+            lab.setTextFormat(Qt.TextFormat.PlainText)
         text.addWidget(self.sub)
         vol = QHBoxLayout()
         vol.setSpacing(8)
@@ -267,7 +270,7 @@ class DevicesPanel(_List):
                     other.test.setChecked(False)
             self.in_row = row
             row.level.show()
-            self.mic.start(row.item["name"], output=False)
+            self.mic.start(str(row.item["serial"]), output=False)      # by serial: a name could read as one
         elif self.in_row is row:
             self._stop_mic()
 
@@ -290,7 +293,7 @@ class DevicesPanel(_List):
             self.reader.stop()
             return
         self.out_row.level.show()
-        self.reader.start(self.out_row.item["name"], output=True)
+        self.reader.start(str(self.out_row.item["serial"]), output=True)
 
     def hideEvent(self, e):
         self.reader.stop()
@@ -359,7 +362,8 @@ class AppsPanel(_List):
                 if not row.pick.view().isVisible() and time.monotonic() - row.touched >= HOLD:
                     i = row.pick.findData(s["target"])
                     row.pick.setCurrentIndex(i)
-                    row.pick.setToolTip(devs[s["target"]]["label"] if s["target"] in devs else "")
+                    row.pick.setToolTip(QtGui.Qt.convertFromPlainText(devs[s["target"]]["label"])
+                                        if s["target"] in devs else "")
 
     def _move(self, row: VolumeRow, pick: QComboBox, kind: str):
         row.touched = time.monotonic()
@@ -397,9 +401,11 @@ class ProfilesPanel(_List):
                 text = QVBoxLayout()
                 text.setSpacing(4)
                 title = _label(pw.lead(c["label"]), "RowTitle")
+                title.setTextFormat(Qt.TextFormat.PlainText)
                 title.setSizePolicy(QSizePolicy.Policy.Ignored, QSizePolicy.Policy.Preferred)
                 text.addWidget(title)
                 row.sub = _label("", "Muted")
+                row.sub.setTextFormat(Qt.TextFormat.PlainText)
                 text.addWidget(row.sub)
                 lay.addLayout(text, 1)
                 pick = QComboBox()
@@ -468,6 +474,7 @@ class AudioLPage(QWidget):
             self.nav[pid] = b
         nl.addStretch(1)
         self.foot = _label("", "Tiny")
+        self.foot.setTextFormat(Qt.TextFormat.PlainText)     # the default output's name
         self.foot.setWordWrap(True)
         nl.addWidget(self.foot)
         root.addWidget(nav)

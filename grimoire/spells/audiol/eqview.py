@@ -202,6 +202,7 @@ class EqPanel(QWidget):
         text.setSpacing(4)
         text.addWidget(_label("Grimoire EQ", "RowTitle"))
         self.state = _label("", "Muted", wrap=True)
+        self.state.setTextFormat(Qt.TextFormat.PlainText)     # carries a device's name
         text.addWidget(self.state)
         tl.addLayout(text, 1)
         self.apply_btn = QPushButton(tr("grimoire.spells.audiol.eqview", "Apply"))
@@ -414,6 +415,8 @@ class EqPanel(QWidget):
         if running is None or not s["on"]:
             return
         fc = self.fc
+        if self.installed_output is not None:
+            s["output"] = self.installed_output       # a device change waits for Apply: keep the running one's
 
         def work():
             pw.set_props(running, eq.live_params(s["gains"], s["preamp"]))
