@@ -1035,7 +1035,7 @@
     <message>
         <location filename="../../grimoire/loginview.py"/>
         <source>Text (*.txt)</source>
-        <translation>文本（*.txt）</translation>
+        <translation>文本 (*.txt)</translation>
     </message>
     <message>
         <location filename="../../grimoire/loginview.py"/>
@@ -1615,7 +1615,7 @@
     <message>
         <location filename="../../grimoire/settingsview.py"/>
         <source>Grimoire backup (*.grimoire-backup)</source>
-        <translation>Grimoire 备份（*.grimoire-backup）</translation>
+        <translation>Grimoire 备份 (*.grimoire-backup)</translation>
     </message>
     <message numerus="yes">
         <location filename="../../grimoire/settingsview.py"/>
@@ -1637,7 +1637,7 @@
     <message>
         <location filename="../../grimoire/settingsview.py"/>
         <source>All files (*)</source>
-        <translation>所有文件（*）</translation>
+        <translation>所有文件 (*)</translation>
     </message>
     <message>
         <location filename="../../grimoire/settingsview.py"/>
@@ -2807,7 +2807,7 @@
     <message>
         <location filename="../../grimoire/shareview.py"/>
         <source>Grimoire setup (*.grimoire-setup)</source>
-        <translation>Grimoire 配置（*.grimoire-setup）</translation>
+        <translation>Grimoire 配置 (*.grimoire-setup)</translation>
     </message>
     <message>
         <location filename="../../grimoire/shareview.py"/>
@@ -2854,7 +2854,7 @@
     <message>
         <location filename="../../grimoire/shareview.py"/>
         <source>Grimoire setup (*.grimoire-setup);;All files (*)</source>
-        <translation>Grimoire 配置（*.grimoire-setup）;;所有文件（*）</translation>
+        <translation>Grimoire 配置 (*.grimoire-setup);;所有文件 (*)</translation>
     </message>
     <message>
         <location filename="../../grimoire/shareview.py"/>

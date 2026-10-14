@@ -1630,7 +1630,7 @@
     <message>
         <location filename="../../grimoire/settingsview.py"/>
         <source>Saves a .grimoire-backup file wherever you choose.</source>
-        <translation>يحفظ ملف .grimoire-backup حيث تختار.</translation>
+        <translation>يحفظ ملف ⁦.grimoire-backup⁩ حيث تختار.</translation>
     </message>
     <message>
         <location filename="../../grimoire/settingsview.py"/>
@@ -2852,7 +2852,7 @@
     <message>
         <location filename="../../grimoire/shareview.py"/>
         <source>A .grimoire-setup file to send or post anywhere. Grimoire checks it holds nothing personal before saving.</source>
-        <translation>ملف .grimoire-setup لإرساله أو نشره في أي مكان. يتحقق Grimoire من أنه لا يحتوي على أي شيء شخصي قبل حفظه.</translation>
+        <translation>ملف ⁦.grimoire-setup⁩ لإرساله أو نشره في أي مكان. يتحقق Grimoire من أنه لا يحتوي على أي شيء شخصي قبل حفظه.</translation>
     </message>
     <message>
         <location filename="../../grimoire/shareview.py"/>
