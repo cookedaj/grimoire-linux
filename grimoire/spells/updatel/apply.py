@@ -11,6 +11,7 @@ import subprocess
 from dataclasses import dataclass, field
 
 from grimoire import roothelper
+from grimoire.i18n import tr
 from grimoire.spells.updatel import sources
 
 SPELL = "updatel"
@@ -57,7 +58,7 @@ def plan_for(items: list[dict], everything: set[str] = frozenset()) -> Plan:
 def _names(kind: str, names: list[str]) -> list[str]:
     bad = [n for n in names if not sources.valid(kind, n)]
     if bad:
-        raise ValueError("Not a valid name: {name}".format(name=bad[0]))
+        raise ValueError(tr("grimoire.spells.updatel.apply", "Not a valid name: {name}").format(name=bad[0]))
     return names
 
 
@@ -130,17 +131,23 @@ def run(p: Plan, on_line) -> tuple[bool, str]:
         on_line("$ " + " ".join(["root-helper", *args]))
         code = stream(cmd, on_line)
         if code in (126, 127):
-            return False, "The password prompt was cancelled; nothing was changed."
+            return False, tr("grimoire.spells.updatel.apply",
+                             "The password prompt was cancelled; nothing was changed.")
         if code == 3:
-            return False, "Refused: the upgrade would remove a package that has to stay (see the log)."
+            return False, tr("grimoire.spells.updatel.apply",
+                             "Refused: the upgrade would remove a package that has to stay (see the log).")
         if code == 4:
-            return False, "Refused: the upgrade would remove packages you didn't confirm (see the log)."
+            return False, tr("grimoire.spells.updatel.apply",
+                             "Refused: the upgrade would remove packages you didn't confirm (see the log).")
         if code:
-            return False, "The update stopped with an error (code {code}); see the log.".format(code=code)
+            return False, tr("grimoire.spells.updatel.apply",
+                             "The update stopped with an error (code {code}); see the log.").format(code=code)
     if ucmd:
         on_line("$ " + " ".join(ucmd))
         code = stream(ucmd, on_line)
         if code:
-            return False, "Updating your Flatpaks failed (code {code}); see the log.".format(code=code)
+            return False, tr("grimoire.spells.updatel.apply",
+                             "Updating your Flatpaks failed (code {code}); see the log.").format(code=code)
     only_lists = p.refresh and not ucmd and args == ["refresh"]
-    return True, "Package lists refreshed." if only_lists else "Updates installed."
+    return True, (tr("grimoire.spells.updatel.apply", "Package lists refreshed.") if only_lists
+                  else tr("grimoire.spells.updatel.apply", "Updates installed."))

@@ -18,6 +18,9 @@ import shutil
 import subprocess
 from pathlib import Path
 
+from grimoire import i18n
+from grimoire.i18n import tr, tr_noop
+
 REBOOT = Path("/var/run/reboot-required")
 # what may reach the root helper; the helper has the same patterns
 VALID = {
@@ -29,7 +32,19 @@ VALID = {
 # never removed by an upgrade, whatever apt wants (CLAUDE.md: the desktop and its fonts stay)
 PROTECTED = re.compile(r"kubuntu-desktop|fonts-ibm-plex.*")
 SOURCES = ("apt", "flatpak", "snap", "fwupd")
-NAMES = {"apt": "APT", "flatpak": "Flatpak", "snap": "Snap", "fwupd": "Firmware"}
+NAMES = {"apt": "APT", "flatpak": "Flatpak", "snap": "Snap",
+         "fwupd": tr_noop("grimoire.spells.updatel.sources", "Firmware")}
+
+
+def name(src: str) -> str:
+    """A source's name as shown (APT, Flatpak and Snap are names; "Firmware" is translated)."""
+    return tr("grimoire.spells.updatel.sources", NAMES[src])
+
+
+def isolate(text: str) -> str:
+    """A value set into a translated sentence or a table cell (package names, versions, sizes, errors) as its own
+    direction island (FSI…PDI), so a right-to-left language doesn't reorder "20261002.git3c1d" or "APT: 5"."""
+    return f"\u2068{text}\u2069" if text and i18n.rtl() else text
 
 
 def _run(cmd: list[str], timeout: float = 120) -> subprocess.CompletedProcess:
@@ -155,13 +170,15 @@ def apt_changelog(item: dict) -> str:
         with gzip.open(local, "rt", errors="replace") as f:
             head = f.read(200_000)
     except OSError:
-        return "No changelog is published for {name} {new}.".format(name=name, new=item["new"])
+        return tr("grimoire.spells.updatel.sources", "No changelog is published for {name} {new}.").format(
+            name=name, new=item["new"])
     first = []
     for line in head.splitlines():
         if first and _ENTRY.match(line):
             break
         first.append(line)
-    return ("The changelog for {new} couldn't be fetched. The installed version's latest entry:\n\n{entry}"
+    return (tr("grimoire.spells.updatel.sources", "The changelog for {new} couldn't be fetched. The installed "
+               "version's latest entry:\n\n{entry}")
             .format(new=item["new"], entry="\n".join(first).strip()))
 
 
@@ -200,12 +217,12 @@ def simulate(names: list[str] | None) -> dict:
     """What an upgrade would do, without root: apt-get -s. Raises RuntimeError with apt's message on failure."""
     bad = [n for n in names or [] if not valid("apt", n)]
     if bad:
-        raise RuntimeError("Not a package name: {name}".format(name=bad[0]))
+        raise RuntimeError(tr("grimoire.spells.updatel.sources", "Not a package name: {name}").format(name=bad[0]))
     cmd = apt_command(names)
     r = RUN([cmd[0], "-s", *cmd[1:]], timeout=180)
     if r.returncode:
         msg = [ln for ln in (r.stderr or r.stdout).splitlines() if ln.startswith("E:")] or [r.stderr.strip()]
-        raise RuntimeError(msg[-1] or "apt-get -s failed")
+        raise RuntimeError(msg[-1] or tr("grimoire.spells.updatel.sources", "APT couldn't simulate the upgrade."))
     return parse_simulation(r.stdout)
 
 
@@ -262,7 +279,8 @@ def flatpak_changelog(item: dict) -> str:
     keep = [ln for ln in lines if ln.split(":")[0] in ("Version", "Subject", "Date", "Commit", "Download")]
     if keep and ":" not in lines[0]:                      # the app's name and summary line
         keep.insert(0, lines[0] + "\n")
-    return "\n".join(keep) or "Flatpak has no release notes for {name}.".format(name=item["name"])
+    return "\n".join(keep) or tr("grimoire.spells.updatel.sources", "Flatpak has no release notes for {name}.").format(
+        name=item["name"])
 
 
 # ---------------------------------------------------------------- Snap
@@ -370,9 +388,11 @@ def changelog(item: dict) -> str:
         if item["source"] == "flatpak":
             return flatpak_changelog(item)
         if item["source"] == "fwupd":
-            return item.get("description") or "The vendor gave no release notes."
+            return item.get("description") or tr("grimoire.spells.updatel.sources",
+                                                 "The vendor gave no release notes.")
         if item["source"] == "snap":
-            return "Snap doesn't publish changelogs. Publisher: {who}".format(who=item.get("notes") or "unknown")
+            return tr("grimoire.spells.updatel.sources", "Snap doesn't publish changelogs. Publisher: {who}").format(
+                who=item.get("notes") or tr("grimoire.spells.updatel.sources", "unknown", "publisher"))
     except (OSError, subprocess.SubprocessError) as e:
-        return "Couldn't read the changelog: {err}".format(err=e)
+        return tr("grimoire.spells.updatel.sources", "Couldn't read the changelog: {err}").format(err=e)
     return ""

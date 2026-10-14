@@ -13,6 +13,7 @@ import sys
 import time
 import traceback
 
+from grimoire.i18n import tr
 from grimoire.paths import CACHE, CONFIG, HOME, unit_command
 from grimoire.spells.updatel import sources
 
@@ -97,15 +98,15 @@ def check(now: float | None = None) -> dict:
 
 def ago(t: float | None, now: float | None = None) -> str:
     if not t:
-        return "never"
+        return tr("grimoire.spells.updatel.daily", "never", "last check")
     s = max(0, (now or time.time()) - t)
     if s < 90:
-        return "just now"
+        return tr("grimoire.spells.updatel.daily", "just now")
     if s < 3600:
-        return "{n} min ago".format(n=round(s / 60))
+        return tr("grimoire.spells.updatel.daily", "%n min ago", n=round(s / 60))
     if s < 86400 * 2:
-        return "{n} h ago".format(n=round(s / 3600))
-    return "{n} days ago".format(n=round(s / 86400))
+        return tr("grimoire.spells.updatel.daily", "%n h ago", n=round(s / 3600))
+    return tr("grimoire.spells.updatel.daily", "%n day(s) ago", n=round(s / 86400))
 
 
 def status_line(now: float | None = None) -> str:
@@ -113,17 +114,15 @@ def status_line(now: float | None = None) -> str:
     s = load()
     restart = sources.REBOOT.exists()
     if not s:
-        line = "Not checked yet"
+        line = tr("grimoire.spells.updatel.daily", "Not checked yet")
     else:
         n = len(s["items"])
         when = ago(s.get("t"), now)
         if n == 0:
-            line = "Up to date · checked {when}".format(when=when)
-        elif n == 1:
-            line = "1 update · checked {when}".format(when=when)
+            line = tr("grimoire.spells.updatel.daily", "Up to date · checked {when}").format(when=when)
         else:
-            line = "{n} updates · checked {when}".format(n=n, when=when)
-    return line + (" · restart required" if restart else "")
+            line = tr("grimoire.spells.updatel.daily", "%n update(s) · checked {when}", n=n).format(when=when)
+    return line + (" · " + tr("grimoire.spells.updatel.daily", "restart required") if restart else "")
 
 
 def counts(items: list[dict]) -> dict[str, int]:
@@ -134,6 +133,26 @@ def counts(items: list[dict]) -> dict[str, int]:
 
 
 # ---------------------------------------------------------------- notifications
+_qt = []                                     # the timer's QCoreApplication and translators (kept alive)
+
+
+def _language():
+    """The timer runs without Grimoire's app, where tr() gives English: load UpdateL's catalog for the user's
+    language into a bare QCoreApplication so the notification speaks it (no display needed)."""
+    try:
+        from PySide6.QtCore import QCoreApplication, QTranslator
+        from grimoire import i18n
+        app = QCoreApplication.instance() or QCoreApplication([])
+        _qt.append(app)
+        for qm in i18n.catalogs(i18n.current()):
+            if qm.parent.name in ("updatel", "core"):
+                t = QTranslator(app)
+                if t.load(str(qm)) and app.installTranslator(t):
+                    _qt.append(t)
+    except Exception as e:                   # English, then; the check itself must not fail over this
+        log(f"language not loaded: {e}")
+
+
 def notify(title: str, body: str) -> bool:
     """One desktop notification from "UpdateL" over D-Bus; notify-send if dbus-python is missing."""
     from grimoire.spells.systeml.alerts import _icon
@@ -161,10 +180,10 @@ def notify_new(result: dict, send=notify) -> bool:
     if not keys or set(keys) <= set(result.get("notified", [])) or not settings()["notify"]:
         return False
     c = counts(result["items"])
-    detail = ", ".join(f"{sources.NAMES[s]} {c[s]}" for s in sources.SOURCES if s in c)
-    n = len(keys)
-    title = "1 update is available" if n == 1 else "{n} updates are available".format(n=n)
-    if send(title, "{detail}. Open UpdateL to see what's new and install them.".format(detail=detail)):
+    detail = ", ".join(f"{sources.name(s)} {c[s]}" for s in sources.SOURCES if s in c)
+    title = tr("grimoire.spells.updatel.daily", "%n update(s) available", n=len(keys))
+    if send(title, tr("grimoire.spells.updatel.daily", "{detail}. Open UpdateL to see what's new and install them.")
+            .format(detail=detail)):
         result["notified"] = keys
         _write(STATE, result)
         return True
@@ -196,6 +215,7 @@ def enabled() -> bool:
 
 def main(argv: list[str]):
     cmd = argv[0] if argv else "status"
+    _language()                                  # the notification and the status line in your language
     if cmd == "check":
         try:
             r = check()
