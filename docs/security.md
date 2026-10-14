@@ -9,7 +9,7 @@ things that change the system, and those go through small helper scripts that kn
 | `optimizel-root-helper.sh` | system tweaks (sysctl.d, journald, zram, GRUB, services…) | `/var/lib/grimoire-optimizel` |
 | `systeml-root-helper.sh` | other users' processes, system services, emptying swap | (nothing to restore) |
 | `focusl-root-helper.sh` | a marked block of focus-time sites in `/etc/hosts` | `/var/lib/grimoire-focusl`; the block is removed when the session ends |
-| `updatel-root-helper.sh` | `apt-get update`/upgrade of checked package names, system Flatpaks, snaps, fwupd devices | (apt keeps its own log); upgrades are simulated first, removals need `--allow-removals` from a confirmed preview, `kubuntu-desktop`/IBM Plex fonts are never removed |
+| `updatel-root-helper.sh` | `apt-get update`/upgrade of checked package names, system Flatpaks, snaps, fwupd devices | (apt keeps its own log); upgrades are simulated first, removals need `--removals=` with the exact list confirmed in the preview (anything else is refused before changes), `kubuntu-desktop`/IBM Plex fonts are never removed |
 
 Every helper validates its arguments and refuses anything else; files it writes carry a Grimoire mark so "off"
 only ever removes what Grimoire put there. Your own files are never deleted: they go to the Trash.
