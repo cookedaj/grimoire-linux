@@ -507,7 +507,9 @@ class ShotLPage(QWidget):
                 size = human(path.stat().st_size)
             except OSError:
                 continue
-            it = QListWidgetItem(f"{path.name}\n{shots.ago(e['time'])} · {size}")
+            # no-break spaces: "Shot (2).png" wrapping at its space pushed the age and size out of the cell
+            name = shots.ltr(path.name.replace(" ", "\u00a0"))
+            it = QListWidgetItem(f"{name}\n{shots.ago(e['time'])} · {shots.ltr(size)}")
             it.setData(Qt.ItemDataRole.UserRole, e["path"])
             it.setData(Qt.ItemDataRole.UserRole + 1, e["video"])
             it.setToolTip(tilde(path))
