@@ -4,11 +4,12 @@ border, outline, hide title bar when maximized). Applies live through KWin.
 """
 from PySide6.QtCore import QRectF, Qt
 from PySide6.QtGui import QColor, QFont, QImage, QPainter, QPainterPath, QPen
-from PySide6.QtWidgets import QCheckBox, QComboBox, QGridLayout, QLabel
+from PySide6.QtWidgets import QCheckBox, QGridLayout, QLabel
 
+from grimoire.i18n import tr, tr_noop
 from grimoire.spells.mural.backdrop import wallpaper
 from grimoire.spells.mural.kde import kread, kwin_reconfigure, kwrite
-from grimoire.spells.mural.screens import Design, ScreenTab, community_designs, community_entry
+from grimoire.spells.mural.screens import Choice, Design, ScreenTab, community_designs, community_entry
 
 #            left  right   (KWin codes: M menu, S on-all-desktops, H help, I minimize, A maximize, X close)
 LAYOUTS = {
@@ -19,16 +20,36 @@ LAYOUTS = {
     "full":    ("MS", "HIAX"),
 }
 DESIGNS = [
-    Design("classic", "Classic", "Menu on the left; minimize, maximize and close on the right."),
-    Design("mac", "Mac", "Close, minimize and maximize on the left, nothing on the right."),
-    Design("minimal", "Minimal", "Just a close button. Use the keyboard or double-click the title for the rest."),
-    Design("left", "Left-hand", "Close on the left, window menu on the right."),
-    Design("full", "Everything", "Menu + all-desktops on the left; help, minimize, maximize, close on the right."),
+    Design("classic", tr_noop("grimoire.spells.mural.windows", "Classic"), tr_noop(
+        "grimoire.spells.mural.windows", "Menu on the left; minimize, maximize and close on the right.")),
+    Design("mac", tr_noop("grimoire.spells.mural.windows", "Mac"), tr_noop(
+        "grimoire.spells.mural.windows", "Close, minimize and maximize on the left, nothing on the right.")),
+    Design("minimal", tr_noop("grimoire.spells.mural.windows", "Minimal"), tr_noop(
+        "grimoire.spells.mural.windows", "Just a close button. Use the keyboard or double-click the title for "
+                                         "the rest.")),
+    Design("left", tr_noop("grimoire.spells.mural.windows", "Left-hand"), tr_noop(
+        "grimoire.spells.mural.windows", "Close on the left, window menu on the right.")),
+    Design("full", tr_noop("grimoire.spells.mural.windows", "Everything"), tr_noop(
+        "grimoire.spells.mural.windows", "Menu + all-desktops on the left; help, minimize, maximize, close on "
+                                         "the right.")),
 ]
-SIZES = {"Tiny": "ButtonTiny", "Small": "ButtonSmall", "Default": "ButtonDefault", "Large": "ButtonLarge"}
-ALIGN = {"Left": "AlignLeft", "Center": "AlignCenterFullWidth", "Right": "AlignRight"}
-BORDERS = {"None": "None", "No sides": "NoSides", "Tiny": "Tiny", "Normal": "Normal", "Large": "Large"}
-OUTLINE = {"Off": "OutlineOff", "Low": "OutlineLow", "Medium": "OutlineMedium", "High": "OutlineHigh"}
+# option keys are stored in settings and shared setups; they're shown translated
+SIZES = {tr_noop("grimoire.spells.mural.windows", "Tiny"): "ButtonTiny",
+         tr_noop("grimoire.spells.mural.windows", "Small"): "ButtonSmall",
+         tr_noop("grimoire.spells.mural.windows", "Default"): "ButtonDefault",
+         tr_noop("grimoire.spells.mural.windows", "Large"): "ButtonLarge"}
+ALIGN = {tr_noop("grimoire.spells.mural.windows", "Left"): "AlignLeft",
+         tr_noop("grimoire.spells.mural.windows", "Center"): "AlignCenterFullWidth",
+         tr_noop("grimoire.spells.mural.windows", "Right"): "AlignRight"}
+BORDERS = {tr_noop("grimoire.spells.mural.windows", "None"): "None",
+           tr_noop("grimoire.spells.mural.windows", "No sides"): "NoSides",
+           tr_noop("grimoire.spells.mural.windows", "Tiny"): "Tiny",
+           tr_noop("grimoire.spells.mural.windows", "Normal"): "Normal",
+           tr_noop("grimoire.spells.mural.windows", "Large"): "Large"}
+OUTLINE = {tr_noop("grimoire.spells.mural.windows", "Off"): "OutlineOff",
+           tr_noop("grimoire.spells.mural.windows", "Low"): "OutlineLow",
+           tr_noop("grimoire.spells.mural.windows", "Medium"): "OutlineMedium",
+           tr_noop("grimoire.spells.mural.windows", "High"): "OutlineHigh"}
 DEFAULTS = {"size": "Default", "align": "Center", "border": "No sides", "outline": "Low", "borderless_max": False}
 
 
@@ -109,7 +130,8 @@ def render(design_id: str, o: dict, w=1280, h=720) -> QImage:
         inner = QRectF(win.x() + 20 + len(left) * gap, win.y(), ww - 40 - (len(left) + len(right)) * gap, title_h)
         align = {"Left": Qt.AlignmentFlag.AlignLeft, "Center": Qt.AlignmentFlag.AlignHCenter,
                  "Right": Qt.AlignmentFlag.AlignRight}[o["align"]]
-        p.drawText(inner, align | Qt.AlignmentFlag.AlignVCenter, "Konsole — ~/Projects" if active else "Dolphin")
+        p.drawText(inner, align | Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignAbsolute,
+                   "Konsole — ~/Projects" if active else "Dolphin")
         if o["outline"] != "Off":
             alpha = {"Low": 40, "Medium": 80, "High": 130}[o["outline"]]
             p.setPen(QColor(255, 255, 255, alpha))
@@ -118,15 +140,18 @@ def render(design_id: str, o: dict, w=1280, h=720) -> QImage:
     if o["borderless_max"]:
         p.setPen(QColor(255, 255, 255, 170))
         p.setFont(QFont("IBM Plex Sans", 10))
-        p.drawText(QRectF(0, h - 44, w, 24), Qt.AlignmentFlag.AlignCenter, "maximized windows hide their title bar")
+        p.drawText(QRectF(0, h - 44, w, 24), Qt.AlignmentFlag.AlignCenter,
+                   tr("grimoire.spells.mural.windows", "maximized windows hide their title bar"))
     p.end()
     return img
 
 
 class WindowsTab(ScreenTab):
     key = "windows"
-    subtitle = "Title bars and window frames (KWin + Breeze). Applies instantly to every window."
-    apply_label = "Apply to windows"
+    context = "grimoire.spells.mural.windows"
+    subtitle = tr_noop("grimoire.spells.mural.windows", "Title bars and window frames (KWin + Breeze). "
+                       "Applies instantly to every window.")
+    apply_label = tr_noop("grimoire.spells.mural.windows", "Apply to windows")
     store = ["aurorae"]
 
     def designs(self):
@@ -135,35 +160,32 @@ class WindowsTab(ScreenTab):
     def build_options(self, lay):
         grid = QGridLayout()
         grid.setVerticalSpacing(8)
-        self.size = QComboBox()
-        self.size.addItems(list(SIZES))
-        self.align = QComboBox()
-        self.align.addItems(list(ALIGN))
-        self.border = QComboBox()
-        self.border.addItems(list(BORDERS))
-        self.outline = QComboBox()
-        self.outline.addItems(list(OUTLINE))
-        for r, (name, c) in enumerate((("Buttons", self.size), ("Title", self.align), ("Border", self.border),
-                                       ("Outline", self.outline))):
-            c.currentTextChanged.connect(self.changed)
+        self.size = Choice([(k, tr("grimoire.spells.mural.windows", k)) for k in SIZES], self.changed)
+        self.align = Choice([(k, tr("grimoire.spells.mural.windows", k)) for k in ALIGN], self.changed)
+        self.border = Choice([(k, tr("grimoire.spells.mural.windows", k)) for k in BORDERS], self.changed)
+        self.outline = Choice([(k, tr("grimoire.spells.mural.windows", k)) for k in OUTLINE], self.changed)
+        for r, (name, c) in enumerate(((tr("grimoire.spells.mural.windows", "Buttons"), self.size),
+                                       (tr("grimoire.spells.mural.windows", "Title"), self.align),
+                                       (tr("grimoire.spells.mural.windows", "Border"), self.border),
+                                       (tr("grimoire.spells.mural.windows", "Outline"), self.outline))):
             grid.addWidget(QLabel(name), r, 0)
             grid.addWidget(c, r, 1)
         lay.addLayout(grid)
-        self.borderless_max = QCheckBox("Hide title bar when maximized")
+        self.borderless_max = QCheckBox(tr("grimoire.spells.mural.windows", "Hide title bar when maximized"))
         self.borderless_max.toggled.connect(self.changed)
         lay.addWidget(self.borderless_max)
 
     def options(self):
-        return {"size": self.size.currentText(), "align": self.align.currentText(),
-                "border": self.border.currentText(), "outline": self.outline.currentText(),
+        return {"size": self.size.value(), "align": self.align.value(),
+                "border": self.border.value(), "outline": self.outline.value(),
                 "borderless_max": self.borderless_max.isChecked()}
 
     def set_options(self, o):
         o = {**DEFAULTS, **o}
-        self.size.setCurrentText(o["size"])
-        self.align.setCurrentText(o["align"])
-        self.border.setCurrentText(o["border"])
-        self.outline.setCurrentText(o["outline"])
+        self.size.set_value(o["size"])
+        self.align.set_value(o["align"])
+        self.border.set_value(o["border"])
+        self.outline.set_value(o["outline"])
         self.borderless_max.setChecked(o["borderless_max"])
 
     def preview(self, design, o):
@@ -187,4 +209,4 @@ class WindowsTab(ScreenTab):
         kwrite("breezerc", ["Windeco"], "TitleAlignment", ALIGN[o["align"]])
         kwrite("breezerc", ["Common"], "OutlineIntensity", OUTLINE[o["outline"]])
         kwin_reconfigure()
-        return "Applied ✓"
+        return tr("grimoire.spells.mural.windows", "Applied ✓")

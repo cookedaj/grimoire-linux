@@ -8,16 +8,18 @@ from pathlib import Path
 
 from PySide6.QtCore import QRectF, Qt
 from PySide6.QtGui import QColor, QFont, QImage, QPainter
-from PySide6.QtWidgets import QComboBox, QGridLayout, QLabel
+from PySide6.QtWidgets import QGridLayout, QLabel
 
+from grimoire.i18n import tr, tr_noop
 from grimoire.spells.mural import store as community
 from grimoire.spells.mural.kde import kread, run_tool
-from grimoire.spells.mural.screens import Design, ScreenTab
+from grimoire.spells.mural.screens import Choice, Design, ScreenTab, by_line
 
 ICONS = Path("/usr/share/icons")
 SEARCH = [Path.home() / ".local/share/icons", Path.home() / ".icons", ICONS]
 DESIGNS = [
-    Design("Oxygen_Black", "Oxygen Black", "Glossy black cursors with soft shading."),
+    Design("Oxygen_Black", "Oxygen Black",
+           tr_noop("grimoire.spells.mural.cursor", "Glossy black cursors with soft shading.")),
 ]
 SIZES = ["24", "32", "36", "48", "64"]
 DEFAULTS = {"size": "24"}
@@ -68,9 +70,11 @@ def render(theme: str, o: dict, w=1280, h=720) -> QImage:
         p.setPen(QColor(120, 120, 120))
         p.setFont(QFont("IBM Plex Sans", 11))
         p.drawText(QRectF(half * w / 2, h - 70, w / 2, 24), Qt.AlignmentFlag.AlignCenter,
-                   "on dark" if half == 0 else "on light")
+                   tr("grimoire.spells.mural.cursor", "on dark") if half == 0
+                   else tr("grimoire.spells.mural.cursor", "on light"))
     p.setPen(QColor(150, 150, 150))
-    p.drawText(QRectF(0, 40, w, 24), Qt.AlignmentFlag.AlignCenter, f"{size} px  ·  shown at 2×")
+    p.drawText(QRectF(0, 40, w, 24), Qt.AlignmentFlag.AlignCenter,
+               tr("grimoire.spells.mural.cursor", "{size} px  ·  shown at 2×").format(size=size))
     p.end()
     return img
 
@@ -81,33 +85,32 @@ def current() -> str:
 
 class CursorTab(ScreenTab):
     key = "cursor"
-    subtitle = "Your mouse pointer. Previews come from the real cursor files, shown on dark and light."
-    apply_label = "Apply cursor"
+    context = "grimoire.spells.mural.cursor"
+    subtitle = tr_noop("grimoire.spells.mural.cursor", "Your mouse pointer. Previews come from the real cursor files, "
+                       "shown on dark and light.")
+    apply_label = tr_noop("grimoire.spells.mural.cursor", "Apply cursor")
     store = ["cursor"]
 
     def designs(self):
         own = [d for d in DESIGNS if (ICONS / d.id / "cursors").exists()]
-        return own + [Design(e["ident"], e["name"], f"Community · by {e['author'] or 'unknown'}")
-                      for e in community.installed("cursor")]
+        return own + [Design(e["ident"], e["name"], by_line(e)) for e in community.installed("cursor")]
 
     def build_options(self, lay):
         grid = QGridLayout()
-        self.size = QComboBox()
-        self.size.addItems(SIZES)
-        self.size.currentTextChanged.connect(self.changed)
-        grid.addWidget(QLabel("Size"), 0, 0)
+        self.size = Choice([(k, k) for k in SIZES], self.changed)
+        grid.addWidget(QLabel(tr("grimoire.spells.mural.cursor", "Size")), 0, 0)
         grid.addWidget(self.size, 0, 1)
         lay.addLayout(grid)
 
     def options(self):
-        return {"size": self.size.currentText()}
+        return {"size": self.size.value()}
 
     def set_options(self, o):
-        self.size.setCurrentText({**DEFAULTS, **o}["size"])
+        self.size.set_value({**DEFAULTS, **o}["size"])
 
     def preview(self, design, o):
         return render(design.id, o)
 
     def apply(self, design, o):
         run_tool(["plasma-apply-cursortheme", "--size", o["size"], design.id], ok_if_already=True)
-        return "Applied ✓"
+        return tr("grimoire.spells.mural.cursor", "Applied ✓")

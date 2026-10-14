@@ -14,21 +14,26 @@ import sys
 from pathlib import Path
 
 from PySide6.QtGui import QImage
-from PySide6.QtWidgets import QCheckBox, QComboBox, QGridLayout, QLabel, QLineEdit, QPushButton
+from PySide6.QtWidgets import QCheckBox, QGridLayout, QLabel, QLineEdit, QPushButton
 
+from grimoire.i18n import tr, tr_noop
 from grimoire.paths import ASSETS, CACHE, HOME
 from grimoire.spells.mural.kde import kwrite
-from grimoire.spells.mural.screens import Design, ScreenTab, community_designs, community_entry, render_lock
+from grimoire.spells.mural.screens import (Choice, Design, ScreenTab, community_designs, community_entry,
+                                           render_lock)
 
 TEMPLATES = Path(__file__).with_name("splash_designs")
 PACKAGE_ID = "com.cookedaj.grimoire.splash"
 INSTALLED = HOME / ".local/share/plasma/look-and-feel" / PACKAGE_ID
 PREVIEWS = CACHE / "splash-previews"
-SPEEDS = {"Slow": 0.7, "Normal": 1.0, "Fast": 1.5}
+SPEEDS = {tr_noop("grimoire.spells.mural.splash", "Slow"): 0.7, tr_noop("grimoire.spells.mural.splash", "Normal"): 1.0,
+          tr_noop("grimoire.spells.mural.splash", "Fast"): 1.5}
 DEFAULTS = {"tagline": "SURPASS YOUR LIMITS", "show_tagline": True, "speed": "Normal"}
 
 DESIGNS = [
-    Design("breathe", "Breathe", "The five-leaf clover breathing slowly above a hairline progress bar."),
+    Design("breathe", tr_noop("grimoire.spells.mural.splash", "Breathe"),
+           tr_noop("grimoire.spells.mural.splash",
+                   "The five-leaf clover breathing slowly above a hairline progress bar.")),
 ]
 
 
@@ -80,8 +85,10 @@ def render_preview(design_id: str, opts: dict) -> QImage:
 
 class SplashTab(ScreenTab):
     key = "splash"
-    subtitle = "The animation right after you log in, while Plasma loads. Previews are rendered from the real QML."
-    apply_label = "Apply splash"
+    context = "grimoire.spells.mural.splash"
+    subtitle = tr_noop("grimoire.spells.mural.splash", "The animation right after you log in, while Plasma loads. "
+                       "Previews are rendered from the real QML.")
+    apply_label = tr_noop("grimoire.spells.mural.splash", "Apply splash")
     store = ["splash"]
 
     def designs(self):
@@ -94,32 +101,30 @@ class SplashTab(ScreenTab):
         self.tagline = QLineEdit()
         self.tagline.setMaxLength(40)
         self.tagline.textChanged.connect(self.changed)
-        self.speed = QComboBox()
-        self.speed.addItems(list(SPEEDS))
-        self.speed.currentTextChanged.connect(self.changed)
-        grid.addWidget(QLabel("Tagline"), 0, 0)
+        self.speed = Choice([(k, tr("grimoire.spells.mural.splash", k)) for k in SPEEDS], self.changed)
+        grid.addWidget(QLabel(tr("grimoire.spells.mural.splash", "Tagline")), 0, 0)
         grid.addWidget(self.tagline, 0, 1)
-        grid.addWidget(QLabel("Speed"), 1, 0)
+        grid.addWidget(QLabel(tr("grimoire.spells.mural.splash", "Speed")), 1, 0)
         grid.addWidget(self.speed, 1, 1)
         lay.addLayout(grid)
-        self.show_tagline = QCheckBox("Show tagline")
+        self.show_tagline = QCheckBox(tr("grimoire.spells.mural.splash", "Show tagline"))
         self.show_tagline.toggled.connect(self.changed)
         lay.addWidget(self.show_tagline)
         lay.addSpacing(6)
-        play = QPushButton("Play it now")
-        play.setToolTip("Runs this splash in a window for a few seconds")
+        play = QPushButton(tr("grimoire.spells.mural.splash", "Play it now"))
+        play.setToolTip(tr("grimoire.spells.mural.splash", "Runs this splash in a window for a few seconds"))
         play.clicked.connect(self._play)
         lay.addWidget(play)
 
     def options(self):
         return {"tagline": self.tagline.text().strip() or "SURPASS YOUR LIMITS",
-                "show_tagline": self.show_tagline.isChecked(), "speed": self.speed.currentText()}
+                "show_tagline": self.show_tagline.isChecked(), "speed": self.speed.value()}
 
     def set_options(self, o):
         o = {**DEFAULTS, **o}
         self.tagline.setText(o["tagline"])
         self.show_tagline.setChecked(o["show_tagline"])
-        self.speed.setCurrentText(o["speed"])
+        self.speed.set_value(o["speed"])
 
     def preview(self, design, o):
         return render_preview(design.id, o)
@@ -141,4 +146,4 @@ class SplashTab(ScreenTab):
             theme = PACKAGE_ID
         kwrite("ksplashrc", "KSplash", "Theme", theme)
         kwrite("ksplashrc", "KSplash", "Engine", "KSplashQML")
-        return "Applied ✓  You'll see it at your next login."
+        return tr("grimoire.spells.mural.splash", "Applied ✓  You'll see it at your next login.")

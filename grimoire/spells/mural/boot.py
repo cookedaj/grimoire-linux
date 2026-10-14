@@ -9,23 +9,28 @@ import shutil
 from pathlib import Path
 
 from PIL import Image, ImageDraw
-from PySide6.QtGui import QMovie
-from PySide6.QtWidgets import QCheckBox, QComboBox, QGridLayout, QLabel, QPushButton
+from PySide6.QtCore import QRectF, Qt
+from PySide6.QtGui import QColor, QFont, QMovie, QPainter
+from PySide6.QtWidgets import QCheckBox, QGridLayout, QLabel, QPushButton
+
+from grimoire.i18n import tr, tr_noop
 
 from grimoire.paths import CACHE
 from grimoire.spells.mural.lock import _clover_mask, to_qimage
 from grimoire.spells.mural.kde import run_root
-from grimoire.spells.mural.screens import Design, ScreenTab, community_designs, community_entry
+from grimoire.spells.mural.screens import Choice, Design, ScreenTab, community_designs, community_entry
 
 WORK = CACHE / "boot"
 FRAMES = 48                                   # two-step loops the throbber; ~1.6 s at 30 fps
-SIZES = {"Small": 0.75, "Medium": 1.0, "Large": 1.35}
-POSITIONS = {"Center": 0.5, "Lower": 0.62}
+SIZES = {tr_noop("grimoire.spells.mural.boot", "Small"): 0.75, tr_noop("grimoire.spells.mural.boot", "Medium"): 1.0,
+         tr_noop("grimoire.spells.mural.boot", "Large"): 1.35}
+POSITIONS = {tr_noop("grimoire.spells.mural.boot", "Center"): 0.5, tr_noop("grimoire.spells.mural.boot", "Lower"): 0.62}
 DEFAULTS = {"size": "Medium", "position": "Center", "firmware_logo": False}
 SS = 3                                        # supersampling for smooth edges
 
 DESIGNS = [
-    Design("pulse", "Pulse", "The five-leaf clover breathing slowly in the dark."),
+    Design("pulse", tr_noop("grimoire.spells.mural.boot", "Pulse"),
+           tr_noop("grimoire.spells.mural.boot", "The five-leaf clover breathing slowly in the dark.")),
 ]
 
 _clover_cache: dict[tuple[str, int], Image.Image] = {}
@@ -72,9 +77,6 @@ def preview(design_id: str, opts: dict, frame: int = FRAMES // 3, w=1280, h=720)
     f = frames(design_id, scale)[frame]
     bg = Image.new("RGB", (w, h), (0, 0, 0))
     bg.paste(f, (int(w / 2 - f.width / 2), int(h * POSITIONS[o["position"]] - f.height / 2)), f)
-    if o["firmware_logo"]:
-        d = ImageDraw.Draw(bg)
-        d.text((w / 2, h * 0.9), "(motherboard logo)", fill=(90, 90, 90), anchor="mm")
     return bg
 
 
@@ -143,10 +145,13 @@ SuppressMessages=true
 
 class BootTab(ScreenTab):
     key = "boot"
-    subtitle = ("What you see while Linux starts and shuts down (Plymouth). Installing rebuilds the boot image, "
-                "so it asks for your password and takes about a minute.")
-    apply_label = "Install boot screen"
-    apply_busy = "Installing… enter your password, then this takes about a minute."
+    context = "grimoire.spells.mural.boot"
+    subtitle = tr_noop("grimoire.spells.mural.boot", "What you see while Linux starts and shuts down (Plymouth). "
+                       "Installing rebuilds the boot image, so it asks for your password and takes about a "
+                       "minute.")
+    apply_label = tr_noop("grimoire.spells.mural.boot", "Install boot screen")
+    apply_busy = tr_noop("grimoire.spells.mural.boot",
+                         "Installing… enter your password, then this takes about a minute.")
     store = ["plymouth"]
 
     def designs(self):
@@ -156,40 +161,44 @@ class BootTab(ScreenTab):
     def build_options(self, lay):
         grid = QGridLayout()
         grid.setVerticalSpacing(8)
-        self.size = QComboBox()
-        self.size.addItems(list(SIZES))
-        self.position = QComboBox()
-        self.position.addItems(list(POSITIONS))
-        for c in (self.size, self.position):
-            c.currentTextChanged.connect(self.changed)
-        grid.addWidget(QLabel("Size"), 0, 0)
+        self.size = Choice([(k, tr("grimoire.spells.mural.boot", k)) for k in SIZES], self.changed)
+        self.position = Choice([(k, tr("grimoire.spells.mural.boot", k)) for k in POSITIONS], self.changed)
+        grid.addWidget(QLabel(tr("grimoire.spells.mural.boot", "Size")), 0, 0)
         grid.addWidget(self.size, 0, 1)
-        grid.addWidget(QLabel("Position"), 1, 0)
+        grid.addWidget(QLabel(tr("grimoire.spells.mural.boot", "Position")), 1, 0)
         grid.addWidget(self.position, 1, 1)
         lay.addLayout(grid)
-        self.firmware = QCheckBox("Keep the motherboard logo")
+        self.firmware = QCheckBox(tr("grimoire.spells.mural.boot", "Keep the motherboard logo"))
         self.firmware.toggled.connect(self.changed)
         lay.addWidget(self.firmware)
         lay.addSpacing(6)
-        play = QPushButton("Play animation")
+        play = QPushButton(tr("grimoire.spells.mural.boot", "Play animation"))
         play.clicked.connect(self._play)
         lay.addWidget(play)
-        restore = QPushButton("Restore previous boot screen")
+        restore = QPushButton(tr("grimoire.spells.mural.boot", "Restore previous boot screen"))
         restore.clicked.connect(self._restore)
         lay.addWidget(restore)
 
     def options(self):
-        return {"size": self.size.currentText(), "position": self.position.currentText(),
+        return {"size": self.size.value(), "position": self.position.value(),
                 "firmware_logo": self.firmware.isChecked()}
 
     def set_options(self, o):
         o = {**DEFAULTS, **o}
-        self.size.setCurrentText(o["size"])
-        self.position.setCurrentText(o["position"])
+        self.size.set_value(o["size"])
+        self.position.set_value(o["position"])
         self.firmware.setChecked(o["firmware_logo"])
 
     def preview(self, design, o):
-        return to_qimage(preview(design.id, o))
+        img = to_qimage(preview(design.id, o))
+        if o.get("firmware_logo"):                      # drawn by Qt: PIL's font has no other scripts
+            p = QPainter(img)
+            p.setPen(QColor(90, 90, 90))
+            p.setFont(QFont("IBM Plex Sans", 11))
+            p.drawText(QRectF(0, img.height() * 0.9 - 15, img.width(), 30), Qt.AlignmentFlag.AlignCenter,
+                       tr("grimoire.spells.mural.boot", "(motherboard logo)"))
+            p.end()
+        return img
 
     def thumbnail(self, design, o):
         """Boot animations are tiny at real size, so cards show a zoomed crop of the middle."""
@@ -214,7 +223,8 @@ class BootTab(ScreenTab):
     def _play(self):
         """Animate the big preview with the real frames."""
         if self.current().id.startswith("store:"):
-            self.status.setText("Community boot themes can only be previewed by rebooting.")
+            self.status.setText(tr("grimoire.spells.mural.boot",
+                                   "Community boot themes can only be previewed by rebooting."))
             return
         o = {**DEFAULTS, **self.options()}
         w = max(320, self.big.width())
@@ -240,15 +250,16 @@ class BootTab(ScreenTab):
         if design.id.startswith("store:"):
             entry = community_entry(design.id)
             run_root("plymouth-install", entry["ident"], entry["path"])
-            return "Installed ✓  You'll see it on your next reboot."
+            return tr("grimoire.spells.mural.boot", "Installed ✓  You'll see it on your next reboot.")
         staged = WORK / "install"
         stage(design.id, o, staged)
         run_root("plymouth", str(staged))
-        return "Installed ✓  You'll see it on your next reboot."
+        return tr("grimoire.spells.mural.boot", "Installed ✓  You'll see it on your next reboot.")
 
     def _restore(self):
         def work():
             run_root("plymouth-restore")
-            return "Previous boot screen restored."
-        self.background(work, "Restoring… enter your password, then this takes about a minute.")
+            return tr("grimoire.spells.mural.boot", "Previous boot screen restored.")
+        self.background(work, tr("grimoire.spells.mural.boot",
+                                 "Restoring… enter your password, then this takes about a minute."))
 

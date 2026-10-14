@@ -12,7 +12,9 @@ from PySide6.QtWidgets import (QAbstractItemView, QCheckBox, QComboBox, QDoubleS
                                QFrame, QHBoxLayout, QLabel, QListWidget, QListWidgetItem, QMenu, QPushButton,
                                QSpinBox, QStackedWidget, QVBoxLayout, QWidget)
 
+from grimoire.i18n import tr
 from grimoire.spells.mural import library, plasma
+from grimoire.spells.mural.screens import Choice
 from grimoire.spells.mural.storeview import StoreView
 
 PATH_ROLE = Qt.ItemDataRole.UserRole
@@ -39,7 +41,9 @@ class DesktopTab(QWidget):
         switch.setSpacing(0)
         switch.addStretch(1)
         self._switch = []
-        for i, name in enumerate(("Library", "Community · top 100")):
+        views = (tr("grimoire.spells.mural.desktop", "Library"),
+                 tr("grimoire.spells.mural.screens", "Community · top 100"))
+        for i, name in enumerate(views):
             b = QPushButton(name)
             b.setObjectName("Segment")
             b.setProperty("pos", "first" if i == 0 else "last")
@@ -69,13 +73,15 @@ class DesktopTab(QWidget):
         head = QHBoxLayout()
         titles = QVBoxLayout()
         titles.setSpacing(2)
-        sub = QLabel("Click wallpapers in the order you want them to play. One = static, several = playlist.")
+        sub = QLabel(tr("grimoire.spells.mural.desktop", "Click wallpapers in the order you want them to play. "
+                                                    "One = static, several = playlist."))
+        sub.setWordWrap(True)
         sub.setObjectName("Subtitle")
         titles.addWidget(sub)
         head.addLayout(titles, 1)
-        add = QPushButton("Add files…")
+        add = QPushButton(tr("grimoire.spells.mural.desktop", "Add files…"))
         add.clicked.connect(self._add_dialog)
-        folder = QPushButton("Open folder")
+        folder = QPushButton(tr("grimoire.spells.mural.desktop", "Open folder"))
         folder.clicked.connect(lambda: subprocess.Popen(["xdg-open", str(library.LIBRARY)]))
         head.addWidget(folder)
         head.addWidget(add)
@@ -95,7 +101,9 @@ class DesktopTab(QWidget):
         self.grid.itemSelectionChanged.connect(self._selection_changed)
         lay.addWidget(self.grid, 1)
 
-        self.empty = QLabel("Your library is empty. Drop images or videos here, or click “Add files…”.")
+        self.empty = QLabel(tr("grimoire.spells.mural.desktop", "Your library is empty. Drop images or videos here, "
+                                                           "or click “Add files…”."))
+        self.empty.setWordWrap(True)
         self.empty.setObjectName("Muted")
         self.empty.setAlignment(Qt.AlignmentFlag.AlignCenter)
         lay.addWidget(self.empty)
@@ -123,24 +131,24 @@ class DesktopTab(QWidget):
         form.setLabelAlignment(Qt.AlignmentFlag.AlignLeft)
         self.interval = QSpinBox()
         self.interval.setRange(1, 1440)
-        self.interval.setSuffix(" min")
+        self.interval.setSuffix(tr("grimoire.spells.mural.desktop", " min"))
         self.fade = QDoubleSpinBox()
         self.fade.setRange(0, 10)
         self.fade.setSingleStep(0.2)
         self.fade.setDecimals(1)
-        self.fade.setSuffix(" s")
+        self.fade.setSuffix(tr("grimoire.spells.mural.desktop", " s"))
         self.order_mode = QComboBox()
-        self.order_mode.addItems(["In order", "Shuffle"])
-        self.fill = QComboBox()
-        self.fill.addItems(list(plasma.FILL_MODES))
-        form.addRow("Switch every", self.interval)
-        form.addRow("Fade", self.fade)
-        form.addRow("Order", self.order_mode)
-        form.addRow("Fill", self.fill)
+        self.order_mode.addItems([tr("grimoire.spells.mural.desktop", "In order"),
+                                  tr("grimoire.spells.mural.desktop", "Shuffle")])
+        self.fill = Choice([(k, tr("grimoire.spells.mural.plasma", k)) for k in plasma.FILL_MODES])
+        form.addRow(tr("grimoire.spells.mural.desktop", "Switch every"), self.interval)
+        form.addRow(tr("grimoire.spells.mural.desktop", "Fade"), self.fade)
+        form.addRow(tr("grimoire.spells.mural.desktop", "Order"), self.order_mode)
+        form.addRow(tr("grimoire.spells.mural.desktop", "Fill"), self.fill)
         lay.addLayout(form)
 
-        self.pause = QCheckBox("Pause when a window is\nfullscreen or maximized")
-        self.mute = QCheckBox("Mute videos")
+        self.pause = QCheckBox(tr("grimoire.spells.mural.desktop", "Pause when a window is\nfullscreen or maximized"))
+        self.mute = QCheckBox(tr("grimoire.spells.mural.desktop", "Mute videos"))
         lay.addWidget(self.pause)
         lay.addWidget(self.mute)
         lay.addStretch(1)
@@ -149,7 +157,7 @@ class DesktopTab(QWidget):
         self.status.setObjectName("Muted")
         self.status.setWordWrap(True)
         lay.addWidget(self.status)
-        self.apply_btn = QPushButton("Apply to desktop")
+        self.apply_btn = QPushButton(tr("grimoire.spells.mural.desktop", "Apply to desktop"))
         self.apply_btn.setObjectName("Primary")
         self.apply_btn.setMinimumHeight(40)
         self.apply_btn.clicked.connect(self._apply)
@@ -159,7 +167,7 @@ class DesktopTab(QWidget):
         self.interval.setValue(s.interval_min)
         self.fade.setValue(s.fade_s)
         self.order_mode.setCurrentIndex(1 if s.shuffle else 0)
-        self.fill.setCurrentText(s.fill)
+        self.fill.set_value(s.fill)
         self.pause.setChecked(s.pause_fullscreen)
         self.mute.setChecked(s.muted)
         return panel
@@ -211,8 +219,9 @@ class DesktopTab(QWidget):
 
     def _add_dialog(self):
         files, _ = QFileDialog.getOpenFileNames(
-            self, "Add wallpapers", str(Path.home() / "Pictures"),
-            "Images & videos (*.png *.jpg *.jpeg *.webp *.bmp *.avif *.mp4 *.webm *.mkv *.mov *.m4v *.gif)")
+            self, tr("grimoire.spells.mural.desktop", "Add wallpapers"), str(Path.home() / "Pictures"),
+            tr("grimoire.spells.mural.desktop", "Images & videos ({patterns})").format(
+                patterns="*.png *.jpg *.jpeg *.webp *.bmp *.avif *.mp4 *.webm *.mkv *.mov *.m4v *.gif"))
         if files:
             library.add(files)
             self.reload()
@@ -230,7 +239,7 @@ class DesktopTab(QWidget):
         if not item:
             return
         menu = QMenu(self)
-        remove = menu.addAction("Remove from library")
+        remove = menu.addAction(tr("grimoire.spells.mural.desktop", "Remove from library"))
         if menu.exec(self.grid.mapToGlobal(pos)) == remove:
             path = item.data(PATH_ROLE)
             self.order = [p for p in self.order if p != path]
@@ -254,7 +263,12 @@ class DesktopTab(QWidget):
 
     def _refresh_panel(self):
         n = len(self.order)
-        self.count.setText("NOTHING SELECTED" if n == 0 else "1 WALLPAPER" if n == 1 else f"PLAYLIST · {n} WALLPAPERS")
+        if n == 0:
+            self.count.setText(tr("grimoire.spells.mural.desktop", "NOTHING SELECTED"))
+        elif n == 1:
+            self.count.setText(tr("grimoire.spells.mural.desktop", "1 WALLPAPER"))
+        else:
+            self.count.setText(tr("grimoire.spells.mural.desktop", "PLAYLIST · %n WALLPAPERS", n=n))
         self.playlist.setText("\n".join(f"{i + 1}.  {Path(p).stem}" for i, p in enumerate(self.order[:8]))
                               + ("\n…" if n > 8 else ""))
         for w in (self.interval, self.order_mode):
@@ -267,15 +281,15 @@ class DesktopTab(QWidget):
             interval_min=self.interval.value(),
             fade_s=self.fade.value(),
             shuffle=self.order_mode.currentIndex() == 1,
-            fill=self.fill.currentText(),
+            fill=self.fill.value(),
             pause_fullscreen=self.pause.isChecked(),
             muted=self.mute.isChecked(),
         )
         try:
             plasma.apply(s)
         except (RuntimeError, OSError) as e:
-            self.status.setText(f"Couldn't apply: {e}")
+            self.status.setText(tr("grimoire.spells.mural.screens", "Couldn't apply: {error}").format(error=e))
             return
         self.settings = s
-        self.status.setText("Applied to your desktop ✓")
+        self.status.setText(tr("grimoire.spells.mural.desktop", "Applied to your desktop ✓"))
         QTimer.singleShot(4000, lambda: self.status.setText(""))

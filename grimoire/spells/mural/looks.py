@@ -18,6 +18,7 @@ from types import SimpleNamespace
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QColor, QImage
 
+from grimoire.i18n import tr, tr_noop
 from grimoire.paths import CONFIG
 from grimoire.spells.mural import plasma
 from grimoire.spells.mural.screens import Design, load_state, save_state
@@ -31,9 +32,22 @@ THUMB_W, THUMB_H = 640, 360
 ORDER = ["taskbar", "style", "colors", "icons", "cursor", "fonts", "windows", "motion", "terminal",
          "desktop", "lock", "splash", "login", "boot"]
 ROOT = {"login", "boot"}             # these go through pkexec (a password prompt): only when ticked
-LABELS = {"desktop": "Desktop", "lock": "Lock screen", "splash": "Splash", "login": "Login", "boot": "Boot",
-          "taskbar": "Taskbar", "style": "Style", "windows": "Windows", "motion": "Motion", "colors": "Colors",
-          "icons": "Icons", "fonts": "Fonts", "cursor": "Cursor", "terminal": "Terminal"}
+LABELS = {   # shown translated: tr("grimoire.spells.mural.looks", LABELS[key]) (sharesetup does too)
+    "desktop": tr_noop("grimoire.spells.mural.looks", "Desktop"),
+    "lock": tr_noop("grimoire.spells.mural.looks", "Lock screen"),
+    "splash": tr_noop("grimoire.spells.mural.looks", "Splash"),
+    "login": tr_noop("grimoire.spells.mural.looks", "Login"),
+    "boot": tr_noop("grimoire.spells.mural.looks", "Boot"),
+    "taskbar": tr_noop("grimoire.spells.mural.looks", "Taskbar"),
+    "style": tr_noop("grimoire.spells.mural.looks", "Style"),
+    "windows": tr_noop("grimoire.spells.mural.looks", "Windows"),
+    "motion": tr_noop("grimoire.spells.mural.looks", "Motion"),
+    "colors": tr_noop("grimoire.spells.mural.looks", "Colors"),
+    "icons": tr_noop("grimoire.spells.mural.looks", "Icons"),
+    "fonts": tr_noop("grimoire.spells.mural.looks", "Fonts"),
+    "cursor": tr_noop("grimoire.spells.mural.looks", "Cursor"),
+    "terminal": tr_noop("grimoire.spells.mural.looks", "Terminal"),
+}
 
 _lock = threading.Lock()
 
@@ -124,7 +138,7 @@ def render_thumb(snap: dict) -> QImage:
 def save_current(name: str) -> dict:
     """Snapshot the current look under this name; returns the new record."""
     snap = capture()
-    look = {"id": uuid.uuid4().hex[:12], "name": name.strip() or "Untitled look",
+    look = {"id": uuid.uuid4().hex[:12], "name": name.strip() or tr("grimoire.spells.mural.looks", "Untitled look"),
             "created": datetime.now().isoformat(timespec="seconds"), **snap}
     THUMBS.mkdir(parents=True, exist_ok=True)
     render_thumb(snap).save(str(thumb_path(look["id"])))
@@ -135,9 +149,9 @@ def save_current(name: str) -> dict:
 def default_name() -> str:
     names = {l.get("name") for l in all_looks()}
     n = 1
-    while f"Look {n}" in names:
+    while tr("grimoire.spells.mural.looks", "Look {n}").format(n=n) in names:
         n += 1
-    return f"Look {n}"
+    return tr("grimoire.spells.mural.looks", "Look {n}").format(n=n)
 
 
 def rename(look_id: str, name: str) -> bool:
@@ -181,9 +195,9 @@ def _apply_tab(key: str, entry: dict) -> str:
     design = next((d for d in cls.designs(me) if d.id == entry["design"]), None)
     if design is None:
         if entry["design"].startswith("store:"):
-            raise RuntimeError("not installed any more: get it again from Community")
+            raise RuntimeError(tr("grimoire.spells.mural.looks", "not installed any more: get it again from Community"))
         design = Design(entry["design"], entry.get("label") or entry["design"], "")   # e.g. an icon theme in use
-    msg = cls.apply(me, design, entry["options"]) or "Applied ✓"
+    msg = cls.apply(me, design, entry["options"]) or tr("grimoire.spells.mural.looks", "Applied ✓")
     save_state(key, {"design": design.id, "options": entry["options"]})
     return msg
 
@@ -193,13 +207,15 @@ def _apply_desktop(settings: dict) -> str:
     missing = [p for p in s.items if not Path(p).exists()]
     s.items = [p for p in s.items if Path(p).exists()]
     if not s.items:
-        raise RuntimeError("its wallpapers aren't in your library any more")
+        raise RuntimeError(tr("grimoire.spells.mural.looks", "its wallpapers aren't in your library any more"))
     try:
         plasma.apply(s)
     except RuntimeError:            # plasmashell may still be coming back from the taskbar's restart
         time.sleep(2)
         plasma.apply(s)
-    return "Applied ✓" + (f"  ({len(missing)} missing wallpaper(s) left out)" if missing else "")
+    if missing:
+        return tr("grimoire.spells.mural.looks", "Applied ✓  (%n missing wallpaper(s) left out)", n=len(missing))
+    return tr("grimoire.spells.mural.looks", "Applied ✓")
 
 
 def parts(look: dict) -> list[str]:
@@ -212,11 +228,12 @@ def restore(look_id: str, include_root: set[str] = frozenset(), progress=None) -
     (skipped parts count as ok with a "skipped" message). progress(key) is called before each part."""
     look = get(look_id)
     if look is None:
-        raise RuntimeError("that look is gone")
+        raise RuntimeError(tr("grimoire.spells.mural.looks", "that look is gone"))
     results, applied = [], []
     for key in parts(look):
         if key in ROOT and key not in include_root:
-            results.append((key, True, "Skipped (needs your password; tick it to include)"))
+            results.append((key, True, tr("grimoire.spells.mural.looks",
+                                          "Skipped (needs your password; tick it to include)")))
             continue
         if progress:
             progress(key)
@@ -225,7 +242,7 @@ def restore(look_id: str, include_root: set[str] = frozenset(), progress=None) -
             results.append((key, True, msg))
             applied.append(key)
         except Exception as e:          # one broken part must not stop the rest
-            results.append((key, False, f"Couldn't apply: {e}"))
+            results.append((key, False, tr("grimoire.spells.mural.looks", "Couldn't apply: {error}").format(error=e)))
     if applied:
         _change(lambda d: d.__setitem__("active", {"id": look_id, "parts": applied}))
     return results

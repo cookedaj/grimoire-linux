@@ -2,13 +2,15 @@
 """MuraL → Looks tab: saved snapshots of the whole desktop look, restored in one click.
 The work is in looks.py; this is the list on the left and the details + buttons on the right.
 """
+import sys
 from datetime import datetime
 
-from PySide6.QtCore import QObject, QSize, Qt, Signal
+from PySide6.QtCore import QDateTime, QLocale, QObject, QSize, Qt, Signal
 from PySide6.QtGui import QIcon, QImage, QPixmap
 from PySide6.QtWidgets import (QAbstractItemView, QCheckBox, QFrame, QHBoxLayout, QInputDialog, QLabel, QListWidget,
                                QListWidgetItem, QMessageBox, QPushButton, QVBoxLayout, QWidget)
 
+from grimoire.i18n import tr
 from grimoire.jobs import POOL, Job
 from grimoire.spells.mural import looks
 from grimoire.spells.mural.screens import THUMB, placeholder
@@ -23,10 +25,28 @@ class _Signals(QObject):
 
 
 def when(iso: str) -> str:
+    """The save time in the user's language."""
     try:
-        return datetime.fromisoformat(iso).strftime("%-d %b %Y, %H:%M")
+        t = datetime.fromisoformat(iso)
     except ValueError:
         return ""
+    return QLocale().toString(QDateTime(t.date(), t.time()), QLocale.FormatType.ShortFormat)
+
+
+def part(key: str) -> str:
+    """A part of a look (Desktop, Lock screen…) in the user's language."""
+    return tr("grimoire.spells.mural.looks", looks.LABELS[key])
+
+
+def design_name(key: str, entry: dict) -> str:
+    """The saved label is English for Grimoire's own designs (it's data): show their translated name instead."""
+    try:
+        cls = looks._tab_class(key)
+        own = getattr(sys.modules[cls.__module__], "DESIGNS", [])
+    except (StopIteration, ImportError, KeyError):
+        own = []
+    d = next((d for d in own if d.id == entry.get("design")), None)
+    return tr(cls.context, d.name) if d else entry.get("label", "")
 
 
 class LooksTab(QWidget):
@@ -37,8 +57,11 @@ class LooksTab(QWidget):
         self.setObjectName("Page")
         self._sig = _Signals()
         self._working = False         # a save/restore is running: the buttons stay off until it's done
+        self._include: set[str] = set()   # the password parts the running restore includes
         self._sig.saved.connect(self._on_saved)
-        self._sig.progress.connect(lambda key: self.status.setText(f"Applying {looks.LABELS[key].lower()}…"))
+        self._sig.progress.connect(
+            lambda key: self.status.setText(tr("grimoire.spells.mural.lookstab", "Applying {part}…")
+                                            .format(part=part(key).lower())))
         self._sig.restored.connect(self._on_restored)
 
         root = QHBoxLayout(self)
@@ -50,12 +73,12 @@ class LooksTab(QWidget):
         lv.setContentsMargins(36, 8, 24, 24)
         lv.setSpacing(14)
         head = QHBoxLayout()
-        sub = QLabel("Save everything MuraL has applied (wallpaper, taskbar, colors, icons, fonts…) as a look, "
-                     "and put it all back in one click.")
+        sub = QLabel(tr("grimoire.spells.mural.lookstab", "Save everything MuraL has applied (wallpaper, taskbar, "
+                        "colors, icons, fonts…) as a look, and put it all back in one click."))
         sub.setObjectName("Subtitle")
         sub.setWordWrap(True)
         head.addWidget(sub, 1)
-        self.save_btn = QPushButton("Save current look")
+        self.save_btn = QPushButton(tr("grimoire.spells.mural.lookstab", "Save current look"))
         self.save_btn.clicked.connect(self._save)
         head.addWidget(self.save_btn)
         lv.addLayout(head)
@@ -71,7 +94,8 @@ class LooksTab(QWidget):
         self.list.currentItemChanged.connect(lambda *_: self._show_details())
         self.list.itemDoubleClicked.connect(lambda _: self._rename())
         lv.addWidget(self.list, 1)
-        self.empty = QLabel("No looks saved yet. Set things up in the other tabs, then click “Save current look”.")
+        self.empty = QLabel(tr("grimoire.spells.mural.lookstab", "No looks saved yet. Set things up in the other tabs, "
+                                                           "then click “Save current look”."))
         self.empty.setObjectName("Muted")
         self.empty.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.empty.setWordWrap(True)
@@ -94,7 +118,8 @@ class LooksTab(QWidget):
         pl.addSpacing(6)
         self.root_boxes: dict[str, QCheckBox] = {}
         for key in sorted(looks.ROOT, key=looks.ORDER.index):
-            box = QCheckBox(f"Also restore {looks.LABELS[key].lower()}\n(asks for your password)")
+            box = QCheckBox(tr("grimoire.spells.mural.lookstab", "Also restore {part}\n(asks for your password)")
+                            .format(part=part(key).lower()))
             self.root_boxes[key] = box
             pl.addWidget(box)
         pl.addStretch(1)
@@ -103,14 +128,14 @@ class LooksTab(QWidget):
         self.status.setWordWrap(True)
         pl.addWidget(self.status)
         row = QHBoxLayout()
-        self.rename_btn = QPushButton("Rename")
+        self.rename_btn = QPushButton(tr("grimoire.spells.mural.lookstab", "Rename"))
         self.rename_btn.clicked.connect(self._rename)
-        self.delete_btn = QPushButton("Delete")
+        self.delete_btn = QPushButton(tr("grimoire.spells.mural.lookstab", "Delete"))
         self.delete_btn.clicked.connect(self._delete)
         row.addWidget(self.rename_btn)
         row.addWidget(self.delete_btn)
         pl.addLayout(row)
-        self.restore_btn = QPushButton("Restore look")
+        self.restore_btn = QPushButton(tr("grimoire.spells.mural.lookstab", "Restore look"))
         self.restore_btn.setObjectName("Primary")
         self.restore_btn.setMinimumHeight(40)
         self.restore_btn.clicked.connect(self._restore)
@@ -132,8 +157,9 @@ class LooksTab(QWidget):
                            Qt.TransformationMode.SmoothTransformation))
             icon = QIcon(pm)
             icon.addPixmap(pm, QIcon.Mode.Selected)          # no selection tint on the thumbnail
-            in_use = "  ·  in use" if look["id"] == active else ""
-            item = QListWidgetItem(icon, f"{look['name']}{in_use}\n{when(look.get('created', ''))}")
+            name = (tr("grimoire.spells.mural.screens", "{name}  ·  in use").format(name=look["name"])
+                    if look["id"] == active else look["name"])
+            item = QListWidgetItem(icon, f"{name}\n{when(look.get('created', ''))}")
             item.setData(ID_ROLE, look["id"])
             item.setTextAlignment(Qt.AlignmentFlag.AlignHCenter)
             self.list.addItem(item)
@@ -155,7 +181,7 @@ class LooksTab(QWidget):
         for w in (self.rename_btn, self.delete_btn, self.restore_btn):
             w.setEnabled(look is not None and not self._working)
         if look is None:
-            self.name.setText("NO LOOK SELECTED")
+            self.name.setText(tr("grimoire.spells.mural.lookstab", "NO LOOK SELECTED"))
             self.contents.setText("")
             for box in self.root_boxes.values():
                 box.setVisible(False)
@@ -165,10 +191,11 @@ class LooksTab(QWidget):
         for key in looks.parts(look):
             if key == "desktop":
                 n = len(look["desktop"]["items"])
-                lines.append(f"Desktop · {n} wallpaper{'s' if n != 1 else ''}")
+                lines.append(tr("grimoire.spells.mural.lookstab", "Desktop · %n wallpaper(s)", n=n))
             else:
-                lines.append(f"{looks.LABELS[key]} · {look['tabs'][key].get('label', '')}")
-        self.contents.setText("\n".join(lines) or "Nothing was applied with MuraL when this was saved.")
+                lines.append(f"{part(key)} · {design_name(key, look['tabs'][key])}")
+        nothing = tr("grimoire.spells.mural.lookstab", "Nothing was applied with MuraL when this was saved.")
+        self.contents.setText("\n".join(lines) or nothing)
         for key, box in self.root_boxes.items():
             box.setVisible(key in look.get("tabs", {}))
 
@@ -183,17 +210,19 @@ class LooksTab(QWidget):
             self.status.setText(text)
 
     def _save(self):
-        name, ok = QInputDialog.getText(self, "Save current look", "Name", text=looks.default_name())
+        name, ok = QInputDialog.getText(self, tr("grimoire.spells.mural.lookstab", "Save current look"),
+                                        tr("grimoire.spells.mural.lookstab", "Name"),
+                                        text=looks.default_name())
         if not ok:
             return
         sig = self._sig
-        self._busy(True, "Saving…")
+        self._busy(True, tr("grimoire.spells.mural.lookstab", "Saving…"))
 
         def work():
             try:
                 return looks.save_current(name)
             except Exception as e:
-                return f"Couldn't save: {e}"
+                return tr("grimoire.spells.mural.lookstab", "Couldn't save: {error}").format(error=e)
 
         POOL.start(Job(work, lambda r: sig.saved.emit(r)))
 
@@ -203,15 +232,17 @@ class LooksTab(QWidget):
             self.status.setText(result)
             return
         n = len(looks.parts(result))
-        self.status.setText(f"Saved ✓  {n} part{'s' if n != 1 else ''} of your look." if n else
-                            "Saved, but nothing is applied with MuraL yet, so there's nothing to restore.")
+        self.status.setText(tr("grimoire.spells.mural.lookstab", "Saved ✓  %n part(s) of your look.", n=n) if n else
+                            tr("grimoire.spells.mural.lookstab", "Saved, but nothing is applied with MuraL yet, "
+                               "so there's nothing to restore."))
         self.reload(result["id"])
 
     def _rename(self):
         look = looks.get(self.current_id() or "")
         if look is None:
             return
-        name, ok = QInputDialog.getText(self, "Rename look", "Name", text=look["name"])
+        name, ok = QInputDialog.getText(self, tr("grimoire.spells.mural.lookstab", "Rename look"),
+                                        tr("grimoire.spells.mural.lookstab", "Name"), text=look["name"])
         if ok and name.strip():
             looks.rename(look["id"], name)
             self.reload()
@@ -220,11 +251,13 @@ class LooksTab(QWidget):
         look = looks.get(self.current_id() or "")
         if look is None:
             return
-        if QMessageBox.question(self, "Delete look?", f"Forget the look “{look['name']}”?\n\nThis only removes the "
-                                "saved snapshot; your wallpapers and themes stay.") != QMessageBox.StandardButton.Yes:
+        question = tr("grimoire.spells.mural.lookstab", "Forget the look “{name}”?\n\nThis only removes the saved "
+                      "snapshot; your wallpapers and themes stay.").format(name=look["name"])
+        title = tr("grimoire.spells.mural.lookstab", "Delete look?")
+        if QMessageBox.question(self, title, question) != QMessageBox.StandardButton.Yes:
             return
         looks.delete(look["id"])
-        self.status.setText(f"Deleted “{look['name']}”.")
+        self.status.setText(tr("grimoire.spells.mural.lookstab", "Deleted “{name}”.").format(name=look["name"]))
         self.reload()
 
     def _restore(self):
@@ -233,13 +266,16 @@ class LooksTab(QWidget):
             return
         include = {k for k, box in self.root_boxes.items() if box.isVisible() and box.isChecked()}
         sig = self._sig
-        self._busy(True, "Restoring…" + ("  Enter your password when asked." if include else ""))
+        self._include = include
+        busy = (tr("grimoire.spells.mural.lookstab", "Restoring…  Enter your password when asked.") if include
+                else tr("grimoire.spells.mural.lookstab", "Restoring…"))
+        self._busy(True, busy)
 
         def work():
             try:
                 return looks.restore(look_id, include, progress=sig.progress.emit)
             except Exception as e:
-                return f"Couldn't restore: {e}"
+                return tr("grimoire.spells.mural.lookstab", "Couldn't restore: {error}").format(error=e)
 
         POOL.start(Job(work, lambda r: sig.restored.emit(r)))
 
@@ -249,9 +285,11 @@ class LooksTab(QWidget):
             self.status.setText(results)
             return
         failed = [r for r in results if not r[1]]
-        lines = [("·  " if ok else "✗  ") + f"{looks.LABELS[key]}: {msg}" for key, ok, msg in results
-                 if not ok or msg.startswith("Skipped")]
-        head = "Look restored ✓" if not failed else f"Restored, but {len(failed)} part(s) didn't apply:"
+        skipped = {k for k in looks.ROOT if k not in self._include}    # reported, not failed
+        lines = [("·  " if ok else "✗  ") + f"{part(key)}: {msg}" for key, ok, msg in results
+                 if not ok or key in skipped]
+        head = (tr("grimoire.spells.mural.lookstab", "Look restored ✓") if not failed else
+                tr("grimoire.spells.mural.lookstab", "Restored, but %n part(s) didn't apply:", n=len(failed)))
         self.status.setText("\n".join([head, *lines]))
         self.reload()
         self.restored.emit()

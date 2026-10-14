@@ -5,18 +5,22 @@ Generates ~/.local/share/color-schemes/Grimoire<Name>.colors and applies it with
 Every role (links, warnings, focus…) maps to a gray, so nothing on screen keeps a hue.
 """
 from PySide6.QtCore import QRectF, Qt
-from PySide6.QtGui import QColor, QFont, QImage, QPainter, QPainterPath
-from PySide6.QtWidgets import QComboBox, QGridLayout, QLabel, QPushButton
+from PySide6.QtGui import QColor, QFont, QFontMetricsF, QImage, QPainter, QPainterPath
+from PySide6.QtWidgets import QGridLayout, QLabel, QPushButton
+
+from grimoire.i18n import tr, tr_noop
 
 from grimoire.paths import DATA, HOME
 from grimoire.spells.mural.backdrop import wallpaper as _wallpaper
 from grimoire.spells.mural.kde import kread, run_tool
-from grimoire.spells.mural.screens import Design, ScreenTab, community_designs, community_entry
+from grimoire.spells.mural.screens import Choice, Design, ScreenTab, community_designs, community_entry
 
 SCHEMES = HOME / ".local/share/color-schemes"
 PREVIOUS = DATA / "mural" / "colors-previous.txt"
 DEFAULTS = {"titlebar": "Match", "accent": "Design"}
-ACCENTS = ["Design", "White", "Mid gray", "Black"]
+ACCENTS = [tr_noop("grimoire.spells.mural.colors", "Design"), tr_noop("grimoire.spells.mural.colors", "White"),
+           tr_noop("grimoire.spells.mural.colors", "Mid gray"), tr_noop("grimoire.spells.mural.colors", "Black")]
+TITLEBARS = [tr_noop("grimoire.spells.mural.colors", "Match"), tr_noop("grimoire.spells.mural.colors", "Black")]
 
 #            window view  button header select sel-text text  muted dark
 PALETTES = {
@@ -27,11 +31,17 @@ PALETTES = {
     "paper":    (0xf3, 0xff, 0xe8, 0xec, 0x1a, 0xff, 0x10, 0x70, False),
 }
 DESIGNS = [
-    Design("obsidian", "Obsidian", "Near-black everywhere, pure white selection. The boldest monochrome."),
-    Design("graphite", "Graphite", "Charcoal grays with a soft gray selection. Calm and balanced."),
-    Design("slate", "Slate", "Lighter dark grays with a bright selection. Easy contrast for long sessions."),
-    Design("silver", "Silver", "Light gray surfaces with near-black selection. A gentle light theme."),
-    Design("paper", "Paper", "White paper and black ink. Crisp light theme."),
+    Design("obsidian", tr_noop("grimoire.spells.mural.colors", "Obsidian"), tr_noop(
+        "grimoire.spells.mural.colors", "Near-black everywhere, pure white selection. The boldest monochrome.")),
+    Design("graphite", tr_noop("grimoire.spells.mural.colors", "Graphite"), tr_noop(
+        "grimoire.spells.mural.colors", "Charcoal grays with a soft gray selection. Calm and balanced.")),
+    Design("slate", tr_noop("grimoire.spells.mural.colors", "Slate"), tr_noop(
+        "grimoire.spells.mural.colors",
+        "Lighter dark grays with a bright selection. Easy contrast for long sessions.")),
+    Design("silver", tr_noop("grimoire.spells.mural.colors", "Silver"), tr_noop(
+        "grimoire.spells.mural.colors", "Light gray surfaces with near-black selection. A gentle light theme.")),
+    Design("paper", tr_noop("grimoire.spells.mural.colors", "Paper"), tr_noop(
+        "grimoire.spells.mural.colors", "White paper and black ink. Crisp light theme.")),
 ]
 EFFECTS = """[ColorEffects:Disabled]
 Color=56,56,56
@@ -152,9 +162,11 @@ def render(pid: str, o: dict, w=1280, h=720) -> QImage:
     tool = QRectF(win.x(), title.bottom(), win.width(), 46)
     p.fillRect(tool, q(c["window"]))
     p.setFont(QFont("IBM Plex Sans", 9))
+    fm = QFontMetricsF(p.font())
     x = tool.x() + 14
-    for label in ("Back", "Forward", "New Folder", "Share"):
-        r = QRectF(x, tool.y() + 9, 24 + len(label) * 7, 28)
+    for label in (tr("grimoire.spells.mural.colors", "Back"), tr("grimoire.spells.mural.colors", "Forward"),
+                  tr("grimoire.spells.mural.colors", "New Folder"), tr("grimoire.spells.mural.colors", "Share")):
+        r = QRectF(x, tool.y() + 9, 24 + fm.horizontalAdvance(label), 28)
         p.setBrush(q(c["button"]))
         p.setPen(q(c["text"], 40))
         p.drawRoundedRect(r, 5, 5)
@@ -166,21 +178,25 @@ def render(pid: str, o: dict, w=1280, h=720) -> QImage:
     p.setPen(q(c["sel"] if c["dark"] else c["text"], 160))
     p.drawRoundedRect(search, 5, 5)
     p.setPen(q(c["muted"]))
-    p.drawText(search.adjusted(10, 0, 0, 0), Qt.AlignmentFlag.AlignVCenter, "Search…")
+    p.drawText(search.adjusted(10, 0, -10, 0), Qt.AlignmentFlag.AlignVCenter,
+               tr("grimoire.spells.mural.colors", "Search…"))
 
     side = QRectF(win.x(), tool.bottom(), 190, win.bottom() - tool.bottom())
     p.fillRect(side, q(c["window"]))
     p.setFont(QFont("IBM Plex Sans", 10))
-    for k, place in enumerate(("Home", "Desktop", "Documents", "Downloads", "Repo", "Trash")):
+    places = (tr("grimoire.spells.mural.colors", "Home"), tr("grimoire.spells.mural.colors", "Desktop"),
+              tr("grimoire.spells.mural.colors", "Documents"), tr("grimoire.spells.mural.colors", "Downloads"), "Repo",
+              tr("grimoire.spells.mural.colors", "Trash"))
+    for k, place in enumerate(places):
         r = QRectF(side.x() + 8, side.y() + 10 + k * 32, side.width() - 16, 28)
-        if place == "Repo":
+        if k == 4:
             p.setBrush(q(c["sel"]))
             p.setPen(Qt.PenStyle.NoPen)
             p.drawRoundedRect(r, 5, 5)
             p.setPen(q(c["sel_text"]))
         else:
             p.setPen(q(c["text"]))
-        p.drawText(r.adjusted(12, 0, 0, 0), Qt.AlignmentFlag.AlignVCenter, place)
+        p.drawText(r.adjusted(12, 0, -12, 0), Qt.AlignmentFlag.AlignVCenter, place)
 
     view = QRectF(side.right(), tool.bottom(), win.right() - side.right(), side.height())
     p.fillRect(view, q(c["view"]))
@@ -193,16 +209,17 @@ def render(pid: str, o: dict, w=1280, h=720) -> QImage:
         if k == 1:
             p.fillRect(r.adjusted(6, 2, -6, -2), q(c["sel"], 90 if c["dark"] else 60))
         p.setPen(q(c["text"]))
-        p.drawText(r.adjusted(20, 0, 0, 0), Qt.AlignmentFlag.AlignVCenter, name)
+        p.drawText(r.adjusted(20, 0, -20, 0), Qt.AlignmentFlag.AlignVCenter, name)
         p.setPen(q(c["muted"]))
-        p.drawText(r.adjusted(0, 0, -20, 0), Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignRight,
-                   "folder" if "." not in name else "file")
+        p.drawText(r.adjusted(20, 0, -20, 0), Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignRight,
+                   tr("grimoire.spells.mural.colors", "folder") if "." not in name
+                   else tr("grimoire.spells.mural.colors", "file"))
     btn = QRectF(view.right() - 150, view.bottom() - 52, 130, 34)
     p.setBrush(q(c["sel"]))
     p.setPen(Qt.PenStyle.NoPen)
     p.drawRoundedRect(btn, 6, 6)
     p.setPen(q(c["sel_text"]))
-    p.drawText(btn, Qt.AlignmentFlag.AlignCenter, "Open")
+    p.drawText(btn, Qt.AlignmentFlag.AlignCenter, tr("grimoire.spells.mural.colors", "Open"))
     p.setClipping(False)
     p.setPen(q(255 if c["dark"] else 0, 40))
     p.setBrush(Qt.BrushStyle.NoBrush)
@@ -217,9 +234,10 @@ def current_scheme() -> str:
 
 class ColorsTab(ScreenTab):
     key = "colors"
-    subtitle = ("System colors for every window and app. Links, warnings and focus all become grays. "
-                "Grimoire itself keeps its own look.")
-    apply_label = "Apply colors"
+    context = "grimoire.spells.mural.colors"
+    subtitle = tr_noop("grimoire.spells.mural.colors", "System colors for every window and app. Links, warnings and "
+                       "focus all become grays. Grimoire itself keeps its own look.")
+    apply_label = tr_noop("grimoire.spells.mural.colors", "Apply colors")
     store = ["colors"]
 
     def designs(self):
@@ -228,29 +246,25 @@ class ColorsTab(ScreenTab):
     def build_options(self, lay):
         grid = QGridLayout()
         grid.setVerticalSpacing(8)
-        self.titlebar = QComboBox()
-        self.titlebar.addItems(["Match", "Black"])
-        self.accent = QComboBox()
-        self.accent.addItems(ACCENTS)
-        for c in (self.titlebar, self.accent):
-            c.currentTextChanged.connect(self.changed)
-        grid.addWidget(QLabel("Title bars"), 0, 0)
+        self.titlebar = Choice([(k, tr("grimoire.spells.mural.colors", k)) for k in TITLEBARS], self.changed)
+        self.accent = Choice([(k, tr("grimoire.spells.mural.colors", k)) for k in ACCENTS], self.changed)
+        grid.addWidget(QLabel(tr("grimoire.spells.mural.colors", "Title bars")), 0, 0)
         grid.addWidget(self.titlebar, 0, 1)
-        grid.addWidget(QLabel("Selection"), 1, 0)
+        grid.addWidget(QLabel(tr("grimoire.spells.mural.colors", "Selection")), 1, 0)
         grid.addWidget(self.accent, 1, 1)
         lay.addLayout(grid)
         lay.addSpacing(6)
-        restore = QPushButton("Restore previous colors")
+        restore = QPushButton(tr("grimoire.spells.mural.colors", "Restore previous colors"))
         restore.clicked.connect(self._restore)
         lay.addWidget(restore)
 
     def options(self):
-        return {"titlebar": self.titlebar.currentText(), "accent": self.accent.currentText()}
+        return {"titlebar": self.titlebar.value(), "accent": self.accent.value()}
 
     def set_options(self, o):
         o = {**DEFAULTS, **o}
-        self.titlebar.setCurrentText(o["titlebar"])
-        self.accent.setCurrentText(o["accent"])
+        self.titlebar.set_value(o["titlebar"])
+        self.accent.set_value(o["accent"])
 
     def preview(self, design, o):
         return render(design.id, o)
@@ -264,7 +278,7 @@ class ColorsTab(ScreenTab):
         if design.id.startswith("store:"):
             ident = community_entry(design.id)["ident"]
             run_tool(["plasma-apply-colorscheme", ident], ok_if_already=True)
-            return "Applied ✓"
+            return tr("grimoire.spells.mural.colors", "Applied ✓")
         # plasma-apply-colorscheme ignores re-applying the current name, so alternate between two names
         base = f"Grimoire{design.name}"
         ident = base + "B" if cur == base else base
@@ -273,12 +287,12 @@ class ColorsTab(ScreenTab):
         for old in SCHEMES.glob("Grimoire*.colors"):    # keep only the active one
             if old.stem != ident:
                 old.unlink()
-        return "Applied ✓  Open apps update right away."
+        return tr("grimoire.spells.mural.colors", "Applied ✓  Open apps update right away.")
 
     def _restore(self):
         prev = PREVIOUS.read_text().strip() if PREVIOUS.exists() else "BreezeDark"
 
         def work():
             run_tool(["plasma-apply-colorscheme", prev])
-            return f"Restored {prev}."
-        self.background(work, "Restoring…")
+            return tr("grimoire.spells.mural.colors", "Restored {scheme}.").format(scheme=prev)
+        self.background(work, tr("grimoire.spells.mural.colors", "Restoring…"))

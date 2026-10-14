@@ -4,20 +4,27 @@ Written to kdeglobals with --notify, so running KDE apps update immediately.
 """
 from PySide6.QtCore import QRectF, Qt
 from PySide6.QtGui import QColor, QFont, QImage, QPainter, QPainterPath
-from PySide6.QtWidgets import QComboBox, QGridLayout, QLabel
+from PySide6.QtWidgets import QGridLayout, QLabel
 
+from grimoire.i18n import tr, tr_noop
 from grimoire.spells.mural.backdrop import wallpaper
 from grimoire.spells.mural.kde import kwin_reconfigure, kwrite
-from grimoire.spells.mural.screens import Design, ScreenTab
+from grimoire.spells.mural.screens import Choice, Design, ScreenTab
 from grimoire.widgets import Slider
 
 PAIRS = {
     "swiss":     ("Nimbus Sans", "DM Mono"),
 }
 DESIGNS = [
-    Design("swiss", "Swiss", "Nimbus Sans (a Helvetica design) + DM Mono. Classic poster typography."),
+    Design("swiss", tr_noop("grimoire.spells.mural.fonts", "Swiss"),
+           tr_noop("grimoire.spells.mural.fonts",
+                   "Nimbus Sans (a Helvetica design) + DM Mono. Classic poster typography.")),
 ]
-HINTING = {"None": "hintnone", "Slight": "hintslight", "Full": "hintfull"}
+HINTING = {tr_noop("grimoire.spells.mural.fonts", "None"): "hintnone",
+           tr_noop("grimoire.spells.mural.fonts", "Slight"): "hintslight",
+           tr_noop("grimoire.spells.mural.fonts", "Full"): "hintfull"}
+WEIGHTS = [tr_noop("grimoire.spells.mural.fonts", "Bold"), tr_noop("grimoire.spells.mural.fonts", "Regular")]
+SUBPIXEL = [tr_noop("grimoire.spells.mural.fonts", "On"), tr_noop("grimoire.spells.mural.fonts", "Off")]
 DEFAULTS = {"size": 10, "title_weight": "Bold", "hinting": "Slight", "subpixel": "On"}
 
 
@@ -55,7 +62,8 @@ def render(pid: str, o: dict, w=1280, h=720) -> QImage:
          "Grimoire — MuraL", Qt.AlignmentFlag.AlignHCenter)
     text(QRectF(x, card.y() + 70, wd, 70), sans, 46 * s, QFont.Weight.Light, "#ffffff", sans)
     text(QRectF(x, card.y() + 70 + 64 * s, wd, 30), sans, 14 * s, QFont.Weight.Normal, "#8c8c8c",
-         f"Interface font  ·  {o['size']} pt  ·  monospace: {mono}")
+         tr("grimoire.spells.mural.fonts", "Interface font  ·  {size} pt  ·  monospace: {mono}")
+         .format(size=o["size"], mono=mono))
     text(QRectF(x, card.y() + 140 + 64 * s, wd, 110), sans, 17 * s, QFont.Weight.Normal, "#d8d8d8",
          "The five-leaf grimoire chose the boy with no magic. Asta trained until his hands bled, "
          "and Yuno never stopped chasing the crown. Surpass your limits, right here, right now.")
@@ -66,15 +74,17 @@ def render(pid: str, o: dict, w=1280, h=720) -> QImage:
     text(code.adjusted(18, 14, -18, 0), mono, 14 * s, QFont.Weight.Normal, "#cfcfcf",
          "$ grimoire-sightc on\n$ git commit -m \"surpass your limits\"\n0123456789  {}[]()<>=!  il1| O0")
     text(QRectF(x, card.bottom() - 40, wd, 24), sans, 11 * s, QFont.Weight.Normal, "#6f6f6f",
-         "SMALL TEXT · MENUS · TOOLBARS · 0123456789")
+         tr("grimoire.spells.mural.fonts", "SMALL TEXT · MENUS · TOOLBARS") + " · 0123456789")
     p.end()
     return img
 
 
 class FontsTab(ScreenTab):
     key = "fonts"
-    subtitle = "System fonts for every app, menu and title bar. Running KDE apps update immediately."
-    apply_label = "Apply fonts"
+    context = "grimoire.spells.mural.fonts"
+    subtitle = tr_noop("grimoire.spells.mural.fonts", "System fonts for every app, menu and title bar. "
+                       "Running KDE apps update immediately.")
+    apply_label = tr_noop("grimoire.spells.mural.fonts", "Apply fonts")
 
     def designs(self):
         return DESIGNS
@@ -83,31 +93,28 @@ class FontsTab(ScreenTab):
         grid = QGridLayout()
         grid.setVerticalSpacing(8)
         self.size = Slider(8, 14, " pt", self.changed)
-        self.title_weight = QComboBox()
-        self.title_weight.addItems(["Bold", "Regular"])
-        self.hinting = QComboBox()
-        self.hinting.addItems(list(HINTING))
-        self.subpixel = QComboBox()
-        self.subpixel.addItems(["On", "Off"])
-        grid.addWidget(QLabel("Size"), 0, 0)
+        self.title_weight = Choice([(k, tr("grimoire.spells.mural.fonts", k)) for k in WEIGHTS], self.changed)
+        self.hinting = Choice([(k, tr("grimoire.spells.mural.fonts", k)) for k in HINTING], self.changed)
+        self.subpixel = Choice([(k, tr("grimoire.spells.mural.fonts", k)) for k in SUBPIXEL], self.changed)
+        grid.addWidget(QLabel(tr("grimoire.spells.mural.fonts", "Size")), 0, 0)
         grid.addWidget(self.size, 0, 1)
-        for r, (name, c) in enumerate((("Title bars", self.title_weight), ("Hinting", self.hinting),
-                                       ("Sub-pixel", self.subpixel)), start=1):
-            c.currentTextChanged.connect(self.changed)
+        for r, (name, c) in enumerate(((tr("grimoire.spells.mural.fonts", "Title bars"), self.title_weight),
+                                       (tr("grimoire.spells.mural.fonts", "Hinting"), self.hinting),
+                                       (tr("grimoire.spells.mural.fonts", "Sub-pixel"), self.subpixel)), start=1):
             grid.addWidget(QLabel(name), r, 0)
             grid.addWidget(c, r, 1)
         lay.addLayout(grid)
 
     def options(self):
-        return {"size": self.size.value(), "title_weight": self.title_weight.currentText(),
-                "hinting": self.hinting.currentText(), "subpixel": self.subpixel.currentText()}
+        return {"size": self.size.value(), "title_weight": self.title_weight.value(),
+                "hinting": self.hinting.value(), "subpixel": self.subpixel.value()}
 
     def set_options(self, o):
         o = {**DEFAULTS, **o}
         self.size.setValue(o["size"])
-        self.title_weight.setCurrentText(o["title_weight"])
-        self.hinting.setCurrentText(o["hinting"])
-        self.subpixel.setCurrentText(o["subpixel"])
+        self.title_weight.set_value(o["title_weight"])
+        self.hinting.set_value(o["hinting"])
+        self.subpixel.set_value(o["subpixel"])
 
     def preview(self, design, o):
         return render(design.id, o)
@@ -129,4 +136,4 @@ class FontsTab(ScreenTab):
         for group, key, value in writes:
             kwrite("kdeglobals", group, key, value, notify=True)
         kwin_reconfigure()
-        return "Applied ✓  Some apps pick up new fonts when reopened."
+        return tr("grimoire.spells.mural.fonts", "Applied ✓  Some apps pick up new fonts when reopened.")
