@@ -18,9 +18,10 @@ from dataclasses import dataclass
 
 from PySide6.QtCore import QObject, QSize, Qt, QTimer, Signal
 from PySide6.QtGui import QColor, QIcon, QImage, QPainter, QPixmap
-from PySide6.QtWidgets import (QAbstractItemView, QFrame, QHBoxLayout, QLabel, QListWidget, QListWidgetItem,
+from PySide6.QtWidgets import (QAbstractItemView, QComboBox, QFrame, QHBoxLayout, QLabel, QListWidget, QListWidgetItem,
                                QPushButton, QSizePolicy, QStackedWidget, QVBoxLayout, QWidget)
 
+from grimoire.i18n import tr
 from grimoire.jobs import POOL, Job
 from grimoire.paths import CONFIG
 
@@ -30,9 +31,30 @@ THUMB = QSize(184, 104)
 
 @dataclass(frozen=True)
 class Design:
+    """name and blurb stay English (a tab's DESIGNS mark them with tr_noop in the tab's own context); the tab
+    translates them where they're shown, so ids and scheme names built from them never change with the language."""
     id: str
     name: str
     blurb: str
+
+
+class Choice(QComboBox):
+    """A drop-down of stored values shown translated: value() is the stored value, never the shown text."""
+
+    def __init__(self, items, on_change=None):
+        super().__init__()
+        for value, label in items:
+            self.addItem(label, value)
+        if on_change:
+            self.currentIndexChanged.connect(on_change)
+
+    def value(self):
+        return self.currentData()
+
+    def set_value(self, value):
+        i = self.findData(value)
+        if i >= 0:
+            self.setCurrentIndex(i)
 
 
 def load_state() -> dict:
@@ -51,8 +73,14 @@ def save_state(key: str, value: dict):
 def community_designs(kind: str) -> list[Design]:
     """Store items of this kind that are installed, as designs (ids start with "store:")."""
     from grimoire.spells.mural import store
-    return [Design(f"store:{e['key']}", e["name"], f"Community · by {e['author'] or 'unknown'}")
-            for e in store.installed(kind)]
+    return [Design(f"store:{e['key']}", e["name"], by_line(e)) for e in store.installed(kind)]
+
+
+def by_line(entry: dict) -> str:
+    """The blurb of an installed community item."""
+    if entry.get("author"):
+        return tr("grimoire.spells.mural.screens", "Community · by {author}").format(author=entry["author"])
+    return tr("grimoire.spells.mural.screens", "Community · unknown author")
 
 
 def community_entry(design_id: str) -> dict | None:
@@ -73,8 +101,10 @@ def community_preview(design_id: str, w=1280, h=720) -> QImage:
                             Qt.TransformationMode.SmoothTransformation)
         p.drawImage((w - scaled.width()) // 2, (h - 60 - scaled.height()) // 2, scaled)
     p.setPen(QColor("#9a9a9a"))
-    p.drawText(0, h - 50, w, 40, Qt.AlignmentFlag.AlignCenter,
-               f"{entry.get('name', '')}   ·   community theme by {entry.get('author') or 'unknown'}")
+    author = entry.get("author")
+    line = (tr("grimoire.spells.mural.screens", "{name}   ·   community theme by {author}") if author else
+            tr("grimoire.spells.mural.screens", "{name}   ·   community theme"))
+    p.drawText(0, h - 50, w, 40, Qt.AlignmentFlag.AlignCenter, line.format(name=entry.get("name", ""), author=author))
     p.end()
     return img
 
@@ -103,10 +133,15 @@ def render_lock(key: str) -> threading.Lock:
 
 class ScreenTab(QWidget):
     key = "screen"            # state key
+    context = "grimoire.spells.mural.screens"   # the tab module's tr() context: its texts below are tr_noop'd in it
     subtitle = ""
-    apply_label = "Apply"
-    apply_busy = "Applying…"
+    apply_label = ""          # "" = "Apply"
+    apply_busy = ""           # "" = "Applying…"
     store: list[str] = []      # store category keys for the Community view (empty = no Community view)
+
+    def shown(self, text: str) -> str:
+        """A text this tab marked with tr_noop (its subtitle, labels, design names), in the user's language."""
+        return tr(self.context, text) if text else text
 
     def __init__(self):
         super().__init__()
@@ -132,7 +167,7 @@ class ScreenTab(QWidget):
         outer.setContentsMargins(36, 8, 24, 24)
         outer.setSpacing(14)
         head = QHBoxLayout()
-        sub = QLabel(self.subtitle)
+        sub = QLabel(self.shown(self.subtitle))
         sub.setObjectName("Subtitle")
         sub.setWordWrap(True)
         head.addWidget(sub, 1)
@@ -141,7 +176,8 @@ class ScreenTab(QWidget):
             switch = QHBoxLayout()
             switch.setSpacing(0)
             self._switch = []
-            for i, name in enumerate(("Designs", "Community · top 100")):
+            for i, name in enumerate((tr("grimoire.spells.mural.screens", "Designs"),
+                                      tr("grimoire.spells.mural.screens", "Community · top 100"))):
                 b = QPushButton(name)
                 b.setObjectName("Segment")
                 b.setProperty("pos", "first" if i == 0 else "last")
@@ -204,7 +240,7 @@ class ScreenTab(QWidget):
         self.status.setObjectName("Muted")
         self.status.setWordWrap(True)
         pl.addWidget(self.status)
-        self.apply_btn = QPushButton(self.apply_label)
+        self.apply_btn = QPushButton(self.shown(self.apply_label) or tr("grimoire.spells.mural.screens", "Apply"))
         self.apply_btn.setObjectName("Primary")
         self.apply_btn.setMinimumHeight(40)
         self.apply_btn.clicked.connect(self._apply)
@@ -220,7 +256,7 @@ class ScreenTab(QWidget):
         self.gallery.blockSignals(True)
         self.gallery.clear()
         for d in self._designs:
-            item = QListWidgetItem(QIcon(placeholder()), d.name)
+            item = QListWidgetItem(QIcon(placeholder()), self.shown(d.name))
             item.setTextAlignment(Qt.AlignmentFlag.AlignHCenter)
             self.gallery.addItem(item)
         self._label_in_use()
@@ -323,8 +359,8 @@ class ScreenTab(QWidget):
         if row < 0:
             return
         d = self._designs[row]
-        self.name.setText(d.name.upper())
-        self.blurb.setText(d.blurb)
+        self.name.setText(self.shown(d.name).upper())
+        self.blurb.setText(self.shown(d.blurb))
         if render:
             opts = self.options()
             self._submit("big", lambda: self._preview(d, opts))
@@ -352,23 +388,25 @@ class ScreenTab(QWidget):
 
     def _label_in_use(self):
         for i, d in enumerate(self._designs):
-            self.gallery.item(i).setText(d.name + ("  ·  in use" if d.id == self.applied else ""))
+            name = self.shown(d.name)
+            self.gallery.item(i).setText(tr("grimoire.spells.mural.screens", "{name}  ·  in use").format(name=name)
+                                         if d.id == self.applied else name)
 
     # ---- apply (worker thread)
     def _apply(self):
         d, opts, sig = self.current(), self.options(), self._sig
         if d is None:
-            self.status.setText("Nothing to apply yet: get one from the store below.")
+            self.status.setText(tr("grimoire.spells.mural.screens", "Nothing to apply yet: get one from Community."))
             return
         self._pending = (d, opts)
         self.apply_btn.setEnabled(False)
-        self.status.setText(self.apply_busy)
+        self.status.setText(self.shown(self.apply_busy) or tr("grimoire.spells.mural.screens", "Applying…"))
 
         def work():
             try:
-                return True, self.apply(d, opts) or "Applied ✓"
+                return True, self.apply(d, opts) or tr("grimoire.spells.mural.screens", "Applied ✓")
             except Exception as e:        # anything else would leave the button stuck on "Applying…"
-                return False, f"Couldn't apply: {e}"
+                return False, tr("grimoire.spells.mural.screens", "Couldn't apply: {error}").format(error=e)
 
         POOL.start(Job(work, lambda result: sig.applied.emit(*result)))
 
@@ -381,7 +419,7 @@ class ScreenTab(QWidget):
             save_state(self.key, {"design": d.id, "options": opts})
             self._label_in_use()
 
-    def background(self, fn, busy: str, failed: str = "Couldn't restore"):
+    def background(self, fn, busy: str):
         """Run fn() (returns a status message, raises on failure) on a worker thread, Apply disabled meanwhile."""
         sig = self._sig
         self.apply_btn.setEnabled(False)
@@ -391,7 +429,7 @@ class ScreenTab(QWidget):
             try:
                 return fn()
             except Exception as e:
-                return f"{failed}: {e}"
+                return tr("grimoire.spells.mural.screens", "Couldn't restore: {error}").format(error=e)
 
         POOL.start(Job(work, lambda msg: sig.finished.emit(msg)))
 

@@ -8,6 +8,7 @@ from PySide6.QtWidgets import (QAbstractButton, QButtonGroup, QCheckBox, QColorD
                                QGridLayout, QHBoxLayout, QInputDialog, QLabel, QMenu, QMessageBox, QPushButton,
                                QScrollArea, QVBoxLayout, QWidget)
 
+from grimoire.i18n import tr
 from grimoire.paths import CONFIG, HOME, command
 from grimoire.spells.mural import library as mural_library
 from grimoire.spells.sightc import draw, overlay
@@ -21,12 +22,14 @@ USES_GAP = {"Cross", "Cross + dot", "T", "Circle + cross"}
 USES_DOT = {"Dot", "Cross + dot", "Circle + dot"}
 
 
-def _segments(names, on_click) -> tuple[QHBoxLayout, dict[str, QPushButton]]:
-    """A joined row of checkable buttons (theme's #Segment), one checked at a time."""
+def _segments(items, on_click) -> tuple[QHBoxLayout, dict[str, QPushButton]]:
+    """A joined row of checkable buttons (theme's #Segment), one checked at a time. items are (id, label);
+    on_click gets the id and the buttons are keyed by it."""
     row, group, buttons = QHBoxLayout(), QButtonGroup(), {}
     row.setSpacing(0)
-    for i, name in enumerate(names):
-        b = QPushButton(name)
+    names = [name for name, _ in items]
+    for i, (name, label) in enumerate(items):
+        b = QPushButton(label)
         b.setObjectName("Segment")
         b.setCheckable(True)
         b.setProperty("pos", "first" if i == 0 else "last" if i == len(names) - 1 else "mid")
@@ -69,7 +72,8 @@ class Tile(QAbstractButton):
         p.restore()
         if self.label:
             p.setPen(QColor("#ffffff" if self.isChecked() else "#8c8c8c"))
-            p.drawText(QRectF(0, box.bottom() + 2, self.width(), 16), Qt.AlignmentFlag.AlignCenter, self.label)
+            text = p.fontMetrics().elidedText(self.label, Qt.TextElideMode.ElideRight, self.width())
+            p.drawText(QRectF(0, box.bottom() + 2, self.width(), 16), Qt.AlignmentFlag.AlignCenter, text)
 
     def enterEvent(self, e):
         self.update()
@@ -85,6 +89,7 @@ class Preview(QWidget):
 
     def __init__(self, cfg: Crosshair):
         super().__init__()
+        self.setLayoutDirection(Qt.LayoutDirection.LeftToRight)     # a picture: the zoom stays bottom-right
         self.cfg = cfg
         self.backdrop = "Dark"
         self._image: QPixmap | None = None
@@ -179,7 +184,9 @@ class SightCPage(QWidget):
         titles.setSpacing(4)
         t = QLabel("SightsL")
         t.setObjectName("Title")
-        sub = QLabel("A crosshair drawn above every window and game. Click-through, pixel-sharp.")
+        sub = QLabel(tr("grimoire.spells.sightc.page", "A crosshair drawn above every window and game. "
+                        "Click-through, pixel-sharp."))
+        sub.setWordWrap(True)
         sub.setObjectName("Subtitle")
         titles.addWidget(t)
         titles.addWidget(sub)
@@ -187,14 +194,15 @@ class SightCPage(QWidget):
         keys.setSpacing(6)
         keys.setContentsMargins(0, 6, 0, 0)
         self.key_toggle, self.key_next = QLabel(), QLabel()
-        for key, what in ((self.key_toggle, "show / hide"), (self.key_next, "next crosshair")):
+        for key, what in ((self.key_toggle, tr("grimoire.spells.sightc.page", "show / hide")),
+                          (self.key_next, tr("grimoire.spells.sightc.page", "next crosshair"))):
             key.setObjectName("Key")
             lbl = QLabel(what)
             lbl.setObjectName("Muted")
             keys.addWidget(key)
             keys.addWidget(lbl)
             keys.addSpacing(10)
-        change = QPushButton("Change keys")
+        change = QPushButton(tr("grimoire.spells.sightc.page", "Change keys"))
         change.setObjectName("Link")
         change.setCursor(Qt.CursorShape.PointingHandCursor)
         change.clicked.connect(lambda: subprocess.Popen(["systemsettings", "kcm_keys"], start_new_session=True,
@@ -228,15 +236,18 @@ class SightCPage(QWidget):
         lay.addWidget(frame, 1)
 
         row = QHBoxLayout()
-        lbl = QLabel("Backdrop")
+        lbl = QLabel(tr("grimoire.spells.sightc.page", "Backdrop"))
         lbl.setObjectName("Muted")
         row.addWidget(lbl)
         row.addSpacing(6)
-        seg, self.backdrops = _segments(("Dark", "Light", "Wallpaper"), self.preview.set_backdrop)
+        backdrops = (("Dark", tr("grimoire.spells.sightc.page", "Dark")),
+                     ("Light", tr("grimoire.spells.sightc.page", "Light")),
+                     ("Wallpaper", tr("grimoire.spells.sightc.page", "Wallpaper")))
+        seg, self.backdrops = _segments(backdrops, self.preview.set_backdrop)
         self.backdrops["Dark"].setChecked(True)
         row.addLayout(seg)
         row.addStretch(1)
-        hint = QLabel("Corner: real pixels, magnified")
+        hint = QLabel(tr("grimoire.spells.sightc.page", "Corner: real pixels, magnified"))
         hint.setObjectName("Muted")
         row.addWidget(hint)
         lay.addLayout(row)
@@ -280,34 +291,36 @@ class SightCPage(QWidget):
         ch = self._changed
 
         # presets + your saved crosshairs
-        self._section(lay, "PRESETS")
+        self._section(lay, tr("grimoire.spells.sightc.page", "PRESETS"))
         grid = QGridLayout()
         grid.setSpacing(8)
         self.preset_tiles: dict[str, Tile] = {}
         for i, (name, c) in enumerate(PRESETS.items()):
-            tile = Tile(c, name, 64)
+            tile = Tile(c, tr("grimoire.spells.sightc.config", name), 64)
             tile.clicked.connect(lambda _=False, c=c: self._apply_look(c))
             grid.addWidget(tile, i // 4, i % 4)
             self.preset_tiles[name] = tile
         lay.addLayout(grid)
 
-        self._section(lay, "SAVED", self._small("Save current…", self._save_profile))
+        save = self._small(tr("grimoire.spells.sightc.page", "Save current…"), self._save_profile)
+        self._section(lay, tr("grimoire.spells.sightc.page", "SAVED"), save)
         self.saved_grid = QGridLayout()
         self.saved_grid.setSpacing(8)
         self.saved_grid.setColumnStretch(4, 1)          # keep tiles left-aligned like the presets
         lay.addLayout(self.saved_grid)
-        self.saved_empty = QLabel("Save crosshairs you like, then flip through them in-game with the next key.")
+        self.saved_empty = QLabel(tr("grimoire.spells.sightc.page", "Save crosshairs you like, then flip through them "
+                                     "in-game with the next key."))
         self.saved_empty.setObjectName("Muted")
         self.saved_empty.setWordWrap(True)
         lay.addWidget(self.saved_empty)
         self.saved_tiles: dict[str, Tile] = {}
         codes = QHBoxLayout()
-        codes.addWidget(self._small("Copy share code", self._copy_code))
-        codes.addWidget(self._small("Paste code", self._paste_code))
+        codes.addWidget(self._small(tr("grimoire.spells.sightc.page", "Copy share code"), self._copy_code))
+        codes.addWidget(self._small(tr("grimoire.spells.sightc.page", "Paste code"), self._paste_code))
         codes.addStretch(1)
         lay.addLayout(codes)
 
-        self._section(lay, "STYLE")
+        self._section(lay, tr("grimoire.spells.sightc.page", "STYLE"))
         sg = QGridLayout()
         sg.setSpacing(6)
         self.style_group = QButtonGroup(self)
@@ -316,7 +329,7 @@ class SightCPage(QWidget):
             demo = Crosshair(style=name, size=9, thickness=2, gap=3, dot=2, outline=False,
                              rotation=0, round_caps=name == "Chevron")
             tile = Tile(demo, "", 56)
-            tile.setToolTip(name)
+            tile.setToolTip(tr("grimoire.spells.sightc.config", name))
             tile.clicked.connect(lambda _=False, n=name: self._set_style(n))
             self.style_group.addButton(tile)
             sg.addWidget(tile, i // 5, i % 5)
@@ -326,20 +339,20 @@ class SightCPage(QWidget):
         self.style_name.setObjectName("Muted")
         lay.addWidget(self.style_name)
 
-        self._section(lay, "COLOR")
+        self._section(lay, tr("grimoire.spells.sightc.page", "COLOR"))
         swatches = QHBoxLayout()
         swatches.setSpacing(6)
         self.swatch_buttons = {}
         for name, hexc in COLORS.items():
             b = QPushButton()
-            b.setToolTip(name)
+            b.setToolTip(tr("grimoire.spells.sightc.config", name))
             b.setFixedSize(30, 30)
             b.setCursor(Qt.CursorShape.PointingHandCursor)
             b.clicked.connect(lambda _=False, h=hexc: self._set_color(h))
             self.swatch_buttons[hexc] = b
             swatches.addWidget(b)
         self.custom = QPushButton("+")
-        self.custom.setToolTip("Custom color…")
+        self.custom.setToolTip(tr("grimoire.spells.sightc.page", "Custom color…"))
         self.custom.setFixedSize(30, 30)
         self.custom.setCursor(Qt.CursorShape.PointingHandCursor)
         self.custom.clicked.connect(self._pick_color)
@@ -347,7 +360,7 @@ class SightCPage(QWidget):
         swatches.addStretch(1)
         lay.addLayout(swatches)
 
-        self._section(lay, "SHAPE")
+        self._section(lay, tr("grimoire.spells.sightc.page", "SHAPE"))
         grid = QGridLayout()
         grid.setVerticalSpacing(6)
         grid.setHorizontalSpacing(12)
@@ -358,49 +371,56 @@ class SightCPage(QWidget):
         self.rotation = Slider(0, 90, "°", ch)
         self.opacity = Slider(10, 100, "%", ch)
         self.shape_labels = {}
-        for r, (name, w) in enumerate((("Size", self.size), ("Thickness", self.thick), ("Gap", self.gap),
-                                       ("Center dot", self.dot), ("Rotation", self.rotation),
-                                       ("Opacity", self.opacity))):
+        rows = ((tr("grimoire.spells.sightc.page", "Size"), self.size),
+                (tr("grimoire.spells.sightc.page", "Thickness"), self.thick),
+                (tr("grimoire.spells.sightc.page", "Gap"), self.gap),
+                (tr("grimoire.spells.sightc.page", "Center dot"), self.dot),
+                (tr("grimoire.spells.sightc.page", "Rotation"), self.rotation),
+                (tr("grimoire.spells.sightc.page", "Opacity"), self.opacity))
+        for r, (name, w) in enumerate(rows):
             self.shape_labels[w] = QLabel(name)
             grid.addWidget(self.shape_labels[w], r, 0)
             grid.addWidget(w, r, 1)
         lay.addLayout(grid)
-        self.round_caps = QCheckBox("Rounded ends")
+        self.round_caps = QCheckBox(tr("grimoire.spells.sightc.page", "Rounded ends"))
         self.round_caps.toggled.connect(ch)
         lay.addWidget(self.round_caps)
 
-        self._section(lay, "OUTLINE")
-        self.outline = QCheckBox("Outline for contrast")
+        self._section(lay, tr("grimoire.spells.sightc.page", "OUTLINE"))
+        self.outline = QCheckBox(tr("grimoire.spells.sightc.page", "Outline for contrast"))
         self.outline.toggled.connect(ch)
         lay.addWidget(self.outline)
         og = QGridLayout()
         og.setHorizontalSpacing(12)
         self.outline_w = Slider(1, 4, " px", ch)
-        seg, self.outline_c = _segments(("Black", "White"), lambda _: ch())
-        self.outline_label_w, self.outline_label_c = QLabel("Width"), QLabel("Color")
+        seg, self.outline_c = _segments((("Black", tr("grimoire.spells.sightc.config", "Black")),
+                                         ("White", tr("grimoire.spells.sightc.config", "White"))), lambda _: ch())
+        self.outline_label_w = QLabel(tr("grimoire.spells.sightc.page", "Width"))
+        self.outline_label_c = QLabel(tr("grimoire.spells.sightc.page", "Color"))
         og.addWidget(self.outline_label_w, 0, 0)
         og.addWidget(self.outline_w, 0, 1)
         og.addWidget(self.outline_label_c, 1, 0)
         og.addLayout(seg, 1, 1)
         lay.addLayout(og)
 
-        self._section(lay, "POSITION", self._small("Center", self._center))
+        center = self._small(tr("grimoire.spells.sightc.page", "Center"), self._center)
+        self._section(lay, tr("grimoire.spells.sightc.page", "POSITION"), center)
         pos = QGridLayout()
         pos.setHorizontalSpacing(12)
         self.off_x = Slider(*LIMITS["offset_x"], " px", ch)
         self.off_y = Slider(*LIMITS["offset_y"], " px", ch)
         for s in (self.off_x, self.off_y):
             s.v.setFixedWidth(58)
-        pos.addWidget(QLabel("Offset X"), 0, 0)
+        pos.addWidget(QLabel(tr("grimoire.spells.sightc.page", "Offset X")), 0, 0)
         pos.addWidget(self.off_x, 0, 1)
-        pos.addWidget(QLabel("Offset Y"), 1, 0)
+        pos.addWidget(QLabel(tr("grimoire.spells.sightc.page", "Offset Y")), 1, 0)
         pos.addWidget(self.off_y, 1, 1)
         self.screen = QComboBox()
-        self.screen.addItem("Primary screen", "")
+        self.screen.addItem(tr("grimoire.spells.sightc.page", "Primary screen"), "")
         for s in QGuiApplication.screens():
             self.screen.addItem(f"{s.name()}  ·  {s.size().width()}×{s.size().height()}", s.name())
         self.screen.currentIndexChanged.connect(ch)
-        self.screen_label = QLabel("Screen")
+        self.screen_label = QLabel(tr("grimoire.spells.sightc.page", "Screen"))
         pos.addWidget(self.screen_label, 2, 0)
         pos.addWidget(self.screen, 2, 1)
         multi = len(QGuiApplication.screens()) > 1
@@ -408,15 +428,15 @@ class SightCPage(QWidget):
         self.screen_label.setVisible(multi)
         lay.addLayout(pos)
 
-        self._section(lay, "STARTUP")
-        self.autostart = QCheckBox("Show crosshair at login")
+        self._section(lay, tr("grimoire.spells.sightc.page", "STARTUP"))
+        self.autostart = QCheckBox(tr("grimoire.spells.sightc.page", "Show crosshair at login"))
         self.autostart.setChecked(AUTOSTART.exists())
         self.autostart.toggled.connect(self._set_autostart)
         lay.addWidget(self.autostart)
 
         lay.addSpacing(16)
         lay.addStretch(1)
-        reset = QPushButton("Reset to default")
+        reset = QPushButton(tr("grimoire.spells.sightc.page", "Reset to default"))
         reset.clicked.connect(lambda: self._apply_look(Crosshair()))
         lay.addWidget(reset)
 
@@ -467,7 +487,7 @@ class SightCPage(QWidget):
         c = self.cfg
         for name, tile in self.style_tiles.items():
             tile.setChecked(name == c.style)
-        self.style_name.setText(c.style)
+        self.style_name.setText(tr("grimoire.spells.sightc.config", c.style))
         look = c.look()
         for tiles, profiles in ((self.preset_tiles, PRESETS), (self.saved_tiles, self._profiles)):
             for name, tile in tiles.items():
@@ -516,7 +536,7 @@ class SightCPage(QWidget):
         self._changed()
 
     def _pick_color(self):
-        col = QColorDialog.getColor(QColor(self.cfg.color), self, "Crosshair color")
+        col = QColorDialog.getColor(QColor(self.cfg.color), self, tr("grimoire.spells.sightc.page", "Crosshair color"))
         if col.isValid():
             self._set_color(col.name())
 
@@ -533,7 +553,8 @@ class SightCPage(QWidget):
         self.saved_tiles = {}
         for i, (name, c) in enumerate(self._profiles.items()):
             tile = Tile(c, name if len(name) <= 9 else name[:8] + "…", 64)
-            tile.setToolTip(f"{name}\nRight-click to rename or delete")
+            tile.setToolTip(tr("grimoire.spells.sightc.page", "{name}\nRight-click to rename or delete")
+                            .format(name=name))
             tile.clicked.connect(lambda _=False, c=c: self._apply_look(c))
             tile.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
             tile.customContextMenuRequested.connect(lambda _pos, n=name, t=tile: self._profile_menu(n, t))
@@ -542,15 +563,17 @@ class SightCPage(QWidget):
         self.saved_empty.setVisible(not self._profiles)
 
     def _ask_name(self, title: str, text: str = "") -> str:
-        name, ok = QInputDialog.getText(self, title, "Name", text=text)
+        name, ok = QInputDialog.getText(self, title, tr("grimoire.spells.sightc.page", "Name"), text=text)
         return name.strip()[:40] if ok else ""
 
     def _save_profile(self):
-        name = self._ask_name("Save crosshair", f"Crosshair {len(self._profiles) + 1}")
+        title = tr("grimoire.spells.sightc.page", "Save crosshair")
+        suggestion = tr("grimoire.spells.sightc.page", "Crosshair {n}").format(n=len(self._profiles) + 1)
+        name = self._ask_name(title, suggestion)
         if not name:
             return
-        if name in self._profiles and QMessageBox.question(
-                self, "Save crosshair", f"Replace the saved crosshair “{name}”?") != QMessageBox.StandardButton.Yes:
+        replace = tr("grimoire.spells.sightc.page", "Replace the saved crosshair “{name}”?").format(name=name)
+        if name in self._profiles and QMessageBox.question(self, title, replace) != QMessageBox.StandardButton.Yes:
             return
         self._profiles[name] = self.cfg.copy()
         save_profiles(self._profiles)
@@ -559,16 +582,17 @@ class SightCPage(QWidget):
 
     def _profile_menu(self, name: str, tile: Tile):
         menu = QMenu(self)
-        rename = menu.addAction("Rename…")
-        delete = menu.addAction("Delete")
+        rename = menu.addAction(tr("grimoire.spells.sightc.page", "Rename…"))
+        delete = menu.addAction(tr("grimoire.spells.sightc.page", "Delete"))
         chosen = menu.exec(tile.mapToGlobal(tile.rect().center()))
         if chosen is rename:
-            new = self._ask_name("Rename crosshair", name)
+            new = self._ask_name(tr("grimoire.spells.sightc.page", "Rename crosshair"), name)
             if new and new != name and new not in self._profiles:
                 self._profiles = {new if k == name else k: v for k, v in self._profiles.items()}
         elif chosen is delete:
-            if QMessageBox.question(self, "Delete crosshair",
-                                    f"Delete the saved crosshair “{name}”?") != QMessageBox.StandardButton.Yes:
+            question = tr("grimoire.spells.sightc.page", "Delete the saved crosshair “{name}”?").format(name=name)
+            if QMessageBox.question(self, tr("grimoire.spells.sightc.page", "Delete crosshair"),
+                                    question) != QMessageBox.StandardButton.Yes:
                 return
             self._profiles.pop(name, None)
         else:
@@ -579,14 +603,15 @@ class SightCPage(QWidget):
 
     def _copy_code(self):
         QGuiApplication.clipboard().setText(self.cfg.code())
-        self.state.setText("Share code copied")
+        self.state.setText(tr("grimoire.spells.sightc.page", "Share code copied"))
         QTimer.singleShot(2000, self._refresh_running)
 
     def _paste_code(self):
         c = Crosshair.from_code(QGuiApplication.clipboard().text())
         if c is None:
-            QMessageBox.information(self, "Paste code", "The clipboard doesn't hold a SightsL code (they start "
-                                                        "with “SL1-”).")
+            QMessageBox.information(self, tr("grimoire.spells.sightc.page", "Paste code"),
+                                    tr("grimoire.spells.sightc.page", "The clipboard doesn't hold a SightsL code "
+                                       "(they start with “{prefix}”).").format(prefix="SL1-"))
             return
         self._apply_look(c)
 
@@ -615,8 +640,10 @@ class SightCPage(QWidget):
     def _refresh_running(self, on: bool | None = None):
         if on is None:
             on = overlay.running_pid() is not None
-        self.toggle.setText("Hide crosshair" if on else "Show crosshair")
-        self.state.setText("●  On screen" if on else "○  Off")
+        self.toggle.setText(tr("grimoire.spells.sightc.page", "Hide crosshair") if on
+                            else tr("grimoire.spells.sightc.page", "Show crosshair"))
+        self.state.setText(tr("grimoire.spells.sightc.page", "●  On screen") if on
+                           else tr("grimoire.spells.sightc.page", "○  Off"))
 
     def _set_autostart(self, on: bool):
         if on:

@@ -10,19 +10,23 @@ import subprocess
 
 from PySide6.QtCore import QRectF, Qt
 from PySide6.QtGui import QColor, QFont, QFontMetricsF, QImage, QPainter, QPainterPath
-from PySide6.QtWidgets import QCheckBox, QComboBox, QGridLayout, QLabel, QPushButton
+from PySide6.QtWidgets import QCheckBox, QGridLayout, QLabel, QPushButton
 
+from grimoire.i18n import tr, tr_noop
 from grimoire.paths import HOME
 from grimoire.spells.mural.kde import kwrite
-from grimoire.spells.mural.screens import Design, ScreenTab, community_designs, community_entry
+from grimoire.spells.mural.screens import Choice, Design, ScreenTab, community_designs, community_entry
 from grimoire.spells.mural.backdrop import wallpaper as _wallpaper
 from grimoire.widgets import Slider
 
 KONSOLE = HOME / ".local/share/konsole"
 BASHRC = HOME / ".bashrc"
 FONTS = ["IBM Plex Mono", "DM Mono", "Hack", "DejaVu Sans Mono"]
-CURSORS = {"Block": 0, "I-beam": 1, "Underline": 2}
-PROMPTS = ["Keep mine", "Minimal", "Clover", "Two-line"]
+CURSORS = {tr_noop("grimoire.spells.mural.terminal", "Block"): 0,
+           tr_noop("grimoire.spells.mural.terminal", "I-beam"): 1,
+           tr_noop("grimoire.spells.mural.terminal", "Underline"): 2}
+PROMPTS = [tr_noop("grimoire.spells.mural.terminal", "Keep mine"), tr_noop("grimoire.spells.mural.terminal", "Minimal"),
+           tr_noop("grimoire.spells.mural.terminal", "Clover"), tr_noop("grimoire.spells.mural.terminal", "Two-line")]
 DEFAULTS = {"font": "IBM Plex Mono", "size": 12, "transparency": 0, "blur": True, "padding": 14,
             "cursor": "Block", "prompt": "Keep mine"}
 BLOCK_START, BLOCK_END = "# >>> grimoire prompt >>>", "# <<< grimoire prompt <<<"
@@ -33,7 +37,8 @@ PALETTES = {
     "ink":      (0x00, 0xe6, [0x2a, 0xb4, 0xd4, 0xec, 0x8c, 0xa6, 0xc6, 0xe6], True),
 }
 DESIGNS = [
-    Design("ink", "Ink", "Pure black, soft white text. Every color becomes its own shade of gray."),
+    Design("ink", tr_noop("grimoire.spells.mural.terminal", "Ink"), tr_noop(
+        "grimoire.spells.mural.terminal", "Pure black, soft white text. Every color becomes its own shade of gray.")),
 ]
 SAMPLE = [("prompt", "ls"), ("ls", ""), ("prompt", "git status"), ("out", "On branch main"),
           ("out", "Changes not staged for commit:"), ("mod", "	modified:   grimoire/spells/mural/terminal.py"),
@@ -204,9 +209,10 @@ def render(pid: str, o: dict, w=1280, h=720) -> QImage:
 
 class TerminalTab(ScreenTab):
     key = "terminal"
-    subtitle = ("Konsole, your terminal. Every color becomes its own shade of gray so output stays readable. "
-                "Applies to new Konsole windows.")
-    apply_label = "Apply to Konsole"
+    context = "grimoire.spells.mural.terminal"
+    subtitle = tr_noop("grimoire.spells.mural.terminal", "Konsole, your terminal. Every color becomes its own shade of "
+                       "gray so output stays readable. Applies to new Konsole windows.")
+    apply_label = tr_noop("grimoire.spells.mural.terminal", "Apply to Konsole")
     store = ["konsole"]
 
     def designs(self):
@@ -215,47 +221,46 @@ class TerminalTab(ScreenTab):
     def build_options(self, lay):
         grid = QGridLayout()
         grid.setVerticalSpacing(8)
-        self.font = QComboBox()
-        self.font.addItems(FONTS)
+        self.font = Choice([(f, f) for f in FONTS], self.changed)
         self.size = Slider(8, 20, " pt", self.changed)
         self.transparency = Slider(0, 60, "%", self.changed)
         self.padding = Slider(0, 40, " px", self.changed)
-        self.cursor = QComboBox()
-        self.cursor.addItems(list(CURSORS))
-        self.prompt = QComboBox()
-        self.prompt.addItems(PROMPTS)
-        for c in (self.font, self.cursor, self.prompt):
-            c.currentTextChanged.connect(self.changed)
-        rows = (("Font", self.font), ("Size", self.size), ("Transparency", self.transparency),
-                ("Padding", self.padding), ("Cursor", self.cursor), ("Prompt", self.prompt))
+        self.cursor = Choice([(k, tr("grimoire.spells.mural.terminal", k)) for k in CURSORS], self.changed)
+        self.prompt = Choice([(k, tr("grimoire.spells.mural.terminal", k)) for k in PROMPTS], self.changed)
+        rows = ((tr("grimoire.spells.mural.terminal", "Font"), self.font),
+                (tr("grimoire.spells.mural.terminal", "Size"), self.size),
+                (tr("grimoire.spells.mural.terminal", "Transparency"), self.transparency),
+                (tr("grimoire.spells.mural.terminal", "Padding"), self.padding),
+                (tr("grimoire.spells.mural.terminal", "Cursor"), self.cursor),
+                (tr("grimoire.spells.mural.terminal", "Prompt"), self.prompt))
         for r, (name, wdg) in enumerate(rows):
             grid.addWidget(QLabel(name), r, 0)
             grid.addWidget(wdg, r, 1)
         lay.addLayout(grid)
-        self.blur = QCheckBox("Blur behind when transparent")
+        self.blur = QCheckBox(tr("grimoire.spells.mural.terminal", "Blur behind when transparent"))
         self.blur.toggled.connect(self.changed)
         lay.addWidget(self.blur)
         lay.addSpacing(6)
-        test = QPushButton("Open a Konsole window")
+        test = QPushButton(tr("grimoire.spells.mural.terminal", "Open a Konsole window"))
         test.clicked.connect(lambda: subprocess.Popen(["konsole", "--profile", "Grimoire"],
                                                       start_new_session=True))
         lay.addWidget(test)
 
     def options(self):
-        return {"font": self.font.currentText(), "size": self.size.value(),
+        return {"font": self.font.value(), "size": self.size.value(),
                 "transparency": self.transparency.value(), "blur": self.blur.isChecked(),
-                "padding": self.padding.value(), "cursor": self.cursor.currentText(),
-                "prompt": self.prompt.currentText()}
+                "padding": self.padding.value(), "cursor": self.cursor.value(),
+                "prompt": self.prompt.value()}
 
     def set_options(self, o):
         o = {**DEFAULTS, **o}
-        self.font.setCurrentText(o["font"])
+        self.font.set_value(o["font"])
         self.size.setValue(o["size"])
         self.transparency.setValue(o["transparency"])
         self.blur.setChecked(o["blur"])
         self.padding.setValue(o["padding"])
-        self.cursor.setCurrentText(o["cursor"])
-        self.prompt.setCurrentText(o["prompt"])
+        self.cursor.set_value(o["cursor"])
+        self.prompt.set_value(o["prompt"])
 
     def preview(self, design, o):
         return render(design.id, o)
@@ -275,5 +280,7 @@ class TerminalTab(ScreenTab):
             f"ColorScheme=Grimoire-{design.id}", f"ColorScheme={scheme}"))
         kwrite("konsolerc", "Desktop Entry", "DefaultProfile", "Grimoire.profile")
         write_prompt(o["prompt"])
-        extra = "" if o["prompt"] == "Keep mine" else " Prompt takes effect in new terminals."
-        return f"Applied ✓  New Konsole windows use it.{extra}"
+        if o["prompt"] == "Keep mine":
+            return tr("grimoire.spells.mural.terminal", "Applied ✓  New Konsole windows use it.")
+        return tr("grimoire.spells.mural.terminal", "Applied ✓  New Konsole windows use it. Prompt takes "
+                  "effect in new terminals.")

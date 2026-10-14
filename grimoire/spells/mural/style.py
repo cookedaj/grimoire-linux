@@ -2,19 +2,24 @@
 """Style tab: the Plasma Style (look of the taskbar, menus, popups, tooltips).
 Grimoire's own Onyx plus any community styles installed from the store.
 """
+from grimoire.i18n import tr, tr_noop
 from grimoire.spells.mural import plasmastyle, taskbar
 from grimoire.spells.mural.kde import run_tool
 from grimoire.spells.mural.screens import Design, ScreenTab, community_designs, community_entry, load_state
 
 DESIGNS = [
-    Design("onyx", "Onyx", "Grimoire's own: solid black panel, menus and tooltips with softly rounded corners."),
+    Design("onyx", tr_noop("grimoire.spells.mural.style", "Onyx"), tr_noop(
+        "grimoire.spells.mural.style", "Grimoire's own: solid black panel, menus and tooltips with softly rounded "
+                                       "corners.")),
 ]
 
 
 class StyleTab(ScreenTab):
     key = "style"
-    subtitle = "The look of your taskbar, menus, popups and tooltips (Plasma Style). Applies instantly."
-    apply_label = "Apply style"
+    context = "grimoire.spells.mural.style"
+    subtitle = tr_noop("grimoire.spells.mural.style", "The look of your taskbar, menus, popups and tooltips "
+                       "(Plasma Style). Applies instantly.")
+    apply_label = tr_noop("grimoire.spells.mural.style", "Apply style")
     store = ["plasma"]
 
     def designs(self):
@@ -33,4 +38,4 @@ class StyleTab(ScreenTab):
             run_tool(["plasma-apply-desktoptheme", ident], ok_if_already=True)
         else:
             plasmastyle.apply(design.id)
-        return "Applied ✓"
+        return tr("grimoire.spells.mural.style", "Applied ✓")

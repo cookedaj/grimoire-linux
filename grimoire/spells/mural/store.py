@@ -30,6 +30,7 @@ from configparser import ConfigParser
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
 
+from grimoire.i18n import tr, tr_noop
 from grimoire.paths import CACHE, DATA, HOME
 
 UA = {"User-Agent": "Grimoire-MuraL/0.1 (personal KDE customizer)"}
@@ -47,26 +48,28 @@ _lock = threading.Lock()
 @dataclass(frozen=True)
 class Category:
     key: str
-    title: str
+    title: str                    # tr_noop'd: shown with tr("grimoire.spells.mural.store", title)
     kind: str
     ocs: tuple = ()               # KDE Store category ids
     wallhaven: str = ""           # Wallhaven query (wallpapers only)
 
 
 CATEGORIES = {
-    "plasma": Category("plasma", "Plasma styles", "plasma", (104,)),
-    "colors": Category("colors", "Color schemes", "colors", (112,)),
-    "cursor": Category("cursor", "Cursors", "cursor", (107,)),
-    "icons": Category("icons", "Icon themes", "icons", (132,)),
-    "aurorae": Category("aurorae", "Window decorations", "aurorae", (717, 114)),
-    "splash": Category("splash", "Splash screens", "splash", (716,)),
-    "konsole": Category("konsole", "Konsole color schemes", "konsole", (462,)),
-    "sddm": Category("sddm", "Login themes (SDDM)", "sddm", (101,)),
-    "plymouth": Category("plymouth", "Boot themes (Plymouth)", "plymouth", (108,)),
-    "wallpaper": Category("wallpaper", "KDE wallpapers", "wallpaper", (299,)),
-    "wallhaven-bw": Category("wallhaven-bw", "Wallhaven · black & white anime", "wallpaper",
-                             wallhaven="anime monochrome"),
-    "wallhaven-bc": Category("wallhaven-bc", "Wallhaven · Black Clover", "wallpaper", wallhaven="Black Clover"),
+    "plasma": Category("plasma", tr_noop("grimoire.spells.mural.store", "Plasma styles"), "plasma", (104,)),
+    "colors": Category("colors", tr_noop("grimoire.spells.mural.store", "Color schemes"), "colors", (112,)),
+    "cursor": Category("cursor", tr_noop("grimoire.spells.mural.store", "Cursors"), "cursor", (107,)),
+    "icons": Category("icons", tr_noop("grimoire.spells.mural.store", "Icon themes"), "icons", (132,)),
+    "aurorae": Category("aurorae", tr_noop("grimoire.spells.mural.store", "Window decorations"), "aurorae", (717, 114)),
+    "splash": Category("splash", tr_noop("grimoire.spells.mural.store", "Splash screens"), "splash", (716,)),
+    "konsole": Category("konsole", tr_noop("grimoire.spells.mural.store", "Konsole color schemes"), "konsole", (462,)),
+    "sddm": Category("sddm", tr_noop("grimoire.spells.mural.store", "Login themes (SDDM)"), "sddm", (101,)),
+    "plymouth": Category("plymouth", tr_noop("grimoire.spells.mural.store", "Boot themes (Plymouth)"),
+                         "plymouth", (108,)),
+    "wallpaper": Category("wallpaper", tr_noop("grimoire.spells.mural.store", "KDE wallpapers"), "wallpaper", (299,)),
+    "wallhaven-bw": Category("wallhaven-bw", tr_noop("grimoire.spells.mural.store", "Wallhaven · black & white anime"),
+                             "wallpaper", wallhaven="anime monochrome"),
+    "wallhaven-bc": Category("wallhaven-bc", tr_noop("grimoire.spells.mural.store", "Wallhaven · Black Clover"),
+                             "wallpaper", wallhaven="Black Clover"),
 }
 
 
@@ -87,7 +90,7 @@ class Item:
 def _web(url: str) -> str:
     """Store data is untrusted: only fetch http(s) (urllib would also read file:// URLs off this machine)."""
     if urllib.parse.urlparse(url).scheme not in ("https", "http"):
-        raise RuntimeError(f"not a web address: {url[:80]}")
+        raise RuntimeError(tr("grimoire.spells.mural.store", "not a web address: {url}").format(url=url[:80]))
     return url
 
 
@@ -104,7 +107,7 @@ def _download(url: str, dest: Path, limit=MAX_ARCHIVE):
         while chunk := r.read(1 << 16):
             total += len(chunk)
             if total > limit:
-                raise RuntimeError("download is larger than the safety limit")
+                raise RuntimeError(tr("grimoire.spells.mural.store", "the download is larger than the safety limit"))
             f.write(chunk)
 
 
@@ -174,7 +177,8 @@ def fetch(item_id: str) -> Item:
         data = json.loads(_get(f"https://wallhaven.cc/api/v1/w/{m[1]}")).get("data")
         if isinstance(data, dict):
             return _wh_item(data)
-    raise RuntimeError(f"the store doesn't have {item_id[:40]} any more")
+    raise RuntimeError(tr("grimoire.spells.mural.store", "the store doesn't have {item} any more")
+                       .format(item=item_id[:40]))
 
 
 def thumbnail(url: str) -> Path | None:
@@ -241,10 +245,11 @@ def _extract(archive: Path, dest: Path) -> Path:
             for info in z.infolist():
                 parts = Path(info.filename).parts
                 if info.filename.startswith("/") or ".." in parts:
-                    raise RuntimeError(f"unsafe path in archive: {info.filename}")
+                    raise RuntimeError(tr("grimoire.spells.mural.store", "unsafe path in the archive: {path}")
+                                       .format(path=info.filename))
                 total += info.file_size
                 if total > MAX_ARCHIVE * 3:
-                    raise RuntimeError("archive expands too large")
+                    raise RuntimeError(tr("grimoire.spells.mural.store", "the archive expands too large"))
                 if info.is_dir():
                     continue
                 target = dest / info.filename
@@ -254,7 +259,7 @@ def _extract(archive: Path, dest: Path) -> Path:
     elif tarfile.is_tarfile(archive):
         with tarfile.open(archive) as t:
             if sum(m.size for m in t.getmembers()) > MAX_ARCHIVE * 3:
-                raise RuntimeError("archive expands too large")
+                raise RuntimeError(tr("grimoire.spells.mural.store", "the archive expands too large"))
             t.extractall(dest, filter="data")      # Python's safe filter: no links out, no abs paths, no devices
     else:                                          # a plain file (.colors, .colorscheme, an image…)
         shutil.copy(archive, dest / archive.name)
@@ -264,7 +269,7 @@ def _extract(archive: Path, dest: Path) -> Path:
 def _pick_file(item: Item) -> tuple[str, str]:
     """Choose which of an item's files to download (prefer archives / matching extensions)."""
     if not item.files:
-        raise RuntimeError("this item has no downloadable file")
+        raise RuntimeError(tr("grimoire.spells.mural.store", "this item has no downloadable file"))
     prefs = (".tar.gz", ".tgz", ".tar.xz", ".tar.bz2", ".tar", ".zip", ".colors", ".colorscheme",
              ".plasmoid", ".knsrc", ".png", ".jpg", ".jpeg", ".webp")
     for ext in prefs:
@@ -295,7 +300,8 @@ def _claim(dst: Path, item: str):
     if dst.exists() or dst.is_symlink():
         owners = {e.get("item") for e in registry().values() if e["path"] == str(dst)}
         if item not in owners:
-            raise RuntimeError(f"you already have “{dst.name}” in {dst.parent}; Grimoire won't replace it")
+            raise RuntimeError(tr("grimoire.spells.mural.store", "you already have “{name}” in {folder}; "
+                                  "Grimoire won't replace it").format(name=dst.name, folder=dst.parent))
 
 
 def _slug(text: str) -> str:
@@ -310,7 +316,7 @@ def _copyfile(src: Path, dst: Path, item: str):
 
 def _copytree(src: Path, dst: Path, item: str):
     if dst.resolve().parent != dst.parent.resolve():
-        raise RuntimeError(f"unsafe theme name: {dst.name}")
+        raise RuntimeError(tr("grimoire.spells.mural.store", "unsafe theme name: {name}").format(name=dst.name))
     _claim(dst, item)
     if dst.exists():
         shutil.rmtree(dst)
@@ -414,5 +420,5 @@ def install(cat: Category, item: Item, to_bw: bool = False) -> list[dict]:
             add(item.name, dst.name, dst)
     shutil.rmtree(work, ignore_errors=True)
     if not entries:
-        raise RuntimeError("didn't find a usable theme inside this download")
+        raise RuntimeError(tr("grimoire.spells.mural.store", "didn't find a usable theme inside this download"))
     return entries

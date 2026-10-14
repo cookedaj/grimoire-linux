@@ -6,12 +6,14 @@ from pathlib import Path
 
 from PySide6.QtCore import QUrl
 
+from grimoire.i18n import tr, tr_noop
 from grimoire.paths import CONFIG
 from grimoire.spells.mural.kde import plasma_script
 
 PLUGIN = "com.cookedaj.grimoire.mural"
 STATE = CONFIG / "mural.json"
-FILL_MODES = {"Crop": 2, "Fit": 1, "Stretch": 0}
+FILL_MODES = {tr_noop("grimoire.spells.mural.plasma", "Crop"): 2, tr_noop("grimoire.spells.mural.plasma", "Fit"): 1,
+              tr_noop("grimoire.spells.mural.plasma", "Stretch"): 0}
 
 
 @dataclass
@@ -65,5 +67,6 @@ for (var i = 0; i < ds.length; i++) {{
 """
     result = plasma_script(script)
     if result.returncode != 0 or result.stdout.strip():
-        raise RuntimeError((result.stderr or result.stdout).strip() or "plasmashell rejected the script")
+        raise RuntimeError((result.stderr or result.stdout).strip()
+                           or tr("grimoire.spells.mural.plasma", "plasmashell rejected the script"))
     s.save()

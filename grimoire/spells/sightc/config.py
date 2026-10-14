@@ -8,14 +8,31 @@ import json
 import re
 from dataclasses import asdict, dataclass, fields
 
+from grimoire.i18n import tr_noop
 from grimoire.paths import CONFIG
 
 FILE = CONFIG / "sightc.json"
 PROFILES_FILE = CONFIG / "sightc-profiles.json"
-STYLES = ["Cross", "Cross + dot", "Dot", "Circle", "Circle + dot", "Circle + cross", "Square", "T", "Chevron"]
+# style ids, color names and preset names are stored as is and shown with tr("grimoire.spells.sightc.config", …)
+STYLES = [
+    tr_noop("grimoire.spells.sightc.config", "Cross"),
+    tr_noop("grimoire.spells.sightc.config", "Cross + dot"),
+    tr_noop("grimoire.spells.sightc.config", "Dot"),
+    tr_noop("grimoire.spells.sightc.config", "Circle"),
+    tr_noop("grimoire.spells.sightc.config", "Circle + dot"),
+    tr_noop("grimoire.spells.sightc.config", "Circle + cross"),
+    tr_noop("grimoire.spells.sightc.config", "Square"),
+    tr_noop("grimoire.spells.sightc.config", "T"),
+    tr_noop("grimoire.spells.sightc.config", "Chevron"),
+]
 COLORS = {
-    "White": "#ffffff", "Black": "#000000", "Green": "#00ff66", "Cyan": "#00e5ff",
-    "Red": "#ff2a2a", "Yellow": "#ffe600", "Magenta": "#ff3df2",
+    tr_noop("grimoire.spells.sightc.config", "White"): "#ffffff",
+    tr_noop("grimoire.spells.sightc.config", "Black"): "#000000",
+    tr_noop("grimoire.spells.sightc.config", "Green"): "#00ff66",
+    tr_noop("grimoire.spells.sightc.config", "Cyan"): "#00e5ff",
+    tr_noop("grimoire.spells.sightc.config", "Red"): "#ff2a2a",
+    tr_noop("grimoire.spells.sightc.config", "Yellow"): "#ffe600",
+    tr_noop("grimoire.spells.sightc.config", "Magenta"): "#ff3df2",
 }
 # (min, max) for every number, so a hand-edited file or a pasted code can't produce something absurd
 LIMITS = {"opacity": (0.05, 1.0), "size": (1, 60), "thickness": (1, 10), "gap": (0, 30), "dot": (0, 10),
@@ -111,14 +128,16 @@ class Crosshair:
 
 # ---------------------------------------------------------------- presets and saved profiles
 PRESETS = {
-    "Classic": Crosshair(),
-    "Pro": Crosshair(style="Cross", size=6, thickness=1, gap=3, color="#00ff66"),
-    "Dot": Crosshair(style="Dot", dot=3, thickness=1),
-    "Ring": Crosshair(style="Circle + dot", size=12, thickness=1, dot=1),
-    "Scope": Crosshair(style="Circle + cross", size=16, thickness=1, gap=6),
-    "T": Crosshair(style="T", size=8, thickness=2, gap=3, color="#00e5ff"),
-    "X": Crosshair(style="Cross", size=7, thickness=2, gap=3, rotation=45),
-    "Chevron": Crosshair(style="Chevron", size=8, thickness=2, round_caps=True),
+    tr_noop("grimoire.spells.sightc.config", "Classic"): Crosshair(),
+    tr_noop("grimoire.spells.sightc.config", "Pro"): Crosshair(style="Cross", size=6, thickness=1, gap=3,
+                                                       color="#00ff66"),
+    tr_noop("grimoire.spells.sightc.config", "Dot"): Crosshair(style="Dot", dot=3, thickness=1),
+    tr_noop("grimoire.spells.sightc.config", "Ring"): Crosshair(style="Circle + dot", size=12, thickness=1, dot=1),
+    tr_noop("grimoire.spells.sightc.config", "Scope"): Crosshair(style="Circle + cross", size=16, thickness=1, gap=6),
+    tr_noop("grimoire.spells.sightc.config", "T"): Crosshair(style="T", size=8, thickness=2, gap=3, color="#00e5ff"),
+    tr_noop("grimoire.spells.sightc.config", "X"): Crosshair(style="Cross", size=7, thickness=2, gap=3, rotation=45),
+    tr_noop("grimoire.spells.sightc.config", "Chevron"): Crosshair(style="Chevron", size=8, thickness=2,
+                                                           round_caps=True),
 }
 
 

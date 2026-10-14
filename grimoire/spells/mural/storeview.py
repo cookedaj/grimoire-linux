@@ -2,16 +2,19 @@
 """The Community view inside a MuraL tab: browse the top 100 of a store category and install items."""
 import webbrowser
 
-from PySide6.QtCore import QObject, QSize, Qt, QTimer, Signal
+from PySide6.QtCore import QLocale, QObject, QSize, Qt, QTimer, Signal
 from PySide6.QtGui import QColor, QIcon, QImage, QPainter, QPixmap
 from PySide6.QtWidgets import (QAbstractItemView, QCheckBox, QComboBox, QFrame, QHBoxLayout, QLabel, QLineEdit,
                                QListWidget, QListWidgetItem, QPushButton, QVBoxLayout, QWidget)
 
-from grimoire.spells.mural import store
+from grimoire.i18n import tr, tr_noop
 from grimoire.jobs import POOL, Job
+from grimoire.spells.mural import store
 
 CARD = QSize(232, 146)
-SORTS = {"Most downloaded": "down", "Best rated": "high", "Newest": "new"}
+SORTS = {"down": tr_noop("grimoire.spells.mural.storeview", "Most downloaded"),          # store sort id → label
+         "high": tr_noop("grimoire.spells.mural.storeview", "Best rated"),
+         "new": tr_noop("grimoire.spells.mural.storeview", "Newest")}
 
 
 class _Signals(QObject):
@@ -33,7 +36,7 @@ def fit(img: QImage, size: QSize) -> QPixmap:
 
 
 def _label(it: store.Item, installed: bool) -> str:
-    stats = f"{it.downloads:,} ↓" + (f"  ·  {it.score}%" if it.score else "")
+    stats = f"{QLocale().toString(it.downloads)} ↓" + (f"  ·  {it.score}%" if it.score else "")
     return f"{'✓ ' if installed else ''}{it.name}\n{stats}"
 
 
@@ -63,14 +66,15 @@ class StoreView(QWidget):
         bar = QHBoxLayout()
         bar.setSpacing(8)
         self.category = QComboBox()
-        self.category.addItems([c.title for c in self.cats])
+        self.category.addItems([tr("grimoire.spells.mural.store", c.title) for c in self.cats])
         self.category.setVisible(len(self.cats) > 1)
         self.sort = QComboBox()
-        self.sort.addItems(list(SORTS))
+        for sort, label in SORTS.items():
+            self.sort.addItem(tr("grimoire.spells.mural.storeview", label), sort)
         self.search = QLineEdit()
-        self.search.setPlaceholderText("Search…")
+        self.search.setPlaceholderText(tr("grimoire.spells.mural.storeview", "Search…"))
         self.search.setClearButtonEnabled(True)
-        self.bw = QCheckBox("Convert to black & white")
+        self.bw = QCheckBox(tr("grimoire.spells.mural.storeview", "Convert to black & white"))
         self.bw.setChecked(True)
         for w in (self.category, self.sort, self.search):
             bar.addWidget(w)
@@ -104,7 +108,7 @@ class StoreView(QWidget):
         dl.setContentsMargins(18, 12, 12, 12)
         info = QVBoxLayout()
         info.setSpacing(2)
-        self.d_name = QLabel("Pick something to see details")
+        self.d_name = QLabel(tr("grimoire.spells.mural.storeview", "Pick something to see details"))
         self.d_name.setObjectName("Section")
         self.d_meta = QLabel()
         self.d_meta.setObjectName("Muted")
@@ -112,9 +116,9 @@ class StoreView(QWidget):
         info.addWidget(self.d_name)
         info.addWidget(self.d_meta)
         dl.addLayout(info, 1)
-        self.page_btn = QPushButton("Store page")
+        self.page_btn = QPushButton(tr("grimoire.spells.mural.storeview", "Store page"))
         self.page_btn.clicked.connect(self._open_page)
-        self.install_btn = QPushButton("Install")
+        self.install_btn = QPushButton(tr("grimoire.spells.mural.storeview", "Install"))
         self.install_btn.setObjectName("Primary")
         self.install_btn.setMinimumWidth(130)
         self.install_btn.clicked.connect(self._install)
@@ -137,11 +141,11 @@ class StoreView(QWidget):
     # ---- listing
     def refresh(self):
         self._gen += 1
-        gen, cat, sort, q, sig = self._gen, self.cat(), SORTS[self.sort.currentText()], self.search.text().strip(), self._sig
+        gen, cat, sort, q, sig = self._gen, self.cat(), self.sort.currentData(), self.search.text().strip(), self._sig
         self.bw.setVisible(cat.kind == "wallpaper")
         self.grid.clear()
         self.items = []
-        self.count.setText("Loading…")
+        self.count.setText(tr("grimoire.spells.mural.storeview", "Loading…"))
 
         def work():
             try:
@@ -155,10 +159,11 @@ class StoreView(QWidget):
         if gen != self._gen:
             return
         if isinstance(result, Exception):
-            self.count.setText(f"Couldn't reach the store: {result}")
+            self.count.setText(tr("grimoire.spells.mural.storeview", "Couldn't reach the store: {error}")
+                               .format(error=result))
             return
         self.items = result
-        self.count.setText(f"Top {len(result)}")
+        self.count.setText(tr("grimoire.spells.mural.storeview", "Top %n", n=len(result)))
         placeholder = QIcon(fit(QImage(), CARD))
         installed = {e["item"] for e in store.registry().values()}
         sig = self._sig
@@ -186,10 +191,17 @@ class StoreView(QWidget):
         if not it:
             return
         self.d_name.setText(it.name.upper())
-        bits = [f"by {it.author}" if it.author else "", f"{it.downloads:,} downloads",
-                f"rated {it.score}%" if it.score else "", it.summary]
+        bits = [tr("grimoire.spells.mural.storeview", "by {author}").format(author=it.author) if it.author else "",
+                tr("grimoire.spells.mural.storeview", "%n download(s)", n=it.downloads),
+                tr("grimoire.spells.mural.storeview", "rated {score}%").format(score=it.score) if it.score else "",
+                it.summary]
         self.d_meta.setText("  ·  ".join(b for b in bits if b))
-        self.install_btn.setText("Uninstall" if store.is_installed(it.id) else "Install")
+        self._label_install(it)
+
+    def _label_install(self, it: store.Item):
+        installed = store.is_installed(it.id)
+        self.install_btn.setText(tr("grimoire.spells.mural.storeview", "Uninstall") if installed
+                                 else tr("grimoire.spells.mural.storeview", "Install"))
 
     def _open_page(self):
         it = self._current()
@@ -203,7 +215,8 @@ class StoreView(QWidget):
         self._busy = True
         self.install_btn.setEnabled(False)
         removing = store.is_installed(it.id)
-        self.install_btn.setText("Removing…" if removing else "Installing…")
+        self.install_btn.setText(tr("grimoire.spells.mural.storeview", "Removing…") if removing
+                                 else tr("grimoire.spells.mural.storeview", "Installing…"))
 
         def work():
             try:
@@ -211,11 +224,14 @@ class StoreView(QWidget):
                     for key, e in list(store.registry().items()):
                         if e["item"] == it.id:
                             store.uninstall(key)
-                    return True, f"Removed {it.name}"
+                    return True, tr("grimoire.spells.mural.storeview", "Removed {name}").format(name=it.name)
                 entries = store.install(cat, it, to_bw=bw)
-                return True, f"Installed {', '.join(e['name'] for e in entries)} — it's now in Designs"
+                names = ", ".join(e["name"] for e in entries)
+                return True, tr("grimoire.spells.mural.storeview", "Installed {name} — it's now in Designs")\
+                    .format(name=names)
             except Exception as e:
-                return False, f"Couldn't install {it.name}: {e}"
+                return False, tr("grimoire.spells.mural.storeview", "Couldn't install {name}: {error}")\
+                    .format(name=it.name, error=e)
 
         POOL.start(Job(work, lambda r: sig.installed.emit(*r)))
 
@@ -229,6 +245,6 @@ class StoreView(QWidget):
         self.install_btn.setEnabled(True)
         it = self._current()
         if it:
-            self.install_btn.setText("Uninstall" if store.is_installed(it.id) else "Install")
+            self._label_install(it)
         if ok:
             self.on_installed()

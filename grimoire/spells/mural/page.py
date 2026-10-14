@@ -14,30 +14,31 @@ from PySide6.QtWidgets import (QButtonGroup, QFrame, QHBoxLayout, QLabel, QPushB
                                QVBoxLayout, QWidget)
 
 from grimoire.glyphs import glyph
+from grimoire.i18n import tr, tr_noop
 
 SECTIONS = [
-    ("SCREENS", [
-        ("Desktop", "desktop", "desktop", "DesktopTab"),
-        ("Lock screen", "lock", "lock", "LockTab"),
-        ("Splash", "splash", "splash", "SplashTab"),
-        ("Login", "login", "login", "LoginTab"),
-        ("Boot", "boot", "boot", "BootTab"),
+    (tr_noop("grimoire.spells.mural.page", "SCREENS"), [
+        (tr_noop("grimoire.spells.mural.page", "Desktop"), "desktop", "desktop", "DesktopTab"),
+        (tr_noop("grimoire.spells.mural.page", "Lock screen"), "lock", "lock", "LockTab"),
+        (tr_noop("grimoire.spells.mural.page", "Splash"), "splash", "splash", "SplashTab"),
+        (tr_noop("grimoire.spells.mural.page", "Login"), "login", "login", "LoginTab"),
+        (tr_noop("grimoire.spells.mural.page", "Boot"), "boot", "boot", "BootTab"),
     ]),
-    ("SHELL", [
-        ("Taskbar", "taskbar", "taskbar", "TaskbarTab"),
-        ("Style", "style", "style", "StyleTab"),
-        ("Windows", "windows", "windows", "WindowsTab"),
-        ("Motion", "motion", "motion", "MotionTab"),
+    (tr_noop("grimoire.spells.mural.page", "SHELL"), [
+        (tr_noop("grimoire.spells.mural.page", "Taskbar"), "taskbar", "taskbar", "TaskbarTab"),
+        (tr_noop("grimoire.spells.mural.page", "Style"), "style", "style", "StyleTab"),
+        (tr_noop("grimoire.spells.mural.page", "Windows"), "windows", "windows", "WindowsTab"),
+        (tr_noop("grimoire.spells.mural.page", "Motion"), "motion", "motion", "MotionTab"),
     ]),
-    ("LOOK", [
-        ("Colors", "colors", "colors", "ColorsTab"),
-        ("Icons", "icons", "icons", "IconsTab"),
-        ("Fonts", "fonts", "fonts", "FontsTab"),
-        ("Cursor", "cursor", "cursor", "CursorTab"),
-        ("Terminal", "terminal", "terminal", "TerminalTab"),
+    (tr_noop("grimoire.spells.mural.page", "LOOK"), [
+        (tr_noop("grimoire.spells.mural.page", "Colors"), "colors", "colors", "ColorsTab"),
+        (tr_noop("grimoire.spells.mural.page", "Icons"), "icons", "icons", "IconsTab"),
+        (tr_noop("grimoire.spells.mural.page", "Fonts"), "fonts", "fonts", "FontsTab"),
+        (tr_noop("grimoire.spells.mural.page", "Cursor"), "cursor", "cursor", "CursorTab"),
+        (tr_noop("grimoire.spells.mural.page", "Terminal"), "terminal", "terminal", "TerminalTab"),
     ]),
-    ("SAVED", [
-        ("Looks", "looks", "lookstab", "LooksTab"),
+    (tr_noop("grimoire.spells.mural.page", "SAVED"), [
+        (tr_noop("grimoire.spells.mural.page", "Looks"), "looks", "lookstab", "LooksTab"),
     ]),
 ]
 TABS = [tab for _, tabs in SECTIONS for tab in tabs]
@@ -60,7 +61,7 @@ class MuralPage(QWidget):
         title = QLabel("MuraL")
         title.setObjectName("Title")
         nl.addWidget(title)
-        hint = QLabel("Everything you look at")
+        hint = QLabel(tr("grimoire.spells.mural.page", "Everything you look at"))
         hint.setObjectName("Muted")
         nl.addWidget(hint)
         nl.addSpacing(18)
@@ -70,11 +71,11 @@ class MuralPage(QWidget):
         self.built: dict[int, QWidget] = {}
         i = 0
         for section, tabs in SECTIONS:
-            label = QLabel(section)
+            label = QLabel(tr("grimoire.spells.mural.page", section))
             label.setObjectName("NavSection")
             nl.addWidget(label)
             for name, icon, _, _ in tabs:
-                b = QPushButton(name)
+                b = QPushButton(tr("grimoire.spells.mural.page", name))
                 b.setObjectName("SubNavItem")
                 b.setIcon(glyph(icon))
                 b.setIconSize(QSize(18, 18))
@@ -113,7 +114,7 @@ class MuralPage(QWidget):
                 self.built[i].restored.connect(lambda keep=self.built[i]: self._forget_others(keep))
         self.stack.setCurrentWidget(self.built[i])
         self.group.button(i).setChecked(True)
-        self.heading.setText(name)
+        self.heading.setText(tr("grimoire.spells.mural.page", name))
 
     def _forget_others(self, keep: QWidget):
         """A look was restored: drop the other built tabs so they're rebuilt showing what's in use now."""

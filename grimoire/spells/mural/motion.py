@@ -8,6 +8,7 @@ from PySide6.QtCore import QPointF, QRectF, Qt
 from PySide6.QtGui import QColor, QFont, QImage, QPainter, QPainterPath, QPen
 from PySide6.QtWidgets import QCheckBox, QGridLayout, QLabel
 
+from grimoire.i18n import tr, tr_noop
 from grimoire.spells.mural.kde import kwin_reconfigure, kwrite
 from grimoire.spells.mural.screens import Design, ScreenTab
 from grimoire.widgets import Slider
@@ -25,14 +26,29 @@ PRESETS = {
     "glass":  (1.0, "fade", "squash", "fadedesktop", True),
 }
 DESIGNS = [
-    Design("still", "Still", "No animations at all. Everything happens instantly."),
-    Design("swift", "Swift", "Everything twice as fast. Snappy without losing the sense of motion."),
-    Design("smooth", "Smooth", "Plasma's default timing: scale, squash and slide."),
-    Design("fluid", "Fluid", "Slower and softer: windows glide in and pour into the panel."),
-    Design("glass", "Glass", "Fades everywhere, and windows turn see-through while you drag them."),
+    Design("still", tr_noop("grimoire.spells.mural.motion", "Still"),
+           tr_noop("grimoire.spells.mural.motion", "No animations at all. Everything happens instantly.")),
+    Design("swift", tr_noop("grimoire.spells.mural.motion", "Swift"),
+           tr_noop("grimoire.spells.mural.motion",
+                   "Everything twice as fast. Snappy without losing the sense of motion.")),
+    Design("smooth", tr_noop("grimoire.spells.mural.motion", "Smooth"),
+           tr_noop("grimoire.spells.mural.motion", "Plasma's default timing: scale, squash and slide.")),
+    Design("fluid", tr_noop("grimoire.spells.mural.motion", "Fluid"),
+           tr_noop("grimoire.spells.mural.motion", "Slower and softer: windows glide in and pour into the panel.")),
+    Design("glass", tr_noop("grimoire.spells.mural.motion", "Glass"),
+           tr_noop("grimoire.spells.mural.motion",
+                   "Fades everywhere, and windows turn see-through while you drag them.")),
 ]
-LABELS = {"scale": "Scale", "glide": "Glide", "fade": "Fade", "squash": "Squash", "magiclamp": "Magic lamp",
-          "slide": "Slide", "fadedesktop": "Fade", None: "Off"}
+LABELS = {
+    "scale": tr_noop("grimoire.spells.mural.motion", "Scale"),
+    "glide": tr_noop("grimoire.spells.mural.motion", "Glide"),
+    "fade": tr_noop("grimoire.spells.mural.motion", "Fade"),
+    "squash": tr_noop("grimoire.spells.mural.motion", "Squash"),
+    "magiclamp": tr_noop("grimoire.spells.mural.motion", "Magic lamp"),
+    "slide": tr_noop("grimoire.spells.mural.motion", "Slide"),
+    "fadedesktop": tr_noop("grimoire.spells.mural.motion", "Fade"),
+    None: tr_noop("grimoire.spells.mural.motion", "Off"),
+}
 DEFAULTS = {"blur": 8, "noise": 0, "wobbly": False}
 
 
@@ -63,22 +79,40 @@ def render(pid: str, o: dict, w=1280, h=720) -> QImage:
         p.drawPath(path)
     p.setPen(QColor(120, 120, 120))
     p.setFont(QFont("IBM Plex Sans", 10))
-    p.drawText(QRectF(box.left(), box.bottom() + 12, box.width(), 20), Qt.AlignmentFlag.AlignLeft, "time →")
-    speed_label = "instant" if speed == 0 else f"{1 / speed:.1f}× speed" if speed != 1 else "normal speed"
+    p.drawText(QRectF(box.left(), box.bottom() + 12, box.width(), 20),     # the curve runs left to right
+               Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignAbsolute,
+               tr("grimoire.spells.mural.motion", "time →"))
+    if speed == 0:
+        speed_label = tr("grimoire.spells.mural.motion", "instant")
+    elif speed == 1:
+        speed_label = tr("grimoire.spells.mural.motion", "normal speed")
+    else:
+        speed_label = tr("grimoire.spells.mural.motion", "{factor}× speed").format(factor=f"{1 / speed:.1f}")
     p.setPen(QColor(255, 255, 255))
     p.setFont(QFont("IBM Plex Sans", 30, QFont.Weight.Light))
     p.drawText(QRectF(680, 120, 520, 50), Qt.AlignmentFlag.AlignLeft, speed_label)
 
-    rows = [("Open / close", LABELS[open_]), ("Minimize", LABELS[mini]), ("Switch desktop", LABELS[switch]),
-            ("Wobbly windows", "On" if o["wobbly"] else "Off"),
-            ("See-through while moving", "On" if translucent else "Off"),
-            ("Blur", f"strength {o['blur']}" + (f", grain {o['noise']}" if o["noise"] else ""))]
-    for k, (name, value) in enumerate(rows):
+    def on_off(on):
+        return tr("grimoire.spells.mural.motion", "On") if on else tr("grimoire.spells.mural.motion", "Off")
+
+    def effect(name):
+        return tr("grimoire.spells.mural.motion", LABELS[name])
+
+    if o["noise"]:
+        blur = tr("grimoire.spells.mural.motion", "strength {blur}, grain {grain}")
+    else:
+        blur = tr("grimoire.spells.mural.motion", "strength {blur}")
+    rows = [(tr("grimoire.spells.mural.motion", "Open / close"), effect(open_), open_ is not None),
+            (tr("grimoire.spells.mural.motion", "Minimize"), effect(mini), mini is not None),
+            (tr("grimoire.spells.mural.motion", "Switch desktop"), effect(switch), switch is not None),
+            (tr("grimoire.spells.mural.motion", "Wobbly windows"), on_off(o["wobbly"]), o["wobbly"]),
+            (tr("grimoire.spells.mural.motion", "See-through while moving"), on_off(translucent), translucent),
+            (tr("grimoire.spells.mural.motion", "Blur"), blur.format(blur=o["blur"], grain=o["noise"]), True)]
+    for k, (name, value, on) in enumerate(rows):
         y = 210 + k * 52
         p.setPen(QColor(140, 140, 140))
         p.setFont(QFont("IBM Plex Sans", 13))
         p.drawText(QRectF(680, y, 300, 30), Qt.AlignmentFlag.AlignVCenter, name)
-        on = value not in ("Off",)
         pill = QRectF(990, y + 2, 170, 28)
         pp = QPainterPath()
         pp.addRoundedRect(pill, 14, 14)
@@ -99,8 +133,10 @@ def _effect(name: str, on: bool):
 
 class MotionTab(ScreenTab):
     key = "motion"
-    subtitle = "How things move: animation speed and window effects. Applies instantly."
-    apply_label = "Apply motion"
+    context = "grimoire.spells.mural.motion"
+    subtitle = tr_noop("grimoire.spells.mural.motion", "How things move: animation speed and window effects. "
+                       "Applies instantly.")
+    apply_label = tr_noop("grimoire.spells.mural.motion", "Apply motion")
 
     def designs(self):
         return DESIGNS
@@ -110,12 +146,12 @@ class MotionTab(ScreenTab):
         grid.setVerticalSpacing(8)
         self.blur = Slider(1, 15, "", self.changed)
         self.noise = Slider(0, 14, "", self.changed)
-        grid.addWidget(QLabel("Blur"), 0, 0)
+        grid.addWidget(QLabel(tr("grimoire.spells.mural.motion", "Blur")), 0, 0)
         grid.addWidget(self.blur, 0, 1)
-        grid.addWidget(QLabel("Grain"), 1, 0)
+        grid.addWidget(QLabel(tr("grimoire.spells.mural.motion", "Grain")), 1, 0)
         grid.addWidget(self.noise, 1, 1)
         lay.addLayout(grid)
-        self.wobbly = QCheckBox("Wobbly windows")
+        self.wobbly = QCheckBox(tr("grimoire.spells.mural.motion", "Wobbly windows"))
         self.wobbly.toggled.connect(self.changed)
         lay.addWidget(self.wobbly)
 
@@ -145,4 +181,4 @@ class MotionTab(ScreenTab):
         subprocess.run(["qdbus6", "org.kde.KWin", "/Effects", "org.kde.kwin.Effects.reconfigureEffect", "blur"],
                        capture_output=True)
         kwin_reconfigure()
-        return "Applied ✓"
+        return tr("grimoire.spells.mural.motion", "Applied ✓")

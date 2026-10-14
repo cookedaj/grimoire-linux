@@ -14,21 +14,25 @@ import sys
 from pathlib import Path
 
 from PySide6.QtGui import QImage
-from PySide6.QtWidgets import QCheckBox, QComboBox, QGridLayout, QLabel, QPushButton
+from PySide6.QtWidgets import QCheckBox, QGridLayout, QLabel, QPushButton
 
+from grimoire.i18n import tr, tr_noop
 from grimoire.paths import ASSETS, CACHE
 from grimoire.spells.mural import library
 from grimoire.spells.mural.kde import run_root
-from grimoire.spells.mural.screens import Design, ScreenTab, community_designs, community_entry, render_lock
+from grimoire.spells.mural.screens import (Choice, Design, ScreenTab, community_designs, community_entry,
+                                           render_lock)
 from grimoire.widgets import Slider
 
 THEME = Path(__file__).with_name("sddm_theme")
 WORK = CACHE / "login"
 DEFAULTS = {"background": "spirit-of-zephyr.png", "dim": 55, "clock24": False, "power": True}
-NO_IMAGE = "Plain black"
+NO_IMAGE = tr_noop("grimoire.spells.mural.login", "Plain black")              # stored as is; shown translated
 
 DESIGNS = [
-    Design("card", "Card", "A dark floating card with the clover over the art; small clock top-left."),
+    Design("card", tr_noop("grimoire.spells.mural.login", "Card"),
+           tr_noop("grimoire.spells.mural.login",
+                   "A dark floating card with the clover over the art; small clock top-left.")),
 ]
 
 
@@ -82,10 +86,11 @@ def render_preview(layout: str, opts: dict) -> QImage:
 
 class LoginTab(ScreenTab):
     key = "login"
-    subtitle = ("The login screen you see after boot (SDDM). Applying installs it system-wide, "
-                "so it asks for your password once.")
-    apply_label = "Install login screen"
-    apply_busy = "Waiting for your password…"
+    context = "grimoire.spells.mural.login"
+    subtitle = tr_noop("grimoire.spells.mural.login", "The login screen you see after boot (SDDM). Applying installs "
+                       "it system-wide, so it asks for your password once.")
+    apply_label = tr_noop("grimoire.spells.mural.login", "Install login screen")
+    apply_busy = tr_noop("grimoire.spells.mural.login", "Waiting for your password…")
     store = ["sddm"]
 
     def designs(self):
@@ -95,32 +100,33 @@ class LoginTab(ScreenTab):
     def build_options(self, lay):
         grid = QGridLayout()
         grid.setVerticalSpacing(8)
-        self.background = QComboBox()
-        self.background.addItems([p.name for p in library.items() if not library.is_video(p)] + [NO_IMAGE])
-        self.background.currentTextChanged.connect(self.changed)
+        pics = [p.name for p in library.items() if not library.is_video(p)]
+        # not self.background: that's ScreenTab.background(), which Restore runs
+        no_image = tr("grimoire.spells.mural.login", NO_IMAGE)
+        self.bg = Choice([(n, n) for n in pics] + [(NO_IMAGE, no_image)], self.changed)
         self.dim = Slider(0, 90, "%", self.changed)
-        grid.addWidget(QLabel("Background"), 0, 0)
-        grid.addWidget(self.background, 0, 1)
-        grid.addWidget(QLabel("Dim"), 1, 0)
+        grid.addWidget(QLabel(tr("grimoire.spells.mural.login", "Background")), 0, 0)
+        grid.addWidget(self.bg, 0, 1)
+        grid.addWidget(QLabel(tr("grimoire.spells.mural.login", "Dim")), 1, 0)
         grid.addWidget(self.dim, 1, 1)
         lay.addLayout(grid)
-        self.clock24 = QCheckBox("24-hour clock")
-        self.power = QCheckBox("Show sleep / restart / shut down")
+        self.clock24 = QCheckBox(tr("grimoire.spells.mural.login", "24-hour clock"))
+        self.power = QCheckBox(tr("grimoire.spells.mural.login", "Show sleep / restart / shut down"))
         for c in (self.clock24, self.power):
             c.toggled.connect(self.changed)
             lay.addWidget(c)
         lay.addSpacing(6)
-        restore = QPushButton("Restore previous login screen")
+        restore = QPushButton(tr("grimoire.spells.mural.login", "Restore previous login screen"))
         restore.clicked.connect(self._restore)
         lay.addWidget(restore)
 
     def options(self):
-        return {"background": self.background.currentText(), "dim": self.dim.value(),
+        return {"background": self.bg.value(), "dim": self.dim.value(),
                 "clock24": self.clock24.isChecked(), "power": self.power.isChecked()}
 
     def set_options(self, o):
         o = {**DEFAULTS, **o}
-        self.background.setCurrentText(o["background"])
+        self.bg.set_value(o["background"])
         self.dim.setValue(o["dim"])
         self.clock24.setChecked(o["clock24"])
         self.power.setChecked(o["power"])
@@ -132,14 +138,14 @@ class LoginTab(ScreenTab):
         if design.id.startswith("store:"):
             entry = community_entry(design.id)
             run_root("sddm-install", entry["ident"], entry["path"])
-            return "Installed ✓  You'll see it next time you log out or reboot."
+            return tr("grimoire.spells.mural.login", "Installed ✓  You'll see it next time you log out or reboot.")
         staged = WORK / "install"
         stage(design.id, o, staged)
         run_root("sddm", str(staged))
-        return "Installed ✓  You'll see it next time you log out or reboot."
+        return tr("grimoire.spells.mural.login", "Installed ✓  You'll see it next time you log out or reboot.")
 
     def _restore(self):
         def work():
             run_root("sddm-restore")
-            return "Previous login screen restored."
-        self.background(work, "Waiting for your password…")
+            return tr("grimoire.spells.mural.login", "Previous login screen restored.")
+        self.background(work, tr("grimoire.spells.mural.login", "Waiting for your password…"))

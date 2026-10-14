@@ -6,15 +6,15 @@ Only the background and the stock lock screen's own options are changed; the unl
 Plasma's, so a bad design can never lock you out.
 """
 import math
-from datetime import datetime
 from functools import lru_cache
 
 from PIL import Image, ImageFilter, ImageOps
-from PySide6.QtCore import QRect, Qt
+from PySide6.QtCore import QDateTime, QLocale, QRect, Qt
 from PySide6.QtGui import QColor, QFont, QImage, QPainter
 from PySide6.QtSvg import QSvgRenderer
 from PySide6.QtWidgets import QCheckBox, QGridLayout, QLabel
 
+from grimoire.i18n import tr, tr_noop
 from grimoire.paths import ASSETS, DATA
 from grimoire.spells.mural import library
 from grimoire.spells.mural.kde import kwrite
@@ -26,7 +26,9 @@ OUT.mkdir(parents=True, exist_ok=True)
 W, H = 2560, 1440
 
 DESIGNS = [
-    Design("negative", "Negative", "Anti-Magic inverted: white Asta and wings on pure black. Striking but calm."),
+    Design("negative", tr_noop("grimoire.spells.mural.lock", "Negative"),
+           tr_noop("grimoire.spells.mural.lock",
+                   "Anti-Magic inverted: white Asta and wings on pure black. Striking but calm.")),
 ]
 
 
@@ -79,29 +81,31 @@ def to_qimage(im: Image.Image) -> QImage:
 
 class LockTab(ScreenTab):
     key = "lock"
-    subtitle = ("Background for the lock screen. Plasma's own clock and password field sit on top — "
-                "the preview mocks their position.")
-    apply_label = "Apply to lock screen"
+    context = "grimoire.spells.mural.lock"
+    subtitle = tr_noop("grimoire.spells.mural.lock", "Background for the lock screen. Plasma's own clock and password "
+                       "field sit on top — the preview mocks their position.")
+    apply_label = tr_noop("grimoire.spells.mural.lock", "Apply to lock screen")
     store = ["wallhaven-bw", "wallhaven-bc", "wallpaper"]
 
     def designs(self):
         pics = [p for p in library.items() if not library.is_video(p)]
-        return DESIGNS + [Design(f"img:{p.name}", p.stem, "From your MuraL library (wallpapers you add or "
-                                                          "install from Community show up here).") for p in pics]
+        blurb = tr("grimoire.spells.mural.lock", "From your MuraL library (wallpapers you add or install from "
+                                                 "Community show up here).")
+        return DESIGNS + [Design(f"img:{p.name}", p.stem, blurb) for p in pics]
 
     def build_options(self, lay):
         grid = QGridLayout()
         grid.setVerticalSpacing(8)
         self.dim = Slider(0, 90, "%", self.changed)
         self.blur = Slider(0, 40, " px", self.changed)
-        grid.addWidget(QLabel("Dim"), 0, 0)
+        grid.addWidget(QLabel(tr("grimoire.spells.mural.lock", "Dim")), 0, 0)
         grid.addWidget(self.dim, 0, 1)
-        grid.addWidget(QLabel("Blur"), 1, 0)
+        grid.addWidget(QLabel(tr("grimoire.spells.mural.lock", "Blur")), 1, 0)
         grid.addWidget(self.blur, 1, 1)
         lay.addLayout(grid)
-        self.clock = QCheckBox("Always show the clock")
-        self.clock_idle = QCheckBox("Hide clock when idle")
-        self.media = QCheckBox("Show media controls")
+        self.clock = QCheckBox(tr("grimoire.spells.mural.lock", "Always show the clock"))
+        self.clock_idle = QCheckBox(tr("grimoire.spells.mural.lock", "Hide clock when idle"))
+        self.media = QCheckBox(tr("grimoire.spells.mural.lock", "Show media controls"))
         for c in (self.clock, self.clock_idle, self.media):
             c.toggled.connect(self.changed)
             lay.addWidget(c)
@@ -123,13 +127,15 @@ class LockTab(ScreenTab):
             p = QPainter(img)
             p.setRenderHint(QPainter.RenderHint.Antialiasing)
             p.setRenderHint(QPainter.RenderHint.TextAntialiasing)
-            now = datetime.now()
+            now, locale = QDateTime.currentDateTime(), QLocale()      # Plasma shows them in your language
             p.setPen(QColor(255, 255, 255, 235))
             p.setFont(QFont("IBM Plex Sans", 56, QFont.Weight.Light))
-            p.drawText(QRect(0, 170, 1280, 90), Qt.AlignmentFlag.AlignHCenter, now.strftime("%-I:%M"))
+            p.drawText(QRect(0, 170, 1280, 90), Qt.AlignmentFlag.AlignHCenter,
+                       locale.toString(now.time(), QLocale.FormatType.ShortFormat))
             p.setFont(QFont("IBM Plex Sans", 15))
             p.setPen(QColor(255, 255, 255, 190))
-            p.drawText(QRect(0, 262, 1280, 30), Qt.AlignmentFlag.AlignHCenter, now.strftime("%A, %B %-d"))
+            p.drawText(QRect(0, 262, 1280, 30), Qt.AlignmentFlag.AlignHCenter,
+                       locale.toString(now.date(), QLocale.FormatType.LongFormat))
             p.end()
         return img
 
@@ -145,4 +151,4 @@ class LockTab(ScreenTab):
         for key, opt in (("alwaysShowClock", "clock"), ("hideClockWhenIdle", "clock_idle"),
                          ("showMediaControls", "media")):
             kwrite("kscreenlockerrc", lnf, key, str(o[opt]).lower(), "bool")
-        return "Applied ✓  Lock with Meta+L to see it."
+        return tr("grimoire.spells.mural.lock", "Applied ✓  Lock with Meta+L to see it.")

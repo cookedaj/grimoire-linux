@@ -13,20 +13,24 @@ import time
 from PySide6.QtCore import QRectF, Qt
 from PySide6.QtGui import QColor, QFont, QImage, QPainter, QPainterPath
 from PySide6.QtSvg import QSvgRenderer
-from PySide6.QtWidgets import QCheckBox, QComboBox, QGridLayout, QLabel, QPushButton
+from PySide6.QtWidgets import QCheckBox, QGridLayout, QLabel, QPushButton
 
+from grimoire.i18n import tr, tr_noop
 from grimoire.paths import ASSETS, DATA
 from grimoire.spells.mural import plasmastyle
 from grimoire.spells.mural.backdrop import wallpaper as _wallpaper
 from grimoire.spells.mural.kde import kread, kwrite, plasma_script
-from grimoire.spells.mural.screens import Design, ScreenTab
+from grimoire.spells.mural.screens import Choice, Design, ScreenTab
 from grimoire.widgets import Slider
 
 ORIGINAL = DATA / "mural" / "taskbar-original.json"
 PROPS = ("location", "height", "floating", "hiding", "alignment", "lengthMode", "opacity")
-OPACITY = {"Adaptive": 0, "Opaque": 1, "Translucent": 2}          # plasmashellrc panelOpacity values
+OPACITY = {tr_noop("grimoire.spells.mural.taskbar", "Adaptive"): 0,          # plasmashellrc panelOpacity values
+           tr_noop("grimoire.spells.mural.taskbar", "Opaque"): 1,
+           tr_noop("grimoire.spells.mural.taskbar", "Translucent"): 2}
 OPACITY_NAMES = {"adaptive": 0, "opaque": 1, "translucent": 2}
-LOOK_NAMES = {"Keep current": None, **{look.name: key for key, look in plasmastyle.LOOKS.items()}}
+KEEP = tr_noop("grimoire.spells.mural.taskbar", "Keep current")
+LOOK_NAMES = {KEEP: None, **{look.name: key for key, look in plasmastyle.LOOKS.items()}}
 DEFAULTS = {"height": 46, "opacity": "Adaptive", "floating": True, "autohide": False, "look": "Onyx"}
 
 #            id          location  lengthMode alignment
@@ -34,14 +38,15 @@ LAYOUTS = {
     "dock":    ("bottom", "fit", "center"),
 }
 DESIGNS = [
-    Design("dock", "Dock", "Only as wide as its contents, centered at the bottom. The modern look."),
+    Design("dock", tr_noop("grimoire.spells.mural.taskbar", "Dock"), tr_noop(
+        "grimoire.spells.mural.taskbar", "Only as wide as its contents, centered at the bottom. The modern look.")),
 ]
 
 
 def _plasma(script: str) -> str:
     r = plasma_script(script)
     if r.returncode:
-        raise RuntimeError(r.stderr.strip() or "plasmashell refused the script")
+        raise RuntimeError(r.stderr.strip() or tr("grimoire.spells.mural.taskbar", "plasmashell refused the script"))
     return r.stdout.strip()
 
 
@@ -154,16 +159,17 @@ def render(design_id: str, o: dict, w=1280, h=720) -> QImage:
         if vertical:
             note = QRectF(rect.right() + 12, h / 2 - 11, 200, 22)
         p.drawText(note, Qt.AlignmentFlag.AlignHCenter if not vertical else Qt.AlignmentFlag.AlignLeft,
-                   "hides until you touch the edge")
+                   tr("grimoire.spells.mural.taskbar", "hides until you touch the edge"))
     p.end()
     return img
 
 
 class TaskbarTab(ScreenTab):
     key = "taskbar"
-    subtitle = ("Your Plasma taskbar. Changes apply instantly; the first apply records your original "
-                "panel so you can restore it.")
-    apply_label = "Apply to taskbar"
+    context = "grimoire.spells.mural.taskbar"
+    subtitle = tr_noop("grimoire.spells.mural.taskbar", "Your Plasma taskbar. Changes apply instantly; the first apply "
+                       "records your original panel so you can restore it.")
+    apply_label = tr_noop("grimoire.spells.mural.taskbar", "Apply to taskbar")
 
     def designs(self):
         return DESIGNS
@@ -172,39 +178,39 @@ class TaskbarTab(ScreenTab):
         grid = QGridLayout()
         grid.setVerticalSpacing(8)
         self.height_ = Slider(28, 80, " px", self.changed)
-        self.look = QComboBox()
-        self.look.addItems(list(LOOK_NAMES))
-        self.look.setToolTip("The panel's look (also popups and tooltips): a black & white Plasma Style")
-        self.opacity = QComboBox()
-        self.opacity.addItems(list(OPACITY))
-        for c in (self.look, self.opacity):
-            c.currentTextChanged.connect(self.changed)
-        grid.addWidget(QLabel("Look"), 0, 0)
+        # Plasma Style names are Style-tab design names: shown in that tab's words
+        looks = [(k, tr("grimoire.spells.mural.taskbar", KEEP) if k == KEEP else tr("grimoire.spells.mural.style", k))
+                 for k in LOOK_NAMES]
+        self.look = Choice(looks, self.changed)
+        self.look.setToolTip(tr("grimoire.spells.mural.taskbar", "The panel's look (also popups and tooltips): "
+                                "a black & white Plasma Style"))
+        self.opacity = Choice([(k, tr("grimoire.spells.mural.taskbar", k)) for k in OPACITY], self.changed)
+        grid.addWidget(QLabel(tr("grimoire.spells.mural.taskbar", "Look")), 0, 0)
         grid.addWidget(self.look, 0, 1)
-        grid.addWidget(QLabel("Height"), 1, 0)
+        grid.addWidget(QLabel(tr("grimoire.spells.mural.taskbar", "Height")), 1, 0)
         grid.addWidget(self.height_, 1, 1)
-        grid.addWidget(QLabel("Opacity"), 2, 0)
+        grid.addWidget(QLabel(tr("grimoire.spells.mural.taskbar", "Opacity")), 2, 0)
         grid.addWidget(self.opacity, 2, 1)
         lay.addLayout(grid)
-        self.floating = QCheckBox("Floating (gap + rounded corners)")
-        self.autohide = QCheckBox("Auto-hide")
+        self.floating = QCheckBox(tr("grimoire.spells.mural.taskbar", "Floating (gap + rounded corners)"))
+        self.autohide = QCheckBox(tr("grimoire.spells.mural.taskbar", "Auto-hide"))
         for c in (self.floating, self.autohide):
             c.toggled.connect(self.changed)
             lay.addWidget(c)
         lay.addSpacing(6)
-        restore = QPushButton("Restore original taskbar")
+        restore = QPushButton(tr("grimoire.spells.mural.taskbar", "Restore original taskbar"))
         restore.clicked.connect(self._restore)
         lay.addWidget(restore)
 
     def options(self):
-        return {"look": self.look.currentText(), "height": self.height_.value(), "opacity": self.opacity.currentText(),
+        return {"look": self.look.value(), "height": self.height_.value(), "opacity": self.opacity.value(),
                 "floating": self.floating.isChecked(), "autohide": self.autohide.isChecked()}
 
     def set_options(self, o):
         o = {**DEFAULTS, **o}
-        self.look.setCurrentText(o["look"])
+        self.look.set_value(o["look"])
         self.height_.setValue(o["height"])
-        self.opacity.setCurrentText(o["opacity"])
+        self.opacity.set_value(o["opacity"])
         self.floating.setChecked(o["floating"])
         self.autohide.setChecked(o["autohide"])
 
@@ -233,11 +239,13 @@ class TaskbarTab(ScreenTab):
         look = LOOK_NAMES.get(o["look"])
         if look:
             plasmastyle.apply(look)
-        return "Applied ✓  (Floating panels go flat while a window is maximized; that's Plasma.)"
+        return tr("grimoire.spells.mural.taskbar", "Applied ✓  (Floating panels go flat while a window is maximized; "
+                  "that's Plasma.)")
 
     def _restore(self):
         if not ORIGINAL.exists():
-            self.status.setText("Nothing to restore — the taskbar hasn't been changed by MuraL.")
+            self.status.setText(tr("grimoire.spells.mural.taskbar", "Nothing to restore — the taskbar hasn't been "
+                                   "changed by MuraL."))
             return
 
         def work():                             # may restart plasmashell, so it runs off the UI thread
@@ -247,6 +255,7 @@ class TaskbarTab(ScreenTab):
             set_opacity(opacity if isinstance(opacity, int) else OPACITY_NAMES.get(opacity, 0))
             write_panel(original)
             if style and subprocess.run(["plasma-apply-desktoptheme", style], capture_output=True).returncode:
-                return f"Taskbar restored, but the “{style}” Plasma style is gone; pick one in Style."
-            return "Original taskbar restored."
-        self.background(work, "Restoring…")
+                return tr("grimoire.spells.mural.taskbar", "Taskbar restored, but the “{style}” Plasma style is "
+                          "gone; pick one in Style.").format(style=style)
+            return tr("grimoire.spells.mural.taskbar", "Original taskbar restored.")
+        self.background(work, tr("grimoire.spells.mural.taskbar", "Restoring…"))

@@ -10,21 +10,36 @@ from PySide6.QtCore import QRectF, Qt
 from PySide6.QtGui import QColor, QFont, QImage, QPainter
 from PySide6.QtSvg import QSvgRenderer
 
+from grimoire.i18n import tr, tr_noop
 from grimoire.paths import HOME
 from grimoire.spells.mural import store as community
 from grimoire.spells.mural.kde import kread, run_tool
-from grimoire.spells.mural.screens import Design, ScreenTab
+from grimoire.spells.mural.screens import Design, ScreenTab, by_line
 
 SEARCH = [HOME / ".local/share/icons", HOME / ".icons", Path("/usr/share/icons")]
 FLATPAK = [Path("/var/lib/flatpak/exports/share/icons/hicolor"),       # Flatpak apps register icons here
            HOME / ".local/share/flatpak/exports/share/icons/hicolor"]
 CHANGE_ICONS = "/usr/lib/x86_64-linux-gnu/libexec/plasma-changeicons"
-SAMPLE = [("system-file-manager", "Files"), ("utilities-terminal", "Terminal"), ("firefox", "Firefox"),
-          ("systemsettings", "Settings"), ("steam", "Steam"), ("com.discordapp.Discord", "Discord"),
-          ("com.spotify.Client", "Spotify"), ("com.obsproject.Studio", "OBS"), ("folder", "Folder"),
-          ("user-home", "Home"), ("folder-download", "Downloads"), ("user-trash", "Trash"),
-          ("text-x-generic", "Text"), ("image-x-generic", "Image"), ("video-x-generic", "Video"),
-          ("audio-x-generic", "Audio"), ("application-x-executable", "App"), ("preferences-desktop-wallpaper", "Wallpaper")]
+SAMPLE = [
+    ("system-file-manager", tr_noop("grimoire.spells.mural.icons", "Files")),
+    ("utilities-terminal", tr_noop("grimoire.spells.mural.icons", "Terminal")),
+    ("firefox", "Firefox"),
+    ("systemsettings", tr_noop("grimoire.spells.mural.icons", "Settings")),
+    ("steam", "Steam"),
+    ("com.discordapp.Discord", "Discord"),
+    ("com.spotify.Client", "Spotify"),
+    ("com.obsproject.Studio", "OBS"),
+    ("folder", tr_noop("grimoire.spells.mural.icons", "Folder")),
+    ("user-home", tr_noop("grimoire.spells.mural.icons", "Home")),
+    ("folder-download", tr_noop("grimoire.spells.mural.icons", "Downloads")),
+    ("user-trash", tr_noop("grimoire.spells.mural.icons", "Trash")),
+    ("text-x-generic", tr_noop("grimoire.spells.mural.icons", "Text")),
+    ("image-x-generic", tr_noop("grimoire.spells.mural.icons", "Image")),
+    ("video-x-generic", tr_noop("grimoire.spells.mural.icons", "Video")),
+    ("audio-x-generic", tr_noop("grimoire.spells.mural.icons", "Audio")),
+    ("application-x-executable", tr_noop("grimoire.spells.mural.icons", "App")),
+    ("preferences-desktop-wallpaper", tr_noop("grimoire.spells.mural.icons", "Wallpaper")),
+]
 SIZE_ORDER = ["scalable", "96", "64", "48", "256", "128", "32", "96x96", "64x64", "48x48", "256x256", "128x128"]
 
 
@@ -108,26 +123,29 @@ def render(theme: str, w=1280, h=720) -> QImage:
             p.drawRoundedRect(rect, 12, 12)
         p.setPen(QColor(140, 140, 140))
         p.setFont(QFont("IBM Plex Sans", 10))
-        p.drawText(QRectF(cx - 80, cy + size / 2 + 10, 160, 22), Qt.AlignmentFlag.AlignCenter, label)
+        p.drawText(QRectF(cx - 80, cy + size / 2 + 10, 160, 22), Qt.AlignmentFlag.AlignCenter,
+                   tr("grimoire.spells.mural.icons", label))
     p.end()
     return img
 
 
 class IconsTab(ScreenTab):
     key = "icons"
-    subtitle = "Your icon theme. Previews draw real icons from each theme's files. Applies instantly."
-    apply_label = "Apply icons"
+    context = "grimoire.spells.mural.icons"
+    subtitle = tr_noop("grimoire.spells.mural.icons", "Your icon theme. Previews draw real icons from each theme's "
+                       "files. Applies instantly.")
+    apply_label = tr_noop("grimoire.spells.mural.icons", "Apply icons")
     store = ["icons"]
 
     def designs(self):
         cur = current()
-        own = [Design(cur, theme_name(cur), "The icon theme you're using now.")]
-        return own + [Design(e["ident"], e["name"], f"Community · by {e['author'] or 'unknown'}")
-                      for e in community.installed("icons") if e["ident"] != cur]
+        own = [Design(cur, theme_name(cur), tr("grimoire.spells.mural.icons", "The icon theme you're using now."))]
+        return own + [Design(e["ident"], e["name"], by_line(e)) for e in community.installed("icons")
+                      if e["ident"] != cur]
 
     def preview(self, design, o):
         return render(design.id)
 
     def apply(self, design, o):
         run_tool([CHANGE_ICONS, design.id])
-        return "Applied ✓"
+        return tr("grimoire.spells.mural.icons", "Applied ✓")

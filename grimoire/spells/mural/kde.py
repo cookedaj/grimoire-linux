@@ -5,6 +5,11 @@ import subprocess
 from pathlib import Path
 
 from grimoire import roothelper
+from grimoire.i18n import tr
+
+
+def _failed(tool: str) -> str:
+    return tr("grimoire.spells.mural.kde", "{tool} failed").format(tool=tool)
 
 
 def kwrite(file: str, groups: str | list[str], key: str, value, type_: str | None = None, notify=False):
@@ -15,7 +20,7 @@ def kwrite(file: str, groups: str | list[str], key: str, value, type_: str | Non
     args += ["--key", key] + (["--type", type_] if type_ else []) + [str(value)]
     r = subprocess.run(args, capture_output=True, text=True)
     if r.returncode:
-        raise RuntimeError(r.stderr.strip() or "kwriteconfig6 failed")
+        raise RuntimeError(r.stderr.strip() or _failed("kwriteconfig6"))
 
 
 def kread(file: str, groups: str | list[str], key: str, default: str | None = None) -> str:
@@ -42,7 +47,7 @@ def run_tool(args: list[str], ok_if_already=False):
     when ok_if_already)."""
     r = subprocess.run(args, capture_output=True, text=True)
     if r.returncode and not (ok_if_already and "already" in (r.stdout + r.stderr)):
-        raise RuntimeError((r.stderr or r.stdout).strip() or f"{Path(args[0]).name} failed")
+        raise RuntimeError((r.stderr or r.stdout).strip() or _failed(Path(args[0]).name))
 
 
 def run_root(*args: str):
@@ -51,7 +56,8 @@ def run_root(*args: str):
     on failure."""
     r = roothelper.run("mural", *args)
     if r.returncode == 126:
-        raise RuntimeError("cancelled")
+        raise RuntimeError(tr("grimoire.spells.mural.kde", "cancelled"))
     if r.returncode:
         msg = (r.stderr or r.stdout).strip().splitlines()
-        raise RuntimeError(msg[-1] if msg else f"helper failed ({r.returncode})")
+        raise RuntimeError(msg[-1] if msg else tr("grimoire.spells.mural.kde", "the helper failed ({code})")
+                           .format(code=r.returncode))
