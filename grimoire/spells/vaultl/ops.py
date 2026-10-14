@@ -9,6 +9,7 @@ from urllib.parse import unquote
 
 from grimoire.fsutil import free_name
 from grimoire.fsutil import trash as trash_one
+from grimoire.i18n import tr
 from grimoire.paths import HOME
 
 TRASH_FILES = HOME / ".local/share/Trash/files"
@@ -22,7 +23,7 @@ def transfer(sources: list[Path], dest_dir: Path, move: bool, progress=None) -> 
             progress(i, len(sources), src.name)
         try:
             if src.is_dir() and (dest_dir.resolve() == src.resolve() or src.resolve() in dest_dir.resolve().parents):
-                raise OSError("can't put a folder inside itself")
+                raise OSError(tr("grimoire.spells.vaultl.ops", "can't put a folder inside itself"))
             if move and src.parent.resolve() == dest_dir.resolve():
                 continue                                    # moving onto itself: nothing to do
             target = free_name(dest_dir / src.name)
@@ -63,10 +64,12 @@ def restore(paths: list[Path]) -> list[str]:
     for p in paths:
         orig = original_location(p)
         if not orig:
-            errors.append(f"{p.name}: no record of where it came from")
+            errors.append(tr("grimoire.spells.vaultl.ops",
+                             "{name}: no record of where it came from").format(name=p.name))
             continue
-        if not Path(orig).is_absolute():                  # the home Trash records absolute paths only; a relative
-            errors.append(f"{p.name}: its record doesn't say a full path")    # one would land wherever we run
+        if not Path(orig).is_absolute():   # the home Trash records absolute paths only; a relative one would land
+            errors.append(tr("grimoire.spells.vaultl.ops",
+                             "{name}: its record doesn't say a full path").format(name=p.name))   # anywhere
             continue
         try:
             target = free_name(Path(orig))
@@ -103,7 +106,7 @@ def delete_forever(paths: list[Path]) -> list[str]:
     errors = []
     for p in paths:
         if p.parent.resolve() != TRASH_FILES.resolve():
-            errors.append(f"{p.name}: not a Trash item")
+            errors.append(tr("grimoire.spells.vaultl.ops", "{name}: not a Trash item").format(name=p.name))
             continue
         try:
             if p.is_dir() and not p.is_symlink():
