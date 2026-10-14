@@ -15,21 +15,29 @@ from PySide6.QtWidgets import (QDialog, QFrame, QHBoxLayout, QHeaderView, QPlain
 
 from grimoire.fsutil import human
 from grimoire.glyphs import glyph
+from grimoire.i18n import tr, tr_noop
 from grimoire.jobs import POOL, Job
 from grimoire.spells.systeml.alertview import _row
 from grimoire.spells.systeml.page import NumItem, _label, _tree
 from grimoire.spells.updatel import apply, daily, sources
 from grimoire.spells.updatel.preview import PreviewDialog
+from grimoire.spells.updatel.sources import isolate
 from grimoire.widgets import Switch
 
-FILTERS = [("all", "All updates", "updatel"), ("apt", "System packages", "archive"), ("flatpak", "Flatpak", "grid"),
-           ("snap", "Snap", "store"), ("fwupd", "Firmware", "drive")]
-MORE = [("activity", "Activity", "terminall"), ("schedule", "Schedule && holds", "clock")]
-COLS = ["Name", "Installed", "New", "Source", "Size"]
+FILTERS = [("all", tr_noop("grimoire.spells.updatel.page", "All updates"), "updatel"),
+           ("apt", tr_noop("grimoire.spells.updatel.page", "System packages"), "archive"),
+           ("flatpak", "Flatpak", "grid"), ("snap", "Snap", "store"),
+           ("fwupd", tr_noop("grimoire.spells.updatel.page", "Firmware"), "drive")]
+MORE = [("activity", tr_noop("grimoire.spells.updatel.page", "Activity"), "terminall"),
+        ("schedule", tr_noop("grimoire.spells.updatel.page", "Schedule & holds"), "clock")]
+COLS = [tr_noop("grimoire.spells.updatel.page", "Name"), tr_noop("grimoire.spells.updatel.page", "Installed"),
+        tr_noop("grimoire.spells.updatel.page", "New"), tr_noop("grimoire.spells.updatel.page", "Source"),
+        tr_noop("grimoire.spells.updatel.page", "Size")]
 
 QSS = """
 QDialog#Plan { background: #0b0b0b; }
 QLabel#Risk { color: #e8e8e8; font-size: 12px; border-left: 2px solid #f2f2f2; padding-left: 8px; }
+QLabel#Risk[rtl="true"] { border-left: none; padding-left: 0; border-right: 2px solid #f2f2f2; padding-right: 8px; }
 QPlainTextEdit#Log { font-family: "IBM Plex Mono"; font-size: 11px; color: #bdbdbd; background: #080808;
                      border: 1px solid #1c1c1c; border-radius: 8px; padding: 6px; }
 QProgressBar { background: #121212; border: 1px solid #262626; border-radius: 4px; max-height: 6px; }
@@ -49,10 +57,17 @@ class _Signals(QObject):
     timer_set = Signal(object)       # (on, error)
 
 
+def _name(text: str) -> str:
+    """A FILTERS/MORE/COLS text as shown (marked with tr_noop above; Flatpak and Snap are names)."""
+    return tr("grimoire.spells.updatel.page", text)
+
+
 def _src_label(it: dict) -> str:
-    name = sources.NAMES[it["source"]]
+    name = sources.name(it["source"])
     if it["source"] == "flatpak":
-        return "{name} · {scope}".format(name=name, scope="you" if it["scope"] == "user" else "system")
+        scope = (tr("grimoire.spells.updatel.page", "yours", "Flatpak scope") if it["scope"] == "user" else
+                 tr("grimoire.spells.updatel.page", "system", "Flatpak scope"))
+        return "{name} · {scope}".format(name=isolate(name), scope=scope)
     return name
 
 
@@ -79,21 +94,24 @@ class UpdatesPanel(QWidget):
 
         bar = QHBoxLayout()
         bar.setSpacing(8)
-        self.check_btn = QPushButton("Check now")
-        self.check_btn.setToolTip("Ask APT, Flatpak, Snap and fwupd what's new (Flatpak and fwupd go online)")
+        self.check_btn = QPushButton(tr("grimoire.spells.updatel.page", "Check now"))
+        self.check_btn.setToolTip(tr("grimoire.spells.updatel.page", "Ask APT, Flatpak, Snap and fwupd what's new "
+                                     "(Flatpak and fwupd go online)"))
         self.check_btn.clicked.connect(page.check)
-        self.refresh_btn = QPushButton("Refresh package lists")
-        self.refresh_btn.setToolTip("apt-get update, then check again (asks for your password)")
+        self.refresh_btn = QPushButton(tr("grimoire.spells.updatel.page", "Refresh package lists"))
+        self.refresh_btn.setToolTip(tr("grimoire.spells.updatel.page",
+                                       "apt-get update, then check again (asks for your password)"))
         self.refresh_btn.clicked.connect(page.refresh_lists)
         bar.addWidget(self.check_btn)
         bar.addWidget(self.refresh_btn)
         bar.addStretch(1)
         self.summary = _label("", "Muted")
+        self.summary.setMinimumWidth(1)              # longer translations clip here rather than widen the window
         bar.addWidget(self.summary)
         bar.addSpacing(8)
-        self.sel_btn = QPushButton("Update selected")
+        self.sel_btn = QPushButton(tr("grimoire.spells.updatel.page", "Update selected"))
         self.sel_btn.clicked.connect(lambda: page.update(selected=True))
-        self.all_btn = QPushButton("Update all")
+        self.all_btn = QPushButton(tr("grimoire.spells.updatel.page", "Update all"))
         self.all_btn.setObjectName("Primary")
         self.all_btn.clicked.connect(lambda: page.update(selected=False))
         bar.addWidget(self.sel_btn)
@@ -101,7 +119,7 @@ class UpdatesPanel(QWidget):
         lay.addLayout(bar)
 
         split = QSplitter(Qt.Orientation.Vertical)
-        self.tree = _tree(COLS)
+        self.tree = _tree([_name(c) for c in COLS])
         h = self.tree.header()
         h.setStretchLastSection(False)
         h.setSectionResizeMode(0, QHeaderView.ResizeMode.Stretch)
@@ -133,8 +151,11 @@ class UpdatesPanel(QWidget):
         reboot = sources.reboot_required()
         if reboot is not None:
             pk = ", ".join(reboot[:6]) + (" …" if len(reboot) > 6 else "")
-            self.banner_text.setText("Restart required to finish installing updates." +
-                                     (" " + "Asked for by: {pkgs}.".format(pkgs=pk) if pk else ""))
+            self.banner_text.setText(tr("grimoire.spells.updatel.page",
+                                        "Restart required to finish installing updates. "
+                                        "Asked for by: {pkgs}.").format(pkgs=isolate(pk)) if pk else
+                                     tr("grimoire.spells.updatel.page",
+                                        "Restart required to finish installing updates."))
         self.banner.setVisible(reboot is not None)
         self.fill()
 
@@ -150,7 +171,8 @@ class UpdatesPanel(QWidget):
         self.tree.clear()
         for i in self.visible_items():
             size = i.get("size")
-            row = NumItem([i["title"], i["current"] or "–", i["new"], _src_label(i), human(size) if size else "–"])
+            row = NumItem([isolate(i["title"]), isolate(i["current"] or "–"), isolate(i["new"]), _src_label(i),
+                           isolate(human(size)) if size else "–"])
             for c, v in enumerate([i["title"].lower(), i["current"], i["new"], _src_label(i), size or 0]):
                 row.setData(c, Qt.ItemDataRole.UserRole, v)
             row.setData(0, Qt.ItemDataRole.UserRole + 1, i["key"])
@@ -158,7 +180,7 @@ class UpdatesPanel(QWidget):
             row.setFlags(row.flags() | Qt.ItemFlag.ItemIsUserCheckable)
             row.setCheckState(0, Qt.CheckState.Checked if i["key"] in checked else Qt.CheckState.Unchecked)
             if i.get("security"):
-                row.setToolTip(0, "Security update")
+                row.setToolTip(0, tr("grimoire.spells.updatel.page", "Security update"))
                 f = row.font(0)
                 f.setWeight(QFont.Weight.DemiBold)
                 row.setFont(0, f)
@@ -186,32 +208,36 @@ class UpdatesPanel(QWidget):
     def _sel_count(self):
         n, vis = len(self.selected()), self.visible_items()
         busy = self.page.busy
-        self.sel_btn.setText("Update selected ({n})".format(n=n) if n else "Update selected")
+        self.sel_btn.setText(tr("grimoire.spells.updatel.page", "Update selected ({n})").format(n=n) if n else
+                             tr("grimoire.spells.updatel.page", "Update selected"))
         self.sel_btn.setEnabled(bool(n) and not busy)
         self.all_btn.setEnabled(bool(vis) and not busy)
-        self.all_btn.setText("Update all" if self.filter == "all" else
-                             "Update all {source}".format(source=sources.NAMES[self.filter]))
+        self.all_btn.setText(tr("grimoire.spells.updatel.page", "Update all") if self.filter == "all" else
+                             tr("grimoire.spells.updatel.page", "Update all {source}").format(
+                                 source=isolate(sources.name(self.filter))))
         self.check_btn.setEnabled(not busy)
         self.refresh_btn.setEnabled(not busy and sources.have("apt-get"))
         size = sum(i.get("size") or 0 for i in vis)
         sec = sum(bool(i.get("security")) for i in vis)
         bits = []
         if vis:
-            bits.append("{n} update(s)".format(n=len(vis)))
+            bits.append(tr("grimoire.spells.updatel.page", "%n update(s)", n=len(vis)))
         if size:
-            bits.append("{size} to download".format(size=human(size)))
+            bits.append(tr("grimoire.spells.updatel.page", "{size} to download").format(size=human(size)))
         if sec:
-            bits.append("{n} security (bold)".format(n=sec))
+            bits.append(tr("grimoire.spells.updatel.page", "%n security update(s) (bold)", n=sec))
         self.summary.setText("   ·   ".join(bits))
 
     def _current(self, cur, _prev=None):
         if cur is None:
             state = self.page.state
             self.note_title.setText("")
-            self.note.setPlainText("" if not state else "Nothing to update here.")
+            self.note.setPlainText("" if not state else tr("grimoire.spells.updatel.page", "Nothing to update here."))
             if not state:
-                self.note_title.setText("Not checked yet")
-                self.note.setPlainText("Press Check now to ask APT, Flatpak, Snap and fwupd for updates.")
+                self.note_title.setText(tr("grimoire.spells.updatel.page", "Not checked yet"))
+                self.note.setPlainText(tr("grimoire.spells.updatel.page",
+                                          "Press Check now to ask APT, Flatpak, Snap and fwupd "
+                                          "for updates."))
             return
         key = cur.data(0, Qt.ItemDataRole.UserRole + 1)
         it = next((i for i in self.items if i["key"] == key), None)
@@ -222,7 +248,7 @@ class UpdatesPanel(QWidget):
         if f"{key}={it['new']}" in self.notes:
             self.note.setPlainText(self.notes[f"{key}={it['new']}"])
         else:
-            self.note.setPlainText("Loading what's new…")
+            self.note.setPlainText(tr("grimoire.spells.updatel.page", "Loading what's new…"))
             self._note_timer.start()
 
     def _load_note(self):
@@ -252,9 +278,9 @@ class ActivityPanel(QWidget):
         lay.setContentsMargins(0, 0, 0, 0)
         lay.setSpacing(10)
         head = QHBoxLayout()
-        self.state = _label("Nothing has run yet.", "Muted", wrap=True)
+        self.state = _label(tr("grimoire.spells.updatel.page", "Nothing has run yet."), "Muted", wrap=True)
         head.addWidget(self.state, 1)
-        copy = QPushButton("Copy log")
+        copy = QPushButton(tr("grimoire.spells.updatel.page", "Copy log"))
         copy.clicked.connect(lambda: QGuiApplication.clipboard().setText(self.log.toPlainText()))
         head.addWidget(copy)
         lay.addLayout(head)
@@ -305,24 +331,25 @@ class SchedulePanel(QScrollArea):
         self.timer_sw = Switch()
         self.timer_sub = _label("", "Muted", wrap=True)
         self.timer_sw.toggled.connect(self._toggle_timer)
-        col.addWidget(_row("Check every day", self.timer_sub, self.timer_sw))
+        col.addWidget(_row(tr("grimoire.spells.updatel.page", "Check every day"), self.timer_sub, self.timer_sw))
         self.notify_sw = Switch()
         self.notify_sw.setChecked(daily.settings()["notify"])
         self.notify_sw.toggled.connect(self._toggle_notify)
-        col.addWidget(_row("Notify me about new updates",
-                           _label("One desktop notification when the daily check finds updates it hasn't told you "
-                                  "about yet.", "Muted", wrap=True), self.notify_sw))
+        col.addWidget(_row(tr("grimoire.spells.updatel.page", "Notify me about new updates"),
+                           _label(tr("grimoire.spells.updatel.page",
+                                     "One desktop notification when the daily check finds "
+                                     "updates it hasn't told you about yet."), "Muted", wrap=True), self.notify_sw))
         col.addSpacing(6)
-        col.addWidget(_label("Held packages", "SectionTitle"))
+        col.addWidget(_label(tr("grimoire.spells.updatel.page", "Held packages"), "SectionTitle"))
         self.held = _label("", "Muted", wrap=True)
         self.held.setTextInteractionFlags(Qt.TextInteractionFlag.TextSelectableByMouse)
         col.addWidget(self.held)
         col.addSpacing(6)
-        col.addWidget(_label("Sources", "SectionTitle"))
+        col.addWidget(_label(tr("grimoire.spells.updatel.page", "Sources"), "SectionTitle"))
         self.srcs = _label("", "Muted", wrap=True)
         col.addWidget(self.srcs)
         col.addSpacing(6)
-        col.addWidget(_label("Restart", "SectionTitle"))
+        col.addWidget(_label(tr("grimoire.spells.updatel.page", "Restart", "heading"), "SectionTitle"))
         self.reboot = _label("", "Muted", wrap=True)
         col.addWidget(self.reboot)
         col.addStretch(1)
@@ -338,9 +365,11 @@ class SchedulePanel(QScrollArea):
         self.timer_sw.setChecked(on)
         self.timer_sw.blockSignals(False)
         last = daily.ago(self.page.state.get("t"))
-        self.timer_sub.setText(("On: a user timer looks for updates once a day (it never installs anything). "
-                                if on else "Off: UpdateL only looks when you press Check now. ")
-                               + "Last check: {when}.".format(when=last))
+        self.timer_sub.setText((tr("grimoire.spells.updatel.page",
+                                   "On: a user timer looks for updates once a day (it never "
+                                   "installs anything). Last check: {when}.") if on else
+                                tr("grimoire.spells.updatel.page", "Off: UpdateL only looks when you press Check now. "
+                                   "Last check: {when}.")).format(when=last))
 
     def _toggle_timer(self, on: bool):
         def work():
@@ -356,7 +385,8 @@ class SchedulePanel(QScrollArea):
         on, err = result
         self._show_timer(on)
         if err:
-            self.page.say("Couldn't change the daily check: {err}".format(err=err))
+            self.page.say(tr("grimoire.spells.updatel.page", "Couldn't change the daily check: {err}").format(
+                err=isolate(err)))
 
     def _toggle_notify(self, on: bool):
         s = daily.settings()
@@ -365,24 +395,30 @@ class SchedulePanel(QScrollArea):
 
     def set_state(self, state: dict):
         held = state.get("held", [])
-        self.held.setText(("Kept at their version with apt-mark hold, so they're never upgraded: {names}. "
-                           "Release one with: sudo apt-mark unhold NAME".format(names=", ".join(held)))
-                          if held else "No held packages.")
+        self.held.setText(tr("grimoire.spells.updatel.page",
+                             "Kept at their version with apt-mark hold, so they're never "
+                             "upgraded: {names}. Release one with: sudo apt-mark unhold NAME").format(
+                                 names=isolate(", ".join(held)))
+                          if held else tr("grimoire.spells.updatel.page", "No held packages."))
         lines = []
         c = daily.counts(state.get("items", []))
         for src in sources.SOURCES:
             if src in state.get("missing", []):
-                lines.append("{name}: not installed".format(name=sources.NAMES[src]))
+                lines.append(tr("grimoire.spells.updatel.page", "{name}: not installed").format(
+                    name=isolate(sources.name(src))))
             elif src in state.get("errors", {}):
-                lines.append("{name}: couldn't be read ({err})".format(name=sources.NAMES[src],
-                                                                       err=state["errors"][src]))
+                lines.append(tr("grimoire.spells.updatel.page", "{name}: couldn't be read ({err})").format(
+                    name=isolate(sources.name(src)), err=isolate(state["errors"][src])))
             elif state:
-                lines.append("{name}: {n} update(s)".format(name=sources.NAMES[src], n=c.get(src, 0)))
-        self.srcs.setText("\n".join(lines) or "Not checked yet.")
+                lines.append(tr("grimoire.spells.updatel.page", "{name}: %n update(s)", n=c.get(src, 0)).format(
+                    name=isolate(sources.name(src))))
+        self.srcs.setText("\n".join(lines) or tr("grimoire.spells.updatel.page", "Not checked yet."))
         reboot = sources.reboot_required()
-        self.reboot.setText("No restart needed." if reboot is None else
-                            "A restart is required to finish installing updates." +
-                            (" Asked for by: {pkgs}.".format(pkgs=", ".join(reboot)) if reboot else ""))
+        self.reboot.setText(tr("grimoire.spells.updatel.page", "No restart needed.") if reboot is None else
+                            tr("grimoire.spells.updatel.page", "A restart is required to finish installing updates. "
+                               "Asked for by: {pkgs}.")
+                            .format(pkgs=isolate(", ".join(reboot))) if reboot else
+                            tr("grimoire.spells.updatel.page", "A restart is required to finish installing updates."))
         self._show_timer(self.timer_sw.isChecked())
 
 
@@ -402,19 +438,20 @@ class UpdateLPage(QWidget):
         root.setSpacing(0)
         nav = QFrame()
         nav.setObjectName("SubNav")
-        nav.setFixedWidth(210)
+        nav.setMinimumWidth(210)                     # grows for longer names in other languages
+        nav.setMaximumWidth(300)
         nl = QVBoxLayout(nav)
         nl.setContentsMargins(12, 26, 12, 16)
         nl.setSpacing(2)
         nl.addWidget(_label("UpdateL", "Title"))
         nl.addSpacing(12)
-        nl.addWidget(_label("UPDATES", "NavSection"))
+        nl.addWidget(_label(tr("grimoire.spells.updatel.page", "UPDATES"), "NavSection"))
         self.nav: dict[str, QPushButton] = {}
         for pid, name, icon in FILTERS + MORE:
             if pid == "activity":
                 nl.addSpacing(10)
-                nl.addWidget(_label("MORE", "NavSection"))
-            b = QPushButton(glyph(icon, 18), "  " + name)
+                nl.addWidget(_label(tr("grimoire.spells.updatel.page", "MORE"), "NavSection"))
+            b = QPushButton(glyph(icon, 18), "  " + _name(name).replace("&", "&&"))
             b.setObjectName("SubNavItem")
             b.setCheckable(True)
             b.clicked.connect(lambda _=False, p=pid: self.show_panel(p))
@@ -455,8 +492,7 @@ class UpdateLPage(QWidget):
     def show_panel(self, pid: str):
         for p, b in self.nav.items():
             b.setChecked(p == pid)
-        name = next(n for p, n, _ in FILTERS + MORE if p == pid).replace("&&", "&")
-        self.heading.setText(name)
+        self.heading.setText(_name(next(n for p, n, _ in FILTERS + MORE if p == pid)))
         if pid in dict((f[0], f) for f in FILTERS):
             self.updates.filter = pid
             self.stack.setCurrentWidget(self.updates)
@@ -487,6 +523,7 @@ class UpdateLPage(QWidget):
         c = daily.counts(self.state.get("items", []))
         for pid, name, _ in FILTERS:
             n = len(self.state.get("items", [])) if pid == "all" else c.get(pid, 0)
+            name = _name(name).replace("&", "&&")
             self.nav[pid].setText("  " + (name if not n else "{name}  ·  {n}".format(name=name, n=n)))
         self.nav["snap"].setVisible("snap" not in self.state.get("missing", ["snap"]) or bool(c.get("snap")))
         self.foot.setText(daily.status_line())
@@ -497,7 +534,7 @@ class UpdateLPage(QWidget):
         if self.busy:
             return
         self.set_busy(True)
-        self.updates.summary.setText("Checking…")
+        self.updates.summary.setText(tr("grimoire.spells.updatel.page", "Checking…"))
         POOL.start(Job(daily.check, self.sig.checked.emit))
 
     def _checked(self, state):
@@ -506,16 +543,17 @@ class UpdateLPage(QWidget):
         self._apply_state()
         errs = state.get("errors", {})
         n = len(state["items"])
-        msg = ("Everything is up to date." if not n else
-               "1 update is available." if n == 1 else "{n} updates are available.".format(n=n))
+        msg = (tr("grimoire.spells.updatel.page", "%n update(s) available.", n=n) if n else
+               tr("grimoire.spells.updatel.page", "Everything is up to date."))
         if errs:
-            msg += " " + "Couldn't read: {names}.".format(names=", ".join(sources.NAMES[s] for s in errs))
+            msg += " " + tr("grimoire.spells.updatel.page", "Couldn't read: {names}.").format(
+                names=isolate(", ".join(sources.name(s) for s in errs)))
         if self._after:                                # how the run went comes first
             msg, self._after = self._after + " " + msg, ""
         self.say(msg)
 
     def refresh_lists(self):
-        self._start(apply.Plan(refresh=True), "Refreshing the package lists…")
+        self._start(apply.Plan(refresh=True), tr("grimoire.spells.updatel.page", "Refreshing the package lists…"))
 
     # ------------------------------------------------------------ updating
     def update(self, selected: bool):
@@ -549,13 +587,14 @@ class UpdateLPage(QWidget):
         plan, sim, err = result
         self.set_busy(False)
         if err:
-            self.say("APT couldn't plan this upgrade: {err}".format(err=err))
+            self.say(tr("grimoire.spells.updatel.page", "APT couldn't plan this upgrade: {err}").format(
+                err=isolate(err)))
             return
         dlg = PreviewDialog(self, plan, sim, daily.counts(self._picked))
         if dlg.exec() != QDialog.DialogCode.Accepted:
             return
         plan.allow_removals = dlg.removals_allowed()
-        self._start(plan, "Updating…")
+        self._start(plan, tr("grimoire.spells.updatel.page", "Updating…"))
 
     def _start(self, plan: apply.Plan, what: str):
         if self.busy:

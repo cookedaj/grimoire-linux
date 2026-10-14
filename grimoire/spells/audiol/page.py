@@ -12,6 +12,7 @@ from PySide6.QtWidgets import (QComboBox, QFrame, QHBoxLayout, QLabel, QPushButt
                                QStackedWidget, QToolButton, QVBoxLayout, QWidget)
 
 from grimoire.glyphs import glyph
+from grimoire.i18n import tr, tr_noop
 from grimoire.jobs import POOL, Job
 from grimoire.spells.audiol import eq, pw
 from grimoire.spells.audiol.eqview import EqPanel
@@ -19,10 +20,39 @@ from grimoire.spells.audiol.meter import FLOOR, LevelBar, LevelReader
 from grimoire.spells.systeml.page import _label
 from grimoire.widgets import Slider
 
-PANELS = [("devices", "Outputs && inputs", "audio"), ("apps", "Apps", "grid"), ("eq", "Equalizer", "sliders"),
-          ("profiles", "Profiles", "card")]
+PANELS = [("devices", tr_noop("grimoire.spells.audiol.page", "Outputs & inputs"), "audio"),
+          ("apps", tr_noop("grimoire.spells.audiol.page", "Apps"), "grid"),
+          ("eq", tr_noop("grimoire.spells.audiol.page", "Equalizer"), "sliders"),
+          ("profiles", tr_noop("grimoire.spells.audiol.page", "Profiles"), "card")]
+# PipeWire's node states, as shown (anything else is shown as PipeWire says it)
+STATES = {"running": tr_noop("grimoire.spells.audiol.page", "Running"),
+          "idle": tr_noop("grimoire.spells.audiol.page", "Idle"),
+          "suspended": tr_noop("grimoire.spells.audiol.page", "Suspended"),
+          "error": tr_noop("grimoire.spells.audiol.page", "Error"),
+          "creating": tr_noop("grimoire.spells.audiol.page", "Starting")}
+# device.form-factor values a card may carry
+FORMS = {"internal": tr_noop("grimoire.spells.audiol.page", "Internal"),
+         "speaker": tr_noop("grimoire.spells.audiol.page", "Speaker"),
+         "handset": tr_noop("grimoire.spells.audiol.page", "Handset"),
+         "tv": tr_noop("grimoire.spells.audiol.page", "TV"),
+         "webcam": tr_noop("grimoire.spells.audiol.page", "Webcam"),
+         "microphone": tr_noop("grimoire.spells.audiol.page", "Microphone"),
+         "headset": tr_noop("grimoire.spells.audiol.page", "Headset"),
+         "headphone": tr_noop("grimoire.spells.audiol.page", "Headphones"),
+         "hands-free": tr_noop("grimoire.spells.audiol.page", "Hands-free"),
+         "car": tr_noop("grimoire.spells.audiol.page", "Car"),
+         "hifi": tr_noop("grimoire.spells.audiol.page", "Hi-fi"),
+         "computer": tr_noop("grimoire.spells.audiol.page", "Computer"),
+         "portable": tr_noop("grimoire.spells.audiol.page", "Portable")}
 POLL_MS = 1500
 HOLD = 2.0                    # seconds a control you just moved isn't overwritten by a reading
+
+
+def _state(state: str) -> str:
+    """A PipeWire node state as shown."""
+    if state in STATES:
+        return tr("grimoire.spells.audiol.page", STATES[state])
+    return state.capitalize()
 
 
 class _Signals(QObject):
@@ -37,8 +67,9 @@ def _mute_button() -> QToolButton:
     b.setIconSize(QSize(18, 18))
     b.setIcon(glyph("audio", 18))
     b.toggled.connect(lambda on: (b.setIcon(glyph("muted" if on else "audio", 18)),
-                                  b.setToolTip("Unmute" if on else "Mute")))
-    b.setToolTip("Mute")
+                                  b.setToolTip(tr("grimoire.spells.audiol.page", "Unmute") if on else
+                                               tr("grimoire.spells.audiol.page", "Mute"))))
+    b.setToolTip(tr("grimoire.spells.audiol.page", "Mute"))
     return b
 
 
@@ -63,7 +94,7 @@ class VolumeRow(QFrame):
         text.setSpacing(6)
         head = QHBoxLayout()
         head.setSpacing(8)
-        self.title = _label(title, "RowTitle")
+        self.title = _label(pw.lead(title), "RowTitle")
         self.title.setSizePolicy(QSizePolicy.Policy.Ignored, QSizePolicy.Policy.Preferred)
         head.addWidget(self.title, 1)
         self.extra = QHBoxLayout()
@@ -153,7 +184,7 @@ class _List(QScrollArea):
         return True
 
     def section(self, text: str):
-        lab = _label(text.upper(), "NavSection")
+        lab = _label(text, "NavSection")
         self.body.addWidget(lab)
 
     def empty(self, text: str):
@@ -176,21 +207,24 @@ class DevicesPanel(_List):
         keys = tuple((k, d["id"], d["label"]) for k in ("outputs", "inputs") for d in snap[k])
 
         def build():
-            for kind, title in (("outputs", "Outputs"), ("inputs", "Inputs")):
+            for kind, title in (("outputs", tr("grimoire.spells.audiol.page", "OUTPUTS")),
+                                ("inputs", tr("grimoire.spells.audiol.page", "INPUTS"))):
                 self.section(title)
                 if not snap[kind]:
-                    self.empty("None found." if kind == "outputs" else "No microphones or other inputs found.")
+                    self.empty(tr("grimoire.spells.audiol.page", "No outputs found.") if kind == "outputs" else
+                               tr("grimoire.spells.audiol.page", "No microphones or other inputs found."))
                 for d in snap[kind]:
                     row = VolumeRow(self.page, d["label"])
-                    use = QPushButton("Make default")
+                    use = QPushButton(tr("grimoire.spells.audiol.page", "Make default"))
                     use.clicked.connect(lambda _=False, r=row: self._make_default(r))
                     row.extra.addWidget(use)
                     row.use = use
                     if kind == "inputs":
-                        test = QPushButton("Test level")
+                        test = QPushButton(tr("grimoire.spells.audiol.page", "Test level"))
                         test.setCheckable(True)
-                        test.setToolTip("Shows how loud this input is. Plasma shows the microphone as in use "
-                                        "while it's on")
+                        test.setToolTip(tr("grimoire.spells.audiol.page",
+                                           "Shows how loud this input is. Plasma shows the microphone as in "
+                                           "use while it's on"))
                         test.toggled.connect(lambda on, r=row: self._test(r, on))
                         row.extra.addWidget(test)
                         row.test = test
@@ -206,14 +240,15 @@ class DevicesPanel(_List):
                 if not row:
                     continue
                 row.show_item(d)
-                bits = ["Default"] if d["default"] else []
+                bits = [tr("grimoire.spells.audiol.page", "Default")] if d["default"] else []
                 if d["eq"]:
-                    bits.append("AudioL's equalizer")
+                    bits.append(tr("grimoire.spells.audiol.page", "AudioL's equalizer"))
                 elif d["virtual"]:
-                    bits.append("Virtual")
-                bits.append("Muted" if d["mute"] else "{n}%".format(n=d["volume"]))
-                bits.append(d["state"].capitalize() if d["state"] else "")
-                row.sub.setText(" · ".join(b for b in bits if b))
+                    bits.append(tr("grimoire.spells.audiol.page", "Virtual"))
+                bits.append(tr("grimoire.spells.audiol.page", "Muted") if d["mute"] else
+                            tr("grimoire.spells.audiol.page", "{n}%").format(n=d["volume"]))
+                bits.append(_state(d["state"]))
+                row.sub.setText(pw.lead(" · ".join(b for b in bits if b)))
                 row.use.setVisible(not d["default"])
                 if kind == "outputs" and d["default"]:
                     self.out_row = row
@@ -222,8 +257,8 @@ class DevicesPanel(_List):
     def _make_default(self, row: VolumeRow):
         node = row.item.get("id")
         if node is not None:
-            self.page.act(row.title.text(), lambda: pw.set_default(node) and "now the default",
-                          then=self.page.refresh)
+            done = tr("grimoire.spells.audiol.page", "now the default")
+            self.page.act(row.title.text(), lambda: pw.set_default(node) and done, then=self.page.refresh)
 
     def _test(self, row: VolumeRow, on: bool):
         if on:
@@ -272,8 +307,9 @@ class DevicesPanel(_List):
 # ---------------------------------------------------------------- apps
 class AppsPanel(_List):
     def __init__(self, page):
-        super().__init__("Each app's own volume, on top of its device's. Pick a device to move an app there; "
-                         "PipeWire remembers it for that app next time.")
+        super().__init__(tr("grimoire.spells.audiol.page",
+                            "Each app's own volume, on top of its device's. Pick a device to move an app "
+                            "there; PipeWire remembers it for that app next time."))
         self.page = page
 
     def set_snap(self, snap: dict):
@@ -282,12 +318,13 @@ class AppsPanel(_List):
 
         def build():
             from grimoire.spells.netl.page import app_icon
-            for kind, title, devs in (("playing", "Playing", snap["outputs"]),
-                                      ("recording", "Recording", snap["inputs"])):
+            for kind, title, devs in (("playing", tr("grimoire.spells.audiol.page", "PLAYING"), snap["outputs"]),
+                                      ("recording", tr("grimoire.spells.audiol.page", "RECORDING"), snap["inputs"])):
                 self.section(title)
                 if not snap[kind]:
-                    self.empty("Nothing is playing right now." if kind == "playing"
-                               else "Nothing is recording right now.")
+                    self.empty(tr("grimoire.spells.audiol.page",
+                                  "Nothing is playing right now.") if kind == "playing" else
+                               tr("grimoire.spells.audiol.page", "Nothing is recording right now."))
                 for s in snap[kind]:
                     icon = app_icon(s["icon"] or s["binary"] or s["app"]) or app_icon(s["app"]) or \
                         glyph("mic" if kind == "recording" else "audio", 24)
@@ -310,10 +347,15 @@ class AppsPanel(_List):
                 if not row:
                     continue
                 row.show_item(s)
-                state = {"running": "Playing" if kind == "playing" else "Recording", "idle": "Paused",
-                         "suspended": "Paused"}.get(s["state"], s["state"].capitalize())
+                if s["state"] == "running":
+                    state = (tr("grimoire.spells.audiol.page", "Playing") if kind == "playing" else
+                             tr("grimoire.spells.audiol.page", "Recording"))
+                elif s["state"] in ("idle", "suspended"):
+                    state = tr("grimoire.spells.audiol.page", "Paused")
+                else:
+                    state = _state(s["state"])
                 bits = [s["media"] if s["media"] and s["media"] != s["app"] else "", state]
-                row.sub.setText(" · ".join(b for b in bits if b))
+                row.sub.setText(pw.lead(" · ".join(b for b in bits if b)))
                 if not row.pick.view().isVisible() and time.monotonic() - row.touched >= HOLD:
                     i = row.pick.findData(s["target"])
                     row.pick.setCurrentIndex(i)
@@ -326,15 +368,18 @@ class AppsPanel(_List):
         if not dev or not row.item:
             return
         stream = dict(row.item)
-        self.page.act(row.title.text(), lambda: pw.move_stream(stream, dev, playing=kind == "playing") and
-                      "moved to {device}".format(device=dev["label"]), then=self.page.refresh)
+        done = tr("grimoire.spells.audiol.page", "moved to {device}").format(device=pw.isolate(dev["label"]))
+        self.page.act(row.title.text(), lambda: pw.move_stream(stream, dev, playing=kind == "playing") and done,
+                      then=self.page.refresh)
 
 
 # ---------------------------------------------------------------- profiles
 class ProfilesPanel(_List):
     def __init__(self, page):
-        super().__init__("A sound card's profile picks which of its connectors are in use: HDMI or the analog "
-                         "jack, stereo or surround, with or without its microphone. \"Off\" turns the card off.")
+        super().__init__(tr("grimoire.spells.audiol.page",
+                            "A sound card's profile picks which of its connectors are in use: HDMI or the "
+                            "analog jack, stereo or surround, with or without its microphone. Its \"Off\" "
+                            "profile turns the card off."))
         self.page = page
 
     def set_snap(self, snap: dict):
@@ -343,7 +388,7 @@ class ProfilesPanel(_List):
 
         def build():
             if not snap["cards"]:
-                self.empty("No sound cards found.")
+                self.empty(tr("grimoire.spells.audiol.page", "No sound cards found."))
             for c in snap["cards"]:
                 row = QFrame()
                 row.setObjectName("Row")
@@ -351,7 +396,7 @@ class ProfilesPanel(_List):
                 lay.setContentsMargins(16, 12, 16, 12)
                 text = QVBoxLayout()
                 text.setSpacing(4)
-                title = _label(c["label"], "RowTitle")
+                title = _label(pw.lead(c["label"]), "RowTitle")
                 title.setSizePolicy(QSizePolicy.Policy.Ignored, QSizePolicy.Policy.Preferred)
                 text.addWidget(title)
                 row.sub = _label("", "Muted")
@@ -360,7 +405,8 @@ class ProfilesPanel(_List):
                 pick = QComboBox()
                 pick.setMinimumWidth(280)
                 for p in sorted(c["profiles"], key=lambda p: (p["index"] != 0, not p["available"], -p["priority"])):
-                    label = p["label"] if p["available"] else "{profile} (not plugged in)".format(profile=p["label"])
+                    label = p["label"] if p["available"] else \
+                        tr("grimoire.spells.audiol.page", "{profile} (not plugged in)").format(profile=p["label"])
                     pick.addItem(label, p["index"])
                 pick.activated.connect(lambda _i, card=c, p=pick: self._pick(card, p))
                 lay.addWidget(pick, 0, Qt.AlignmentFlag.AlignVCenter)
@@ -374,9 +420,10 @@ class ProfilesPanel(_List):
             if not row:
                 continue
             bits = [c["bus"].upper() if c["bus"] in ("usb", "pci") else c["bus"].capitalize(),
-                    c["form"].capitalize() if c["form"] else "",
-                    "{n} profiles".format(n=len(c["profiles"]))]
-            row.sub.setText(" · ".join(b for b in bits if b))
+                    tr("grimoire.spells.audiol.page", FORMS[c["form"]]) if c["form"] in FORMS else
+                    c["form"].capitalize(),
+                    tr("grimoire.spells.audiol.page", "%n profile(s)", n=len(c["profiles"]))]
+            row.sub.setText(pw.lead(" · ".join(b for b in bits if b)))
             if not row.pick.view().isVisible() and time.monotonic() - row.touched >= HOLD:
                 row.pick.setCurrentIndex(row.pick.findData(c["profile"]))
 
@@ -403,16 +450,17 @@ class AudioLPage(QWidget):
         root.setSpacing(0)
         nav = QFrame()
         nav.setObjectName("SubNav")
-        nav.setFixedWidth(210)
+        nav.setMinimumWidth(210)                     # grows for longer names in other languages
+        nav.setMaximumWidth(300)
         nl = QVBoxLayout(nav)
         nl.setContentsMargins(12, 26, 12, 16)
         nl.setSpacing(2)
         nl.addWidget(_label("AudioL", "Title"))
         nl.addSpacing(12)
-        nl.addWidget(_label("SOUND", "NavSection"))
+        nl.addWidget(_label(tr("grimoire.spells.audiol.page", "SOUND"), "NavSection"))
         self.nav = {}
         for pid, name, icon in PANELS:
-            b = QPushButton(glyph(icon, 18), "  " + name)
+            b = QPushButton(glyph(icon, 18), "  " + tr("grimoire.spells.audiol.page", name).replace("&", "&&"))
             b.setObjectName("SubNavItem")
             b.setCheckable(True)
             b.clicked.connect(lambda _=False, p=pid: self.show_panel(p))
@@ -434,9 +482,10 @@ class AudioLPage(QWidget):
                        "profiles": ProfilesPanel(self)}
         for p in self.panels.values():
             self.stack.addWidget(p)
-        self.missing = _label("AudioL works through PipeWire's own tools, pw-dump and wpctl, and they aren't "
-                              "installed. Install them with:\n\nsudo apt install pipewire-bin wireplumber",
-                              "Muted", wrap=True)
+        self.missing = _label(tr("grimoire.spells.audiol.page",
+                                 "AudioL works through PipeWire's own tools, pw-dump and wpctl, and they "
+                                 "aren't installed. Install them with:\n\nsudo apt install pipewire-bin "
+                                 "wireplumber"), "Muted", wrap=True)
         self.missing.setTextInteractionFlags(Qt.TextInteractionFlag.TextSelectableByMouse)
         self.missing.setAlignment(Qt.AlignmentFlag.AlignTop)
         self.stack.addWidget(self.missing)
@@ -486,13 +535,18 @@ class AudioLPage(QWidget):
     def _sampled(self, r: dict):
         self._busy = False
         if "error" in r:
-            self.foot.setText("PipeWire isn't answering: {error}".format(error=r["error"]))
+            self.foot.setText(tr("grimoire.spells.audiol.page",
+                                 "PipeWire isn't answering: {error}").format(error=r["error"]))
             return
         self.snap, self._fc = r["snap"], r["fc"]
         snap = self.snap
         out = pw.default(snap)
-        self.foot.setText("{device}\n{volume}".format(device=out["label"], volume="Muted" if out["mute"] else
-                                                      "{n}%".format(n=out["volume"])) if out else "No output")
+        if out:
+            vol = tr("grimoire.spells.audiol.page",
+                     "Muted") if out["mute"] else tr("grimoire.spells.audiol.page", "{n}%").format(n=out["volume"])
+            self.foot.setText(pw.lead("{device}\n{volume}".format(device=out["label"], volume=vol)))
+        else:
+            self.foot.setText(tr("grimoire.spells.audiol.page", "No output"))
         self.panels["devices"].set_snap(snap)
         self.panels["apps"].set_snap(snap)
         self.panels["eq"].update_snap(snap, r["fc"], r["installed"])
@@ -502,7 +556,7 @@ class AudioLPage(QWidget):
     def show_panel(self, pid: str):
         for p, b in self.nav.items():
             b.setChecked(p == pid)
-        self.heading.setText(next(n for p, n, _ in PANELS if p == pid).replace("&&", "&"))
+        self.heading.setText(tr("grimoire.spells.audiol.page", next(n for p, n, _ in PANELS if p == pid)))
         self.stack.setCurrentWidget(self.panels[pid])
 
     # ------------------------------------------------------------ actions
@@ -510,7 +564,7 @@ class AudioLPage(QWidget):
         """Run fn on the pool; report how it went in the toast, then call then() (e.g. read again)."""
         def work():
             try:
-                return (what, fn() or "done", True, then, quiet)
+                return (what, fn() or tr("grimoire.spells.audiol.page", "done"), True, then, quiet)
             except Exception as err:                 # shown to the user, not a crash
                 return (what, str(err), False, then, quiet)
         POOL.start(Job(work, self.sig.acted.emit))
@@ -518,8 +572,10 @@ class AudioLPage(QWidget):
     def _acted(self, result):
         what, msg, ok, then, quiet = result
         if not ok or not quiet:
-            self.say("{what}: {message}".format(what=what, message=msg) if ok else
-                     "Couldn't change {what}: {message}".format(what=what, message=msg))
+            what, msg = pw.isolate(what.lstrip("‏")), pw.isolate(msg)
+            self.say(tr("grimoire.spells.audiol.page", "{what}: {message}").format(what=what, message=msg) if ok else
+                     tr("grimoire.spells.audiol.page",
+                        "Couldn't change {what}: {message}").format(what=what, message=msg))
         if then:
             then()
 
