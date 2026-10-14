@@ -33,8 +33,11 @@ create policy "profiles: owner updates email" on public.profiles
   for update to authenticated using ((select auth.uid()) = id) with check ((select auth.uid()) = id);
 
 -- A new auth user gets its profile row. Username sign-ups must use exactly their own synthetic address; anything
--- else under that domain is refused, so nobody can sign up "bob" with alice's login address. OAuth accounts
--- (Google, GitHub) get a username derived from the provider, made unique with a number.
+-- else under that domain is refused, so nobody can sign up "bob" with alice's login address. A password (or
+-- magic-link) sign-up with a real address is refused too: with "Confirm email" off it would count as verified,
+-- and Supabase links a later Google/GitHub sign-in with the same address into that account (a takeover
+-- prepared in advance). OAuth accounts (Google, GitHub) get a username derived from the provider, made unique
+-- with a number.
 create or replace function private.handle_new_user()
 returns trigger
 language plpgsql
@@ -50,6 +53,10 @@ declare
   candidate text;
   n int := 1;
 begin
+  if lower(coalesce(new.email, '')) not like '%@' || domain
+     and coalesce(new.raw_app_meta_data ->> 'provider', '') in ('email', 'phone') then
+    raise exception 'Grimoire accounts sign up with a username, Google or GitHub' using errcode = '23514';
+  end if;
   if lower(coalesce(new.email, '')) like '%@' || domain then
     if wanted is null or lower(new.email) <> lower(wanted) || '@' || domain then
       raise exception 'username accounts must sign up with their own login address' using errcode = '23514';
@@ -78,8 +85,10 @@ create trigger on_auth_user_created
   after insert on auth.users
   for each row execute function private.handle_new_user();
 
--- Login addresses under the synthetic domain never change: changing one would let an account take over
--- another username's sign-in.
+-- Login addresses never change. Under the synthetic domain a change would let an account take over another
+-- username's sign-in; for Google/GitHub accounts, with "Confirm email" off a change applies unconfirmed, so an
+-- account could claim someone's real address and receive their next OAuth sign-in through identity linking.
+-- Grimoire never changes them (the contact email is profiles.email).
 create or replace function private.guard_login_address()
 returns trigger
 language plpgsql
@@ -89,10 +98,10 @@ as $$
 declare
   domain constant text := 'users.grimoire.invalid';
 begin
-  if (lower(coalesce(old.email, '')) like '%@' || domain or lower(coalesce(new.email, '')) like '%@' || domain
-      or lower(coalesce(new.email_change, '')) like '%@' || domain)
-     and (new.email is distinct from old.email or coalesce(new.email_change, '') <> '') then
-    raise exception 'Grimoire usernames can''t change their login address' using errcode = '42501';
+  if (coalesce(old.email, '') <> '' and new.email is distinct from old.email)
+     or (coalesce(new.email_change, '') <> '' and new.email_change is distinct from old.email_change)
+     or lower(coalesce(new.email, '')) like '%@' || domain and new.email is distinct from old.email then
+    raise exception 'Grimoire accounts can''t change their login address' using errcode = '42501';
   end if;
   return new;
 end;
