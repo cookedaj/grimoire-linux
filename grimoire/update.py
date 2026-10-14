@@ -14,6 +14,7 @@ import json
 import os
 import shutil
 import subprocess
+import sys
 import tarfile
 import time
 import urllib.error
@@ -372,11 +373,17 @@ def short(sha: str) -> str:
 
 
 def day(iso: str) -> str:
-    """'2026-10-14T01:04:00Z' -> 'Oct 13, 2026' (in local time, like the dates git writes)."""
+    """'2026-10-14T01:04:00Z' -> 'Oct 13, 2026' (in local time, like the dates git writes); in another loaded
+    language, its own short date ('13/10/2026')."""
     try:
-        return datetime.fromisoformat(iso).astimezone().strftime("%b %-d, %Y")
+        when = datetime.fromisoformat(iso).astimezone()
     except (ValueError, TypeError):
         return ""
+    from grimoire import i18n
+    if i18n.loaded() in ("", "en") or "PySide6.QtCore" not in sys.modules:
+        return when.strftime("%b %-d, %Y")
+    from PySide6.QtCore import QDate, QLocale
+    return QLocale().toString(QDate(when.year, when.month, when.day), QLocale.FormatType.ShortFormat)
 
 
 # ---------------------------------------------------------------- command line
