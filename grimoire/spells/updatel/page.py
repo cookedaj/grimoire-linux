@@ -606,7 +606,7 @@ class UpdateLPage(QWidget):
         dlg = PreviewDialog(self, plan, sim, daily.counts(self._picked))
         if dlg.exec() != QDialog.DialogCode.Accepted:
             return
-        plan.allow_removals = dlg.removals_allowed()
+        plan.removals = dlg.confirmed_removals()
         self._start(plan, tr("grimoire.spells.updatel.page", "Updating…"))
 
     def _start(self, plan: apply.Plan, what: str):

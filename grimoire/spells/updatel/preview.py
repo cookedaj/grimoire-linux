@@ -39,6 +39,7 @@ class PreviewDialog(QDialog):
         lay.setSpacing(10)
         lay.addWidget(_label(tr("grimoire.spells.updatel.preview", "Before anything changes"), "SectionTitle"))
         self.allow = None
+        self.removals: list[str] = []
         blocked = False
         if sim is not None:
             up, new, rm, kept = sim["upgrade"], sim["install"], sim["remove"], sim["kept"]
@@ -65,6 +66,7 @@ class PreviewDialog(QDialog):
             elif rm:
                 lay.addWidget(_label(tr("grimoire.spells.updatel.preview", "These packages would be REMOVED:"), "Risk"))
                 lay.addWidget(_box(rm))
+                self.removals = list(rm)
                 self.allow = QCheckBox(tr("grimoire.spells.updatel.preview", "Yes, remove these packages"))
                 lay.addWidget(self.allow)
         other = []
@@ -99,5 +101,6 @@ class PreviewDialog(QDialog):
         btns.addWidget(self.ok)
         lay.addLayout(btns)
 
-    def removals_allowed(self) -> bool:
-        return bool(self.allow and self.allow.isChecked())
+    def confirmed_removals(self) -> list[str]:
+        """The packages you ticked to let go: exactly the simulated list, which the helper holds the upgrade to."""
+        return list(self.removals) if self.allow and self.allow.isChecked() else []

@@ -4,13 +4,14 @@
 #   root-helper.sh STEP [ARGS] [+ STEP [ARGS]]...
 # Steps:
 #   refresh                                    apt-get update (the package lists)
-#   apt [--allow-removals] --all | PKG...      upgrade everything (with new dependencies) or just these packages
+#   apt [--removals=PKG,PKG...] --all | PKG... upgrade everything (with new dependencies) or just these packages
 #   flatpak --all | REF...                     update the system Flatpak installation (app/arch/branch refs)
 #   snap --all | NAME...                       refresh snaps
 #   fwupd DEVICE-ID...                         install the newest firmware for these fwupd devices (40 hex digits)
 # Every step is checked before any runs. An APT upgrade is simulated (apt-get -s) first: if it would remove
-# kubuntu-desktop or the IBM Plex fonts it's refused, and any other removal needs --allow-removals (the app shows the
-# simulated list first); without it apt-get runs with --no-remove, so it can't remove anything either way.
+# kubuntu-desktop or the IBM Plex fonts it's refused, and every other package it would remove must be in --removals
+# (the exact list you confirmed in the app's preview): one more (say the lists were refreshed since) refuses the whole
+# batch before anything changes (exit 6). Without --removals apt-get runs with --no-remove, so it can't remove anything.
 # Testing: UPDATEL_DRY=1 checks and simulates as usual but only prints the commands that would change something
 # (pkexec clears the environment, so this can't be passed through it).
 set -euo pipefail
@@ -37,7 +38,13 @@ check_step() {
     case "$step" in
         refresh) (( $# == 0 )) || die 2 "refresh takes no arguments" ;;
         apt)
-            [[ "${1:-}" == --allow-removals ]] && shift
+            if [[ "${1:-}" == --removals=* ]]; then
+                local list=${1#--removals=} names; shift
+                IFS=, read -r -a names <<<"$list"
+                (( ${#names[@]} >= 1 && ${#names[@]} <= 2000 )) && [[ "$list" != *,,* && "$list" != *, ]] \
+                    || die 2 "apt: --removals takes 1 to 2000 package names joined by commas"
+                for p in "${names[@]}"; do [[ "$p" =~ $PKG_RE ]] || die 2 "not a package name: $p"; done
+            fi
             (( $# >= 1 && $# <= 2000 )) || die 2 "apt: give --all or 1 to 2000 packages"
             if [[ "$1" == --all ]]; then (( $# == 1 )) || die 2 "apt: --all takes no package names"; return; fi
             for p in "$@"; do [[ "$p" =~ $PKG_RE ]] || die 2 "not a package name: $p"; done ;;
@@ -57,8 +64,14 @@ check_step() {
 }
 
 apt_step() {
-    local allow=0 cmd sim removals r protected=()
-    if [[ "$1" == --allow-removals ]]; then allow=1; shift; fi
+    local allow=0 cmd sim removals r protected=() extra=() names
+    local -A ok=()
+    if [[ "$1" == --removals=* ]]; then
+        allow=1
+        IFS=, read -r -a names <<<"${1#--removals=}"
+        for r in "${names[@]}"; do ok[$r]=1; done
+        shift
+    fi
     if [[ "$1" == --all ]]; then cmd=(-y --with-new-pkgs upgrade); else cmd=(-y --only-upgrade install -- "$@"); fi
     echo "== Simulating the upgrade (apt-get -s)"
     sim=$(apt-get -s "${cmd[@]}") || die 5 "apt-get couldn't plan this upgrade"
@@ -70,8 +83,10 @@ apt_step() {
     if [[ -n "$removals" && $allow == 0 ]]; then
         die 4 "refused: this upgrade would remove ${removals//$'\n'/ }; confirm the removals in UpdateL first"
     fi
+    for r in $removals; do [[ -n "${ok[$r]:-}" ]] || extra+=("$r"); done
+    (( ${#extra[@]} == 0 )) || die 6 "refused: the plan changed since the preview; it would also remove ${extra[*]}"
     echo "== Upgrading packages"
-    if (( allow )); then
+    if [[ -n "$removals" ]]; then
         run apt-get "${APT_OPTS[@]}" "${cmd[@]}"
     else
         run apt-get "${APT_OPTS[@]}" --no-remove "${cmd[@]}"
