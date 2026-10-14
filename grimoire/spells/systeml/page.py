@@ -907,7 +907,7 @@ class DisksPanel(QWidget):
                     bar.set(p["used"] / p["total"])
                     row.addWidget(bar, 2)
                     row.addWidget(_label(tr("grimoire.spells.systeml.page", "{used} of {total}").format(
-                        used=human(p["used"]), total=human(p["total"])), "Muted"), 1)
+                        used=ltr(human(p["used"])), total=ltr(human(p["total"]))), "Muted"), 1)
                 else:
                     row.addStretch(3)
                 if mount and mount != "[SWAP]":
@@ -926,8 +926,8 @@ class DisksPanel(QWidget):
     def set_rates(self, rates: dict):
         for name, lab in self.rate_labels.items():
             r, w = rates.get(name, (0, 0))
-            lab.setText(tr("grimoire.spells.systeml.page", "read {read}   write {write}").format(read=_rate(r),
-                                                                                              write=_rate(w)))
+            lab.setText(tr("grimoire.spells.systeml.page", "read {read}   write {write}").format(read=ltr(_rate(r)),
+                                                                                              write=ltr(_rate(w))))
 
 
 # ---------------------------------------------------------------- overview
@@ -1062,19 +1062,19 @@ class OverviewPanel(QScrollArea):
     def update_snap(self, s: dict):
         self.cpu.push(s["cpu"], note=f"{s['freq'] / 1000:.2f} GHz" if s["freq"] else "")
         self.mem.top = s["mem_total"]
-        self.mem.push(s["mem_used"], s["mem_cache"],
-                      note=tr("grimoire.spells.systeml.page", "of {total}").format(total=human(s["mem_total"])))
+        of = tr("grimoire.spells.systeml.page", "of {total}")
+        self.mem.push(s["mem_used"], s["mem_cache"], note=of.format(total=ltr(human(s["mem_total"]))))
         self.swap.top = s["swap_total"] or 1
-        self.swap.push(s["swap_used"], note=tr("grimoire.spells.systeml.page", "of {total}").format(
-            total=human(s["swap_total"])) if s["swap_total"] else tr("grimoire.spells.systeml.page", "no swap"))
+        self.swap.push(s["swap_used"], note=of.format(total=ltr(human(s["swap_total"]))) if s["swap_total"]
+                       else tr("grimoire.spells.systeml.page", "no swap"))
         self.disk.push(s["disk_read"], s["disk_write"])
         self.net.push(s["net_down"], s["net_up"])
         g = s["gpu"]
         self.gpu.setVisible(g is not None)
         if g:
             self.gpu.title = g["name"].replace("NVIDIA GeForce ", "")
-            parts = [tr("grimoire.spells.systeml.page", "{used} of {total}").format(used=human(g["vram_used"]),
-                                                                                    total=human(g["vram_total"]))]
+            parts = [tr("grimoire.spells.systeml.page", "{used} of {total}").format(
+                used=ltr(human(g["vram_used"])), total=ltr(human(g["vram_total"])))]
             if g["power"] is not None:
                 parts.append(f"{g['power']:.0f} W")
             self.gpu.push(g["util"] or 0, note="  ·  ".join(parts))

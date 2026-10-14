@@ -12,6 +12,7 @@ from grimoire import i18n
 from grimoire.i18n import tr
 from grimoire.jobs import POOL, Job
 from grimoire.spells.optimizel import bench, tweaks
+from grimoire.spells.systeml.bidi import lead
 
 
 class _Signals(QObject):
@@ -25,7 +26,7 @@ def _label(text="", name="", wrap=False) -> QLabel:
     if name:
         lab.setObjectName(name)
     lab.setWordWrap(wrap)
-    return lab
+    return lead(lab) if name == "Value" else lab     # readings start under their right-to-left column heads
 
 
 def _fmt(v, unit: str) -> str:
