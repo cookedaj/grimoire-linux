@@ -751,11 +751,12 @@ class TerminalLPage(QWidget):
                 continue
             v = tab.active if tab.active in views else views[0]
             title = v.title()
-            short = title if len(title) <= 32 else "…" + title[-31:]
+            # isolated, so "~/Repos" keeps its "~/" in front in a right-to-left UI
+            short = "\u2068" + (title if len(title) <= 32 else "…" + title[-31:]) + "\u2069"
             if self.tabs.tabText(i) != short:
                 self.tabs.setTabText(i, short)
                 # programs set the title; as a plain tooltip Qt would render any markup in it
-                self.tabs.setTabToolTip(i, f"<p style='white-space:pre'>{html.escape(title)}</p>")
+                self.tabs.setTabToolTip(i, f"<p style='white-space:pre'>\u2068{html.escape(title)}\u2069</p>")
         v = self.active_view()
         self.titleChanged.emit(f"{v.title()} — TerminalL" if v else "TerminalL")
 
