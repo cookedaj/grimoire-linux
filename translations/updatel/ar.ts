@@ -453,6 +453,11 @@
     </message>
     <message>
         <location filename="../../grimoire/spells/updatel/page.py"/>
+        <source>The check failed: {err}</source>
+        <translation>فشل الفحص: {err}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/updatel/page.py"/>
         <source>Refreshing the package lists…</source>
         <translation>جارٍ تحديث قوائم الحزم…</translation>
     </message>

@@ -408,6 +408,11 @@
     </message>
     <message>
         <location filename="../../grimoire/spells/updatel/page.py"/>
+        <source>The check failed: {err}</source>
+        <translation>检查失败：{err}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/updatel/page.py"/>
         <source>Refreshing the package lists…</source>
         <translation>正在刷新软件包列表…</translation>
     </message>

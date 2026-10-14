@@ -417,6 +417,11 @@
     </message>
     <message>
         <location filename="../../grimoire/spells/updatel/page.py"/>
+        <source>The check failed: {err}</source>
+        <translation>जाँच विफल रही: {err}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/updatel/page.py"/>
         <source>Refreshing the package lists…</source>
         <translation>पैकेज सूचियाँ रीफ़्रेश हो रही हैं…</translation>
     </message>

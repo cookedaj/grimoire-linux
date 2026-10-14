@@ -417,6 +417,11 @@
     </message>
     <message>
         <location filename="../../grimoire/spells/updatel/page.py"/>
+        <source>The check failed: {err}</source>
+        <translation>পরীক্ষা ব্যর্থ হয়েছে: {err}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/updatel/page.py"/>
         <source>Refreshing the package lists…</source>
         <translation>প্যাকেজ তালিকা রিফ্রেশ হচ্ছে…</translation>
     </message>

@@ -1,6 +1,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 """The dialog before an update runs: what APT would upgrade, install and remove (from apt-get -s), the Flatpaks,
 snaps and firmware in the batch. Removals need a tick; removing the desktop or its fonts is refused outright."""
+from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QCheckBox, QDialog, QHBoxLayout, QLabel, QPlainTextEdit, QPushButton, QVBoxLayout
 
 from grimoire import i18n
@@ -11,6 +12,7 @@ from grimoire.spells.updatel.sources import isolate
 
 def _label(text="", name="", wrap=True) -> QLabel:
     lab = QLabel(text)
+    lab.setTextFormat(Qt.TextFormat.PlainText)        # package names from apt-get -s: never rich text
     if name:
         lab.setObjectName(name)
     lab.setWordWrap(wrap)
