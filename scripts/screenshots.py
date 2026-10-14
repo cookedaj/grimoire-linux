@@ -19,7 +19,7 @@ OUT = REPO / "docs" / "screenshots"
 BOX = Path.home() / ".cache" / "grimoire-screenshots"
 W, H = 1440, 900
 PAGES = ["hub", "mural", "sightc", "vaultl", "optimizel", "systeml", "terminall", "shotl", "focusl", "netl", "launchl",
-         "settings", "tray"]
+         "settings", "tray", "gamel"]
 
 
 # ---------------------------------------------------------------- the sandbox
@@ -242,7 +242,44 @@ def _terminal(page, wait):
     term.session.write(demo.encode())
 
 
-PREPARE = {"vaultl": _vaultl, "terminall": _terminal}
+def _gamel(page, wait):
+    """A made-up Steam and Lutris library (fictional titles, abstract covers), never the real one."""
+    import sqlite3
+    import time
+    now = int(time.time())
+    steam = Path.home() / ".local/share/Steam"
+    games = [(101, "Ashen Tide", 38, 2900), (102, "Orbital Drift", 1, 12400), (103, "Low Tide Diner", 5, 640),
+             (104, "Paper Moons", 12, 75), (105, "Static Bloom", 60, 1800), (106, "Night Ferry", 0, 0),
+             (107, "Glass Harbor", 3, 410), (108, "Quiet Signal", 200, 3300)]
+    (steam / "steamapps/common").mkdir(parents=True, exist_ok=True)
+    played = []
+    for i, (appid, name, days, mins) in enumerate(games):
+        (steam / f"steamapps/appmanifest_{appid}.acf").write_text(
+            f'"AppState"\n{{\n"appid" "{appid}"\n"name" "{name}"\n"StateFlags" "4"\n"installdir" "{name}"\n'
+            f'"SizeOnDisk" "{(i * 7 + 3) * 2 ** 30}"\n}}\n')
+        (steam / "steamapps/common" / name).mkdir(exist_ok=True)
+        art = steam / f"appcache/librarycache/{appid}/library_600x900.jpg"
+        art.parent.mkdir(parents=True, exist_ok=True)
+        _image(art, i, (600, 900))
+        if mins:
+            played.append(f'"{appid}" {{ "LastPlayed" "{now - days * 86400}" "Playtime" "{mins}" }}')
+    cfg = steam / "userdata/1/config"
+    cfg.mkdir(parents=True, exist_ok=True)
+    (cfg / "localconfig.vdf").write_text('"UserLocalConfigStore" { "Software" { "Valve" { "Steam" { "apps" { '
+                                         + " ".join(played) + " } } } } }")
+    lutris = Path.home() / ".local/share/lutris"
+    lutris.mkdir(parents=True, exist_ok=True)
+    con = sqlite3.connect(lutris / "pga.db")
+    con.execute("CREATE TABLE games (id INTEGER PRIMARY KEY, name TEXT, slug TEXT, runner TEXT, directory TEXT, "
+                "lastplayed INTEGER, installed INTEGER, playtime REAL)")
+    con.execute("INSERT INTO games VALUES (1, 'Hollow Lanterns', 'hollow-lanterns', 'wine', '', ?, 1, 6.5)",
+                (now - 9 * 86400,))
+    con.commit()
+    con.close()
+    page.scan()
+
+
+PREPARE = {"vaultl": _vaultl, "terminall": _terminal, "gamel": _gamel}
 WAIT = {"mural": 6000, "systeml": 30000, "netl": 30000, "optimizel": 5000, "terminall": 3500, "vaultl": 3000}
 
 

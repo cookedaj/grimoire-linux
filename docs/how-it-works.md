@@ -55,6 +55,15 @@ what goes over the network, see [security.md](security.md).
   the same ones Kickoff uses). Its page installs the widget with `kpackagetool6` and can swap it in for Kickoff:
   it records the panel, position, settings, shortcut and favorites order first, so **Restore Kickoff** puts back
   exactly what was there. `uninstall.sh` restores Kickoff before removing the widget.
+- **GameL** only reads the launchers' own files: Steam's `libraryfolders.vdf`, `appmanifest_*.acf` and each user's
+  `localconfig.vdf` (last played, playtime; a small KeyValues parser in `vdf.py`), covers from Steam's
+  `appcache/librarycache` (turned gray when shown), Heroic's `installed.json` files and `store/timestamp.json`, and
+  Lutris' `pga.db` opened read-only. Steam's runtimes and Proton builds are left out. Play hands the game to its
+  launcher (`steam steam://rungameid/…`, `heroic --no-gui heroic://launch?…`, `lutris lutris:rungameid/…`, or the
+  Flatpak versions). The MangoHud switch writes a black & white `~/.config/MangoHud/MangoHud.conf` (a file it didn't
+  write is moved aside to `MangoHud.conf.before-gamel` first) and adds `MANGOHUD=1` to Heroic and Lutris games it
+  starts; Steam games need `mangohud %command%` in their launch options, since Steam starts them itself. Settings
+  are in `~/.config/grimoire/gamel.json`. Nothing changes on its own when a game starts.
 
 ## Installs
 
@@ -83,6 +92,7 @@ grimoire/            the app (PySide6)
   spells/shotl/      ShotL capture, region picker, editor, recorder, gallery page, CLI
   spells/focusl/     FocusL timer state, background runner, guards (DND, apps, sites), root helper, page
   spells/launchl/    LaunchL install / replace / restore, page, CLI
+  spells/gamel/      GameL library readers (Steam VDF, Heroic, Lutris), launching, MangoHud style, page, CLI
 plasma/              the MuraL wallpaper plugin and the LaunchL panel widget
 bin/                 launchers
 install.sh           copies the app into ~/.local/share/grimoire/app and links it in

@@ -161,3 +161,18 @@ def _netl_status() -> str:
 
 SPELLS.append(Spell("netl", "NetL", "Your network: live traffic per interface and per app, connections, Wi-Fi and "
                     "VPN switches, and daily and monthly usage", _netl, "net", _netl_status))
+
+
+def _gamel():
+    from grimoire.spells.gamel.page import GameLPage
+    return GameLPage()
+
+
+def _gamel_status() -> str:
+    from grimoire.spells.gamel.library import status_line
+    return status_line()
+
+
+SPELLS.append(Spell("gamel", "GameL", "One library for your Steam, Heroic and Lutris games: covers, search, "
+                    "playtime and a Play button, plus a black & white MangoHud overlay and Performance mode, "
+                    "both switched by hand", _gamel, "game", _gamel_status))

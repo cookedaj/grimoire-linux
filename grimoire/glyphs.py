@@ -264,6 +264,14 @@ def _draw(name: str, p: QPainter):
         for y, x in ((7, 9), (12, 15.5), (17, 11)):
             p.drawLine(QPointF(4, y), QPointF(x - 2, y)); p.drawLine(QPointF(x + 2, y), QPointF(20, y))
             p.drawEllipse(QPointF(x, y), 2, 2)
+    elif name == "game":                                   # a gamepad: d-pad on the left, two buttons on the right
+        path = QPainterPath(QPointF(7.5, 7))
+        path.lineTo(16.5, 7); path.cubicTo(20, 7, 21.5, 10, 21.5, 14.5); path.cubicTo(21.5, 18.5, 18.5, 19.5, 16.5, 17)
+        path.lineTo(15, 15.5); path.lineTo(9, 15.5); path.lineTo(7.5, 17); path.cubicTo(5.5, 19.5, 2.5, 18.5, 2.5, 14.5)
+        path.cubicTo(2.5, 10, 4, 7, 7.5, 7); p.drawPath(path)
+        p.drawLine(QPointF(7.5, 9.5), QPointF(7.5, 13.5)); p.drawLine(QPointF(5.5, 11.5), QPointF(9.5, 11.5))
+        for x, y in ((15.5, 12.5), (17.5, 10.5)):
+            p.drawEllipse(QPointF(x, y), 0.9, 0.9)
 
 
 def _pixmap(name: str, color: str, size: int) -> QPixmap:

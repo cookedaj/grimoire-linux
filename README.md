@@ -108,6 +108,16 @@ usage. Public IP and ping checks only run when you press them.
 
 A black & white panel launcher in Kickoff's place: favorites, every app by category, places and recent files,
 search that also finds files, does sums and unit conversions and runs Grimoire's spells, plus the leave buttons.
+
+### GameL: one game library
+
+![GameL](docs/screenshots/gamel.png)
+
+Every installed game from Steam (including Flatpak Steam and extra library folders), Heroic (Epic, GOG, Amazon and
+sideloaded) and Lutris in one grid of gray covers or a list: search, sort by name, last played, size or playtime,
+see where a game lives and open its folder in VaultL, and press Play to start it through its own launcher. A
+black & white MangoHud overlay (FPS, frame times, CPU/GPU load and temperature, RAM, VRAM; Shift_R+F12 shows or hides
+it) and Performance mode sit one click away. Both are manual switches: starting a game never changes anything else.
 Meta opens it. **Replace launcher** records your Kickoff first, so **Restore Kickoff** puts back exactly what was there.
 
 ### Tray, Settings and updates
@@ -177,9 +187,10 @@ sudo pacman -S pyside6 python-pillow python-psutil python-pyte python-dbus layer
 
 Press **Install** on a spell's card on the home page (or `./install.sh --all`), or run `grimoire-mural`,
 `grimoire-sightc`, `grimoire-vaultl`, `grimoire-optimizel`, `grimoire-systeml`, `grimoire-terminall`,
-`grimoire-shotl`, `grimoire-focusl` or `grimoire-netl` directly. Command-line helpers:
+`grimoire-shotl`, `grimoire-focusl`, `grimoire-netl` or `grimoire-gamel` directly. Command-line helpers:
 `grimoire-sightc on|off|toggle|next`, `grimoire-vaultl [folder]`, `grimoire-vaultl tidy run|undo|enable|disable|status`,
-`grimoire-systeml alerts check|enable|disable|status`, `grimoire-focusl start|stop|status`, `grimoire update`.
+`grimoire-systeml alerts check|enable|disable|status`, `grimoire-focusl start|stop|status`,
+`grimoire-gamel list|status|play <launcher:id>`, `grimoire update`.
 
 To make VaultL the default file manager: `xdg-mime default grimoire-vaultl.desktop inode/directory` (switch back in
 System Settings → Default Applications).
