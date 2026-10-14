@@ -133,3 +133,40 @@ PKCE `Loopback`, recovery codes, sync), `supabase_app.py` URL/anon key (env `GRI
 `setupwizard.py`, `accountview.py` (Settings → Account, guest bar, auto-sync). Server SQL in
 `supabase/migrations/`, setup in `supabase/README.md`. Test with `python3 scripts/test_accounts.py
 ~/.cache/<sandbox>` (in-process `scripts/fake_supabase.py`, fake keyring); never against a real project.
+
+## Languages (i18n)
+`grimoire/i18n.py`: `LANGUAGES` (en, zh_CN, hi, es, fr, ar, bn, pt = Brazilian wording, ru, ur; code → native name),
+`current()` (env `GRIMOIRE_LANG`, else the profile's `settings.json` "locale", else `CONFIG_ROOT/language` = last
+choice on this PC, else the desktop's `LANG`, else en), `choose(code)`, `install(app)` (called by `style_app()`:
+one QTranslator per area catalog `translations/<area>/<lang>.qm` + Qt's `qtbase_<lang>.qm`, right-to-left for ar/ur,
+font fallbacks as `QFont` substitutions of "IBM Plex Sans"/"IBM Plex Mono": Plex Arabic/Devanagari, Noto Nastaliq
+Urdu, Noto Sans Bengali, Noto Sans CJK SC). A change applies on restart (`settingsview.restart_now()`/
+`offer_restart()`; `loginview.gate()` restarts once when the signed-in profile's language differs).
+Every QApplication must go through `style_app()` (hub, standalone windows, tray, spell `__main__`s).
+
+Wrapping strings (every user-visible string; phase 2 = one area per spell, each agent touches only its area):
+- `from grimoire.i18n import tr` and `tr("<context>", "Text")`. The context is the module's dotted name as a
+  **string literal** (`"grimoire.app"`, `"grimoire.spells.vaultl.page"`); it decides the catalog:
+  `grimoire.spells.<area>.…` → `translations/<area>/`, anything else → `translations/core/`. Never a variable or an
+  f-string as context or text (`scripts/i18n.py` reads literals with `ast`; adjacent literals joined are fine).
+- Placeholders: `tr(ctx, "Signed in as {name}").format(name=…)` (format after tr, named fields, whole sentences;
+  never glue translated fragments together, never `+` a sentence from parts).
+- Plurals: `tr(ctx, "%n file(s) moved", n=count)` (with `.format()` after if needed); then give the English forms
+  too (`export <area> en` → fill → `import`), en.ts holds only plurals.
+- Disambiguation for a short word used two ways: `tr(ctx, "Open", "verb")`.
+- Text made at import time (module-level tables, dataclass defaults, `Spell(...)` taglines): mark with
+  `tr_noop(ctx, "Text")` and translate where shown with `tr(ctx, value)` (same context).
+- Don't wrap: spell/product names (MuraL, Grimoire Linux), commands, paths, file names, config keys, log/CLI/terminal
+  output, desktop-entry fields, polkit messages, text sent to other programs. Do wrap error messages in Qt-free
+  modules that reach the UI (`tr` works without Qt; it returns English there).
+- RTL (ar, ur): layouts mirror by themselves. Custom painting does not: keep graphs, meters, the terminal and
+  previews unmirrored (left-to-right numbers/time axes), but mirror direction glyphs (`i18n.mirrored()`:
+  back/forward). Use `Qt.AlignmentFlag.AlignLeft` (mirrors) not `AlignAbsolute`; avoid fixed widths and
+  heights around text (translations run 30-60% longer; Nastaliq is tall).
+- Workflow for an area: `python3 scripts/i18n.py update <area>` (writes all `translations/<area>/<lang>.ts`), translate
+  (`export <area> <lang> > todo.json`, fill `translation` — a list of plural forms where `forms` is given — then
+  `import <area> <lang> todo.json`, or edit the .ts in Qt Linguist), `check <area>`, `release <area>` (lrelease from
+  qt6-l10n-tools; the .qm files are committed so installs need no Qt tools), `stats`. Translators keep product
+  names, `{placeholders}`, `%n`, shortcuts (Ctrl+F) and `→` paths (ar/ur use `←`).
+- Test a language offscreen: `GRIMOIRE_LANG=ar QT_QPA_PLATFORM=offscreen` with a sandbox HOME, build the widget
+  after `style_app(app)`, `grab()` and look: no tofu boxes, no clipped text, RTL mirrored, graphs not.

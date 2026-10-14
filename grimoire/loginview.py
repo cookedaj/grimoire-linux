@@ -567,6 +567,11 @@ def gate(title=NAME, size=(1440, 880), wizard=False) -> bool:
     if not ok:
         _restart_once()
     os.environ.pop("GRIMOIRE_RESTARTED", None)
+    from grimoire import i18n
+    again = os.environ.pop("GRIMOIRE_LANG_RESTARTED", "")
+    if i18n.needs_restart() and not again:
+        os.environ["GRIMOIRE_LANG_RESTARTED"] = "1"      # this account (or the setup) picked another language
+        restart()
     return True
 
 

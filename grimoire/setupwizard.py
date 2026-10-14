@@ -7,7 +7,7 @@ from PySide6.QtGui import QIcon, QPixmap
 from PySide6.QtWidgets import (QButtonGroup, QCheckBox, QComboBox, QDialog, QFrame, QGridLayout, QHBoxLayout, QLabel,
                                QRadioButton, QScrollArea, QStackedWidget, QVBoxLayout, QWidget)
 
-from grimoire import NAME, prefs, session
+from grimoire import NAME, i18n, prefs, session
 from grimoire.glyphs import clover, glyph
 from grimoire.settingsview import HotkeysPanel, _button, _label, restore_flow, run
 
@@ -274,14 +274,13 @@ class SetupWizard(QWidget):
     def _language(self):
         w, lay = _page("Language", "Which language should Grimoire Linux use?")
         self.lang = QComboBox()
-        for code, name in prefs.LOCALES:
-            self.lang.addItem(name, code)
-        cur = prefs.load()["locale"] or "en"
-        self.lang.setCurrentIndex(max(0, self.lang.findData(cur)))
+        for code, native in i18n.LANGUAGES.items():
+            self.lang.addItem(native, code)
+        self.lang.setCurrentIndex(max(0, self.lang.findData(i18n.current())))
         self.lang.setFixedWidth(280)
         lay.addWidget(self.lang)
-        lay.addWidget(_label("Translations are on the way. Your choice is saved now and used as soon as they "
-                             "arrive.", "Muted"))
+        lay.addWidget(_label("Grimoire Linux restarts in the new language when the setup ends. Translations are "
+                             "machine-made; native speakers are welcome to improve them on GitHub.", "Muted"))
         return w
 
     def _done(self):
@@ -311,7 +310,11 @@ class SetupWizard(QWidget):
 
     def _finish(self):
         hidden = sorted(p.spell.id for p in self.picks if not p.box.isChecked())
-        prefs.save(hidden_spells=hidden, locale=self.lang.currentData() or "en", setup_done=True)
+        prefs.save(hidden_spells=hidden, setup_done=True)
+        try:
+            i18n.choose(self.lang.currentData() or "en")       # applied by a restart (loginview.gate, Settings)
+        except OSError:
+            pass
         self.finished.emit()
 
 

@@ -11,8 +11,8 @@ from pathlib import Path
 
 from PySide6.QtCore import QCoreApplication, QObject, QSize, Qt, QTimer, QUrl, Signal
 from PySide6.QtGui import QDesktopServices, QGuiApplication, QImage, QKeySequence, QPainter, QPainterPath, QPixmap
-from PySide6.QtWidgets import (QCheckBox, QDialog, QFileDialog, QFrame, QHBoxLayout, QKeySequenceEdit, QLabel,
-                               QPushButton, QScrollArea, QStackedWidget, QVBoxLayout, QWidget)
+from PySide6.QtWidgets import (QCheckBox, QComboBox, QDialog, QFileDialog, QFrame, QHBoxLayout, QKeySequenceEdit,
+                               QLabel, QMessageBox, QPushButton, QScrollArea, QStackedWidget, QVBoxLayout, QWidget)
 
 from grimoire import NAME, __version__
 from grimoire.glyphs import clover, glyph
@@ -745,7 +745,7 @@ class GeneralPanel(QWidget):
     def __init__(self, updater, whats_new):
         import os
 
-        from grimoire import prefs, tray, update
+        from grimoire import i18n, prefs, tray, update
         super().__init__()
         self.updater = updater
         lay = QVBoxLayout(self)
@@ -768,6 +768,17 @@ class GeneralPanel(QWidget):
         self.login.setChecked(prefs.open_at_login())
         self.login.toggled.connect(self._login)
         lay.addWidget(Row("Open Grimoire Linux at login", "Opens the hub when Plasma starts.", [self.login]))
+        self.lang = QComboBox()
+        for code, native in i18n.LANGUAGES.items():
+            self.lang.addItem(native, code)
+        self.lang.setCurrentIndex(max(0, self.lang.findData(i18n.current())))
+        self.lang.setMinimumWidth(200)
+        self.lang.currentIndexChanged.connect(self._language)
+        self.relaunch = _button("Restart now", restart_now, "Primary")
+        self.relaunch.setVisible(i18n.needs_restart())
+        self.lang_row = Row("Language", "", [self.relaunch, self.lang])
+        lay.addWidget(self.lang_row)
+        self._language_note()
         lay.addWidget(Row("Setup", "Pick your spells, a look, hotkeys and the language again.", [
             _button("Choose spells…", lambda: self._setup("spells")), _button("Run setup again", self._setup)]))
         self.status = _label("", "Status")
@@ -802,9 +813,32 @@ class GeneralPanel(QWidget):
         self.status.setVisible(bool(text))
 
     def _setup(self, start="welcome"):
+        from grimoire import i18n
         from grimoire.setupwizard import SetupDialog
         if SetupDialog(self.window(), start).exec() and hasattr(self.window(), "refresh_spells"):
             self.window().refresh_spells()
+        self.lang.blockSignals(True)
+        self.lang.setCurrentIndex(max(0, self.lang.findData(i18n.current())))
+        self.lang.blockSignals(False)
+        self._language_note()
+        offer_restart(self)
+
+    def _language(self):
+        from grimoire import i18n
+        try:
+            i18n.choose(self.lang.currentData())
+        except (OSError, ValueError) as e:
+            self._say("Couldn't change it: {err}".format(err=e))
+        self._language_note()
+
+    def _language_note(self):
+        from grimoire import i18n
+        pending = i18n.needs_restart()
+        self.relaunch.setVisible(pending)
+        self.lang_row.sub.setText("Grimoire Linux switches to {language} when it restarts."
+                                  .format(language=i18n.LANGUAGES[i18n.current()]) if pending else
+                                  "The language of Grimoire Linux and its spells. Changing it needs a restart.")
+        self.lang_row.sub.show()
 
     def _auto(self, on):
         from grimoire import prefs
@@ -829,6 +863,22 @@ class GeneralPanel(QWidget):
             prefs.set_open_at_login(on)
         except OSError as e:
             self._say(f"Couldn't change it: {e}")
+
+
+def restart_now():
+    """Start Grimoire Linux again (same session), e.g. in a newly chosen language."""
+    from grimoire.loginview import restart
+    restart()
+
+
+def offer_restart(parent):
+    """After a language change (Settings or the setup): ask to restart into it now."""
+    from grimoire import i18n
+    if not i18n.needs_restart():
+        return
+    if QMessageBox.question(parent, NAME, "Restart Grimoire Linux now to switch to {language}?".format(
+            language=i18n.LANGUAGES[i18n.current()])) == QMessageBox.StandardButton.Yes:
+        restart_now()
 
 
 # ---------------------------------------------------------------- the page

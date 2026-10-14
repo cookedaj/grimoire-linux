@@ -301,7 +301,10 @@ class Window(QMainWindow):
 
 
 def style_app(app: QApplication):
-    """Grimoire's black & white look (also used by standalone spells like VaultL)."""
+    """Grimoire's black & white look and the chosen language (also used by standalone spells, the tray and every
+    other window that makes a QApplication)."""
+    from grimoire import i18n
+    i18n.install(app)
     app.setWindowIcon(QIcon(str(ASSETS / "clover5.svg")))
     app.setStyle("Fusion")
     app.setFont(QFont(FONT, 10))

@@ -8,6 +8,7 @@ from PySide6.QtCore import QPointF, QRectF, Qt
 from PySide6.QtGui import QColor, QIcon, QPainter, QPainterPath, QPen, QPixmap
 from PySide6.QtSvg import QSvgRenderer
 
+from grimoire.i18n import mirrored
 from grimoire.paths import ASSETS
 
 S = 24   # design grid; icons are drawn on a 24x24 canvas and scaled
@@ -316,6 +317,9 @@ def _pixmap(name: str, color: str, size: int) -> QPixmap:
     p.scale(size / S, size / S)
     p.setPen(QPen(QColor(color), 1.6, Qt.PenStyle.SolidLine, Qt.PenCapStyle.RoundCap, Qt.PenJoinStyle.RoundJoin))
     p.setBrush(Qt.BrushStyle.NoBrush)
+    if mirrored(name):                       # back/forward follow a right-to-left reading direction
+        p.translate(S, 0)
+        p.scale(-1, 1)
     _draw(name, p)
     p.end()
     return pm
