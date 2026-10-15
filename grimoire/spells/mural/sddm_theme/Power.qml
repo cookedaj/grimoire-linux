@@ -2,6 +2,11 @@
 import QtQuick
 
 Row {
+    id: power
+    property color ink: "white"
+    property color muted: "#7a7a7a"
+    property string family: "IBM Plex Sans"
+    property bool lower: false                  // "sleep" instead of "SLEEP" (the console layout)
     spacing: 28
     Repeater {
         model: [
@@ -12,9 +17,9 @@ Row {
         Text {
             required property var modelData
             visible: modelData.ok
-            text: modelData.label.toUpperCase()
-            color: hover.hovered ? "white" : "#7a7a7a"
-            font.family: "IBM Plex Sans"; font.pixelSize: 11; font.letterSpacing: 3
+            text: power.lower ? "[" + modelData.label.toLowerCase() + "]" : modelData.label.toUpperCase()
+            color: hover.hovered ? power.ink : power.muted
+            font.family: power.family; font.pixelSize: power.lower ? 13 : 11; font.letterSpacing: power.lower ? 0 : 3
             HoverHandler { id: hover }
             TapHandler { onTapped: modelData.act() }
         }

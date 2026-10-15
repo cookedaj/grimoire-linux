@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
-"""Login tab: the SDDM login screen, Grimoire's own "grimoire" theme (Card layout) plus
-community themes.
+"""Login tab: the SDDM login screen, Grimoire's own "grimoire" theme (one QML theme, nine layouts picked by
+theme.conf's layout key) plus community themes.
 
 Applying needs root, so it goes through pkexec (a password prompt) and root-helper.sh.
 """
@@ -33,6 +33,26 @@ DESIGNS = [
     Design("card", tr_noop("grimoire.spells.mural.login", "Card"),
            tr_noop("grimoire.spells.mural.login",
                    "A dark floating card with the clover over the art; small clock top-left.")),
+    Design("minimal", tr_noop("grimoire.spells.mural.login", "Minimal"),
+           tr_noop("grimoire.spells.mural.login", "Just a big clock and the password line, centered over the art.")),
+    Design("sidebar", tr_noop("grimoire.spells.mural.login", "Sidebar"),
+           tr_noop("grimoire.spells.mural.login", "A solid black column on the left holds the clock and login; "
+                   "the art fills the rest.")),
+    Design("paper", tr_noop("grimoire.spells.mural.login", "Paper"),
+           tr_noop("grimoire.spells.mural.login", "The same column in white with black ink. Bright and editorial.")),
+    Design("console", tr_noop("grimoire.spells.mural.login", "Console"),
+           tr_noop("grimoire.spells.mural.login", "A text-mode login in monospace, top-left, over a nearly black "
+                   "screen.")),
+    Design("corner", tr_noop("grimoire.spells.mural.login", "Corner"),
+           tr_noop("grimoire.spells.mural.login", "An oversized thin clock bottom-left, the login bottom-right.")),
+    Design("frame", tr_noop("grimoire.spells.mural.login", "Frame"),
+           tr_noop("grimoire.spells.mural.login", "A double hairline border around the screen, everything centered "
+                   "inside it.")),
+    Design("display", tr_noop("grimoire.spells.mural.login", "Display"),
+           tr_noop("grimoire.spells.mural.login", "One enormous thin clock across the screen; the login waits "
+                   "small underneath.")),
+    Design("daylight", tr_noop("grimoire.spells.mural.login", "Daylight"),
+           tr_noop("grimoire.spells.mural.login", "A white card with black ink and an outlined password box.")),
 ]
 
 
