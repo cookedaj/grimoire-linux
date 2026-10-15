@@ -610,6 +610,169 @@ This can&apos;t be undone.</source>
     </message>
 </context>
 <context>
+    <name>grimoire.spells.vaultl.runview</name>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/runview.py"/>
+        <source>Check whether the app has a Linux version (.deb, AppImage or Flatpak).</source>
+        <translation>تحقّق مما إذا كان للتطبيق إصدار لنظام Linux (‎.deb أو AppImage أو Flatpak).</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/runview.py"/>
+        <source>Run “{name}”?</source>
+        <translation>تشغيل «{name}»؟</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/runview.py"/>
+        <source>This is a program. It runs with your permissions and can change or delete your files, so only run programs you trust.</source>
+        <translation>هذا برنامج. يعمل بصلاحياتك ويمكنه تعديل ملفاتك أو حذفها، لذا لا تشغّل إلا البرامج التي تثق بها.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/runview.py"/>
+        <source>This is a script. It runs with your permissions and can change or delete your files, so only run scripts you trust.</source>
+        <translation>هذا سكربت. يعمل بصلاحياتك ويمكنه تعديل ملفاتك أو حذفها، لذا لا تشغّل إلا السكربتات التي تثق بها.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/runview.py"/>
+        <source>It isn&apos;t marked as executable yet (usual for a fresh download). Making it executable lets it run, for you only.</source>
+        <translation>لم يُعلَّم بعد كملف قابل للتنفيذ (وهذا معتاد في التنزيلات الجديدة). جعله قابلاً للتنفيذ يتيح تشغيله، لك وحدك.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/runview.py"/>
+        <source>Open as text</source>
+        <translation>فتح كنص</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/runview.py"/>
+        <source>Run</source>
+        <translation>تشغيل</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/runview.py"/>
+        <source>Make executable and run</source>
+        <translation>جعله قابلاً للتنفيذ وتشغيله</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/runview.py"/>
+        <source>Open “{name}”?</source>
+        <translation>فتح «{name}»؟</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/runview.py"/>
+        <source>This launcher opens the address below.</source>
+        <translation>يفتح هذا المُشغِّل العنوان أدناه.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/runview.py"/>
+        <source>Open link</source>
+        <translation>فتح الرابط</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/runview.py"/>
+        <source>Start “{name}”?</source>
+        <translation>بدء «{name}»؟</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/runview.py"/>
+        <source>This launcher runs the command below. Only start launchers you trust.</source>
+        <translation>يشغّل هذا المُشغِّل الأمر أدناه. لا تبدأ إلا المُشغِّلات التي تثق بها.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/runview.py"/>
+        <source>This launcher isn&apos;t marked as trusted. Launchers can run any command, so check the one below before you start it.</source>
+        <translation>هذا المُشغِّل غير مُعلَّم كموثوق. يمكن للمُشغِّلات تنفيذ أي أمر، لذا راجع الأمر أدناه قبل بدئه.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/runview.py"/>
+        <source>Start</source>
+        <translation>بدء</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/runview.py"/>
+        <source>Trust and start</source>
+        <translation>الوثوق والبدء</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/runview.py"/>
+        <source>“{name}” can&apos;t be started</source>
+        <translation>تعذّر بدء «{name}»</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/runview.py"/>
+        <source>This launcher has no command to run.</source>
+        <translation>لا يحتوي هذا المُشغِّل على أمر لتشغيله.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/runview.py"/>
+        <source>“{name}” is a Windows program</source>
+        <translation>‏«{name}» برنامج لنظام Windows</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/runview.py"/>
+        <source>Linux can&apos;t run Windows programs directly.</source>
+        <translation>لا يستطيع Linux تشغيل برامج Windows مباشرة.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/runview.py"/>
+        <source>A Windows compatibility tool is installed and may run it, though not every program works. Only run programs you trust.</source>
+        <translation>أداة توافق مع Windows مثبّتة وقد تشغّله، مع أن بعض البرامج لا تعمل. لا تشغّل إلا البرامج التي تثق بها.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/runview.py"/>
+        <source>Open with {runner}</source>
+        <translation>فتح باستخدام {runner}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/runview.py"/>
+        <source>No Windows compatibility tool (Wine, Bottles or Protontricks) is installed.</source>
+        <translation>لا توجد أداة توافق مع Windows مثبّتة (Wine أو Bottles أو Protontricks).</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/runview.py"/>
+        <source>“{name}” is for macOS</source>
+        <translation>‏«{name}» مخصّص لنظام macOS</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/runview.py"/>
+        <source>macOS apps and installers can&apos;t run on Linux.</source>
+        <translation>لا تعمل تطبيقات macOS ومثبّتاتها على Linux.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/runview.py"/>
+        <source>Show contents</source>
+        <translation>عرض المحتويات</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/runview.py"/>
+        <source>Cancel</source>
+        <translation>إلغاء</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/runview.py"/>
+        <source>Close</source>
+        <translation>إغلاق</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/runview.py"/>
+        <source>No text editor is set up to open “{name}”.</source>
+        <translation>لا يوجد محرر نصوص مُعدّ لفتح «{name}».</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/runview.py"/>
+        <source>Couldn&apos;t make “{name}” executable: {error}</source>
+        <translation>تعذّر جعل «{name}» قابلاً للتنفيذ: {error}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/runview.py"/>
+        <source>Started “{name}”.</source>
+        <translation>بدأ «{name}».</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/runview.py"/>
+        <source>Couldn&apos;t start “{name}”: {error}</source>
+        <translation>تعذّر بدء «{name}»: {error}</translation>
+    </message>
+</context>
+<context>
     <name>grimoire.spells.vaultl.tidy</name>
     <message>
         <location filename="../../grimoire/spells/vaultl/tidy.py"/>

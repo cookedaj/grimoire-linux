@@ -505,6 +505,169 @@ This can&apos;t be undone.</source>
     </message>
 </context>
 <context>
+    <name>grimoire.spells.vaultl.runview</name>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/runview.py"/>
+        <source>Check whether the app has a Linux version (.deb, AppImage or Flatpak).</source>
+        <translation>看看这个应用有没有 Linux 版本（.deb、AppImage 或 Flatpak）。</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/runview.py"/>
+        <source>Run “{name}”?</source>
+        <translation>运行“{name}”？</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/runview.py"/>
+        <source>This is a program. It runs with your permissions and can change or delete your files, so only run programs you trust.</source>
+        <translation>这是一个程序。它以你的权限运行，可能会修改或删除你的文件，所以只运行你信任的程序。</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/runview.py"/>
+        <source>This is a script. It runs with your permissions and can change or delete your files, so only run scripts you trust.</source>
+        <translation>这是一个脚本。它以你的权限运行，可能会修改或删除你的文件，所以只运行你信任的脚本。</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/runview.py"/>
+        <source>It isn&apos;t marked as executable yet (usual for a fresh download). Making it executable lets it run, for you only.</source>
+        <translation>它还没有被标记为可执行（刚下载的文件通常如此）。设为可执行后即可运行，仅对你有效。</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/runview.py"/>
+        <source>Open as text</source>
+        <translation>以文本方式打开</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/runview.py"/>
+        <source>Run</source>
+        <translation>运行</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/runview.py"/>
+        <source>Make executable and run</source>
+        <translation>设为可执行并运行</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/runview.py"/>
+        <source>Open “{name}”?</source>
+        <translation>打开“{name}”？</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/runview.py"/>
+        <source>This launcher opens the address below.</source>
+        <translation>此启动器会打开下面的地址。</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/runview.py"/>
+        <source>Open link</source>
+        <translation>打开链接</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/runview.py"/>
+        <source>Start “{name}”?</source>
+        <translation>启动“{name}”？</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/runview.py"/>
+        <source>This launcher runs the command below. Only start launchers you trust.</source>
+        <translation>此启动器会运行下面的命令。只启动你信任的启动器。</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/runview.py"/>
+        <source>This launcher isn&apos;t marked as trusted. Launchers can run any command, so check the one below before you start it.</source>
+        <translation>此启动器未被标记为可信。启动器可以运行任何命令，所以启动前请先检查下面的命令。</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/runview.py"/>
+        <source>Start</source>
+        <translation>启动</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/runview.py"/>
+        <source>Trust and start</source>
+        <translation>信任并启动</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/runview.py"/>
+        <source>“{name}” can&apos;t be started</source>
+        <translation>无法启动“{name}”</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/runview.py"/>
+        <source>This launcher has no command to run.</source>
+        <translation>此启动器没有可运行的命令。</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/runview.py"/>
+        <source>“{name}” is a Windows program</source>
+        <translation>“{name}”是 Windows 程序</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/runview.py"/>
+        <source>Linux can&apos;t run Windows programs directly.</source>
+        <translation>Linux 无法直接运行 Windows 程序。</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/runview.py"/>
+        <source>A Windows compatibility tool is installed and may run it, though not every program works. Only run programs you trust.</source>
+        <translation>已安装 Windows 兼容工具，或许可以运行它，但并非所有程序都能正常工作。只运行你信任的程序。</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/runview.py"/>
+        <source>Open with {runner}</source>
+        <translation>用 {runner} 打开</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/runview.py"/>
+        <source>No Windows compatibility tool (Wine, Bottles or Protontricks) is installed.</source>
+        <translation>未安装 Windows 兼容工具（Wine、Bottles 或 Protontricks）。</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/runview.py"/>
+        <source>“{name}” is for macOS</source>
+        <translation>“{name}”是 macOS 程序</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/runview.py"/>
+        <source>macOS apps and installers can&apos;t run on Linux.</source>
+        <translation>macOS 应用和安装包无法在 Linux 上运行。</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/runview.py"/>
+        <source>Show contents</source>
+        <translation>显示内容</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/runview.py"/>
+        <source>Cancel</source>
+        <translation>取消</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/runview.py"/>
+        <source>Close</source>
+        <translation>关闭</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/runview.py"/>
+        <source>No text editor is set up to open “{name}”.</source>
+        <translation>没有设置可以打开“{name}”的文本编辑器。</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/runview.py"/>
+        <source>Couldn&apos;t make “{name}” executable: {error}</source>
+        <translation>无法将“{name}”设为可执行：{error}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/runview.py"/>
+        <source>Started “{name}”.</source>
+        <translation>已启动“{name}”。</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/runview.py"/>
+        <source>Couldn&apos;t start “{name}”: {error}</source>
+        <translation>无法启动“{name}”：{error}</translation>
+    </message>
+</context>
+<context>
     <name>grimoire.spells.vaultl.tidy</name>
     <message>
         <location filename="../../grimoire/spells/vaultl/tidy.py"/>

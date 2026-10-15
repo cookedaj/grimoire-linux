@@ -526,6 +526,169 @@ This can&apos;t be undone.</source>
     </message>
 </context>
 <context>
+    <name>grimoire.spells.vaultl.runview</name>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/runview.py"/>
+        <source>Check whether the app has a Linux version (.deb, AppImage or Flatpak).</source>
+        <translation>دیکھیں کہ کیا ایپ کا Linux ورژن موجود ہے (‎.deb، AppImage یا Flatpak)۔</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/runview.py"/>
+        <source>Run “{name}”?</source>
+        <translation>‏“{name}” چلائیں؟</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/runview.py"/>
+        <source>This is a program. It runs with your permissions and can change or delete your files, so only run programs you trust.</source>
+        <translation>یہ ایک پروگرام ہے۔ یہ آپ کی اجازتوں سے چلتا ہے اور آپ کی فائلیں بدل یا مٹا سکتا ہے، اس لیے صرف قابلِ اعتماد پروگرام ہی چلائیں۔</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/runview.py"/>
+        <source>This is a script. It runs with your permissions and can change or delete your files, so only run scripts you trust.</source>
+        <translation>یہ ایک اسکرپٹ ہے۔ یہ آپ کی اجازتوں سے چلتا ہے اور آپ کی فائلیں بدل یا مٹا سکتا ہے، اس لیے صرف قابلِ اعتماد اسکرپٹ ہی چلائیں۔</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/runview.py"/>
+        <source>It isn&apos;t marked as executable yet (usual for a fresh download). Making it executable lets it run, for you only.</source>
+        <translation>اسے ابھی قابلِ اجرا نشان زد نہیں کیا گیا (نئے ڈاؤن لوڈ میں یہ عام ہے)۔ قابلِ اجرا بنانے سے یہ چل سکے گا، صرف آپ کے لیے۔</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/runview.py"/>
+        <source>Open as text</source>
+        <translation>متن کے طور پر کھولیں</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/runview.py"/>
+        <source>Run</source>
+        <translation>چلائیں</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/runview.py"/>
+        <source>Make executable and run</source>
+        <translation>قابلِ اجرا بنا کر چلائیں</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/runview.py"/>
+        <source>Open “{name}”?</source>
+        <translation>‏“{name}” کھولیں؟</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/runview.py"/>
+        <source>This launcher opens the address below.</source>
+        <translation>یہ لانچر نیچے دیا گیا پتہ کھولتا ہے۔</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/runview.py"/>
+        <source>Open link</source>
+        <translation>لنک کھولیں</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/runview.py"/>
+        <source>Start “{name}”?</source>
+        <translation>‏“{name}” شروع کریں؟</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/runview.py"/>
+        <source>This launcher runs the command below. Only start launchers you trust.</source>
+        <translation>یہ لانچر نیچے دی گئی کمانڈ چلاتا ہے۔ صرف قابلِ اعتماد لانچر ہی شروع کریں۔</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/runview.py"/>
+        <source>This launcher isn&apos;t marked as trusted. Launchers can run any command, so check the one below before you start it.</source>
+        <translation>یہ لانچر قابلِ اعتماد نشان زد نہیں ہے۔ لانچر کوئی بھی کمانڈ چلا سکتے ہیں، اس لیے شروع کرنے سے پہلے نیچے دی گئی کمانڈ دیکھ لیں۔</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/runview.py"/>
+        <source>Start</source>
+        <translation>شروع کریں</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/runview.py"/>
+        <source>Trust and start</source>
+        <translation>اعتماد کریں اور شروع کریں</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/runview.py"/>
+        <source>“{name}” can&apos;t be started</source>
+        <translation>‏“{name}” شروع نہیں ہو سکتا</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/runview.py"/>
+        <source>This launcher has no command to run.</source>
+        <translation>اس لانچر میں چلانے کے لیے کوئی کمانڈ نہیں ہے۔</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/runview.py"/>
+        <source>“{name}” is a Windows program</source>
+        <translation>‏“{name}” ایک Windows پروگرام ہے</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/runview.py"/>
+        <source>Linux can&apos;t run Windows programs directly.</source>
+        <translation>‏Linux براہِ راست Windows پروگرام نہیں چلا سکتا۔</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/runview.py"/>
+        <source>A Windows compatibility tool is installed and may run it, though not every program works. Only run programs you trust.</source>
+        <translation>‏Windows سے مطابقت کا ایک ٹول انسٹال ہے جو اسے چلا سکتا ہے، اگرچہ ہر پروگرام کام نہیں کرتا۔ صرف قابلِ اعتماد پروگرام ہی چلائیں۔</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/runview.py"/>
+        <source>Open with {runner}</source>
+        <translation>‏{runner} سے کھولیں</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/runview.py"/>
+        <source>No Windows compatibility tool (Wine, Bottles or Protontricks) is installed.</source>
+        <translation>‏Windows سے مطابقت کا کوئی ٹول (Wine، Bottles یا Protontricks) انسٹال نہیں ہے۔</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/runview.py"/>
+        <source>“{name}” is for macOS</source>
+        <translation>‏“{name}” macOS کے لیے ہے</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/runview.py"/>
+        <source>macOS apps and installers can&apos;t run on Linux.</source>
+        <translation>‏macOS کی ایپس اور انسٹالر Linux پر نہیں چلتے۔</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/runview.py"/>
+        <source>Show contents</source>
+        <translation>مواد دکھائیں</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/runview.py"/>
+        <source>Cancel</source>
+        <translation>منسوخ کریں</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/runview.py"/>
+        <source>Close</source>
+        <translation>بند کریں</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/runview.py"/>
+        <source>No text editor is set up to open “{name}”.</source>
+        <translation>‏“{name}” کھولنے کے لیے کوئی ٹیکسٹ ایڈیٹر سیٹ نہیں ہے۔</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/runview.py"/>
+        <source>Couldn&apos;t make “{name}” executable: {error}</source>
+        <translation>‏“{name}” کو قابلِ اجرا نہیں بنایا جا سکا: {error}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/runview.py"/>
+        <source>Started “{name}”.</source>
+        <translation>‏“{name}” شروع ہو گیا۔</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/runview.py"/>
+        <source>Couldn&apos;t start “{name}”: {error}</source>
+        <translation>‏“{name}” شروع نہیں ہو سکا: {error}</translation>
+    </message>
+</context>
+<context>
     <name>grimoire.spells.vaultl.tidy</name>
     <message>
         <location filename="../../grimoire/spells/vaultl/tidy.py"/>

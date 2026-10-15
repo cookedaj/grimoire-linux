@@ -526,6 +526,169 @@ Isso não pode ser desfeito.</numerusform>
     </message>
 </context>
 <context>
+    <name>grimoire.spells.vaultl.runview</name>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/runview.py"/>
+        <source>Check whether the app has a Linux version (.deb, AppImage or Flatpak).</source>
+        <translation>Verifique se o app tem uma versão para Linux (.deb, AppImage ou Flatpak).</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/runview.py"/>
+        <source>Run “{name}”?</source>
+        <translation>Executar “{name}”?</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/runview.py"/>
+        <source>This is a program. It runs with your permissions and can change or delete your files, so only run programs you trust.</source>
+        <translation>Isto é um programa. Ele roda com as suas permissões e pode alterar ou apagar seus arquivos, então só execute programas em que você confia.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/runview.py"/>
+        <source>This is a script. It runs with your permissions and can change or delete your files, so only run scripts you trust.</source>
+        <translation>Isto é um script. Ele roda com as suas permissões e pode alterar ou apagar seus arquivos, então só execute scripts em que você confia.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/runview.py"/>
+        <source>It isn&apos;t marked as executable yet (usual for a fresh download). Making it executable lets it run, for you only.</source>
+        <translation>Ele ainda não está marcado como executável (normal em um download recente). Torná-lo executável permite que ele rode, só para você.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/runview.py"/>
+        <source>Open as text</source>
+        <translation>Abrir como texto</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/runview.py"/>
+        <source>Run</source>
+        <translation>Executar</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/runview.py"/>
+        <source>Make executable and run</source>
+        <translation>Tornar executável e executar</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/runview.py"/>
+        <source>Open “{name}”?</source>
+        <translation>Abrir “{name}”?</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/runview.py"/>
+        <source>This launcher opens the address below.</source>
+        <translation>Este atalho abre o endereço abaixo.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/runview.py"/>
+        <source>Open link</source>
+        <translation>Abrir link</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/runview.py"/>
+        <source>Start “{name}”?</source>
+        <translation>Iniciar “{name}”?</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/runview.py"/>
+        <source>This launcher runs the command below. Only start launchers you trust.</source>
+        <translation>Este atalho executa o comando abaixo. Só inicie atalhos em que você confia.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/runview.py"/>
+        <source>This launcher isn&apos;t marked as trusted. Launchers can run any command, so check the one below before you start it.</source>
+        <translation>Este atalho não está marcado como confiável. Atalhos podem executar qualquer comando, então confira o comando abaixo antes de iniciar.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/runview.py"/>
+        <source>Start</source>
+        <translation>Iniciar</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/runview.py"/>
+        <source>Trust and start</source>
+        <translation>Confiar e iniciar</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/runview.py"/>
+        <source>“{name}” can&apos;t be started</source>
+        <translation>Não é possível iniciar “{name}”</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/runview.py"/>
+        <source>This launcher has no command to run.</source>
+        <translation>Este atalho não tem nenhum comando para executar.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/runview.py"/>
+        <source>“{name}” is a Windows program</source>
+        <translation>“{name}” é um programa do Windows</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/runview.py"/>
+        <source>Linux can&apos;t run Windows programs directly.</source>
+        <translation>O Linux não consegue executar programas do Windows diretamente.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/runview.py"/>
+        <source>A Windows compatibility tool is installed and may run it, though not every program works. Only run programs you trust.</source>
+        <translation>Há uma ferramenta de compatibilidade com o Windows instalada que pode executá-lo, mas nem todo programa funciona. Só execute programas em que você confia.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/runview.py"/>
+        <source>Open with {runner}</source>
+        <translation>Abrir com {runner}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/runview.py"/>
+        <source>No Windows compatibility tool (Wine, Bottles or Protontricks) is installed.</source>
+        <translation>Nenhuma ferramenta de compatibilidade com o Windows (Wine, Bottles ou Protontricks) está instalada.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/runview.py"/>
+        <source>“{name}” is for macOS</source>
+        <translation>“{name}” é para macOS</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/runview.py"/>
+        <source>macOS apps and installers can&apos;t run on Linux.</source>
+        <translation>Apps e instaladores de macOS não rodam no Linux.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/runview.py"/>
+        <source>Show contents</source>
+        <translation>Mostrar conteúdo</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/runview.py"/>
+        <source>Cancel</source>
+        <translation>Cancelar</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/runview.py"/>
+        <source>Close</source>
+        <translation>Fechar</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/runview.py"/>
+        <source>No text editor is set up to open “{name}”.</source>
+        <translation>Nenhum editor de texto está configurado para abrir “{name}”.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/runview.py"/>
+        <source>Couldn&apos;t make “{name}” executable: {error}</source>
+        <translation>Não foi possível tornar “{name}” executável: {error}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/runview.py"/>
+        <source>Started “{name}”.</source>
+        <translation>“{name}” iniciado.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/runview.py"/>
+        <source>Couldn&apos;t start “{name}”: {error}</source>
+        <translation>Não foi possível iniciar “{name}”: {error}</translation>
+    </message>
+</context>
+<context>
     <name>grimoire.spells.vaultl.tidy</name>
     <message>
         <location filename="../../grimoire/spells/vaultl/tidy.py"/>
