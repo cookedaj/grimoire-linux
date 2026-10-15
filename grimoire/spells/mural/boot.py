@@ -1,8 +1,9 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
-"""Boot tab: Grimoire's Plymouth boot animation, built on Plymouth's stock "two-step" engine
+"""Boot tab: Grimoire's Plymouth boot animations, built on Plymouth's stock "two-step" engine
 (the one Kubuntu's own logo uses), so password prompts and messages keep working.
 
-Each design is a looping throbber rendered here frame by frame; installing needs root (pkexec).
+Each design is a looping throbber rendered here frame by frame (throbber-NNNN.png); every design installs the
+same way, as the "grimoire" theme, so the root helper needs nothing new. Installing needs root (pkexec).
 """
 import math
 import shutil
@@ -32,7 +33,26 @@ SS = 3                                        # supersampling for smooth edges
 DESIGNS = [
     Design("pulse", tr_noop("grimoire.spells.mural.boot", "Pulse"),
            tr_noop("grimoire.spells.mural.boot", "The five-leaf clover breathing slowly in the dark.")),
+    Design("arc", tr_noop("grimoire.spells.mural.boot", "Arc"),
+           tr_noop("grimoire.spells.mural.boot", "A hairline ring with one bright arc sweeping round it.")),
+    Design("orbit", tr_noop("grimoire.spells.mural.boot", "Orbit"),
+           tr_noop("grimoire.spells.mural.boot", "The clover standing still while a small dot circles it.")),
+    Design("dots", tr_noop("grimoire.spells.mural.boot", "Dots"),
+           tr_noop("grimoire.spells.mural.boot", "Three dots swelling and fading one after another.")),
+    Design("scanner", tr_noop("grimoire.spells.mural.boot", "Scanner"),
+           tr_noop("grimoire.spells.mural.boot", "A short bright segment gliding back and forth along a hairline.")),
+    Design("ripple", tr_noop("grimoire.spells.mural.boot", "Ripple"),
+           tr_noop("grimoire.spells.mural.boot", "Rings spreading out from the middle and fading away.")),
+    Design("spin", tr_noop("grimoire.spells.mural.boot", "Spin"),
+           tr_noop("grimoire.spells.mural.boot", "The four-leaf clover turning slowly on its stem.")),
+    Design("ticks", tr_noop("grimoire.spells.mural.boot", "Ticks"),
+           tr_noop("grimoire.spells.mural.boot",
+                   "Twelve short ticks in a circle, the bright one leaving a fading trail.")),
+    Design("eclipse", tr_noop("grimoire.spells.mural.boot", "Eclipse"),
+           tr_noop("grimoire.spells.mural.boot", "A white moon crossed again and again by a black shadow.")),
 ]
+# frames per loop when a design wants a slower one than FRAMES (two-step plays the throbber at ~30 fps)
+LOOP = {"spin": 96, "eclipse": 72}
 
 _clover_cache: dict[tuple[str, int], Image.Image] = {}
 
@@ -60,16 +80,75 @@ def _done(img: Image.Image, w, h) -> Image.Image:
 
 def frames(design_id: str, scale: float) -> list[Image.Image]:
     """The looping animation for one design, as RGBA frames on transparent."""
-    out = []
-    for i in range(FRAMES):
-        t = i / FRAMES                                    # 0..1 around the loop
-        wave = 0.5 - 0.5 * math.cos(2 * math.pi * t)      # 0→1→0
-        w = h = int(200 * scale)                          # Pulse: the clover breathing
-        c = _rgba(w, h)
-        size = int(96 * scale * SS * (0.96 + 0.06 * wave))
-        _paste_white(c, _clover(size), (w * SS / 2, h * SS / 2), 0.75 + 0.25 * wave)
-        out.append(_done(c, w, h))
-    return out
+    n = LOOP.get(design_id, FRAMES)
+    return [_frame(design_id, scale, i / n) for i in range(n)]
+
+
+def _frame(design_id: str, scale: float, t: float) -> Image.Image:
+    """One frame at t (0..1 around the loop). Drawn SS times larger, then scaled down for smooth edges."""
+    wave = 0.5 - 0.5 * math.cos(2 * math.pi * t)          # 0→1→0
+    w = h = int(200 * scale)
+    if design_id == "scanner":
+        w, h = int(320 * scale), int(40 * scale)
+    c = _rgba(w, h)
+    d = ImageDraw.Draw(c)
+    k = scale * SS                                        # design units → canvas pixels
+    cx, cy = w * SS / 2, h * SS / 2
+    white = lambda a: (255, 255, 255, int(255 * a))
+
+    def circle(r, **kw):
+        d.ellipse((cx - r, cy - r, cx + r, cy + r), **kw)
+
+    if design_id == "arc":
+        r, lw = 62 * k, max(1, int(2.2 * k))
+        circle(r, outline=white(0.18), width=lw)
+        start = t * 360 - 90
+        d.arc((cx - r, cy - r, cx + r, cy + r), start, start + 80, fill=white(1), width=lw)
+    elif design_id == "orbit":
+        circle(70 * k, outline=white(0.16), width=max(1, int(1.6 * k)))
+        _paste_white(c, _clover(int(64 * k)), (cx, cy), 0.95)
+        a = 2 * math.pi * t - math.pi / 2
+        x, y, r = cx + 70 * k * math.cos(a), cy + 70 * k * math.sin(a), 6 * k
+        d.ellipse((x - r, y - r, x + r, y + r), fill=white(1))
+    elif design_id == "dots":
+        for i in range(3):
+            v = 0.5 - 0.5 * math.cos(2 * math.pi * (t - i / 6))
+            x, r = cx + (i - 1) * 34 * k, (5 + 4 * v) * k
+            d.ellipse((x - r, cy - r, x + r, cy + r), fill=white(0.3 + 0.7 * v))
+    elif design_id == "scanner":
+        lw = max(1, int(1.6 * k))
+        d.line((0, cy, w * SS, cy), fill=white(0.16), width=lw)
+        pos = 0.5 - 0.5 * math.cos(2 * math.pi * t)       # eases in and out at each end
+        seg = 70 * k
+        x = pos * (w * SS - seg)
+        d.line((x, cy, x + seg, cy), fill=white(1), width=max(1, int(3 * k)))
+    elif design_id == "ripple":
+        for i in range(3):
+            p = (t + i / 3) % 1
+            r = (18 + 78 * p) * k
+            circle(r, outline=white((1 - p) ** 1.5), width=max(1, int(2 * k)))
+        circle(7 * k, fill=white(1))
+    elif design_id == "spin":
+        m = _clover(int(104 * k), leaves=4).rotate(-360 * t, Image.BICUBIC)
+        _paste_white(c, m, (cx, cy))
+    elif design_id == "ticks":
+        head = t * 12
+        for i in range(12):
+            age = (head - i) % 12                            # 0 = the bright one, then its trail
+            a = 2 * math.pi * i / 12 - math.pi / 2
+            r0, r1 = 40 * k, 66 * k
+            d.line((cx + r0 * math.cos(a), cy + r0 * math.sin(a), cx + r1 * math.cos(a), cy + r1 * math.sin(a)),
+                   fill=white(max(0.14, 1 - age / 7)), width=max(1, int(5 * k)))
+    elif design_id == "eclipse":
+        r = 44 * k
+        circle(r, fill=white(1))
+        sx = cx + (2 * t - 1) * 2.2 * r * 1.05              # the shadow crosses from left to right
+        d.ellipse((sx - r * 1.02, cy - r * 1.02, sx + r * 1.02, cy + r * 1.02), fill=(0, 0, 0, 0))
+        circle(r, outline=white(0.22), width=max(1, int(1.6 * k)))
+    else:                                                 # Pulse: the clover breathing
+        size = int(96 * k * (0.96 + 0.06 * wave))
+        _paste_white(c, _clover(size), (cx, cy), 0.75 + 0.25 * wave)
+    return _done(c, w, h)
 
 
 def preview(design_id: str, opts: dict, frame: int = FRAMES // 3, w=1280, h=720) -> Image.Image:

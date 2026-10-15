@@ -4,6 +4,7 @@ plus community splash screens.
 
 Templates live in splash_designs/<id>.qml with these placeholders:
     @TAGLINE@ (JSON string)  @SHOW_TAGLINE@ (true/false)  @SPEED@ (0.6 slow … 1.6 fast)
+and the images clover5.svg, clover4.svg (white) and clover5-black.svg, clover4-black.svg next to them.
 """
 import hashlib
 import json
@@ -28,12 +29,39 @@ INSTALLED = HOME / ".local/share/plasma/look-and-feel" / PACKAGE_ID
 PREVIEWS = CACHE / "splash-previews"
 SPEEDS = {tr_noop("grimoire.spells.mural.splash", "Slow"): 0.7, tr_noop("grimoire.spells.mural.splash", "Normal"): 1.0,
           tr_noop("grimoire.spells.mural.splash", "Fast"): 1.5}
+EDGE = {"hairline"}                          # designs drawn at the screen's edges: their cards show the whole frame
 DEFAULTS = {"tagline": "SURPASS YOUR LIMITS", "show_tagline": True, "speed": "Normal"}
 
 DESIGNS = [
     Design("breathe", tr_noop("grimoire.spells.mural.splash", "Breathe"),
            tr_noop("grimoire.spells.mural.splash",
                    "The five-leaf clover breathing slowly above a hairline progress bar.")),
+    Design("orbit", tr_noop("grimoire.spells.mural.splash", "Orbit"),
+           tr_noop("grimoire.spells.mural.splash", "A single white dot circling the clover on a hairline track.")),
+    Design("steps", tr_noop("grimoire.spells.mural.splash", "Steps"),
+           tr_noop("grimoire.spells.mural.splash",
+                   "Six dots under the clover, one filling in for each step of Plasma's startup.")),
+    Design("ripple", tr_noop("grimoire.spells.mural.splash", "Ripple"),
+           tr_noop("grimoire.spells.mural.splash",
+                   "Thin rings spreading out from the clover like drops on still water.")),
+    Design("spinner", tr_noop("grimoire.spells.mural.splash", "Spinner"),
+           tr_noop("grimoire.spells.mural.splash",
+                   "A hairline arc sweeping round the clover, with the percentage below.")),
+    Design("bloom", tr_noop("grimoire.spells.mural.splash", "Bloom"),
+           tr_noop("grimoire.spells.mural.splash",
+                   "The four-leaf clover slowly turning and opening up as Plasma loads.")),
+    Design("wordmark", tr_noop("grimoire.spells.mural.splash", "Wordmark"),
+           tr_noop("grimoire.spells.mural.splash",
+                   "GRIMOIRE in thin capitals, lit letter by letter as Plasma loads.")),
+    Design("typewriter", tr_noop("grimoire.spells.mural.splash", "Typewriter"),
+           tr_noop("grimoire.spells.mural.splash",
+                   "Your tagline typed out in monospace with a blinking block cursor and a text bar.")),
+    Design("hairline", tr_noop("grimoire.spells.mural.splash", "Hairline"),
+           tr_noop("grimoire.spells.mural.splash",
+                   "Almost nothing: a wordmark and one line across the bottom of the screen.")),
+    Design("daylight", tr_noop("grimoire.spells.mural.splash", "Daylight"),
+           tr_noop("grimoire.spells.mural.splash",
+                   "Inverted: a black clover and bar on soft white. For bright setups.")),
 ]
 
 
@@ -49,6 +77,8 @@ def build(design_id: str, opts: dict, dest: Path):
     (dest / "contents/splash/Splash.qml").write_text(qml)
     for svg in ("clover5.svg", "clover4.svg"):
         shutil.copy(ASSETS / svg, dest / "contents/splash/images" / svg)
+        black = (ASSETS / svg).read_text().replace("#fff", "#0a0a0a")          # for the light designs
+        (dest / "contents/splash/images" / svg.replace(".svg", "-black.svg")).write_text(black)
     (dest / "metadata.json").write_text(json.dumps({
         "KPackageStructure": "Plasma/LookAndFeel",
         "KPlugin": {"Id": PACKAGE_ID, "Name": "Grimoire", "Description": "Grimoire splash (MuraL)",
@@ -128,6 +158,15 @@ class SplashTab(ScreenTab):
 
     def preview(self, design, o):
         return render_preview(design.id, o)
+
+    def thumbnail(self, design, o):
+        """Splashes are small things in the middle of a big screen, so cards zoom in on the middle half
+        (Hairline lives at the bottom edge and keeps the whole frame)."""
+        img = render_preview(design.id, o)
+        if design.id in EDGE:
+            return img
+        w, h = img.width(), img.height()
+        return img.copy(w // 4, h // 4, w // 2, h // 2)
 
     def _play(self):
         if self.current().id.startswith("store:"):
