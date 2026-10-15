@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
-"""Terminal tab: Konsole in black & white. a grayscale palette (Ink) + font, size, transparency, padding,
-cursor, and an optional shell prompt.
+"""Terminal tab: Konsole in black & white. Grayscale palettes (dark and light), a few muted monochrome ones,
++ font, size, transparency, padding, cursor, and an optional shell prompt.
 
 Writes ~/.local/share/konsole/Grimoire.profile + Grimoire-<palette>.colorscheme, makes Grimoire the default
 profile, and (if a prompt style is chosen) a marked block in ~/.bashrc.
@@ -18,28 +18,63 @@ from grimoire.spells.mural.kde import kwrite
 from grimoire.spells.mural.screens import (Choice, Design, ScreenTab, WrapButton, WrapCheck, community_designs,
                                            community_entry)
 from grimoire.spells.mural.backdrop import wallpaper as _wallpaper
+from grimoire.spells.mural.fonts import installed
 from grimoire.widgets import Slider
 
 KONSOLE = HOME / ".local/share/konsole"
 BASHRC = HOME / ".bashrc"
-FONTS = ["IBM Plex Mono", "DM Mono", "Hack", "DejaVu Sans Mono"]
+FONTS = ["IBM Plex Mono", "DM Mono", "Hack", "DejaVu Sans Mono", "Ubuntu Sans Mono", "Noto Sans Mono",
+         "Liberation Mono", "Nimbus Mono PS", "JetBrains Mono", "Fira Code"]
 CURSORS = {tr_noop("grimoire.spells.mural.terminal", "Block"): 0,
            tr_noop("grimoire.spells.mural.terminal", "I-beam"): 1,
            tr_noop("grimoire.spells.mural.terminal", "Underline"): 2}
 PROMPTS = [tr_noop("grimoire.spells.mural.terminal", "Keep mine"), tr_noop("grimoire.spells.mural.terminal", "Minimal"),
-           tr_noop("grimoire.spells.mural.terminal", "Clover"), tr_noop("grimoire.spells.mural.terminal", "Two-line")]
+           tr_noop("grimoire.spells.mural.terminal", "Clover"), tr_noop("grimoire.spells.mural.terminal", "Two-line"),
+           tr_noop("grimoire.spells.mural.terminal", "Lambda"), tr_noop("grimoire.spells.mural.terminal", "Arrow"),
+           tr_noop("grimoire.spells.mural.terminal", "Frame"), tr_noop("grimoire.spells.mural.terminal", "Clock")]
 DEFAULTS = {"font": "IBM Plex Mono", "size": 12, "transparency": 0, "blur": True, "padding": 14,
             "cursor": "Block", "prompt": "Keep mine"}
 BLOCK_START, BLOCK_END = "# >>> grimoire prompt >>>", "# <<< grimoire prompt <<<"
 
-# ANSI order: black red green yellow blue magenta cyan white -> distinct grays
-#            bg     fg    ansi (normal)                                 dark?
-PALETTES = {
-    "ink":      (0x00, 0xe6, [0x2a, 0xb4, 0xd4, 0xec, 0x8c, 0xa6, 0xc6, 0xe6], True),
+# ANSI order: black red green yellow blue magenta cyan white -> distinct grays (or shades of one muted tint).
+# A color is a gray level (int) or "#rrggbb".
+#                 bg     fg    ansi (normal)                                   dark?
+PALETTES = {      # ids never change: saved looks and shared setups name them
+    "ink":       (0x00, 0xe6, [0x2a, 0xb4, 0xd4, 0xec, 0x8c, 0xa6, 0xc6, 0xe6], True),
+    "graphite":  (0x1c, 0xcf, [0x3c, 0xa4, 0xc0, 0xd8, 0x86, 0x9a, 0xb4, 0xcf], True),
+    "slate":     (0x2a, 0xf0, [0x4a, 0xbc, 0xd8, 0xf4, 0x9a, 0xb0, 0xcc, 0xf0], True),
+    "fog":       (0x3a, 0xe2, [0x58, 0xc2, 0xd8, 0xf0, 0xa2, 0xb6, 0xcc, 0xe2], True),
+    "stark":     (0x00, 0xff, [0x50, 0xff, 0xe4, 0xff, 0xb4, 0xd0, 0xf0, 0xff], True),
+    "paper":     (0xfa, 0x1a, [0x1a, 0x5a, 0x40, 0x2c, 0x70, 0x50, 0x60, 0xb4], False),
+    "newsprint": (0xe6, 0x26, [0x26, 0x60, 0x48, 0x36, 0x76, 0x58, 0x68, 0xa8], False),
+    "phosphor":  ("#070b07", "#a6c9a0", ["#1f2a1e", "#7ea078", "#9dc496", "#c4e4be", "#6a8a64", "#86a880",
+                                         "#94b88e", "#a6c9a0"], True),
+    "amber":     ("#0d0a06", "#dcb174", ["#2c2216", "#a8834e", "#c99e62", "#f0cc94", "#8c6c40", "#b48c56",
+                                         "#c49a60", "#dcb174"], True),
+    "ink-muted": (0x00, 0xe6, ["#2a2a2a", "#b48282", "#8fae8f", "#c8ba8c", "#8296b0", "#a68ca6", "#88abab",
+                               "#e6e6e6"], True),
 }
 DESIGNS = [
     Design("ink", tr_noop("grimoire.spells.mural.terminal", "Ink"), tr_noop(
         "grimoire.spells.mural.terminal", "Pure black, soft white text. Every color becomes its own shade of gray.")),
+    Design("graphite", tr_noop("grimoire.spells.mural.terminal", "Graphite"), tr_noop(
+        "grimoire.spells.mural.terminal", "Charcoal background with gentle gray text. Easy on the eyes at night.")),
+    Design("slate", tr_noop("grimoire.spells.mural.terminal", "Slate"), tr_noop(
+        "grimoire.spells.mural.terminal", "A dark gray slate with bright chalk-white text.")),
+    Design("fog", tr_noop("grimoire.spells.mural.terminal", "Fog"), tr_noop(
+        "grimoire.spells.mural.terminal", "Mid gray and low contrast: calm and soft for long sessions.")),
+    Design("stark", tr_noop("grimoire.spells.mural.terminal", "Stark"), tr_noop(
+        "grimoire.spells.mural.terminal", "Black and pure white at full contrast, for the sharpest possible text.")),
+    Design("paper", tr_noop("grimoire.spells.mural.terminal", "Paper"), tr_noop(
+        "grimoire.spells.mural.terminal", "White page, near-black ink. Grays in reverse for daylight.")),
+    Design("newsprint", tr_noop("grimoire.spells.mural.terminal", "Newsprint"), tr_noop(
+        "grimoire.spells.mural.terminal", "Light gray paper with charcoal text: bright but never glaring.")),
+    Design("phosphor", tr_noop("grimoire.spells.mural.terminal", "Phosphor"), tr_noop(
+        "grimoire.spells.mural.terminal", "An old green-screen monitor, muted: every color is a shade of soft green.")),
+    Design("amber", tr_noop("grimoire.spells.mural.terminal", "Amber"), tr_noop(
+        "grimoire.spells.mural.terminal", "A muted amber monochrome screen, warm and quiet.")),
+    Design("ink-muted", tr_noop("grimoire.spells.mural.terminal", "Ink Muted"), tr_noop(
+        "grimoire.spells.mural.terminal", "Ink with faded real colors, for when you need red and green told apart.")),
 ]
 SAMPLE = [("prompt", "ls"), ("ls", ""), ("prompt", "git status"), ("out", "On branch main"),
           ("out", "Changes not staged for commit:"), ("mod", "	modified:   grimoire/spells/mural/terminal.py"),
@@ -47,8 +82,31 @@ SAMPLE = [("prompt", "ls"), ("ls", ""), ("prompt", "git status"), ("out", "On br
           ("prompt", "")]
 
 
-def _rgb(v):
-    return f"{v},{v},{v}"
+def _c(v) -> tuple[int, int, int]:
+    """A palette color as (r, g, b): a gray level or "#rrggbb"."""
+    if isinstance(v, int):
+        return v, v, v
+    if isinstance(v, tuple):
+        return v
+    q = QColor(v)
+    return q.red(), q.green(), q.blue()
+
+
+def _mix(a, b, t: float) -> tuple[int, int, int]:
+    """t of a + (1 - t) of b."""
+    return tuple(int(x * t + y * (1 - t)) for x, y in zip(_c(a), _c(b)))
+
+
+def _shift(v, d: int) -> tuple[int, int, int]:
+    return tuple(min(255, max(0, x + d)) for x in _c(v))
+
+
+def _rgb(v) -> str:
+    return ",".join(str(x) for x in _c(v))
+
+
+def qcolor(v, alpha=255) -> QColor:
+    return QColor(*_c(v), alpha)
 
 
 def colorscheme(pid: str, o: dict) -> str:
@@ -62,15 +120,15 @@ def colorscheme(pid: str, o: dict) -> str:
     group("BackgroundIntense", bg)
     group("BackgroundFaint", bg)
     group("Foreground", fg)
-    group("ForegroundIntense", 0xff if dark else 0x00)
-    group("ForegroundFaint", int(fg * 0.6 + bg * 0.4))
+    group("ForegroundIntense", (_shift(fg, 40) if not isinstance(fg, int) else 0xff) if dark else 0x00)
+    group("ForegroundFaint", _mix(fg, bg, 0.6))
     for i, v in enumerate(ansi):
-        brighter = min(255, v + 24) if dark else max(0, v - 24)
         group(f"Color{i}", v)
-        group(f"Color{i}Intense", brighter)
-        group(f"Color{i}Faint", int(v * 0.6 + bg * 0.4))
+        group(f"Color{i}Intense", _shift(v, 24 if dark else -24))
+        group(f"Color{i}Faint", _mix(v, bg, 0.6))
     opacity = 1 - o["transparency"] / 100
-    lines.append(f"[General]\nDescription=Grimoire {pid.title()}\nOpacity={opacity:.2f}\n"
+    name = next((d.name for d in DESIGNS if d.id == pid), pid.title())
+    lines.append(f"[General]\nDescription=Grimoire {name}\nOpacity={opacity:.2f}\n"
                  f"Blur={'true' if o['blur'] and opacity < 1 else 'false'}\nWallpaper=\n")
     return "\n".join(lines)
 
@@ -101,6 +159,10 @@ def prompt_block(style: str) -> str:
         "Minimal": r"PS1='\[\e[2m\]\W\[\e[0m\] ❯ '",
         "Clover": r"PS1='\[\e[1m\]♣\[\e[0m\] \W › '",
         "Two-line": r"PS1='\n\[\e[2m\]\w\[\e[0m\]\n❯ '",
+        "Lambda": r"PS1='\[\e[1m\]λ\[\e[0m\] \W '",
+        "Arrow": r"PS1='\[\e[2m\]\W\[\e[0m\] → '",
+        "Frame": r"PS1='\n┌─ \[\e[1m\]\w\[\e[0m\]\n└─❯ '",
+        "Clock": r"PS1='\[\e[2m\]\A\[\e[0m\] \W ❯ '",
     }[style]
     return f"{BLOCK_START}\n# Written by Grimoire → MuraL → Terminal. Delete this block to undo.\n{ps1}\n{BLOCK_END}\n"
 
@@ -123,6 +185,14 @@ def _prompt_text(style: str) -> list[tuple[str, int]]:
         return [("♣", -2), (" Repo › ", -1)]
     if style == "Two-line":
         return [("~/Projects", 8), ("\n❯ ", -1)]
+    if style == "Lambda":
+        return [("λ", -2), (" Repo ", -1)]
+    if style == "Arrow":
+        return [("Repo", 8), (" → ", -1)]
+    if style == "Frame":
+        return [("┌─ ", -1), ("~/Projects", -2), ("\n└─❯ ", -1)]
+    if style == "Clock":
+        return [("21:47", 8), (" Repo ❯ ", -1)]
     return [("you@grimoire", 2), (":", -1), ("~/Projects", 4), ("$ ", -1)]
 
 
@@ -143,7 +213,7 @@ def render(pid: str, o: dict, w=1280, h=720) -> QImage:
     p.fillRect(QRectF(win.x(), win.y(), win.width(), title_h), QColor(18, 18, 18) if dark else QColor(228, 228, 228))
     alpha = int(255 * (1 - o["transparency"] / 100))
     body = QRectF(win.x(), win.y() + title_h, win.width(), win.height() - title_h)
-    p.fillRect(body, QColor(bg, bg, bg, alpha))
+    p.fillRect(body, qcolor(bg, alpha))
     p.setClipping(False)
     p.setPen(QColor(255, 255, 255, 30) if dark else QColor(0, 0, 0, 40))
     p.drawPath(shape)
@@ -153,14 +223,12 @@ def render(pid: str, o: dict, w=1280, h=720) -> QImage:
 
     def col(i):
         if i == -1:
-            return QColor(fg, fg, fg)
-        if i == -2:
-            return QColor(0xff, 0xff, 0xff) if dark else QColor(0, 0, 0)
+            return qcolor(fg)
+        if i == -2:                                     # intense foreground
+            return qcolor(_shift(fg, 40 if dark else -40) if not isinstance(fg, int) else (0xff if dark else 0))
         if i == 8:                                      # "faint" text
-            v = int(fg * 0.6 + bg * 0.4)
-            return QColor(v, v, v)
-        v = ansi[i]
-        return QColor(v, v, v)
+            return qcolor(_mix(fg, bg, 0.6))
+        return qcolor(ansi[i])
 
     font = QFont(o["font"], 1)
     font.setPixelSize(int(o["size"] * 1.25))
@@ -211,8 +279,9 @@ def render(pid: str, o: dict, w=1280, h=720) -> QImage:
 class TerminalTab(ScreenTab):
     key = "terminal"
     context = "grimoire.spells.mural.terminal"
-    subtitle = tr_noop("grimoire.spells.mural.terminal", "Konsole, your terminal. Every color becomes its own shade of "
-                       "gray so output stays readable. Applies to new Konsole windows.")
+    subtitle = tr_noop("grimoire.spells.mural.terminal", "Konsole, your terminal. Grayscale palettes turn every color "
+                       "into its own shade so output stays readable; a few muted ones add a soft tint. Applies to new "
+                       "Konsole windows.")
     apply_label = tr_noop("grimoire.spells.mural.terminal", "Apply to Konsole")
     store = ["konsole"]
 
@@ -222,7 +291,7 @@ class TerminalTab(ScreenTab):
     def build_options(self, lay):
         grid = QGridLayout()
         grid.setVerticalSpacing(8)
-        self.font = Choice([(f, f) for f in FONTS], self.changed)
+        self.font = Choice([(f, f) for f in FONTS if installed(f) or f == DEFAULTS["font"]], self.changed)
         self.size = Slider(8, 20, " pt", self.changed)
         self.transparency = Slider(0, 60, "%", self.changed)
         self.padding = Slider(0, 40, " px", self.changed)
@@ -255,6 +324,8 @@ class TerminalTab(ScreenTab):
 
     def set_options(self, o):
         o = {**DEFAULTS, **o}
+        if self.font.findData(o["font"]) < 0:            # saved before, uninstalled since: still shown
+            self.font.addItem(o["font"], o["font"])
         self.font.set_value(o["font"])
         self.size.setValue(o["size"])
         self.transparency.setValue(o["transparency"])
