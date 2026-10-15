@@ -26,7 +26,7 @@ from grimoire.glyphs import glyph
 from grimoire.i18n import tr, tr_noop
 from grimoire.jobs import Job
 from grimoire.paths import CACHE, HOME
-from grimoire.spells.vaultl import ops
+from grimoire.spells.vaultl import launch, ops, runview
 from grimoire.spells.vaultl.tidyview import PANELS, TidyPanel, ltr, when
 
 IMAGE_EXT = {".png", ".jpg", ".jpeg", ".webp", ".bmp", ".gif", ".avif", ".tif", ".tiff", ".svg"}
@@ -762,6 +762,10 @@ class VaultLPage(QWidget):
         self.open_path(Path(self.model.filePath(index)))
 
     def open_path(self, p: Path):
+        """Folders open here; programs, scripts and launchers get a question first (runview.py: KIO refuses to
+        start executables we hand it); everything else opens in its usual app."""
+        if runview.open_program(self, p, self.status.setText, self.navigate):
+            return
         if p.is_dir():
             self.navigate(p)
         else:
@@ -971,11 +975,7 @@ class VaultLPage(QWidget):
             if line.endswith(".desktop") and line not in apps and ":" not in line:
                 apps.append(line)
         for desktop_id in apps[:12]:
-            info = next((Path(d) / desktop_id for d in ("/usr/share/applications",
-                                                        str(HOME / ".local/share/applications"),
-                                                        "/var/lib/flatpak/exports/share/applications",
-                                                        str(HOME / ".local/share/flatpak/exports/share/applications"))
-                         if (Path(d) / desktop_id).is_file()), None)
+            info = launch.desktop_file(desktop_id)
             if not info:
                 continue
             name = next((l[5:] for l in info.read_text(errors="ignore").splitlines() if l.startswith("Name=")),
