@@ -31,7 +31,7 @@
     </entry>
     <entry name="grimoireInSearch" type="Bool">
       <label>Show Grimoire's spells and actions in search results</label>
-      <default>true</default>
+      <default>false</default>
     </entry>
   </group>
 </kcfg>
