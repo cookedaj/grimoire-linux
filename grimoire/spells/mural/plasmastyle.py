@@ -1,5 +1,6 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
-"""Generates a black & white Plasma Style (the look of the taskbar, popups and tooltips).
+"""Generates a black & white Plasma Style (the look of the taskbar, popups and tooltips) from a Look: the fill,
+an optional hairline border, the corner radii and whether text is dark (light looks).
 
 Plasma draws panels and popups from 9-slice SVGs (topleft, top, …, center + hint-*-margin + mask-* for blur).
 We write those for widgets/panel-background, dialogs/background, widgets/tooltip and widgets/background;
@@ -28,51 +29,63 @@ class Look:
     radius: int            # panel corner radius (px)
     popup_radius: int
     light: bool = False    # dark text on a light surface
+    scheme: str = ""       # the colors.PALETTES scheme its text colors come from ("" = obsidian, or paper if light)
 
 
-LOOKS = {   # only Onyx is kept (the one in use); community Plasma styles come from the store
-    "onyx":  Look("Onyx", "#0a0a0a", 1.0, "#ffffff", 0.0, 0, 4, 8),
+# ids and names never change once added: saved looks, the Taskbar tab's "look" option and shared setups use them.
+# Radii stay at most 14 so a 28 px panel can still fit both corners.
+LOOKS = {
+    "onyx":     Look("Onyx", "#0a0a0a", 1.0, "#ffffff", 0.0, 0, 4, 8),
+    "smoke":    Look("Smoke", "#0a0a0a", 0.72, "#ffffff", 0.10, 1, 10, 12),
+    "hairline": Look("Hairline", "#000000", 1.0, "#ffffff", 0.32, 1, 6, 8),
+    "block":    Look("Block", "#000000", 1.0, "#ffffff", 0.0, 0, 0, 0),
+    "capsule":  Look("Capsule", "#111111", 1.0, "#ffffff", 0.0, 0, 14, 14),
+    "wire":     Look("Wire", "#000000", 1.0, "#ffffff", 0.85, 1.5, 2, 2),
+    "graphite": Look("Graphite", "#262626", 1.0, "#ffffff", 0.08, 1, 8, 10, scheme="graphite"),
+    "paper":    Look("Paper", "#f4f4f4", 1.0, "#000000", 0.14, 1, 6, 8, light=True),
+    "frost":    Look("Frost", "#f6f6f6", 0.74, "#ffffff", 0.55, 1, 10, 12, light=True),
+    "mist":     Look("Mist", "#bdbdbd", 1.0, "#000000", 0.14, 1, 8, 10, light=True, scheme="fog"),
 }
 
 
-def nine_slice(look: Look, radius: int, margin: int) -> str:
+def nine_slice(look: Look, radius: int, margin: int, opaque=False) -> str:
     """A 9-slice frame SVG (rounded or square corners, optional hairline border, blur mask, margins)."""
     r = max(2, radius)
     L = 10                                   # length of the edge and center tiles
     size = 2 * r + L
     sw = look.stroke_width if look.stroke_opacity > 0 else 0
-    h = sw / 2
-    fill = f'fill="{look.fill}" fill-opacity="{look.fill_opacity}"'
-    line = f'fill="none" stroke="{look.stroke}" stroke-opacity="{look.stroke_opacity}" stroke-width="{sw}"'
+    fill = f'fill="{look.fill}" fill-opacity="{1.0 if opaque else look.fill_opacity}"'
+    strip = f'fill="{look.stroke}" fill-opacity="{look.stroke_opacity}"'
     rounded = radius > 2
-    # name, cell origin, arc center, arc start, arc end, square-border polyline (3 points)
+    # name, cell origin, arc center, arc start, arc end
     corners = [
-        ("topleft", (0, 0), (r, r), (0, r), (r, 0), [(h, r), (h, h), (r, h)]),
-        ("topright", (r + L, 0), (r + L, r), (r + L, 0), (size, r), [(r + L, h), (size - h, h), (size - h, r)]),
-        ("bottomright", (r + L, r + L), (r + L, r + L), (size, r + L), (r + L, size),
-         [(size - h, r + L), (size - h, size - h), (r + L, size - h)]),
-        ("bottomleft", (0, r + L), (r, r + L), (r, size), (0, r + L), [(r, size - h), (h, size - h), (h, r + L)]),
+        ("topleft", (0, 0), (r, r), (0, r), (r, 0)),
+        ("topright", (r + L, 0), (r + L, r), (r + L, 0), (size, r)),
+        ("bottomright", (r + L, r + L), (r + L, r + L), (size, r + L), (r + L, size)),
+        ("bottomleft", (0, r + L), (r, r + L), (r, size), (0, r + L)),
     ]
     parts, masks = [], []
-    for name, (x, y), (cx, cy), (sx, sy), (ex, ey), square in corners:
+    for name, (x, y), (cx, cy), (sx, sy), (ex, ey) in corners:
         if rounded:
             shape = f'd="M{cx},{cy} L{sx},{sy} A{r},{r} 0 0 1 {ex},{ey} Z"'
             body = f'<path {shape} {fill}/>'
-            # border arc, pulled in by half the stroke so it isn't clipped
-            ix = lambda px: px + (h if px < cx else -h if px > cx else 0)
-            iy = lambda py: py + (h if py < cy else -h if py > cy else 0)
-            border = (f'<path d="M{ix(sx)},{iy(sy)} A{r - h},{r - h} 0 0 1 {ix(ex)},{iy(ey)}" {line}/>'
-                      if sw else "")
+            # border: a filled ring sector, not a stroke, so the tile stays exactly r x r (Plasma reads the
+            # frame's margins from the tiles' sizes; a stroke would make the corners half a line wider than the edges)
+            k = sw / r
+            isx, isy, iex, iey = sx + (cx - sx) * k, sy + (cy - sy) * k, ex + (cx - ex) * k, ey + (cy - ey) * k
+            border = (f'<path d="M{sx},{sy} A{r},{r} 0 0 1 {ex},{ey} L{iex},{iey} A{r - sw},{r - sw} 0 0 0 {isx},{isy} Z"'
+                      f' {strip}/>' if sw else "")
             masks.append(f'<path id="mask-{name}" {shape} fill="#000"/>')
         else:
             body = f'<rect x="{x}" y="{y}" width="{r}" height="{r}" {fill}/>'
-            pts = " ".join(f"{px},{py}" for px, py in square)
-            border = f'<polyline points="{pts}" {line}/>' if sw else ""
+            bx = x if "left" in name else x + r - sw         # the vertical arm of the L-shaped border
+            by = y if "top" in name else y + r - sw          # the horizontal arm
+            border = (f'<rect x="{x}" y="{by}" width="{r}" height="{sw}" {strip}/>'
+                      f'<rect x="{bx}" y="{y}" width="{sw}" height="{r}" {strip}/>' if sw else "")
             masks.append(f'<rect id="mask-{name}" x="{x}" y="{y}" width="{r}" height="{r}" fill="#000"/>')
         parts.append(f'<g id="{name}">{body}{border}</g>')
 
     # edge borders are solid strips (a stroked line breaks into dashes when Plasma repeats the tile)
-    strip = f'fill="{look.stroke}" fill-opacity="{look.stroke_opacity}"'
     edges = [("top", r, 0, L, r, (r, 0, L, sw)), ("bottom", r, r + L, L, r, (r, size - sw, L, sw)),
              ("left", 0, r, r, L, (0, r, sw, L)), ("right", r + L, r, r, L, (size - sw, r, sw, L))]
     for name, x, y, w, hh, (bx, by, bw, bh) in edges:
@@ -97,17 +110,18 @@ def build(look_id: str, ident: str):
     dest = THEMES / ident
     if dest.exists():
         shutil.rmtree(dest)
-    panel = nine_slice(look, look.radius, 4)
-    popup = nine_slice(look, look.popup_radius, 8)
-    tooltip = nine_slice(look, min(look.popup_radius, 8), 6)
-    files = {"widgets/panel-background": panel, "widgets/tooltip": tooltip,
-             "widgets/background": popup, "dialogs/background": popup}
-    for variant in ("", "opaque/", "translucent/"):
+    for variant in ("", "opaque/", "translucent/"):     # opaque/ is used without compositing: no see-through there
+        opaque = variant == "opaque/"
+        panel = nine_slice(look, look.radius, 4, opaque)
+        popup = nine_slice(look, look.popup_radius, 8, opaque)
+        tooltip = nine_slice(look, min(look.popup_radius, 8), 6, opaque)
+        files = {"widgets/panel-background": panel, "widgets/tooltip": tooltip,
+                 "widgets/background": popup, "dialogs/background": popup}
         for name, svg in files.items():
             path = dest / variant / f"{name}.svgz"            # Plasma's own themes ship gzipped SVGs
             path.parent.mkdir(parents=True, exist_ok=True)
             path.write_bytes(gzip.compress(svg.encode()))
-    scheme = "paper" if look.light else "obsidian"
+    scheme = look.scheme or ("paper" if look.light else "obsidian")
     (dest / "colors").write_text(colors.scheme_text(scheme, colors.DEFAULTS, "Grimoire", "Grimoire"))
     (dest / "plasmarc").write_text(
         "[ContrastEffect]\nenabled=true\ncontrast=1.0\nintensity=1.0\nsaturation=0\n\n"   # grayscale blur
