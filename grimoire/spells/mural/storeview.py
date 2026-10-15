@@ -1,17 +1,38 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
-"""The Community view inside a MuraL tab: browse the top 100 of a store category and install items."""
-import webbrowser
+"""The Community view inside a MuraL tab: browse the top 100 of a store category and install items.
 
-from PySide6.QtCore import QObject, QSize, Qt, QTimer, Signal
-from PySide6.QtGui import QColor, QIcon, QImage, QPainter, QPixmap
+Store traffic runs on its own thread pool (NET), never on jobs.POOL: a hundred slow thumbnail downloads there used
+to hold every spell's background work (previews, Apply) for tens of seconds. Listings come from store.top's disk
+cache (6 h) and stay in memory for the session; thumbnails are fetched, decoded and letterboxed into card images
+off the UI thread, only for the cards on screen (plus one screen ahead), and kept in memory and on disk (store
+.thumbnail, 14 days). prefetch() warms the default listings and their first cards when MuraL opens; it never
+downloads an item.
+"""
+import threading
+import webbrowser
+from collections import OrderedDict
+from concurrent.futures import ThreadPoolExecutor
+
+from PySide6.QtCore import QObject, QRect, QSize, Qt, QThreadPool, QTimer, Signal
+from PySide6.QtGui import QColor, QIcon, QImage, QImageReader, QPainter, QPixmap
 from PySide6.QtWidgets import (QAbstractItemView, QCheckBox, QComboBox, QFrame, QHBoxLayout, QLabel, QLineEdit,
                                QListWidget, QListWidgetItem, QPushButton, QVBoxLayout, QWidget)
 
 from grimoire.i18n import tr, tr_noop
-from grimoire.jobs import POOL, Job
+from grimoire.jobs import Job
 from grimoire.spells.mural import store
 
 CARD = QSize(232, 146)
+NET = QThreadPool()                       # store listings + thumbnails (network-bound; not the app's shared POOL)
+NET.setMaxThreadCount(8)
+IN_FLIGHT = 8                             # thumbnail requests one view has running at a time
+FIRST_CARDS = 12                          # cards prefetch() warms per category: about one screen
+_LISTS: dict[tuple, list] = {}            # (category, sort, search) → items, this session
+_CARDS: "OrderedDict[str, QImage]" = OrderedDict()   # thumbnail URL → finished card image (LRU)
+_CARDS_MAX = 800
+_cards_lock = threading.Lock()
+_url_locks: dict[str, threading.Lock] = {}
+_prefetched = False
 SORTS = {"down": tr_noop("grimoire.spells.mural.storeview", "Most downloaded"),          # store sort id → label
          "high": tr_noop("grimoire.spells.mural.storeview", "Best rated"),
          "new": tr_noop("grimoire.spells.mural.storeview", "Newest")}
@@ -19,7 +40,7 @@ SORTS = {"down": tr_noop("grimoire.spells.mural.storeview", "Most downloaded"), 
 
 class _Signals(QObject):
     listed = Signal(int, object)          # generation, list[Item] or Exception
-    thumb = Signal(int, int, QImage)      # generation, row, image
+    thumb = Signal(int, int, QImage)      # generation, row, card image
     installed = Signal(bool, str)
 
 
@@ -40,9 +61,85 @@ def _label(it: store.Item, installed: bool) -> str:
     return f"{'✓ ' if installed else ''}{it.name}\n{stats}"
 
 
-def _load_thumb(url: str) -> QImage:
-    path = store.thumbnail(url)
-    return QImage(str(path)) if path else QImage()
+def _cached_card(url: str) -> QImage | None:
+    with _cards_lock:
+        img = _CARDS.get(url)
+        if img is not None:
+            _CARDS.move_to_end(url)
+        return img
+
+
+def card_image(url: str) -> QImage:
+    """The finished card for a thumbnail URL (download if needed, decode at card size, letterbox). Worker threads
+    only; the same URL is never fetched twice at once."""
+    if (img := _cached_card(url)) is not None:
+        return img
+    with _cards_lock:
+        lock = _url_locks.setdefault(url, threading.Lock())
+    with lock:
+        if (img := _cached_card(url)) is not None:
+            return img
+        path = store.thumbnail(url) if url else None
+        src = QImage()
+        if path:
+            reader = QImageReader(str(path))
+            size = reader.size()
+            if size.isValid():                     # decode straight at card size: no full-size image in memory
+                reader.setScaledSize(size.scaled(CARD, Qt.AspectRatioMode.KeepAspectRatio))
+            src = reader.read()
+        card = QImage(CARD, QImage.Format.Format_RGB32)
+        card.fill(QColor("#111111"))
+        if not src.isNull():
+            scaled = src.scaled(CARD, Qt.AspectRatioMode.KeepAspectRatio, Qt.TransformationMode.SmoothTransformation)
+            p = QPainter(card)
+            p.drawImage((CARD.width() - scaled.width()) // 2, (CARD.height() - scaled.height()) // 2, scaled)
+            p.end()
+        if path:                                   # a failed download isn't cached: the next look tries again
+            with _cards_lock:
+                _CARDS[url] = card
+                while len(_CARDS) > _CARDS_MAX:
+                    _CARDS.popitem(last=False)
+        return card
+
+
+def _safe_card(url: str) -> QImage:
+    """card_image that never raises: a view counts on every request coming back."""
+    try:
+        return card_image(url)
+    except Exception as e:
+        print(f"MuraL store thumbnail failed: {e}")
+        return QImage()
+
+
+def _listing(cat: store.Category, sort: str, search: str, fresh: bool = False) -> list:
+    """Worker threads: the listing, from memory, the disk cache or the store."""
+    key = (cat.key, sort, search)
+    if not fresh and key in _LISTS:
+        return _LISTS[key]
+    items = store.top(cat, sort, search, fresh=fresh)
+    _LISTS[key] = items
+    return items
+
+
+def prefetch(keys=None):
+    """Warm the default listing of each category and its first cards, in the background, once per run. Only
+    listings and thumbnails: never an item's files."""
+    global _prefetched
+    if _prefetched:
+        return
+    _prefetched = True
+    cats = [store.CATEGORIES[k] for k in (keys or store.CATEGORIES)]
+
+    def work():
+        with ThreadPoolExecutor(4) as ex:
+            for cat in cats:
+                try:
+                    items = _listing(cat, "down", "")
+                except Exception:               # offline: the view will say so when it's opened
+                    continue
+                list(ex.map(card_image, [it.preview for it in items[:FIRST_CARDS]]))
+
+    NET.start(Job(work, lambda _: None), -1)
 
 
 class StoreView(QWidget):
@@ -84,6 +181,11 @@ class StoreView(QWidget):
         self.count.setObjectName("Muted")
         self.count.setTextFormat(Qt.TextFormat.PlainText)
         bar.addWidget(self.count)
+        self.refresh_btn = QPushButton(tr("grimoire.spells.mural.storeview", "Refresh"))
+        self.refresh_btn.setToolTip(tr("grimoire.spells.mural.storeview", "Ask the store again (lists are kept for "
+                                                                          "6 hours)"))
+        self.refresh_btn.clicked.connect(lambda: self.refresh(fresh=True))
+        bar.addWidget(self.refresh_btn)
         lay.addLayout(bar)
         self._search_timer = QTimer(self, singleShot=True, interval=450, timeout=self.refresh)
         self.category.currentIndexChanged.connect(self.refresh)
@@ -101,7 +203,11 @@ class StoreView(QWidget):
         self.grid.setWordWrap(True)
         self.grid.currentRowChanged.connect(self._select)
         self.grid.itemDoubleClicked.connect(lambda _: self._install())
+        self.grid.verticalScrollBar().valueChanged.connect(lambda _: self._pump_later())
         lay.addWidget(self.grid, 1)
+        self._pending: list[int] = []             # rows whose card isn't shown yet
+        self._inflight = 0
+        self._pump_timer = QTimer(self, singleShot=True, interval=40, timeout=self._pump)
 
         detail = QFrame()
         detail.setObjectName("Card")
@@ -137,30 +243,41 @@ class StoreView(QWidget):
         if not self._loaded:              # only hit the network once the user opens Community
             self._loaded = True
             self.refresh()
+        else:
+            self._pump_later()
+
+    def resizeEvent(self, e):
+        super().resizeEvent(e)
+        self._pump_later()
 
     def cat(self) -> store.Category:
         return self.cats[max(0, self.category.currentIndex())]
 
     # ---- listing
-    def refresh(self):
+    def refresh(self, fresh: bool = False):
         self._gen += 1
         gen, cat, sort, q, sig = self._gen, self.cat(), self.sort.currentData(), self.search.text().strip(), self._sig
         self.bw.setVisible(cat.kind == "wallpaper")
         self.grid.clear()
-        self.items = []
+        self.items, self._pending = [], []
+        if not fresh and (cat.key, sort, q) in _LISTS:          # seen this session: no thread, no wait
+            self._on_listed(gen, _LISTS[(cat.key, sort, q)])
+            return
         self.count.setText(tr("grimoire.spells.mural.storeview", "Loading…"))
+        self.refresh_btn.setEnabled(False)
 
         def work():
             try:
-                return store.top(cat, sort, q)
+                return _listing(cat, sort, q, fresh)
             except Exception as e:      # network errors are shown, not raised
                 return e
 
-        POOL.start(Job(work, lambda r: sig.listed.emit(gen, r)))
+        NET.start(Job(work, lambda r: sig.listed.emit(gen, r)), 1)
 
     def _on_listed(self, gen, result):
         if gen != self._gen:
             return
+        self.refresh_btn.setEnabled(True)
         if isinstance(result, Exception):
             self.count.setText(tr("grimoire.spells.mural.storeview", "Couldn't reach the store: {error}")
                                .format(error=result))
@@ -169,18 +286,44 @@ class StoreView(QWidget):
         self.count.setText(tr("grimoire.spells.mural.storeview", "Top %n", n=len(result)))
         placeholder = QIcon(fit(QImage(), CARD))
         installed = {e["item"] for e in store.registry().values()}
-        sig = self._sig
+        self.grid.setUpdatesEnabled(False)
         for i, it in enumerate(result):
-            row = QListWidgetItem(placeholder, _label(it, it.id in installed))
+            card = _cached_card(it.preview)
+            row = QListWidgetItem(QIcon(QPixmap.fromImage(card)) if card is not None else placeholder,
+                                  _label(it, it.id in installed))
             row.setTextAlignment(Qt.AlignmentFlag.AlignHCenter)
             row.setToolTip(it.summary or it.name)
             self.grid.addItem(row)
-            POOL.start(Job(lambda url=it.preview: _load_thumb(url),
-                           lambda img, i=i: sig.thumb.emit(gen, i, img)))
+            if card is None:
+                self._pending.append(i)
+        self.grid.setUpdatesEnabled(True)
+        self._pump_later()
+
+    # ---- thumbnails: the cards on screen first, one screen ahead, a few at a time
+    def _pump_later(self):
+        if self._pending:
+            self._pump_timer.start()
+
+    def _pump(self):
+        if not self.isVisible() or not self._pending:
+            return
+        view = self.grid.viewport().rect()
+        ahead = QRect(view.x(), view.y(), view.width(), view.height() * 2)
+        wanted = [r for r in self._pending if r < self.grid.count()
+                  and self.grid.visualItemRect(self.grid.item(r)).intersects(ahead)]
+        gen, sig = self._gen, self._sig
+        while wanted and self._inflight < IN_FLIGHT:
+            r = wanted.pop(0)
+            self._pending.remove(r)
+            self._inflight += 1
+            url = self.items[r].preview
+            NET.start(Job(lambda url=url: _safe_card(url), lambda img, r=r: sig.thumb.emit(gen, r, img)), 1)
 
     def _on_thumb(self, gen, row, img):
-        if gen == self._gen and row < self.grid.count():
-            self.grid.item(row).setIcon(QIcon(fit(img, CARD)))
+        self._inflight = max(0, self._inflight - 1)
+        if gen == self._gen and row < self.grid.count() and not img.isNull():
+            self.grid.item(row).setIcon(QIcon(QPixmap.fromImage(img)))
+        self._pump_later()
 
     # ---- detail / install
     def _current(self) -> store.Item | None:
@@ -236,7 +379,7 @@ class StoreView(QWidget):
                 return False, tr("grimoire.spells.mural.storeview", "Couldn't install {name}: {error}")\
                     .format(name=it.name, error=e)
 
-        POOL.start(Job(work, lambda r: sig.installed.emit(*r)))
+        NET.start(Job(work, lambda r: sig.installed.emit(*r)), 2)
 
     def _on_installed(self, ok, msg):
         self._busy = False

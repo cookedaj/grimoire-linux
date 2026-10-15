@@ -11,6 +11,12 @@ A tab subclasses ScreenTab and implements:
     thumbnail(design, options) -> QImage for the gallery card         } must not touch widgets
     apply(design, options)   -> do it; return a status message; raise RuntimeError on failure (worker thread)
 Slow extra actions (e.g. a "Restore" button) go through self.background(fn, busy_text) so the window never freezes.
+
+Every tab also gets, for free:
+  Import…  under the big preview, when imports.IMPORTERS lists the tab's key (pictures or theme archives/folders).
+  Reset    above Apply: puts back what was active before the last Apply (HISTORY keeps the last few, per tab),
+           through the tab's own apply(); before MuraL's first Apply that's the tab's own `_restore` (its
+           "Restore previous …" button), when it has one. With nothing applied it just reverts the panel.
 """
 import json
 import threading
@@ -18,15 +24,18 @@ from dataclasses import dataclass
 
 from PySide6.QtCore import QEvent, QObject, QSize, Qt, QTimer, Signal
 from PySide6.QtGui import QColor, QFont, QIcon, QImage, QPainter, QPixmap, QTextLayout, QTextOption
-from PySide6.QtWidgets import (QAbstractButton, QAbstractItemView, QCheckBox, QComboBox, QFrame, QHBoxLayout, QLabel,
-                               QListWidget, QListWidgetItem, QPushButton, QSizePolicy, QStackedWidget, QVBoxLayout,
-                               QWidget)
+from PySide6.QtWidgets import (QAbstractButton, QAbstractItemView, QCheckBox, QComboBox, QFileDialog, QFrame,
+                               QHBoxLayout, QLabel, QListWidget, QListWidgetItem, QMenu, QMessageBox, QPushButton,
+                               QSizePolicy, QStackedWidget, QVBoxLayout, QWidget)
 
-from grimoire.i18n import tr
+from grimoire.i18n import isolate, tr
 from grimoire.jobs import POOL, Job
-from grimoire.paths import CONFIG
+from grimoire.paths import CONFIG, DATA
+from grimoire.widgets import segments
 
 STATE = CONFIG / "mural-screens.json"
+HISTORY = DATA / "mural" / "history.json"     # per tab: what was active before each of the last Applies
+HISTORY_KEEP = 5
 THUMB = QSize(184, 104)
 
 
@@ -136,6 +145,28 @@ def save_state(key: str, value: dict):
     STATE.write_text(json.dumps(state, indent=2))
 
 
+def load_history(key: str) -> list[dict]:
+    """[{design (None = nothing MuraL applied), options}], oldest first."""
+    try:
+        hist = json.loads(HISTORY.read_text()).get(key, [])
+        return [h for h in hist if isinstance(h, dict)]
+    except (OSError, ValueError, AttributeError):
+        return []
+
+
+def save_history(key: str, hist: list[dict]):
+    try:
+        data = json.loads(HISTORY.read_text())
+        data = data if isinstance(data, dict) else {}
+    except (OSError, ValueError):
+        data = {}
+    data[key] = hist[-HISTORY_KEEP:]
+    HISTORY.parent.mkdir(parents=True, exist_ok=True)
+    tmp = HISTORY.with_suffix(".tmp")
+    tmp.write_text(json.dumps(data, indent=2))
+    tmp.replace(HISTORY)
+
+
 def community_designs(kind: str) -> list[Design]:
     """Store items of this kind that are installed, as designs (ids start with "store:")."""
     from grimoire.spells.mural import store
@@ -143,7 +174,9 @@ def community_designs(kind: str) -> list[Design]:
 
 
 def by_line(entry: dict) -> str:
-    """The blurb of an installed community item."""
+    """The blurb of an installed community item (or one you imported)."""
+    if str(entry.get("item", "")).startswith("import:"):
+        return tr("grimoire.spells.mural.screens", "Imported by you")
     if entry.get("author"):
         return tr("grimoire.spells.mural.screens", "Community · by {author}").format(author=entry["author"])
     return tr("grimoire.spells.mural.screens", "Community · unknown author")
@@ -168,9 +201,12 @@ def community_preview(design_id: str, w=1280, h=720) -> QImage:
         p.drawImage((w - scaled.width()) // 2, (h - 60 - scaled.height()) // 2, scaled)
     p.setPen(QColor("#9a9a9a"))
     author = entry.get("author")
-    line = (tr("grimoire.spells.mural.screens", "{name}   ·   community theme by {author}") if author else
+    imported = str(entry.get("item", "")).startswith("import:")
+    line = (tr("grimoire.spells.mural.screens", "{name}   ·   imported") if imported
+            else tr("grimoire.spells.mural.screens", "{name}   ·   community theme by {author}") if author else
             tr("grimoire.spells.mural.screens", "{name}   ·   community theme"))
-    p.drawText(0, h - 50, w, 40, Qt.AlignmentFlag.AlignCenter, line.format(name=entry.get("name", ""), author=author))
+    p.drawText(0, h - 50, w, 40, Qt.AlignmentFlag.AlignCenter,
+               line.format(name=isolate(entry.get("name", "")), author=isolate(author)))
     p.end()
     return img
 
@@ -184,7 +220,8 @@ def placeholder(size: QSize = THUMB) -> QPixmap:
 class _Signals(QObject):
     image = Signal(int, str, QImage)          # generation, slot ("big" or design index), image
     applied = Signal(bool, str)               # ok, message
-    finished = Signal(str)                    # message from a background() action
+    finished = Signal(bool, str)              # ok, message from a background() action
+    imported = Signal(object)                 # imports.run()'s result
 
 
 _render_locks: dict[str, threading.Lock] = {}
@@ -222,6 +259,8 @@ class ScreenTab(QWidget):
         self._sig.image.connect(self._on_image)
         self._sig.applied.connect(self._on_applied)
         self._sig.finished.connect(self._on_finished)
+        self._sig.imported.connect(self._on_imported)
+        self._after_background = None                 # Reset's follow-up to a tab's own restore
         self._render_timer = QTimer(self, singleShot=True, interval=150, timeout=self._rerender)
 
         root = QHBoxLayout(self)
@@ -246,12 +285,12 @@ class ScreenTab(QWidget):
                                       tr("grimoire.spells.mural.screens", "Community · top 100"))):
                 b = QPushButton(name)
                 b.setObjectName("Segment")
-                b.setProperty("pos", "first" if i == 0 else "last")
                 b.setCheckable(True)
                 b.setChecked(i == 0)
                 b.clicked.connect(lambda _=False, i=i: self.show_view(i))
                 self._switch.append(b)
                 switch.addWidget(b)
+            segments(self._switch)
             head.addLayout(switch)
         outer.addLayout(head)
         outer.addWidget(self.views, 1)
@@ -267,6 +306,7 @@ class ScreenTab(QWidget):
         self.big.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
         self.big.setAlignment(Qt.AlignmentFlag.AlignCenter)
         ll.addWidget(self.big, 3)
+        self._build_import(ll)
 
         self.gallery = QListWidget()
         self.gallery.setViewMode(QListWidget.ViewMode.IconMode)
@@ -309,6 +349,11 @@ class ScreenTab(QWidget):
         self.status.setWordWrap(True)
         self.status.setTextFormat(Qt.TextFormat.PlainText)       # error messages can quote file names from downloads
         pl.addWidget(self.status)
+        self.reset_btn = QPushButton(tr("grimoire.spells.mural.screens", "Reset"))
+        self.reset_btn.setToolTip(tr("grimoire.spells.mural.screens", "Put back what you had before your last Apply"))
+        self.reset_btn.setMinimumHeight(34)
+        self.reset_btn.clicked.connect(self.reset)
+        pl.addWidget(self.reset_btn)
         self.apply_btn = QPushButton(self.shown(self.apply_label) or tr("grimoire.spells.mural.screens", "Apply"))
         self.apply_btn.setObjectName("Primary")
         self.apply_btn.setMinimumHeight(40)
@@ -335,11 +380,13 @@ class ScreenTab(QWidget):
         self._selected(self.gallery.currentRow(), render=False)
         self._rerender()
 
-    def reload_designs(self):
-        """Called after a community install/uninstall: rebuild the gallery, keep the selection."""
+    def reload_designs(self, select: list[str] | None = None):
+        """Called after a community install/uninstall or an import: rebuild the gallery, keep the selection (or
+        select the first of `select`'s ids that's there)."""
         keep = self.current().id if self._designs else None
         self._designs = self.designs()
-        self._fill(keep)
+        ids = {d.id for d in self._designs}
+        self._fill(next((i for i in select or () if i in ids), keep))
 
     def show_view(self, i: int):
         self.views.setCurrentIndex(i)
@@ -462,13 +509,15 @@ class ScreenTab(QWidget):
                                          if d.id == self.applied else name)
 
     # ---- apply (worker thread)
-    def _apply(self):
+    def _apply(self, _=False, reset: bool = False):
         d, opts, sig = self.current(), self.options(), self._sig
         if d is None:
             self.status.setText(tr("grimoire.spells.mural.screens", "Nothing to apply yet: get one from Community."))
             return
-        self._pending = (d, opts)
-        self.apply_btn.setEnabled(False)
+        saved = load_state().get(self.key) or {}
+        before = {"design": saved.get("design"), "options": saved.get("options") or {}}
+        self._pending = (d, opts, before, reset)
+        self._busy(True)
         self.status.setText(self.shown(self.apply_busy) or tr("grimoire.spells.mural.screens", "Applying…"))
 
         def work():
@@ -480,28 +529,199 @@ class ScreenTab(QWidget):
         POOL.start(Job(work, lambda result: sig.applied.emit(*result)))
 
     def _on_applied(self, ok: bool, msg: str):
-        self.apply_btn.setEnabled(True)
+        self._busy(False)
         self.status.setText(msg)
         if ok:
-            d, opts = self._pending
+            d, opts, before, reset = self._pending
+            hist = load_history(self.key)
+            if reset:                            # that entry is now what's active: the next Reset goes further back
+                hist = hist[:-1]
+                self.status.setText(tr("grimoire.spells.mural.screens", "Restored ✓  Back to {name}.")
+                                    .format(name=isolate(self.shown(d.name))))
+            elif before != {"design": d.id, "options": opts}:
+                hist.append(before)
+            save_history(self.key, hist)
             self.applied = d.id
             save_state(self.key, {"design": d.id, "options": opts})
             self._label_in_use()
 
+    def _busy(self, busy: bool):
+        self.apply_btn.setEnabled(not busy)
+        self.reset_btn.setEnabled(not busy)
+
+    # ---- reset
+    def confirm(self, text: str) -> bool:
+        """Ask before Reset changes anything (tests swap this out)."""
+        box = QMessageBox(QMessageBox.Icon.Question, tr("grimoire.spells.mural.screens", "Reset"), text,
+                          QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.Cancel, self)
+        box.button(QMessageBox.StandardButton.Yes).setText(tr("grimoire.spells.mural.screens", "Reset"))
+        box.button(QMessageBox.StandardButton.Cancel).setText(tr("grimoire.spells.mural.screens", "Cancel"))
+        box.setTextFormat(Qt.TextFormat.PlainText)
+        return box.exec() == QMessageBox.StandardButton.Yes
+
+    def _original_restore(self):
+        """The tab's own way back to what you had before MuraL (its "Restore previous …" action), if any."""
+        for name in ("restore_original", "_restore"):
+            fn = getattr(self, name, None)
+            if callable(fn):
+                return fn
+        return None
+
+    def _design(self, design_id) -> Design | None:
+        return next((d for d in self._designs if d.id == design_id), None)
+
+    def _select(self, design_id, opts: dict):
+        """Show design + options in the gallery and panel, without applying."""
+        self._loading = True
+        self.set_options(opts)
+        self._loading = False
+        ids = [d.id for d in self._designs]
+        row = ids.index(design_id) if design_id in ids else 0
+        self.gallery.blockSignals(True)
+        self.gallery.setCurrentRow(row)
+        self.gallery.blockSignals(False)
+        self._selected(row, render=False)
+        self._rerender()
+
+    def reset(self):
+        """Undo the last Apply (see the module docstring)."""
+        hist = load_history(self.key)
+        ctx = "grimoire.spells.mural.screens"
+        if not hist:
+            saved = load_state().get(self.key) or {}
+            if not self.confirm(tr(ctx, "Put this panel back to what's in use now? Changes you haven't applied are "
+                                        "lost.")):
+                return
+            self._select(saved.get("design") or "", saved.get("options") or {})
+            self.status.setText(tr(ctx, "Panel reset to what's in use.") if saved.get("design") else
+                                tr(ctx, "Panel reset. Nothing was applied yet, so nothing else changed."))
+            return
+        prev = hist[-1]
+        if not prev.get("design"):                     # before the last Apply, MuraL had applied nothing here
+            restore = self._original_restore()
+            if restore is None:
+                if self.confirm(tr(ctx, "Before your last Apply this was the system's own setting, and this tab "
+                                        "can't put that back by itself. Reset the panel to what's in use instead?")):
+                    saved = load_state().get(self.key) or {}
+                    self._select(saved.get("design") or "", saved.get("options") or {})
+                    self.status.setText(tr(ctx, "Panel reset. What's applied didn't change."))
+                return
+            if not self.confirm(tr(ctx, "Put back what you had before MuraL changed this?")):
+                return
+            self._after_background = self._reset_to_original
+            restore()
+            if self.apply_btn.isEnabled():              # it didn't start anything (nothing to restore)
+                self._after_background = None
+            return
+        design = self._design(prev["design"])
+        if design is None:
+            self.status.setText(tr(ctx, "Can't reset: what you had before ({design}) isn't available any more.")
+                                .format(design=isolate(prev["design"])))
+            return
+        if not self.confirm(tr(ctx, "Go back to {name} as it was before your last Apply?")
+                            .format(name=isolate(self.shown(design.name)))):
+            return
+        self._select(design.id, prev.get("options") or {})
+        self._apply(reset=True)
+
+    def _reset_to_original(self, ok: bool):
+        if not ok:
+            return
+        save_history(self.key, load_history(self.key)[:-1])
+        saved = load_state().get(self.key) or {}
+        self.applied = None
+        save_state(self.key, {"design": None, "options": saved.get("options") or {}})
+        self._label_in_use()                 # the status line already holds the tab's own "… restored" note
+
     def background(self, fn, busy: str):
         """Run fn() (returns a status message, raises on failure) on a worker thread, Apply disabled meanwhile."""
         sig = self._sig
-        self.apply_btn.setEnabled(False)
+        self._busy(True)
         self.status.setText(busy)
 
         def work():
             try:
-                return fn()
+                return True, fn()
             except Exception as e:
-                return tr("grimoire.spells.mural.screens", "Couldn't restore: {error}").format(error=e)
+                return False, tr("grimoire.spells.mural.screens", "Couldn't restore: {error}").format(error=e)
 
-        POOL.start(Job(work, lambda msg: sig.finished.emit(msg)))
+        POOL.start(Job(work, lambda result: sig.finished.emit(*result)))
 
-    def _on_finished(self, msg: str):
-        self.apply_btn.setEnabled(True)
-        self.status.setText(msg)
+    def _on_finished(self, ok: bool, msg: str):
+        self._busy(False)
+        self.status.setText(msg or "")
+        after, self._after_background = self._after_background, None
+        if after:
+            after(ok)
+
+    # ---- import
+    def _build_import(self, lay):
+        """The Import… row under the big preview, start-aligned (mirrors by itself in right-to-left languages)."""
+        from grimoire.spells.mural import imports
+        self._importer = imports.importer(self.key)
+        if self._importer is None:
+            return
+        row = QHBoxLayout()
+        row.setSpacing(12)
+        self.import_btn = QPushButton(tr("grimoire.spells.mural.screens", "Import…"))
+        self.import_btn.setToolTip(tr("grimoire.spells.mural.screens", "Add your own: {what}")
+                                   .format(what=tr("grimoire.spells.mural.imports", self._importer.what)))
+        self.import_btn.clicked.connect(self._import_clicked)
+        self.import_msg = QLabel()
+        self.import_msg.setObjectName("Muted")
+        self.import_msg.setWordWrap(True)
+        self.import_msg.setTextFormat(Qt.TextFormat.PlainText)     # quotes file names: never as HTML
+        row.addWidget(self.import_btn)
+        row.addWidget(self.import_msg, 1)
+        lay.addLayout(row)
+
+    def _import_clicked(self):
+        imp = self._importer
+        if not imp.kind:                                          # pictures only: straight to the file picker
+            self._pick_files()
+            return
+        menu = QMenu(self)
+        menu.addAction(tr("grimoire.spells.mural.screens", "From a file…"), self._pick_files)
+        menu.addAction(tr("grimoire.spells.mural.screens", "From a folder…"), self._pick_folder)
+        menu.exec(self.import_btn.mapToGlobal(self.import_btn.rect().bottomLeft()))
+
+    def _pick_files(self):
+        from grimoire.spells.mural import imports
+        paths, _ = QFileDialog.getOpenFileNames(self, tr("grimoire.spells.mural.screens", "Import"), "",
+                                                imports.name_filter(self._importer))
+        if paths:
+            self.import_paths(paths)
+
+    def _pick_folder(self):
+        path = QFileDialog.getExistingDirectory(self, tr("grimoire.spells.mural.screens", "Import a folder"))
+        if path:
+            self.import_paths([path])
+
+    def import_paths(self, paths: list[str]):
+        """Import files/folders on a worker thread; the result lands in _on_imported."""
+        from grimoire.spells.mural import imports
+        sig, key = self._sig, self.key
+        self.import_btn.setEnabled(False)
+        self.import_msg.setText(tr("grimoire.spells.mural.screens", "Importing…"))
+        POOL.start(Job(lambda: imports.run(key, paths), sig.imported.emit))
+
+    def _on_imported(self, result: dict):
+        self.import_btn.setEnabled(True)
+        ctx = "grimoire.spells.mural.screens"
+        names = [e["name"] for e in result["entries"]] + [n.rsplit(".", 1)[0] for n in result["images"]]
+        select = [i for e in result["entries"] for i in (f"store:{e['key']}", e["ident"])]
+        select += [f"img:{n}" for n in result["images"]]
+        if names:
+            self.reload_designs(select)
+            bg = getattr(self, "bg", None)         # a tab whose options pick a library picture (Login's Background)
+            if result["images"] and isinstance(bg, Choice):
+                for n in result["images"]:
+                    if bg.findData(n) < 0:
+                        bg.insertItem(max(0, bg.count() - 1), n, n)
+                bg.set_value(result["images"][-1])
+        msgs = []
+        if names:
+            msgs.append(tr(ctx, "Imported {names}. Press Apply to use it.")
+                        .format(names=", ".join(isolate(n) for n in names)))
+        msgs += result["errors"]
+        self.import_msg.setText("\n".join(msgs))
