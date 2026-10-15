@@ -17,7 +17,8 @@ TEMP = CACHE / "shotl"                         # raw grabs before they're saved,
 AFTER = {"edit": tr_noop("grimoire.spells.shotl.shots", "Open the editor"),        # tr() where shown
          "copy": tr_noop("grimoire.spells.shotl.shots", "Copy and save"),
          "save": tr_noop("grimoire.spells.shotl.shots", "Save only")}
-DEFAULTS = {"folder": "", "after": "edit", "delay": 0, "pointer": False, "sound": False, "restore_token": ""}
+DEFAULTS = {"folder": "", "after": "edit", "delay": 0, "pointer": False, "sound": False, "restore_token": "",
+            "new_mode": "region"}                  # the New button's last capture mode
 KEEP = 1000                                    # history entries kept (files stay; only the list is trimmed)
 VIDEO = {".mp4", ".webm", ".mkv"}
 

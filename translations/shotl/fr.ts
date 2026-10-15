@@ -106,6 +106,11 @@
     </message>
     <message>
         <location filename="../../grimoire/spells/shotl/editor.py"/>
+        <source>New</source>
+        <translation>Nouvelle</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/shotl/editor.py"/>
         <source>White</source>
         <translation>Blanc</translation>
     </message>
@@ -240,6 +245,71 @@
         <source>Save your edits before closing?</source>
         <translation>Enregistrer vos modifications avant de fermer ?</translation>
     </message>
+    <message>
+        <location filename="../../grimoire/spells/shotl/editor.py"/>
+        <source>Save this screenshot before taking a new one?</source>
+        <translation>Enregistrer cette capture avant d&apos;en prendre une nouvelle ?</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/shotl/editor.py"/>
+        <source>Save your edits before taking a new one?</source>
+        <translation>Enregistrer vos modifications avant d&apos;en prendre une nouvelle ?</translation>
+    </message>
+</context>
+<context>
+    <name>grimoire.spells.shotl.newshot</name>
+    <message>
+        <location filename="../../grimoire/spells/shotl/newshot.py"/>
+        <source>Region</source>
+        <translation>Zone</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/shotl/newshot.py"/>
+        <source>Window</source>
+        <translation>Fenêtre</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/shotl/newshot.py"/>
+        <source>All screens</source>
+        <translation>Tous les écrans</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/shotl/newshot.py"/>
+        <source>Screen under the pointer</source>
+        <translation>Écran sous le pointeur</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/shotl/newshot.py"/>
+        <source>No screenshot tool found: install Spectacle ({command})</source>
+        <translation>Aucun outil de capture trouvé : installez Spectacle ({command})</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/shotl/newshot.py"/>
+        <source>Pick what to capture</source>
+        <translation>Choisir quoi capturer</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/shotl/newshot.py"/>
+        <source>New screenshot: {mode}  (Ctrl+N)</source>
+        <translation>Nouvelle capture : {mode}  (Ctrl+N)</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/shotl/newshot.py"/>
+        <source>Delay</source>
+        <translation>Délai</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/shotl/newshot.py"/>
+        <source>{n} s</source>
+        <comment>seconds</comment>
+        <translation>{n} s</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/shotl/newshot.py"/>
+        <source>Off</source>
+        <comment>no delay</comment>
+        <translation>Aucun</translation>
+    </message>
 </context>
 <context>
     <name>grimoire.spells.shotl.page</name>
@@ -329,6 +399,11 @@
         <location filename="../../grimoire/spells/shotl/page.py"/>
         <source>Where shots and recordings are saved. Click to change</source>
         <translation>Où sont enregistrées les captures et les enregistrements. Cliquez pour changer</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/shotl/page.py"/>
+        <source>New screenshot</source>
+        <translation>Nouvelle capture</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/shotl/page.py"/>

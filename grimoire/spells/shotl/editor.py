@@ -14,7 +14,9 @@ from grimoire.fsutil import tilde
 from grimoire.i18n import tr, tr_noop
 from grimoire.spells.shotl import capture, shots
 from grimoire.spells.shotl.icons import icon
+from grimoire.spells.shotl.newshot import NewButton
 from grimoire.theme import FONT
+from grimoire.widgets import segments
 
 TOOLS = [("crop", tr_noop("grimoire.spells.shotl.editor", "Crop  (C)")),          # tips: tr() where shown
          ("arrow", tr_noop("grimoire.spells.shotl.editor", "Arrow  (A)")),
@@ -261,10 +263,13 @@ class Canvas(QWidget):
 
 
 class Editor(QWidget):
-    """Edits one image. Emits saved(Path) after writing a file and closed() when the user is done with it."""
+    """Edits one image. Emits saved(Path) after writing a file, closed() when the user is done with it, and
+    new_requested(mode) when they asked for another shot (after settling unsaved work); the host takes it and load()s
+    the result here."""
     saved = Signal(object)
     closed = Signal()
     toast = Signal(str)
+    new_requested = Signal(str)
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -290,6 +295,10 @@ class Editor(QWidget):
         bl = QHBoxLayout(self._tools_w)
         bl.setContentsMargins(0, 0, 0, 0)
         bl.setSpacing(2)
+        self.new_btn = NewButton(tr("grimoire.spells.shotl.editor", "New"))
+        self.new_btn.requested.connect(self.new_shot)
+        bl.addWidget(self.new_btn)
+        bl.addWidget(self._sep())
         self.tools = QButtonGroup(self)
         for name, tip in TOOLS:
             b = self._tool(name, tr("grimoire.spells.shotl.editor", tip), checkable=True)
@@ -316,19 +325,21 @@ class Editor(QWidget):
             bl.addWidget(s)
         bl.addWidget(self._sep())
         self.sizes = QButtonGroup(self)
+        segs = []
         names = {"S": tr("grimoire.spells.shotl.editor", "S", "small size"),
                  "M": tr("grimoire.spells.shotl.editor", "M", "medium size"),
                  "L": tr("grimoire.spells.shotl.editor", "L", "large size")}
-        for i, (label, w) in enumerate(SIZES.items()):
+        for label, w in SIZES.items():
             b = QPushButton(names[label])
             b.setObjectName("Segment")
-            b.setProperty("pos", ("first", "mid", "last")[i])
             b.setCheckable(True)
             b.setChecked(w == self.width)
+            segs.append(b)
             b.setToolTip(tr("grimoire.spells.shotl.editor", "Line and text size"))
             b.clicked.connect(lambda _=False, v=w: setattr(self, "width", v))
             self.sizes.addButton(b)
             bl.addWidget(b)
+        segments(segs)
         bl.addWidget(self._sep())
         self.undo_btn = self._tool("undo", tr("grimoire.spells.shotl.editor", "Undo  (Ctrl+Z)"))
         self.undo_btn.clicked.connect(self.undo)
@@ -369,6 +380,8 @@ class Editor(QWidget):
                           (QKeySequence.StandardKey.Save, self.save), ("Ctrl+Shift+S", self.save_as),
                           ("Esc", self._escape)):
             QShortcut(QKeySequence(seq), self, slot, context=Qt.ShortcutContext.WidgetWithChildrenShortcut)
+        self.new_key = QShortcut(QKeySequence(QKeySequence.StandardKey.New), self, self.new_btn.trigger,
+                                 context=Qt.ShortcutContext.WindowShortcut)    # the hub page turns it off: it has its own
         for key, name in KEYS.items():
             QShortcut(QKeySequence(key), self.canvas, lambda n=name: self.set_tool(n),
                       context=Qt.ShortcutContext.WidgetShortcut)
@@ -518,19 +531,31 @@ class Editor(QWidget):
         else:
             self.request_close()
 
+    def settle(self, ask: str) -> bool:
+        """Save / Discard / Cancel when there's unsaved work. True when it's fine to drop the current image."""
+        self.canvas.commit_text()
+        if not self.unsaved():
+            return True
+        box = QMessageBox(QMessageBox.Icon.NoIcon, "ShotL", ask,      # no theme icon: they're colored
+                          QMessageBox.StandardButton.Save | QMessageBox.StandardButton.Discard
+                          | QMessageBox.StandardButton.Cancel, self)
+        box.setDefaultButton(QMessageBox.StandardButton.Save)
+        ans = box.exec()
+        return ans == QMessageBox.StandardButton.Discard or (ans == QMessageBox.StandardButton.Save and self.save())
+
     def request_close(self) -> bool:
         """Ask before dropping unsaved work. True when it's fine to close."""
-        self.canvas.commit_text()
-        if self.unsaved():
-            ask = tr("grimoire.spells.shotl.editor", "Save this screenshot before closing?") if not self.source \
-                else tr("grimoire.spells.shotl.editor", "Save your edits before closing?")
-            box = QMessageBox(QMessageBox.Icon.Question, "ShotL", ask,
-                              QMessageBox.StandardButton.Save | QMessageBox.StandardButton.Discard
-                              | QMessageBox.StandardButton.Cancel, self)
-            ans = box.exec()
-            if ans == QMessageBox.StandardButton.Cancel or (ans == QMessageBox.StandardButton.Save and not self.save()):
-                return False
+        if not self.settle(tr("grimoire.spells.shotl.editor", "Save this screenshot before closing?") if not self.source
+                           else tr("grimoire.spells.shotl.editor", "Save your edits before closing?")):
+            return False
         self.saved_at = len(self.ops)
         self.handled = True
         self.closed.emit()
         return True
+
+    def new_shot(self, mode: str):
+        """The New button or Ctrl+N: settle unsaved work, then let the host capture into this editor."""
+        if self.settle(tr("grimoire.spells.shotl.editor", "Save this screenshot before taking a new one?")
+                       if not self.source
+                       else tr("grimoire.spells.shotl.editor", "Save your edits before taking a new one?")):
+            self.new_requested.emit(mode)

@@ -106,6 +106,11 @@
     </message>
     <message>
         <location filename="../../grimoire/spells/shotl/editor.py"/>
+        <source>New</source>
+        <translation>Новый</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/shotl/editor.py"/>
         <source>White</source>
         <translation>Белый</translation>
     </message>
@@ -241,6 +246,71 @@
         <source>Save your edits before closing?</source>
         <translation>Сохранить правки перед закрытием?</translation>
     </message>
+    <message>
+        <location filename="../../grimoire/spells/shotl/editor.py"/>
+        <source>Save this screenshot before taking a new one?</source>
+        <translation>Сохранить этот снимок перед тем, как сделать новый?</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/shotl/editor.py"/>
+        <source>Save your edits before taking a new one?</source>
+        <translation>Сохранить правки перед тем, как сделать новый снимок?</translation>
+    </message>
+</context>
+<context>
+    <name>grimoire.spells.shotl.newshot</name>
+    <message>
+        <location filename="../../grimoire/spells/shotl/newshot.py"/>
+        <source>Region</source>
+        <translation>Область</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/shotl/newshot.py"/>
+        <source>Window</source>
+        <translation>Окно</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/shotl/newshot.py"/>
+        <source>All screens</source>
+        <translation>Все экраны</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/shotl/newshot.py"/>
+        <source>Screen under the pointer</source>
+        <translation>Экран под указателем</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/shotl/newshot.py"/>
+        <source>No screenshot tool found: install Spectacle ({command})</source>
+        <translation>Не найдено средство для снимков: установите Spectacle ({command})</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/shotl/newshot.py"/>
+        <source>Pick what to capture</source>
+        <translation>Выбрать, что снимать</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/shotl/newshot.py"/>
+        <source>New screenshot: {mode}  (Ctrl+N)</source>
+        <translation>Новый снимок: {mode}  (Ctrl+N)</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/shotl/newshot.py"/>
+        <source>Delay</source>
+        <translation>Задержка</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/shotl/newshot.py"/>
+        <source>{n} s</source>
+        <comment>seconds</comment>
+        <translation>{n} с</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/shotl/newshot.py"/>
+        <source>Off</source>
+        <comment>no delay</comment>
+        <translation>Нет</translation>
+    </message>
 </context>
 <context>
     <name>grimoire.spells.shotl.page</name>
@@ -330,6 +400,11 @@
         <location filename="../../grimoire/spells/shotl/page.py"/>
         <source>Where shots and recordings are saved. Click to change</source>
         <translation>Куда сохраняются снимки и записи. Нажмите, чтобы изменить</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/shotl/page.py"/>
+        <source>New screenshot</source>
+        <translation>Новый снимок</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/shotl/page.py"/>

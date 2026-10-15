@@ -8,8 +8,8 @@ import time
 from pathlib import Path
 
 from PySide6.QtCore import QObject, QPoint, QPointF, QRect, QSize, Qt, QTimer, QUrl, Signal
-from PySide6.QtGui import (QColor, QDesktopServices, QIcon, QImage, QImageReader, QPainter, QPen, QPixmap,
-                           QPolygonF)
+from PySide6.QtGui import (QColor, QDesktopServices, QIcon, QImage, QImageReader, QKeySequence, QPainter, QPen,
+                           QPixmap, QPolygonF, QShortcut)
 from PySide6.QtWidgets import (QAbstractItemView, QButtonGroup, QCheckBox, QComboBox, QFileDialog,
                                QHBoxLayout, QLabel, QListView, QListWidget, QListWidgetItem, QMenu, QPushButton,
                                QSizePolicy, QStackedWidget, QToolButton, QVBoxLayout, QWidget)
@@ -17,9 +17,10 @@ from PySide6.QtWidgets import (QAbstractItemView, QButtonGroup, QCheckBox, QComb
 from grimoire.fsutil import human, tilde, trash
 from grimoire.i18n import tr
 from grimoire.jobs import POOL, Job
-from grimoire.spells.shotl import capture, record, region, shots
+from grimoire.spells.shotl import capture, newshot, record, shots
 from grimoire.spells.shotl.editor import Editor
 from grimoire.spells.shotl.icons import icon
+from grimoire.widgets import segments
 
 THUMB = QSize(232, 140)
 DELAYS = [0, 3, 5, 10]
@@ -187,16 +188,16 @@ class ShotLPage(QWidget):
         opts.setSpacing(10)
         opts.addWidget(_label(tr("grimoire.spells.shotl.page", "DELAY"), "Section"))
         self.delays = QButtonGroup(self)
-        for i, d in enumerate(DELAYS):
+        for d in DELAYS:
             b = QPushButton(tr("grimoire.spells.shotl.page", "{n} s", "seconds").format(n=d) if d
                             else tr("grimoire.spells.shotl.page", "Off", "no delay"))
             b.setObjectName("Segment")
-            b.setProperty("pos", "first" if i == 0 else "last" if i == len(DELAYS) - 1 else "mid")
             b.setCheckable(True)
             b.setChecked(d == self.settings["delay"])
             b.clicked.connect(lambda _=False, v=d: self._set(delay=v))
             self.delays.addButton(b)
             opts.addWidget(b)
+        segments(self.delays.buttons())
         opts.addSpacing(14)
         opts.addWidget(_label(tr("grimoire.spells.shotl.page", "AFTER"), "Section"))
         self.after = QComboBox()
@@ -233,6 +234,11 @@ class ShotLPage(QWidget):
         self.editor.closed.connect(self._editor_closed)
         self.editor.saved.connect(lambda _: self.refresh())
         self.editor.toast.connect(self.say)
+        self.editor.new_requested.connect(lambda mode: self.capture(mode, into_editor=True))
+        self.editor.new_btn.delay_changed.connect(self._delay_changed)
+        self.editor.new_key.setEnabled(False)          # one Ctrl+N for the page (two would be ambiguous)
+        QShortcut(QKeySequence(QKeySequence.StandardKey.New), self, self.new_shot,
+                  context=Qt.ShortcutContext.WindowShortcut)
         self.stack.addWidget(self.editor)
         root.addWidget(self.stack, 1)
         self.stack.currentChanged.connect(self._mode_changed)
@@ -274,6 +280,11 @@ class ShotLPage(QWidget):
         lay.setSpacing(8)
         bar = QHBoxLayout()
         bar.setSpacing(0)
+        self.new_btn = newshot.NewButton(tr("grimoire.spells.shotl.page", "New screenshot"), primary=True)
+        self.new_btn.requested.connect(self.capture)
+        self.new_btn.delay_changed.connect(self._delay_changed)
+        bar.addWidget(self.new_btn)
+        bar.addSpacing(16)
         self.tabs = QButtonGroup(self)
         for key, text in (("all", tr("grimoire.spells.shotl.page", "All")),
                           ("shots", tr("grimoire.spells.shotl.page", "Screenshots")),
@@ -337,6 +348,12 @@ class ShotLPage(QWidget):
         self.settings.update(changes)
         shots.update(**changes)
 
+    def _delay_changed(self, d: int):
+        """A New button's menu changed the delay: show it in the options row too."""
+        self.settings["delay"] = d
+        for b, v in zip(self.delays.buttons(), DELAYS):
+            b.setChecked(v == d)
+
     def _update_folder(self):
         self.folder_btn.set_path(tilde(shots.folder(self.settings)))
 
@@ -382,42 +399,28 @@ class ShotLPage(QWidget):
                 g = s.geometry()
                 m.addAction(f"{s.name()}  ·  {g.width()}×{g.height()}", lambda s=s: self.capture("monitor", s))
 
-    def capture(self, mode: str, screen=None):
-        """Hide our window, wait for it (and the delay) to clear the screen, then grab."""
+    def new_shot(self):
+        """Ctrl+N: from the editor, another shot into it; from the gallery, like its New button."""
+        if self.stack.currentIndex() == 1:
+            self.editor.new_btn.trigger()
+        else:
+            self.new_btn.trigger()
+
+    def capture(self, mode: str, screen=None, into_editor=False):
+        """Hide our window, wait for it (and the delay) to clear the screen, then grab. into_editor: the editor's
+        New button, which already settled its unsaved work; the shot goes into it whatever "After" says."""
         if not capture.backend():
             self.say(tr("grimoire.spells.shotl.page", "No screenshot tool found: install Spectacle ({command})")
                      .format(command="sudo apt install kde-spectacle"))
             return
-        if self.stack.currentIndex() == 1 and not self.editor.request_close():
+        if not into_editor and self.stack.currentIndex() == 1 and not self.editor.request_close():
             return
-        win = self.window()
-        win.hide()
-        QTimer.singleShot(450 + int(self.settings["delay"]) * 1000, lambda: self._grab(mode, screen))
+        newshot.run(self.window(), mode, lambda img: self.handle(img, into_editor), self.say, screen)
 
-    def _grab(self, mode, screen):
-        win = self.window()
-        try:
-            raw = capture.take(capture.grab("full" if mode in ("region", "monitor") else mode,
-                                            pointer=self.settings["pointer"] and mode != "region"))
-            if mode == "region":
-                rect = region.pick(raw)
-                raw = raw.copy(rect) if rect else None
-            elif mode == "monitor":
-                raw = raw.copy(capture.screen_rect(raw, screen))
-        except capture.CaptureError as e:
-            raw = None
-            self.say(str(e))
-        finally:                               # whatever happened, never leave Grimoire hidden
-            win.show()
-            win.raise_()
-            win.activateWindow()
-        if raw is not None and not raw.isNull():
-            self.handle(raw)
-
-    def handle(self, img: QImage):
+    def handle(self, img: QImage, into_editor=False):
         """What happens after a capture, per the "After" setting."""
         after = self.settings["after"]
-        if after == "edit":
+        if after == "edit" or into_editor:
             self.editor.load(img)
             self.stack.setCurrentIndex(1)
             self.editor.canvas.setFocus()

@@ -73,6 +73,11 @@ def _draw(name: str, p: QPainter):
         p.drawLine(QPointF(12, 4), QPointF(12, 14))
         _line(p, (8, 10.5), (12, 14.5), (16, 10.5))
         _line(p, (4.5, 15), (4.5, 19.5), (19.5, 19.5), (19.5, 15))
+    elif name == "new":                               # a plus: take a new shot
+        p.drawLine(QPointF(12, 5), QPointF(12, 19))
+        p.drawLine(QPointF(5, 12), QPointF(19, 12))
+    elif name == "chevron":                           # the New button's menu
+        _line(p, (7, 10), (12, 15), (17, 10))
     elif name == "edit":
         _line(p, (5, 19), (5.5, 15.5), (15.5, 5.5), (18.5, 8.5), (8.5, 18.5), (5, 19))
 
@@ -91,7 +96,16 @@ def _pixmap(name: str, color: str, size: int) -> QPixmap:
 
 
 OWN = {"crop", "arrow", "box", "pen", "text", "pixelate", "highlight", "undo", "redo", "region", "window", "record",
-       "stop", "play", "save", "edit"}
+       "stop", "play", "save", "edit", "new", "chevron"}
+
+
+@lru_cache(maxsize=16)
+def solid(name: str, color: str, size: int = 20) -> QIcon:
+    """One of ShotL's own icons in a single color whatever the state (on a filled button)."""
+    ic = QIcon()
+    for scale in (1, 2):
+        ic.addPixmap(_pixmap(name, color, size * scale))
+    return ic
 
 
 @lru_cache(maxsize=64)
