@@ -87,36 +87,12 @@ Exec=grimoire %u
 Icon=grimoire
 Categories=Utility;Settings;
 StartupWMClass=grimoire
-Actions=mural;sightc;vaultl;optimizel;systeml;terminall;
-
-[Desktop Action mural]
-Name=MuraL
-Exec=grimoire mural
-
-[Desktop Action sightc]
-Name=SightsL (crosshair)
-Exec=grimoire sightc
-
-[Desktop Action vaultl]
-Name=VaultL (files)
-Exec=grimoire vaultl
-
-[Desktop Action optimizel]
-Name=OptimizeL
-Exec=grimoire optimizel
-
-[Desktop Action systeml]
-Name=SystemL (system monitor)
-Exec=grimoire systeml
-
-[Desktop Action terminall]
-Name=TerminalL (terminal)
-Exec=grimoire terminall
 EOF
 cat > "$USR/share/applications/grimoire-tray.desktop" <<'EOF'
 [Desktop Entry]
 Type=Application
 Name=Grimoire Linux Tray
+NoDisplay=true
 GenericName=Tray icon
 Comment=Live CPU/RAM in the system tray, plus crosshair, tidy and performance mode
 Exec=grimoire-tray
