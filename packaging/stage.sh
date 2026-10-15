@@ -99,6 +99,12 @@ Exec=grimoire-tray
 Icon=grimoire
 Categories=Utility;System;
 EOF
+mkdir -p "$USR/share/dbus-1/services"           # VaultL answers "show in folder" (org.freedesktop.FileManager1)
+cat > "$USR/share/dbus-1/services/org.freedesktop.FileManager1.service" <<EOF
+[D-BUS Service]
+Name=org.freedesktop.FileManager1
+Exec=/usr/bin/grimoire-vaultl --file-manager-service
+EOF
 cat > "$USR/share/applications/grimoire-vaultl.desktop" <<EOF
 [Desktop Entry]
 Type=Application

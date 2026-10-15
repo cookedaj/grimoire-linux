@@ -219,6 +219,9 @@ fi
 for link in "$BIN"/grimoire*; do
     if [ -L "$link" ]; then run rm -f "$link"; fi
 done
+if grep -qs "written by Grimoire Linux" "$DATA/dbus-1/services/org.freedesktop.FileManager1.service"; then
+    run rm -f "$DATA/dbus-1/services/org.freedesktop.FileManager1.service"     # VaultL's "show in folder"
+fi
 run rm -f "$DATA"/applications/grimoire.desktop "$DATA"/applications/grimoire-*.desktop
 run rm -f "$DATA"/icons/hicolor/scalable/apps/grimoire.svg "$DATA"/icons/hicolor/256x256/apps/grimoire-*.png
 if [ -z "$KEEP_PLUGIN" ]; then run rm -rf "$PLUGIN"; fi

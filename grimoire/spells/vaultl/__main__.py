@@ -10,6 +10,11 @@ from urllib.parse import unquote, urlparse
 
 
 def main(argv: list[str]):
+    if argv[:1] == ["--file-manager-service"]:              # D-Bus activation (org.freedesktop.FileManager1)
+        from grimoire.spells.vaultl import fm1
+        return fm1.main()
+    if argv[:1] == ["--"]:                                    # a path that could look like an option
+        argv = argv[1:]
     if argv[:1] == ["tidy"]:                                   # a folder called tidy: pass ./tidy
         from grimoire.spells.vaultl import cli
         return cli.main(argv[1:])

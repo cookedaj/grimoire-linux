@@ -131,6 +131,15 @@ if [ -n "$ALL" ]; then standalone install all; fi
 PYTHONPATH="$APP" QT_QPA_PLATFORM=offscreen python3 -P -c "from grimoire.spells.launchl import panel; panel.write_spells()" \
     2>/dev/null || true
 update-desktop-database "$DATA/applications" 2>/dev/null || true
+# VaultL answers "show in folder" (org.freedesktop.FileManager1) when no other file manager does; D-Bus starts it
+# on demand
+mkdir -p "$DATA/dbus-1/services"
+cat > "$DATA/dbus-1/services/org.freedesktop.FileManager1.service" <<EOF
+# written by Grimoire Linux (VaultL)
+[D-BUS Service]
+Name=org.freedesktop.FileManager1
+Exec=$BIN/grimoire-vaultl --file-manager-service
+EOF
 
 # 5. the root helpers, system-wide and root-owned (grimoire/roothelper.py; one pkexec prompt when they changed).
 #    Never fails the install: without them only the features that need root are unavailable.
