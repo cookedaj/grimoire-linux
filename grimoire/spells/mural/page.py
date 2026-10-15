@@ -5,11 +5,11 @@ SCREENS  desktop, lock screen, splash, login, boot
 SHELL    taskbar, style, windows, motion
 LOOK     colors, icons, fonts, cursor, terminal
 SAVED    looks (snapshots of all of the above)
-Tabs are built the first time they're opened.
+Tabs are built the first time they're opened. Opening MuraL warms the Community listings in the background.
 """
 from importlib import import_module
 
-from PySide6.QtCore import QSize
+from PySide6.QtCore import QSize, QTimer
 from PySide6.QtWidgets import (QButtonGroup, QFrame, QHBoxLayout, QLabel, QPushButton, QScrollArea, QStackedWidget,
                                QVBoxLayout, QWidget)
 
@@ -104,6 +104,11 @@ class MuralPage(QWidget):
         bl.addWidget(self.stack, 1)
         root.addWidget(body, 1)
         self.open_tab(0)
+        QTimer.singleShot(1500, self._prefetch)
+
+    def _prefetch(self):
+        from grimoire.spells.mural import storeview
+        storeview.prefetch()
 
     def open_tab(self, i: int):
         name, _, module, cls = TABS[i]
