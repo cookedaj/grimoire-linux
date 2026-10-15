@@ -2,20 +2,22 @@
 """MuraL → Desktop tab: pick wallpapers from the library, build a playlist, apply to the desktop.
 
 Selection order is playlist order: click wallpapers in the order you want them to play.
+The Generate view draws black & white wallpapers (wallgen.py) at the screen's resolution into the library.
 """
 import subprocess
 from pathlib import Path
 
 from PySide6.QtCore import QSize, Qt, QTimer
-from PySide6.QtGui import QColor, QIcon, QPixmap
+from PySide6.QtGui import QColor, QGuiApplication, QIcon, QPixmap
 from PySide6.QtWidgets import (QAbstractItemView, QComboBox, QDoubleSpinBox, QFileDialog, QFormLayout,
-                               QFrame, QHBoxLayout, QLabel, QListWidget, QListWidgetItem, QMenu, QPushButton,
-                               QSpinBox, QStackedWidget, QVBoxLayout, QWidget)
+                               QFrame, QGridLayout, QHBoxLayout, QLabel, QLineEdit, QListWidget, QListWidgetItem,
+                               QMenu, QPushButton, QSpinBox, QStackedWidget, QVBoxLayout, QWidget)
 
-from grimoire.i18n import tr
-from grimoire.spells.mural import library, plasma
-from grimoire.spells.mural.screens import Choice, WrapCheck
+from grimoire.i18n import ltr, tr, tr_noop
+from grimoire.spells.mural import backdrop, library, plasma, wallgen
+from grimoire.spells.mural.screens import Choice, ScreenTab, WrapButton, WrapCheck, load_state, save_state
 from grimoire.spells.mural.storeview import StoreView
+from grimoire.widgets import Slider, segments
 
 PATH_ROLE = Qt.ItemDataRole.UserRole
 
@@ -29,36 +31,48 @@ class DesktopTab(QWidget):
         self.order: list[str] = []          # selected paths, in the order they were picked
         self._thumb_queue: list[QListWidgetItem] = []
 
-        root = QHBoxLayout(self)
+        root = QVBoxLayout(self)
         root.setContentsMargins(0, 0, 0, 0)
         root.setSpacing(0)
-
-        left = QWidget()
-        lv = QVBoxLayout(left)
-        lv.setContentsMargins(36, 8, 24, 24)
-        lv.setSpacing(14)
         switch = QHBoxLayout()
+        switch.setContentsMargins(36, 8, 24, 0)
         switch.setSpacing(0)
         switch.addStretch(1)
         self._switch = []
         views = (tr("grimoire.spells.mural.desktop", "Library"),
+                 tr("grimoire.spells.mural.desktop", "Generate"),
                  tr("grimoire.spells.mural.screens", "Community · top 100"))
         for i, name in enumerate(views):
             b = QPushButton(name)
             b.setObjectName("Segment")
-            b.setProperty("pos", "first" if i == 0 else "last")
             b.setCheckable(True)
             b.setChecked(i == 0)
             b.clicked.connect(lambda _=False, i=i: self._show_view(i))
             self._switch.append(b)
             switch.addWidget(b)
-        lv.addLayout(switch)
+        segments(self._switch)
+        root.addLayout(switch)
+
         self.views = QStackedWidget()
-        self.views.addWidget(self._build_library())
-        self.views.addWidget(StoreView(["wallhaven-bw", "wallhaven-bc", "wallpaper"], self.reload))
-        lv.addWidget(self.views, 1)
-        root.addWidget(left, 1)
-        root.addWidget(self._build_panel())
+        lib_page = QWidget()
+        lib_row = QHBoxLayout(lib_page)
+        lib_row.setContentsMargins(0, 0, 0, 0)
+        lib_row.setSpacing(0)
+        left = QWidget()
+        lv = QVBoxLayout(left)
+        lv.setContentsMargins(36, 14, 24, 24)
+        lv.addWidget(self._build_library())
+        lib_row.addWidget(left, 1)
+        lib_row.addWidget(self._build_panel())
+        self.views.addWidget(lib_page)
+        self.generate = GenerateTab(self._generated)
+        self.views.addWidget(self.generate)
+        store = QWidget()
+        sv = QVBoxLayout(store)
+        sv.setContentsMargins(36, 14, 24, 24)
+        sv.addWidget(StoreView(["wallhaven-bw", "wallhaven-bc", "wallpaper"], self.reload))
+        self.views.addWidget(store)
+        root.addWidget(self.views, 1)
 
         self.reload()
         self._restore_selection()
@@ -175,9 +189,17 @@ class DesktopTab(QWidget):
 
     def _show_view(self, i: int):
         self.views.setCurrentIndex(i)
-        self._panel.setVisible(i == 0)
         for k, b in enumerate(self._switch):
             b.setChecked(k == i)
+
+    def _generated(self, applied: bool):
+        """A generated wallpaper landed in the library (and maybe on the desktop): show it there."""
+        if applied:
+            self.settings = plasma.Settings.load()
+            self.reload()
+            self._restore_selection()
+        else:
+            self.reload()
 
     # ------------------------------------------------------------------ library
     def reload(self):
@@ -294,3 +316,138 @@ class DesktopTab(QWidget):
         self.settings = s
         self.status.setText(tr("grimoire.spells.mural.desktop", "Applied to your desktop ✓"))
         QTimer.singleShot(4000, lambda: self.status.setText(""))
+
+
+class GenerateTab(ScreenTab):
+    """Generated black & white wallpapers: pick a design, tune it, and it's drawn at your screen's resolution into
+    the library (so it joins playlists, Looks and shared setups like any other picture)."""
+    key = "wallgen"
+    context = "grimoire.spells.mural.desktop"          # wallgen.DESIGNS are marked in this context too
+    subtitle = tr_noop("grimoire.spells.mural.desktop", "Wallpapers drawn for your screen, in black & white. "
+                       "Each one is saved to your library.")
+    apply_label = tr_noop("grimoire.spells.mural.desktop", "Set as wallpaper")
+    apply_busy = tr_noop("grimoire.spells.mural.desktop", "Drawing…")
+
+    def __init__(self, on_generated):
+        self._on_generated = on_generated
+        screen = QGuiApplication.primaryScreen()
+        if screen is not None:
+            size = screen.size() * screen.devicePixelRatio()
+            self._screen = (max(640, size.width()), max(360, size.height()))
+        else:
+            self._screen = (1920, 1080)
+        self._file = None
+        super().__init__()
+        saved = load_state().get(self.key, {})
+        if plasma.Settings.load().items != [saved.get("file")]:       # the desktop shows something else now
+            self.applied = None
+            self._label_in_use()
+
+    def designs(self):
+        return wallgen.DESIGNS
+
+    def build_options(self, lay):
+        c = "grimoire.spells.mural.desktop"
+        grid = QGridLayout()
+        grid.setVerticalSpacing(8)
+        self.tone = Choice([(k, tr(c, v[0])) for k, v in wallgen.TONES.items()], self.changed)
+        self.density = Slider(1, 10, "", self.changed)
+        self.grain = Slider(0, 10, "", self.changed)
+        self.seed = QSpinBox()
+        self.seed.setRange(1, 9999)
+        self.seed.valueChanged.connect(self.changed)
+        shuffle = QPushButton(tr(c, "Shuffle"))
+        shuffle.setToolTip(tr(c, "Another variation of this design"))
+        shuffle.clicked.connect(self._shuffle)
+        seed_row = QHBoxLayout()
+        seed_row.setSpacing(6)
+        seed_row.addWidget(self.seed, 1)
+        seed_row.addWidget(shuffle)
+        self.text = QLineEdit()
+        self.text.setMaxLength(60)
+        self.text.setPlaceholderText("GRIMOIRE")
+        self.text.textEdited.connect(self.changed)
+        sw, sh = self._screen
+        sizes = [("screen", tr(c, "Your screen ({size})").format(size=ltr(f"{sw} × {sh}")))]
+        sizes += [(k, ltr(k.replace("x", " × "))) for k in wallgen.SIZES[1:]]
+        self.size = Choice(sizes, self.changed)
+        rows = [(tr(c, "Tone"), self.tone), (tr(c, "Density"), self.density), (tr(c, "Grain"), self.grain),
+                (tr(c, "Variation"), seed_row), (tr(c, "Words"), self.text), (tr(c, "Size"), self.size)]
+        for r, (label, w) in enumerate(rows):
+            grid.addWidget(QLabel(label), r, 0)
+            if isinstance(w, QHBoxLayout):
+                grid.addLayout(w, r, 1)
+            else:
+                grid.addWidget(w, r, 1)
+        grid.setColumnStretch(1, 1)
+        lay.addLayout(grid)
+        lay.addSpacing(6)
+        self.add_btn = WrapButton(tr(c, "Add to library only"))
+        self.add_btn.clicked.connect(self._add_only)
+        lay.addWidget(self.add_btn)
+
+    def options(self):
+        return {"tone": self.tone.value(), "density": self.density.value(), "grain": self.grain.value(),
+                "seed": self.seed.value(), "text": self.text.text(), "size": self.size.value()}
+
+    def set_options(self, o):
+        o = wallgen.options(o)
+        self.tone.set_value(o["tone"])
+        self.density.setValue(o["density"])
+        self.grain.setValue(o["grain"])
+        self.seed.setValue(o["seed"])
+        self.text.setText(o["text"])
+        self.size.set_value(o["size"])
+
+    def _shuffle(self):
+        import random
+        self.seed.setValue(random.randint(1, 9999))
+
+    def _selected(self, row, render=True):
+        super()._selected(row, render)
+        d = self.current()
+        self.text.setEnabled(d is not None and d.id == "type")        # only Typography uses words
+
+    def preview(self, design, o):
+        return wallgen.to_qimage(wallgen.render(design.id, o, 1280, 720))
+
+    def thumbnail(self, design, o):
+        return wallgen.to_qimage(wallgen.render(design.id, o, 640, 360))
+
+    def _make(self, design, o):
+        w, h = wallgen.pixels(o.get("size", "screen"), self._screen)
+        return wallgen.save(design.id, o, w, h)
+
+    def apply(self, design, o):
+        path = self._make(design, o)
+        s = plasma.Settings.load()            # keep the fill, fade and video choices; just one picture now
+        s.items = [str(path)]
+        plasma.apply(s)
+        backdrop.wallpaper.cache_clear()
+        self._file = str(path)
+        return tr("grimoire.spells.mural.desktop", "Set as your wallpaper ✓  (saved in your library)")
+
+    def _on_applied(self, ok, msg):
+        super()._on_applied(ok, msg)
+        if ok:
+            d, opts = self._pending
+            save_state(self.key, {"design": d.id, "options": opts, "file": self._file})
+        self._on_generated(ok)
+
+    def _add_only(self):
+        d, o = self.current(), self.options()
+
+        def work():
+            try:
+                path = self._make(d, o)
+            except (OSError, ValueError) as e:
+                return tr("grimoire.spells.mural.desktop", "Couldn't save it: {error}").format(error=e)
+            return tr("grimoire.spells.mural.desktop", "Added to your library: {name}").format(name=path.stem)
+
+        self.add_btn.setEnabled(False)
+        self.background(work, tr("grimoire.spells.mural.desktop", "Drawing…"))
+
+    def _on_finished(self, msg):
+        super()._on_finished(msg)
+        self.add_btn.setEnabled(True)
+        self._on_generated(False)
