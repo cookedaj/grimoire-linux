@@ -25,7 +25,7 @@ def shoot(mode: str, args: list[str]) -> int:
     from grimoire.app import style_app
     from grimoire.fsutil import tilde
     from grimoire.i18n import tr
-    from grimoire.spells.shotl import capture, region, shots
+    from grimoire.spells.shotl import capture, newshot, shots
     from grimoire.spells.shotl.record import _notify
     from grimoire.standalone import app_icon
 
@@ -45,17 +45,13 @@ def shoot(mode: str, args: list[str]) -> int:
     app.setWindowIcon(QIcon(app_icon("shot")))
     time.sleep(delay)
     try:
-        img = capture.take(capture.grab("full" if mode == "region" else mode,
-                                        pointer=settings["pointer"] and mode != "region"))
+        img = newshot.still(mode, settings["pointer"])
     except capture.CaptureError as e:
         _notify(tr("grimoire.spells.shotl.__main__", "No screenshot"), str(e))
         print(e)
         return 1
-    if mode == "region":
-        rect = region.pick(img)
-        if not rect:
-            return 1
-        img = img.copy(rect)
+    if img is None:                                     # region picker cancelled
+        return 1
 
     if after == "edit":
         from grimoire.spells.shotl.editor import Editor
@@ -74,6 +70,12 @@ def shoot(mode: str, args: list[str]) -> int:
         ed.load(img)
         ed.closed.connect(win.close)
         ed.toast.connect(lambda t: win.statusBar().showMessage(t, 5000))
+
+        def took(new):                                  # New / Ctrl+N: the next shot lands in this same window
+            ed.load(new)
+            ed.canvas.setFocus()
+
+        ed.new_requested.connect(lambda m: newshot.run(win, m, took, ed.toast.emit))
         win.setCentralWidget(ed)
         win.resize(min(1400, max(900, img.width() // 2 + 120)), min(900, max(600, img.height() // 2 + 180)))
         win.show()

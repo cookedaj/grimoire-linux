@@ -106,6 +106,11 @@
     </message>
     <message>
         <location filename="../../grimoire/spells/shotl/editor.py"/>
+        <source>New</source>
+        <translation>নতুন</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/shotl/editor.py"/>
         <source>White</source>
         <translation>সাদা</translation>
     </message>
@@ -240,6 +245,71 @@
         <source>Save your edits before closing?</source>
         <translation>বন্ধ করার আগে আপনার সম্পাদনা সংরক্ষণ করবেন?</translation>
     </message>
+    <message>
+        <location filename="../../grimoire/spells/shotl/editor.py"/>
+        <source>Save this screenshot before taking a new one?</source>
+        <translation>নতুন একটি নেওয়ার আগে এই স্ক্রিনশটটি সংরক্ষণ করবেন?</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/shotl/editor.py"/>
+        <source>Save your edits before taking a new one?</source>
+        <translation>নতুন একটি নেওয়ার আগে আপনার সম্পাদনা সংরক্ষণ করবেন?</translation>
+    </message>
+</context>
+<context>
+    <name>grimoire.spells.shotl.newshot</name>
+    <message>
+        <location filename="../../grimoire/spells/shotl/newshot.py"/>
+        <source>Region</source>
+        <translation>অংশ</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/shotl/newshot.py"/>
+        <source>Window</source>
+        <translation>উইন্ডো</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/shotl/newshot.py"/>
+        <source>All screens</source>
+        <translation>সব স্ক্রিন</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/shotl/newshot.py"/>
+        <source>Screen under the pointer</source>
+        <translation>পয়েন্টারের নিচের স্ক্রিন</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/shotl/newshot.py"/>
+        <source>No screenshot tool found: install Spectacle ({command})</source>
+        <translation>কোনো স্ক্রিনশট টুল পাওয়া যায়নি: Spectacle ইনস্টল করুন ({command})</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/shotl/newshot.py"/>
+        <source>Pick what to capture</source>
+        <translation>কী ক্যাপচার করবেন বেছে নিন</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/shotl/newshot.py"/>
+        <source>New screenshot: {mode}  (Ctrl+N)</source>
+        <translation>নতুন স্ক্রিনশট: {mode}  (Ctrl+N)</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/shotl/newshot.py"/>
+        <source>Delay</source>
+        <translation>বিলম্ব</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/shotl/newshot.py"/>
+        <source>{n} s</source>
+        <comment>seconds</comment>
+        <translation>{n} সে</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/shotl/newshot.py"/>
+        <source>Off</source>
+        <comment>no delay</comment>
+        <translation>বন্ধ</translation>
+    </message>
 </context>
 <context>
     <name>grimoire.spells.shotl.page</name>
@@ -329,6 +399,11 @@
         <location filename="../../grimoire/spells/shotl/page.py"/>
         <source>Where shots and recordings are saved. Click to change</source>
         <translation>স্ক্রিনশট ও রেকর্ডিং কোথায় সংরক্ষিত হয়। বদলাতে ক্লিক করুন</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/shotl/page.py"/>
+        <source>New screenshot</source>
+        <translation>নতুন স্ক্রিনশট</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/shotl/page.py"/>
