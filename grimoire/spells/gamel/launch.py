@@ -8,6 +8,7 @@
 Missing a command, it falls back to xdg-open on the URL. Starting a game changes nothing else on the system.
 RUN is the one place a process starts, so tests swap it for a stub and never launch a real game.
 """
+import errno
 import os
 import shutil
 import subprocess
@@ -15,7 +16,7 @@ from urllib.parse import urlencode
 
 from grimoire.paths import command
 from grimoire.spells.gamel import overlay
-from grimoire.spells.gamel.library import Game
+from grimoire.spells.gamel.library import ID_RE, Game
 
 FLATPAK = {"steam": "com.valvesoftware.Steam", "heroic": "com.heroicgameslauncher.hgl", "lutris": "net.lutris.Lutris"}
 
@@ -29,6 +30,9 @@ RUN = _run
 
 
 def url(g: Game) -> str:
+    """ValueError for an id that can't be one (the library only lists valid ones; this is the last guard)."""
+    if g.source not in FLATPAK or (g.source != "heroic" and not ID_RE.match(g.id)) or not g.id:
+        raise ValueError(g.key)
     if g.source == "steam":
         return f"steam://rungameid/{g.id}"
     if g.source == "heroic":
@@ -54,9 +58,12 @@ def game_env(g: Game) -> dict:
 
 
 def play(g: Game):
-    """Raises OSError when the launcher can't be started."""
+    """Raises OSError when the launcher can't be started, ValueError for an id that isn't one."""
     RUN(argv(g), game_env(g))
 
 
 def open_folder(path: str):
+    """Only absolute paths: a relative one (or "tidy") would be read by grimoire-vaultl as something else."""
+    if not os.path.isabs(path):
+        raise OSError(errno.EINVAL, os.strerror(errno.EINVAL), path)
     RUN([str(command("grimoire-vaultl")), path], {})

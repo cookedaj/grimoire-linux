@@ -6,8 +6,11 @@
 
 Quotes are optional, `//` starts a comment, `[$WIN32]`-style conditions after a value are skipped, and a
 repeated key keeps its last value. It never raises on odd input: whatever parsed before the problem is returned.
+Nesting is walked without recursion, and files over MAX_BYTES are read only up to it.
 """
 from pathlib import Path
+
+MAX_BYTES = 64 * 1024 * 1024                               # Steam's own files are a few MB at most
 
 _ESC = {"n": "\n", "t": "\t", "\\": "\\", '"': '"'}
 
@@ -72,7 +75,8 @@ def loads(text: str) -> dict:
 def load(path: Path) -> dict:
     """{} when the file is missing or unreadable."""
     try:
-        return loads(Path(path).read_text(encoding="utf-8", errors="replace"))
+        with open(path, "rb") as f:
+            return loads(f.read(MAX_BYTES).decode("utf-8", errors="replace"))
     except OSError:
         return {}
 
@@ -88,3 +92,9 @@ def find(d: dict, *keys: str):
             hit = next((v for kk, v in d.items() if kk.lower() == low), None)
         d = hit
     return d
+
+
+def block(d: dict, *keys: str) -> dict:
+    """find() for a nested block: {} when it's missing or a plain string (an odd file must not break the reader)."""
+    hit = find(d, *keys)
+    return hit if isinstance(hit, dict) else {}

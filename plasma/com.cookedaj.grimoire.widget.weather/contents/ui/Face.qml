@@ -88,6 +88,7 @@ Item {
             horizontalAlignment: Text.AlignHCenter
             wrapMode: Text.WordWrap
             text: face.message
+            textFormat: Text.PlainText
             color: "#9a9a9a"
             font.family: face.fontName
             font.pixelSize: 13 * face.u
@@ -137,6 +138,7 @@ Item {
                 width: parent.width
                 elide: Text.ElideRight
                 text: face.place.toUpperCase()
+                textFormat: Text.PlainText
                 color: "#6f6f6f"
                 font.family: face.fontName
                 font.pixelSize: 10 * face.u
@@ -220,6 +222,7 @@ Item {
             anchors.bottom: parent.bottom
             anchors.right: parent.right
             text: face.note
+            textFormat: Text.PlainText
             color: "#555555"
             font.family: face.fontName
             font.pixelSize: 9 * face.u

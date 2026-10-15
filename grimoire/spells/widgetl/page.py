@@ -27,6 +27,7 @@ ADDED = {
 
 def _label(text="", name="", wrap=True) -> QLabel:
     lab = QLabel(text)
+    lab.setTextFormat(Qt.TextFormat.PlainText)      # notes carry kpackagetool6's and plasmashell's messages
     if name:
         lab.setObjectName(name)
     lab.setWordWrap(wrap)
