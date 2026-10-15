@@ -19,6 +19,7 @@ PlasmoidItem {
     preferredRepresentation: fullRepresentation
     toolTipMainText: Plasmoid.configuration.placeName || i18n("Weather")
     toolTipSubText: note
+    toolTipTextFormat: Text.PlainText                            // the place name is typed or found by a search
 
     readonly property real latitude: parseFloat(Plasmoid.configuration.latitude)
     readonly property real longitude: parseFloat(Plasmoid.configuration.longitude)
@@ -31,6 +32,13 @@ PlasmoidItem {
     property string note: ""
     property string error: ""
     property date fetched
+    property var pending: null            // the request in flight; an older one's answer is ignored
+
+    // Open-Meteo's answer is untrusted: only finite numbers get through (null and odd values become 0)
+    function num(v) {
+        const n = Number(v);
+        return typeof v === "number" && isFinite(n) ? n : 0;
+    }
 
     function url() {
         let u = "https://api.open-meteo.com/v1/forecast?latitude=" + latitude.toFixed(4)
@@ -48,6 +56,11 @@ PlasmoidItem {
     }
 
     function fetch() {
+        if (pending) {                                    // dropped first, so its abort isn't taken as an answer
+            const old = pending;
+            pending = null;
+            old.abort();
+        }
         if (!placeSet) {
             current = null;
             days = [];
@@ -56,21 +69,30 @@ PlasmoidItem {
         }
         const req = new XMLHttpRequest();
         const wanted = url();
+        pending = req;
         req.onreadystatechange = function () {
             if (req.readyState !== XMLHttpRequest.DONE)
                 return;
-            if (wanted !== url())
-                return;                                   // the place or units changed meanwhile
+            if (req !== root.pending || wanted !== url())
+                return;                                   // superseded, or the place or units changed meanwhile
+            root.pending = null;
+            timeout.stop();
             try {
                 if (req.status !== 200)
                     throw new Error("HTTP " + req.status);
                 const data = JSON.parse(req.responseText);
-                const d = data.daily;
+                const c = data.current, d = data.daily || {};
+                if (!c || typeof c !== "object")
+                    throw new Error("no current weather");
+                const column = key => Array.isArray(d[key]) ? d[key] : [];
+                const time = column("time"), codes = column("weather_code");
+                const highs = column("temperature_2m_max"), lows = column("temperature_2m_min");
                 const list = [];
-                for (let i = 1; i < d.time.length && list.length < 5; i++)
-                    list.push({name: dayName(d.time[i]), code: d.weather_code[i],
-                               high: d.temperature_2m_max[i], low: d.temperature_2m_min[i]});
-                current = data.current;
+                for (let i = 1; i < Math.min(time.length, 6); i++)
+                    list.push({name: dayName(time[i]), code: num(codes[i]), high: num(highs[i]), low: num(lows[i])});
+                current = {temperature_2m: num(c.temperature_2m), apparent_temperature: num(c.apparent_temperature),
+                           weather_code: num(c.weather_code), is_day: num(c.is_day),
+                           wind_speed_10m: num(c.wind_speed_10m), relative_humidity_2m: num(c.relative_humidity_2m)};
                 days = list;
                 error = "";
                 fetched = new Date();
@@ -86,6 +108,13 @@ PlasmoidItem {
         };
         req.open("GET", wanted);
         req.send();
+        timeout.restart();
+    }
+
+    Timer {                                               // QML's XMLHttpRequest has no timeout of its own
+        id: timeout
+        interval: 30 * 1000
+        onTriggered: if (root.pending) root.pending.abort()
     }
 
     Timer {

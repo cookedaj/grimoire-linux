@@ -30,6 +30,12 @@ KCM.SimpleKCM {
 
     property var results: []
     property string searchNote: ""
+    property var pending: null            // the search in flight; an older one's answer is ignored
+
+    // Open-Meteo's answer is untrusted and these labels detect rich text: no markup, no control characters, short
+    function plain(v) {
+        return String(v === undefined || v === null ? "" : v).replace(/[<>\u0000-\u001f\u007f]/g, "").slice(0, 80);
+    }
 
     function search() {
         const q = query.text.trim();
@@ -39,19 +45,30 @@ KCM.SimpleKCM {
         }
         searchNote = i18n("Searching…");
         results = [];
+        if (pending) {
+            const old = pending;
+            pending = null;
+            old.abort();
+        }
         const req = new XMLHttpRequest();
+        pending = req;
         req.onreadystatechange = function () {
-            if (req.readyState !== XMLHttpRequest.DONE)
+            if (req.readyState !== XMLHttpRequest.DONE || req !== page.pending)
                 return;
+            page.pending = null;
+            page.searchTimeout.stop();
             try {
                 if (req.status !== 200)
                     throw new Error("HTTP " + req.status);
-                const found = JSON.parse(req.responseText).results || [];
+                const answer = JSON.parse(req.responseText).results || [];
+                const found = (Array.isArray(answer) ? answer : []).filter(r => r && page.plain(r.name) !== ""
+                    && isFinite(Number(r.latitude)) && Math.abs(Number(r.latitude)) <= 90
+                    && isFinite(Number(r.longitude)) && Math.abs(Number(r.longitude)) <= 180).slice(0, 8);
                 page.results = found.map(r => ({
-                    name: r.name,
-                    where: [r.admin1, r.country].filter(x => x).join(", "),
-                    latitude: r.latitude,
-                    longitude: r.longitude,
+                    name: page.plain(r.name),
+                    where: [page.plain(r.admin1), page.plain(r.country)].filter(x => x).join(", "),
+                    latitude: Number(r.latitude),
+                    longitude: Number(r.longitude),
                 }));
                 page.searchNote = found.length ? "" : i18n("No place called \"%1\" found.", q);
             } catch (e) {
@@ -59,8 +76,15 @@ KCM.SimpleKCM {
             }
         };
         req.open("GET", "https://geocoding-api.open-meteo.com/v1/search?count=8&format=json&language="
-                 + encodeURIComponent(Qt.locale().name.split("_")[0]) + "&name=" + encodeURIComponent(q));
+                 + encodeURIComponent(Qt.locale().name.split("_")[0]) + "&name=" + encodeURIComponent(q.slice(0, 100)));
         req.send();
+        page.searchTimeout.restart();
+    }
+
+    // QML's XMLHttpRequest has no timeout of its own (a property, so the page's content stays the FormLayout)
+    property Timer searchTimeout: Timer {
+        interval: 20 * 1000
+        onTriggered: if (page.pending) page.pending.abort()
     }
 
     Kirigami.FormLayout {
@@ -81,6 +105,7 @@ KCM.SimpleKCM {
         QQC2.Label {
             visible: page.searchNote !== ""
             text: page.searchNote
+            textFormat: Text.PlainText
             opacity: 0.7
         }
         ColumnLayout {

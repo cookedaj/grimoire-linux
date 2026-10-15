@@ -21,6 +21,7 @@ PlasmoidItem {
     preferredRepresentation: fullRepresentation
     toolTipMainText: player ? (player.track || player.identity) : i18n("Nothing playing")
     toolTipSubText: player ? player.artist : ""
+    toolTipTextFormat: Text.PlainText                            // track names come from any app or web page
 
     Mpris.Mpris2Model {
         id: mpris

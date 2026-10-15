@@ -114,6 +114,7 @@ Item {
                     width: parent.width
                     elide: Text.ElideRight
                     text: face.hasPlayer ? (face.title || face.playerName) : i18n("Nothing playing")
+                    textFormat: Text.PlainText      // titles come from any app (a browser: any web page)
                     color: face.hasPlayer ? "#f2f2f2" : "#8c8c8c"
                     font.family: face.fontName
                     font.pixelSize: 16 * face.u
@@ -122,6 +123,7 @@ Item {
                     width: parent.width
                     elide: Text.ElideRight
                     visible: text !== ""
+                    textFormat: Text.PlainText
                     text: face.hasPlayer ? [face.artist, face.album].filter(x => x).join(" · ")
                                          : i18n("Start music or a video in any app")
                     color: "#8c8c8c"
