@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
-"""Taskbar tab: the Dock panel layout + a black & white look (a generated Plasma Style, see plasmastyle.py),
+"""Taskbar tab: the panel's layout (where it sits, how long it is, how it's aligned) + a black & white look (a generated Plasma Style, see plasmastyle.py),
 height, opacity, floating and auto-hide.
 
 Layout properties go through plasmashell scripting; opacity is only read from plasmashellrc at startup,
@@ -11,7 +11,7 @@ import subprocess
 import time
 
 from PySide6.QtCore import QRectF, Qt
-from PySide6.QtGui import QColor, QFont, QImage, QPainter, QPainterPath
+from PySide6.QtGui import QColor, QFont, QImage, QPainter, QPainterPath, QPen
 from PySide6.QtSvg import QSvgRenderer
 from PySide6.QtWidgets import QGridLayout, QLabel
 
@@ -33,13 +33,38 @@ KEEP = tr_noop("grimoire.spells.mural.taskbar", "Keep current")
 LOOK_NAMES = {KEEP: None, **{look.name: key for key, look in plasmastyle.LOOKS.items()}}
 DEFAULTS = {"height": 46, "opacity": "Adaptive", "floating": True, "autohide": False, "look": "Onyx"}
 
-#            id          location  lengthMode alignment
+# ids never change once added (saved looks and shared setups use them)
+#              id          location  lengthMode alignment
 LAYOUTS = {
-    "dock":    ("bottom", "fit", "center"),
+    "dock":       ("bottom", "fit", "center"),
+    "bar":        ("bottom", "fill", "center"),
+    "corner":     ("bottom", "fit", "left"),
+    "top":        ("top", "fill", "center"),
+    "top-dock":   ("top", "fit", "center"),
+    "side":       ("left", "fill", "center"),
+    "side-dock":  ("left", "fit", "center"),
+    "right":      ("right", "fill", "center"),
+    "right-dock": ("right", "fit", "center"),
 }
 DESIGNS = [
     Design("dock", tr_noop("grimoire.spells.mural.taskbar", "Dock"), tr_noop(
         "grimoire.spells.mural.taskbar", "Only as wide as its contents, centered at the bottom. The modern look.")),
+    Design("bar", tr_noop("grimoire.spells.mural.taskbar", "Classic bar"), tr_noop(
+        "grimoire.spells.mural.taskbar", "Edge to edge along the bottom, the familiar desktop taskbar.")),
+    Design("corner", tr_noop("grimoire.spells.mural.taskbar", "Corner"), tr_noop(
+        "grimoire.spells.mural.taskbar", "Fits its contents and sits in the bottom-left corner, out of the way.")),
+    Design("top", tr_noop("grimoire.spells.mural.taskbar", "Top bar"), tr_noop(
+        "grimoire.spells.mural.taskbar", "Edge to edge along the top of the screen.")),
+    Design("top-dock", tr_noop("grimoire.spells.mural.taskbar", "Top dock"), tr_noop(
+        "grimoire.spells.mural.taskbar", "Only as wide as its contents, centered at the top.")),
+    Design("side", tr_noop("grimoire.spells.mural.taskbar", "Sidebar"), tr_noop(
+        "grimoire.spells.mural.taskbar", "Full height down the left edge. Leaves wide screens more room to read.")),
+    Design("side-dock", tr_noop("grimoire.spells.mural.taskbar", "Side dock"), tr_noop(
+        "grimoire.spells.mural.taskbar", "Only as tall as its contents, centered on the left edge.")),
+    Design("right", tr_noop("grimoire.spells.mural.taskbar", "Right sidebar"), tr_noop(
+        "grimoire.spells.mural.taskbar", "Full height down the right edge.")),
+    Design("right-dock", tr_noop("grimoire.spells.mural.taskbar", "Right dock"), tr_noop(
+        "grimoire.spells.mural.taskbar", "Only as tall as its contents, centered on the right edge.")),
 ]
 
 
@@ -79,31 +104,31 @@ def set_opacity(value: int):
         time.sleep(0.25)
 
 
-def render(design_id: str, o: dict, w=1280, h=720) -> QImage:
-    o = {**DEFAULTS, **o}
-    loc, length, _ = LAYOUTS[design_id]
-    s = w / 2560                                       # preview scale vs your 2560x1440 screen
-    img = _wallpaper(w, h).copy()
+def _glyph(size: int, color: QColor) -> QImage:
+    """The white clover launcher icon, recolored (dark on light looks)."""
+    img = QImage(size, size, QImage.Format.Format_ARGB32_Premultiplied)
+    img.fill(Qt.GlobalColor.transparent)
     p = QPainter(img)
-    p.setRenderHint(QPainter.RenderHint.Antialiasing)
-    p.fillRect(img.rect(), QColor(0, 0, 0, 70))         # a touch darker so the panel reads
+    QSvgRenderer(str(ASSETS / "clover5.svg")).render(p)
+    p.setCompositionMode(QPainter.CompositionMode.CompositionMode_SourceIn)
+    p.fillRect(img.rect(), color)
+    p.end()
+    return img
 
-    thick = o["height"] * s * 1.0
-    gap = 8 * s if o["floating"] else 0
+
+def panel_rect(loc: str, length: str, align: str, thick: float, content: float, gap: float, w: int, h: int) -> QRectF:
     vertical = loc in ("left", "right")
-    n_tasks = 6
-    icon = thick * 0.56
-    pad = thick * 0.28
-    content = pad * 2 + icon * (n_tasks + 3) + pad * (n_tasks + 2) + (0 if vertical else 70 * s)
+    edge = h if vertical else w
+    span = edge - 2 * gap if length == "fill" else min(edge - 2 * gap, content)
+    start = {"left": gap, "center": (edge - span) / 2, "right": edge - span - gap}[align]
     if vertical:
-        span = h - 2 * gap if length == "fill" else min(h - 2 * gap, content)
-        rect = QRectF(gap, (h - span) / 2, thick, span)
-    else:
-        span = w - 2 * gap if length == "fill" else min(w - 2 * gap, content)
-        y = gap if loc == "top" else h - thick - gap
-        rect = QRectF((w - span) / 2, y, span, thick)
+        return QRectF(gap if loc == "left" else w - thick - gap, start, thick, span)
+    return QRectF(start, gap if loc == "top" else h - thick - gap, span, thick)
 
-    look = plasmastyle.LOOKS.get(LOOK_NAMES.get(o["look"]) or "", None)
+
+def draw_panel(p: QPainter, rect: QRectF, vertical: bool, look, o: dict, s: float, radius: float):
+    """The panel itself: background (with the look's hairline border) and its contents."""
+    thick = rect.width() if vertical else rect.height()
     fill = QColor(look.fill) if look else QColor(32, 35, 38)
     base_alpha = look.fill_opacity if look else 0.95
     alpha = {"Opaque": 1.0, "Translucent": 0.6, "Adaptive": 0.85}[o["opacity"]] * base_alpha
@@ -111,54 +136,102 @@ def render(design_id: str, o: dict, w=1280, h=720) -> QImage:
         alpha = 1.0
     fill.setAlphaF(alpha)
     path = QPainterPath()
-    radius = (look.radius if look else 8) * s * 2 if o["floating"] else 0   # Plasma squares a docked panel
-    radius = min(radius, thick / 2)
     path.addRoundedRect(rect, radius, radius)
-    if o["autohide"]:
-        p.setOpacity(0.45)
     p.fillPath(path, fill)
+    if look and look.stroke_opacity > 0 and look.stroke_width:
+        line = QColor(look.stroke)
+        line.setAlphaF(look.stroke_opacity)
+        width = max(1.0, look.stroke_width * s * 2)
+        inner = QPainterPath()
+        inner.addRoundedRect(rect.adjusted(width / 2, width / 2, -width / 2, -width / 2), radius, radius)
+        p.strokePath(inner, QPen(line, width))
 
-    # contents: launcher clover, task icons, tray dots, clock
-    def slot(k):                                        # top-left of the k-th icon slot
+    light = look is not None and look.light
+    ink = QColor(24, 24, 24) if light else QColor(232, 232, 232)
+    icon = thick * 0.56
+    pad = thick * 0.28
+
+    def slot(k):                                        # the k-th icon slot along the panel
         if vertical:
             return QRectF(rect.x() + (thick - icon) / 2, rect.y() + pad + k * (icon + pad), icon, icon)
         return QRectF(rect.x() + pad + k * (icon + pad), rect.y() + (thick - icon) / 2, icon, icon)
 
-    QSvgRenderer(str(ASSETS / "clover5.svg")).render(p, slot(0).adjusted(icon * .12, icon * .12, -icon * .12, -icon * .12))
+    launcher = slot(0).adjusted(icon * .12, icon * .12, -icon * .12, -icon * .12)
+    p.drawImage(launcher, _glyph(max(8, int(launcher.width() * 2)), ink))
     p.setPen(Qt.PenStyle.NoPen)
-    for k in range(n_tasks):
+    for k in range(N_TASKS):
         r = slot(k + 1.4)
-        light = look is not None and look.light
-        shade = (40 if k == 1 else 110) if light else (225 if k == 1 else 120)
+        shade = (40 if k == 1 else 120) if light else (225 if k == 1 else 120)
         p.setBrush(QColor(shade, shade, shade, 230))
         p.drawRoundedRect(r, icon * 0.24, icon * 0.24)
     active = slot(2.4)                                  # running-indicator under the active task
-    p.setBrush(QColor("white"))
+    p.setBrush(ink)
     if vertical:
-        p.drawRoundedRect(QRectF(rect.x() + 2 * s, active.center().y() - icon * .25, 3 * s, icon * .5), 1, 1)
+        x = rect.x() + 2 * s if rect.center().x() < p.device().width() / 2 else rect.right() - 5 * s
+        p.drawRoundedRect(QRectF(x, active.center().y() - icon * .25, 3 * s, icon * .5), 1, 1)
     else:
-        p.drawRoundedRect(QRectF(active.center().x() - icon * .25, rect.bottom() - 4 * s, icon * .5, 3 * s), 1, 1)
-    p.setPen(QColor(20, 20, 20) if look is not None and look.light else QColor(230, 230, 230))
+        y = rect.bottom() - 4 * s if rect.center().y() > p.device().height() / 2 else rect.y() + 1 * s
+        p.drawRoundedRect(QRectF(active.center().x() - icon * .25, y, icon * .5, 3 * s), 1, 1)
     p.setFont(QFont("IBM Plex Sans", max(6, int(thick * 0.26))))
+    tray = QColor(110, 110, 110) if light else QColor(170, 170, 170)
     if vertical:
         clock = QRectF(rect.x(), rect.bottom() - thick, thick, thick)
-        p.drawText(clock, Qt.AlignmentFlag.AlignCenter, "2:45")
-    else:
-        clock = QRectF(rect.right() - pad - 70 * s, rect.y(), 70 * s, thick)
+        p.setPen(ink)
         p.drawText(clock, Qt.AlignmentFlag.AlignCenter, "2:45")
         p.setPen(Qt.PenStyle.NoPen)
-        p.setBrush(QColor(170, 170, 170))
+        p.setBrush(tray)
+        for k in range(3):
+            p.drawEllipse(QRectF(rect.center().x() - icon * .16, clock.y() - (k + 1) * icon * 0.75, icon * .32,
+                                 icon * .32))
+    else:
+        clock = QRectF(rect.right() - pad - CLOCK * s, rect.y(), CLOCK * s, thick)
+        p.setPen(ink)
+        p.drawText(clock, Qt.AlignmentFlag.AlignCenter, "2:45")
+        p.setPen(Qt.PenStyle.NoPen)
+        p.setBrush(tray)
         for k in range(3):                              # tray
-            c = QRectF(clock.x() - (k + 1) * icon * 0.75, rect.center().y() - icon * .16, icon * .32, icon * .32)
-            p.drawEllipse(c)
+            p.drawEllipse(QRectF(clock.x() - (k + 1) * icon * 0.75, rect.center().y() - icon * .16, icon * .32,
+                                 icon * .32))
+
+
+N_TASKS = 6
+CLOCK = 70                                              # clock width at full scale
+
+
+def render(design_id: str, o: dict, w=1280, h=720) -> QImage:
+    o = {**DEFAULTS, **o}
+    loc, length, align = LAYOUTS[design_id]
+    s = w / 2560                                       # preview scale vs your 2560x1440 screen
+    img = _wallpaper(w, h).copy()
+    p = QPainter(img)
+    p.setRenderHint(QPainter.RenderHint.Antialiasing)
+    p.setRenderHint(QPainter.RenderHint.SmoothPixmapTransform)
+    p.fillRect(img.rect(), QColor(0, 0, 0, 70))         # a touch darker so the panel reads
+
+    thick = o["height"] * s
+    gap = 8 * s if o["floating"] else 0
+    vertical = loc in ("left", "right")
+    icon, pad = thick * 0.56, thick * 0.28
+    tray = icon * 0.75 * 3 + (thick if vertical else CLOCK * s)
+    content = pad * 2 + icon * (N_TASKS + 3) + pad * (N_TASKS + 2) + tray
+    rect = panel_rect(loc, length, align, thick, content, gap, w, h)
+    look = plasmastyle.LOOKS.get(LOOK_NAMES.get(o["look"]) or "", None)
+    radius = (look.radius if look else 8) * s * 2 if o["floating"] else 0   # Plasma squares a docked panel
+    if o["autohide"]:
+        p.setOpacity(0.45)
+    draw_panel(p, rect, vertical, look, o, s, min(radius, thick / 2))
     if o["autohide"]:
         p.setOpacity(1)
         p.setPen(QColor(255, 255, 255, 160))
         p.setFont(QFont("IBM Plex Sans", 10))
-        note = QRectF(0, rect.y() - 30 if loc != "top" else rect.bottom() + 8, w, 22)
         if vertical:
-            note = QRectF(rect.right() + 12, h / 2 - 11, 200, 22)
-        p.drawText(note, Qt.AlignmentFlag.AlignHCenter if not vertical else Qt.AlignmentFlag.AlignLeft,
+            note = (QRectF(rect.right() + 12, h / 2 - 11, 260, 22) if loc == "left"
+                    else QRectF(rect.x() - 272, h / 2 - 11, 260, 22))
+            flag = Qt.AlignmentFlag.AlignLeft if loc == "left" else Qt.AlignmentFlag.AlignRight
+        else:
+            note = QRectF(0, rect.y() - 30 if loc != "top" else rect.bottom() + 8, w, 22)
+            flag = Qt.AlignmentFlag.AlignHCenter
+        p.drawText(note, flag | Qt.AlignmentFlag.AlignVCenter,
                    tr("grimoire.spells.mural.taskbar", "hides until you touch the edge"))
     p.end()
     return img
@@ -220,8 +293,10 @@ class TaskbarTab(ScreenTab):
     def thumbnail(self, design, o):
         """Cards zoom in on the panel's edge of the screen (it's thin at real scale)."""
         img = render(design.id, o, 2560, 1440)
-        loc = LAYOUTS[design.id][0]
-        x, y = {"bottom": (853, 960), "top": (853, 0), "left": (0, 480)}[loc]
+        loc, length, align = LAYOUTS[design.id]
+        along = 0 if length == "fill" else {"left": 0, "center": 1, "right": 2}[align]   # where its contents start
+        x, y = {"bottom": (853 * along, 960), "top": (853 * along, 0), "left": (0, 480 * along),
+                "right": (1707, 480 * along)}[loc]
         return img.copy(x, y, 853, 480)
 
     def apply(self, design, o):

@@ -1,8 +1,9 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
-"""Colors tab: 5 black & white KDE color schemes, applied to every window and app.
+"""Colors tab: KDE color schemes for every window and app: black & white ones first, then a few muted tones.
 
 Generates ~/.local/share/color-schemes/Grimoire<Name>.colors and applies it with plasma-apply-colorscheme.
-Every role (links, warnings, focus…) maps to a gray, so nothing on screen keeps a hue.
+Every role (links, warnings, focus…) maps to a gray, so nothing on screen keeps a hue; a toned design only
+tints those grays slightly (TONES), it never brings back colored roles.
 """
 from PySide6.QtCore import QRectF, Qt
 from PySide6.QtGui import QColor, QFont, QFontMetricsF, QImage, QPainter, QPainterPath
@@ -19,7 +20,9 @@ SCHEMES = HOME / ".local/share/color-schemes"
 PREVIOUS = DATA / "mural" / "colors-previous.txt"
 DEFAULTS = {"titlebar": "Match", "accent": "Design"}
 ACCENTS = [tr_noop("grimoire.spells.mural.colors", "Design"), tr_noop("grimoire.spells.mural.colors", "White"),
-           tr_noop("grimoire.spells.mural.colors", "Mid gray"), tr_noop("grimoire.spells.mural.colors", "Black")]
+           tr_noop("grimoire.spells.mural.colors", "Light gray"), tr_noop("grimoire.spells.mural.colors", "Mid gray"),
+           tr_noop("grimoire.spells.mural.colors", "Dark gray"), tr_noop("grimoire.spells.mural.colors", "Black")]
+ACCENT_GRAYS = {"White": 0xf0, "Light gray": 0xc0, "Mid gray": 0x80, "Dark gray": 0x40, "Black": 0x10}
 TITLEBARS = [tr_noop("grimoire.spells.mural.colors", "Match"), tr_noop("grimoire.spells.mural.colors", "Black")]
 
 #            window view  button header select sel-text text  muted dark
@@ -29,6 +32,21 @@ PALETTES = {
     "slate":    (0x2b, 0x23, 0x36, 0x26, 0xd8, 0x10, 0xdc, 0x94, True),
     "silver":   (0xd4, 0xe4, 0xc6, 0xca, 0x2a, 0xff, 0x14, 0x60, False),
     "paper":    (0xf3, 0xff, 0xe8, 0xec, 0x1a, 0xff, 0x10, 0x70, False),
+    "ink":      (0x04, 0x00, 0x12, 0x00, 0xff, 0x00, 0xf4, 0x86, True),
+    "fog":      (0xb4, 0xc4, 0xa6, 0xaa, 0x26, 0xff, 0x0c, 0x48, False),
+    "newsprint": (0xee, 0xfa, 0xe2, 0x10, 0x10, 0xff, 0x0e, 0x66, False),
+    "steel":    (0x1e, 0x16, 0x2a, 0x19, 0xb4, 0x08, 0xe0, 0x8a, True),
+    "moss":     (0x22, 0x1a, 0x2e, 0x1c, 0xa8, 0x06, 0xdc, 0x8c, True),
+    "clay":     (0x24, 0x1b, 0x30, 0x1e, 0xc0, 0x10, 0xe2, 0x90, True),
+    "sepia":    (0xec, 0xf6, 0xe0, 0xe4, 0x3a, 0xff, 0x1c, 0x70, False),
+}
+# a toned design's tint, (r, g, b) offsets added to each gray: strongest on mid grays, so black and white stay
+# nearly neutral and text keeps its contrast
+TONES = {
+    "steel": (-8, 0, 16),
+    "moss":  (-6, 10, -5),
+    "clay":  (12, 3, -10),
+    "sepia": (14, 5, -16),
 }
 DESIGNS = [
     Design("obsidian", tr_noop("grimoire.spells.mural.colors", "Obsidian"), tr_noop(
@@ -42,6 +60,21 @@ DESIGNS = [
         "grimoire.spells.mural.colors", "Light gray surfaces with near-black selection. A gentle light theme.")),
     Design("paper", tr_noop("grimoire.spells.mural.colors", "Paper"), tr_noop(
         "grimoire.spells.mural.colors", "White paper and black ink. Crisp light theme.")),
+    Design("ink", tr_noop("grimoire.spells.mural.colors", "Ink"), tr_noop(
+        "grimoire.spells.mural.colors", "Pure black surfaces and pure white text. Highest contrast, made for OLED "
+                                        "screens.")),
+    Design("fog", tr_noop("grimoire.spells.mural.colors", "Fog"), tr_noop(
+        "grimoire.spells.mural.colors", "Mid-gray surfaces with black text. Light, but never glaring.")),
+    Design("newsprint", tr_noop("grimoire.spells.mural.colors", "Newsprint"), tr_noop(
+        "grimoire.spells.mural.colors", "White pages under solid black title bars, like a printed front page.")),
+    Design("steel", tr_noop("grimoire.spells.mural.colors", "Steel"), tr_noop(
+        "grimoire.spells.mural.colors", "Muted tone: charcoal with a cool blue-gray cast.")),
+    Design("moss", tr_noop("grimoire.spells.mural.colors", "Moss"), tr_noop(
+        "grimoire.spells.mural.colors", "Muted tone: dark grays with a faint green cast.")),
+    Design("clay", tr_noop("grimoire.spells.mural.colors", "Clay"), tr_noop(
+        "grimoire.spells.mural.colors", "Muted tone: warm dark grays, like unglazed clay.")),
+    Design("sepia", tr_noop("grimoire.spells.mural.colors", "Sepia"), tr_noop(
+        "grimoire.spells.mural.colors", "Muted tone: aged paper and brown-black ink. A warm light theme.")),
 ]
 EFFECTS = """[ColorEffects:Disabled]
 Color=56,56,56
@@ -65,26 +98,33 @@ IntensityEffect=0
 """
 
 
-def _g(v: int) -> str:
+def rgb(v: float, tone: tuple = (0, 0, 0)) -> tuple[int, int, int]:
+    """A gray, tinted by a design's tone (none for the black & white designs)."""
     v = max(0, min(255, int(v)))
-    return f"{v},{v},{v}"
+    weight = 0.45 + 0.55 * (1 - abs(v - 128) / 128)
+    return tuple(max(0, min(255, round(v + t * weight))) for t in tone)
+
+
+def _g(v: float, tone: tuple = (0, 0, 0)) -> str:
+    return ",".join(map(str, rgb(v, tone)))
 
 
 def palette(pid: str, o: dict) -> dict:
     window, view, button, header, sel, sel_text, text, muted, dark = PALETTES[pid]
     accent = o.get("accent", "Design")
-    if accent != "Design":
-        sel = {"White": 0xf0, "Mid gray": 0x80, "Black": 0x10}[accent]
+    if accent in ACCENT_GRAYS:
+        sel = ACCENT_GRAYS[accent]
         sel_text = 0x00 if sel > 0x90 else 0xff
     if o.get("titlebar") == "Black":
         header = 0x05
     return dict(window=window, view=view, button=button, header=header, sel=sel, sel_text=sel_text,
-                text=text, muted=muted, dark=dark)
+                text=text, muted=muted, dark=dark, tone=TONES.get(pid, (0, 0, 0)))
 
 
 def scheme_text(pid: str, o: dict, name: str, ident: str) -> str:
     c = palette(pid, o)
     dark = c["dark"]
+    tg = lambda v: _g(v, c["tone"])                    # every gray below carries the design's tone
     alt = 10 if dark else -10                          # alternating-row offset
     focus = c["sel"]
     hover = (c["sel"] + c["text"]) / 2
@@ -92,18 +132,18 @@ def scheme_text(pid: str, o: dict, name: str, ident: str) -> str:
     def group(title, bg, fg, muted=c["muted"], fg_active=None):
         header_text = fg if not (title.startswith("Colors:Header") and c["header"] < 0x40) else 0xe8
         return f"""[{title}]
-BackgroundAlternate={_g(bg + alt)}
-BackgroundNormal={_g(bg)}
-DecorationFocus={_g(focus)}
-DecorationHover={_g(hover)}
-ForegroundActive={_g(fg_active if fg_active is not None else header_text)}
-ForegroundInactive={_g(muted)}
-ForegroundLink={_g(header_text)}
-ForegroundNegative={_g(0xc8 if dark else 0x30)}
-ForegroundNeutral={_g(0xb0 if dark else 0x48)}
-ForegroundNormal={_g(header_text)}
-ForegroundPositive={_g(0xd8 if dark else 0x24)}
-ForegroundVisited={_g(muted)}
+BackgroundAlternate={tg(bg + alt)}
+BackgroundNormal={tg(bg)}
+DecorationFocus={tg(focus)}
+DecorationHover={tg(hover)}
+ForegroundActive={tg(fg_active if fg_active is not None else header_text)}
+ForegroundInactive={tg(muted)}
+ForegroundLink={tg(header_text)}
+ForegroundNegative={tg(0xc8 if dark else 0x30)}
+ForegroundNeutral={tg(0xb0 if dark else 0x48)}
+ForegroundNormal={tg(header_text)}
+ForegroundPositive={tg(0xd8 if dark else 0x24)}
+ForegroundVisited={tg(muted)}
 """
 
     header_fg = 0xe8 if c["header"] < 0x40 else c["text"]
@@ -120,12 +160,12 @@ ForegroundVisited={_g(muted)}
         f"[General]\nColorScheme={ident}\nName={name}\nshadeSortColumn=true\n",
         "[KDE]\ncontrast=4\n",
         f"""[WM]
-activeBackground={_g(c['header'])}
-activeBlend={_g(header_fg)}
-activeForeground={_g(header_fg)}
-inactiveBackground={_g(c['header'])}
-inactiveBlend={_g(c['muted'])}
-inactiveForeground={_g(c['muted'])}
+activeBackground={tg(c['header'])}
+activeBlend={tg(header_fg)}
+activeForeground={tg(header_fg)}
+inactiveBackground={tg(c['header'])}
+inactiveBlend={tg(c['muted'])}
+inactiveForeground={tg(c['muted'])}
 """,
     ]
     return "\n".join(parts)
@@ -136,7 +176,7 @@ def render(pid: str, o: dict, w=1280, h=720) -> QImage:
     c = palette(pid, {**DEFAULTS, **o})
 
     def q(v, a=255):
-        return QColor(v, v, v, a)
+        return QColor(*rgb(v, c["tone"]), a)
 
     img = _wallpaper(w, h).copy()
     p = QPainter(img)
@@ -269,6 +309,12 @@ class ColorsTab(ScreenTab):
     def preview(self, design, o):
         return render(design.id, o)
 
+    def thumbnail(self, design, o):
+        """Cards zoom in on the window's title bar, sidebar selection and rows."""
+        if design.id.startswith("store:"):
+            return self.preview(design, o)
+        return render(design.id, o).copy(118, 62, 704, 396)
+
     def apply(self, design, o):
         SCHEMES.mkdir(parents=True, exist_ok=True)
         cur = current_scheme()
@@ -280,7 +326,7 @@ class ColorsTab(ScreenTab):
             run_tool(["plasma-apply-colorscheme", ident], ok_if_already=True)
             return tr("grimoire.spells.mural.colors", "Applied ✓")
         # plasma-apply-colorscheme ignores re-applying the current name, so alternate between two names
-        base = f"Grimoire{design.name}"
+        base = "Grimoire" + design.name.replace(" ", "")
         ident = base + "B" if cur == base else base
         (SCHEMES / f"{ident}.colors").write_text(scheme_text(design.id, o, f"Grimoire {design.name}", ident))
         run_tool(["plasma-apply-colorscheme", ident])
