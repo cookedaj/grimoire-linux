@@ -5,13 +5,28 @@
     <name>grimoire.spells.gamel.library</name>
     <message>
         <location filename="../../grimoire/spells/gamel/library.py"/>
+        <source>Native</source>
+        <translation>原生</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/library.py"/>
         <source>Sideloaded</source>
         <translation>侧载</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/gamel/library.py"/>
+        <source>Non-Steam</source>
+        <translation>非 Steam</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/library.py"/>
         <source>Steam hasn&apos;t finished downloading or updating it.</source>
         <translation>Steam 尚未完成下载或更新。</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/library.py"/>
+        <source>Menu games</source>
+        <translation>菜单中的游戏</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/gamel/library.py"/>
@@ -76,6 +91,14 @@
     </message>
 </context>
 <context>
+    <name>grimoire.spells.gamel.others</name>
+    <message>
+        <location filename="../../grimoire/spells/gamel/others.py"/>
+        <source>reading Bottles needs python3-yaml (sudo apt install python3-yaml)</source>
+        <translation>读取 Bottles 需要 python3-yaml（sudo apt install python3-yaml）</translation>
+    </message>
+</context>
+<context>
     <name>grimoire.spells.gamel.overlay</name>
     <message>
         <location filename="../../grimoire/spells/gamel/overlay.py"/>
@@ -109,6 +132,11 @@
         <location filename="../../grimoire/spells/gamel/page.py"/>
         <source>All games</source>
         <translation>所有游戏</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/page.py"/>
+        <source>Native</source>
+        <translation>原生</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/gamel/page.py"/>
@@ -173,8 +201,18 @@
     </message>
     <message>
         <location filename="../../grimoire/spells/gamel/page.py"/>
+        <source>Runs with</source>
+        <translation>运行工具</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/page.py"/>
         <source>Copy launch option</source>
         <translation>复制启动选项</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/page.py"/>
+        <source>Winetricks for this game&apos;s Proton prefix</source>
+        <translation>此游戏 Proton 前缀的 Winetricks</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/gamel/page.py"/>
@@ -188,8 +226,8 @@
     </message>
     <message>
         <location filename="../../grimoire/spells/gamel/page.py"/>
-        <source>No games found. GameL looks for Steam, Heroic and Lutris libraries in their usual places, including their Flatpak versions.</source>
-        <translation>没有找到游戏。GameL 会在常见位置查找 Steam、Heroic 和 Lutris 的游戏库，包括它们的 Flatpak 版本。</translation>
+        <source>No games found. GameL looks for Steam, Heroic, Lutris, itch and Bottles libraries in their usual places (their Flatpak versions too), Roblox through Sober and Vinegar, and games in the app menu.</source>
+        <translation>未找到游戏。GameL 会在常用位置查找 Steam、Heroic、Lutris、itch 和 Bottles 游戏库（包括它们的 Flatpak 版本），通过 Sober 和 Vinegar 查找 Roblox，并查找应用菜单中的游戏。</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/gamel/page.py"/>
@@ -225,6 +263,16 @@
         <location filename="../../grimoire/spells/gamel/page.py"/>
         <source>Starting {name} through {launcher}.</source>
         <translation>正在通过 {launcher} 启动 {name}。</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/page.py"/>
+        <source>Couldn&apos;t open Protontricks: {error}</source>
+        <translation>无法打开 Protontricks：{error}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/page.py"/>
+        <source>Opening Protontricks for {name}. If it says there&apos;s no prefix, start the game once first.</source>
+        <translation>正在为 {name} 打开 Protontricks。如果它提示没有前缀，请先启动一次游戏。</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/gamel/page.py"/>
@@ -453,8 +501,323 @@
     </message>
     <message>
         <location filename="../../grimoire/spells/gamel/page.py"/>
+        <source>COMPATIBILITY</source>
+        <translation>兼容性</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/page.py"/>
+        <source>{tool} (Steam&apos;s default)</source>
+        <translation>{tool}（Steam 默认）</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/page.py"/>
         <source>Copied “{option}”. Paste it into the game&apos;s Launch options in Steam.</source>
         <translation>已复制“{option}”。请在 Steam 中把它粘贴到游戏的“启动选项”里。</translation>
+    </message>
+    <message>
+        <source>No games found. GameL looks for Steam, Heroic and Lutris libraries in their usual places, including their Flatpak versions.</source>
+        <translation type="vanished">没有找到游戏。GameL 会在常见位置查找 Steam、Heroic 和 Lutris 的游戏库，包括它们的 Flatpak 版本。</translation>
+    </message>
+</context>
+<context>
+    <name>grimoire.spells.gamel.proton</name>
+    <message>
+        <location filename="../../grimoire/spells/gamel/proton.py"/>
+        <source>GitHub&apos;s hourly limit is used up; try again after {time}.</source>
+        <translation>GitHub 每小时的请求次数已用完；请在 {time} 之后重试。</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/proton.py"/>
+        <source>GitHub&apos;s hourly limit is used up; try again later.</source>
+        <translation>GitHub 每小时的请求次数已用完；请稍后重试。</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/proton.py"/>
+        <source>GitHub answered {code}.</source>
+        <translation>GitHub 返回了 {code}。</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/proton.py"/>
+        <source>Couldn&apos;t reach GitHub (offline?): {reason}</source>
+        <translation>无法连接 GitHub（离线？）：{reason}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/proton.py"/>
+        <source>GitHub sent an answer that isn&apos;t JSON.</source>
+        <translation>GitHub 返回的内容不是 JSON。</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/proton.py"/>
+        <source>The checksum file is too large.</source>
+        <translation>校验和文件太大。</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/proton.py"/>
+        <source>The release&apos;s checksum file doesn&apos;t list {name}.</source>
+        <translation>该版本的校验和文件中没有 {name}。</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/proton.py"/>
+        <source>The download is larger than the safety limit; not installing it.</source>
+        <translation>下载内容超过安全上限；不予安装。</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/proton.py"/>
+        <source>The download failed: {code}.</source>
+        <translation>下载失败：{code}。</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/proton.py"/>
+        <source>The download failed (offline?): {reason}</source>
+        <translation>下载失败（离线？）：{reason}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/proton.py"/>
+        <source>The archive has too many files; not installing it.</source>
+        <translation>压缩包中的文件太多；不予安装。</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/proton.py"/>
+        <source>The archive contains an unexpected path ({name}); not installing it.</source>
+        <translation>压缩包中有意外的路径（{name}）；不予安装。</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/proton.py"/>
+        <source>The archive contains a special file ({name}); not installing it.</source>
+        <translation>压缩包中有特殊文件（{name}）；不予安装。</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/proton.py"/>
+        <source>The archive contains a link out of its folder ({name}); not installing it.</source>
+        <translation>压缩包中有指向其文件夹之外的链接（{name}）；不予安装。</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/proton.py"/>
+        <source>The archive expands too large; not installing it.</source>
+        <translation>压缩包解压后太大；不予安装。</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/proton.py"/>
+        <source>{name} is already installed.</source>
+        <translation>{name} 已安装。</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/proton.py"/>
+        <source>The archive is damaged or unsafe: {error}</source>
+        <translation>压缩包已损坏或不安全：{error}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/proton.py"/>
+        <source>The archive isn&apos;t laid out like a Proton build; not installing it.</source>
+        <translation>压缩包的结构不像 Proton 版本；不予安装。</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/proton.py"/>
+        <source>That isn&apos;t a GE-Proton release.</source>
+        <translation>这不是 GE-Proton 的发布版本。</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/proton.py"/>
+        <source>Not enough free space: it needs about {size}.</source>
+        <translation>可用空间不足：大约需要 {size}。</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/proton.py"/>
+        <source>The download doesn&apos;t match the release&apos;s checksum; not installing it.</source>
+        <translation>下载内容与该版本的校验和不符；不予安装。</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/proton.py"/>
+        <source>GameL only removes builds in compatibilitytools.d.</source>
+        <translation>GameL 只删除 compatibilitytools.d 中的版本。</translation>
+    </message>
+</context>
+<context>
+    <name>grimoire.spells.gamel.protonview</name>
+    <message>
+        <location filename="../../grimoire/spells/gamel/protonview.py"/>
+        <source>GE-Proton is a community build of Proton with extra fixes and video codecs. Install a build here, restart Steam, then pick it for a game in Steam: right-click the game, Properties, Compatibility. GameL never changes a game&apos;s settings.</source>
+        <translation>GE-Proton 是社区构建的 Proton，带有额外的修复和视频编解码器。在这里安装一个版本，重启 Steam，然后在 Steam 中为游戏选择它：右键单击游戏，属性，兼容性。GameL 从不更改游戏的设置。</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/protonview.py"/>
+        <source>Install into</source>
+        <translation>安装到</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/protonview.py"/>
+        <source>Which Steam gets new builds</source>
+        <translation>哪个 Steam 接收新版本</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/protonview.py"/>
+        <source>Steam isn&apos;t installed</source>
+        <translation>未安装 Steam</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/protonview.py"/>
+        <source>GE-Proton builds go into Steam&apos;s compatibilitytools.d folder; GameL found no Steam here.</source>
+        <translation>GE-Proton 版本放在 Steam 的 compatibilitytools.d 文件夹中；GameL 在这里没有找到 Steam。</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/protonview.py"/>
+        <source>Installed</source>
+        <translation>已安装</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/protonview.py"/>
+        <source>GE-Proton releases</source>
+        <translation>GE-Proton 发布版本</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/protonview.py"/>
+        <source>Check GitHub again</source>
+        <translation>重新检查 GitHub</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/protonview.py"/>
+        <source>Open Protontricks</source>
+        <translation>打开 Protontricks</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/protonview.py"/>
+        <source>Runs Winetricks in a Steam game&apos;s Proton prefix, to add the DLLs, fonts or runtimes a game asks for. Opens its game picker; a game&apos;s own button is in the library.</source>
+        <translation>在 Steam 游戏的 Proton 前缀中运行 Winetricks，添加游戏所需的 DLL、字体或运行库。这里打开它的游戏选择器；单个游戏的按钮在游戏库中。</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/protonview.py"/>
+        <source>Protontricks isn&apos;t installed</source>
+        <translation>未安装 Protontricks</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/protonview.py"/>
+        <source>Install it from Flathub, then come back here:</source>
+        <translation>请从 Flathub 安装，然后回到这里：</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/protonview.py"/>
+        <source>Steam (Flatpak)</source>
+        <translation>Steam（Flatpak）</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/protonview.py"/>
+        <source>Looking at GitHub…</source>
+        <translation>正在查看 GitHub…</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/protonview.py"/>
+        <source>Installed and updated by Steam</source>
+        <translation>由 Steam 安装和更新</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/protonview.py"/>
+        <source>Steam&apos;s default for every game</source>
+        <translation>Steam 中所有游戏的默认工具</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/protonview.py"/>
+        <source>Used by: {games}</source>
+        <translation>使用它的游戏：{games}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/protonview.py"/>
+        <source>No game is set to it</source>
+        <translation>没有游戏使用它</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/protonview.py"/>
+        <source>Remove</source>
+        <translation>删除</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/protonview.py"/>
+        <source>No Proton builds yet.</source>
+        <translation>还没有 Proton 版本。</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/protonview.py"/>
+        <source>GitHub listed no releases.</source>
+        <translation>GitHub 没有列出任何版本。</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/protonview.py"/>
+        <source>Released {date} · {size}</source>
+        <translation>发布于 {date} · {size}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/protonview.py"/>
+        <source>Latest</source>
+        <translation>最新</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/protonview.py"/>
+        <source>Installing…</source>
+        <translation>正在安装…</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/protonview.py"/>
+        <source>Install</source>
+        <translation>安装</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/protonview.py"/>
+        <source>Cancel</source>
+        <translation>取消</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/protonview.py"/>
+        <source>Downloading {name}…</source>
+        <translation>正在下载 {name}…</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/protonview.py"/>
+        <source>{done} of {total}</source>
+        <translation>{done} / {total}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/protonview.py"/>
+        <source>Stopped installing {name}.</source>
+        <translation>已停止安装 {name}。</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/protonview.py"/>
+        <source>Couldn&apos;t install {name}: {error}</source>
+        <translation>无法安装 {name}：{error}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/protonview.py"/>
+        <source>{name} is installed. Restart Steam, then pick it in a game&apos;s Properties, Compatibility.</source>
+        <translation>{name} 已安装。请重启 Steam，然后在游戏的属性 › 兼容性中选择它。</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/protonview.py"/>
+        <source>Move {name} to the Trash?</source>
+        <translation>将 {name} 移到回收站？</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/protonview.py"/>
+        <source>Steam is set to run some games with it; they need another tool picked afterwards.</source>
+        <translation>Steam 设置了用它运行某些游戏；之后需要为这些游戏另选一个工具。</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/protonview.py"/>
+        <source>Couldn&apos;t remove {name}: {error}</source>
+        <translation>无法删除 {name}：{error}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/protonview.py"/>
+        <source>{name} is in the Trash.</source>
+        <translation>{name} 已移到回收站。</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/protonview.py"/>
+        <source>Couldn&apos;t open Protontricks: {error}</source>
+        <translation>无法打开 Protontricks：{error}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/protonview.py"/>
+        <source>Opening Protontricks…</source>
+        <translation>正在打开 Protontricks…</translation>
     </message>
 </context>
 </TS>

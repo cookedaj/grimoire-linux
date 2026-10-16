@@ -324,6 +324,11 @@ def _gamel(page, wait):
                 (now - 9 * 86400,))
     con.commit()
     con.close()
+    from grimoire.spells.gamel import others             # Roblox through a fake Sober; no menu games of this PC
+    fake = Path.home() / "fake-flatpak"
+    (fake / "app/org.vinegarhq.Sober/current/active").mkdir(parents=True, exist_ok=True)
+    others.FLATPAK_SYSTEM = fake
+    others.app_dirs = lambda: [Path.home() / ".local/share/applications"]
     page.scan()
 
 

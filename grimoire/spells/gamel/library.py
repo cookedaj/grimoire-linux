@@ -1,26 +1,35 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
-"""GameL's library: the installed games of Steam, Heroic (Epic, GOG, Amazon, sideloaded) and Lutris, read from
-the launchers' own files. Read-only: nothing here writes to a launcher's files (Lutris' database is opened in
-read-only mode). No Qt, so the home page's status line can use it.
+"""GameL's library: the installed games of Steam (with non-Steam shortcuts), Heroic (Epic, GOG, Amazon, sideloaded)
+and Lutris, read from the launchers' own files; others.py adds itch, Bottles, Roblox, Flatpak and native games.
+Read-only: nothing here writes to a launcher's files (Lutris' database is opened in read-only mode). The one file
+GameL writes is its own play history (played.json: when you last started a game from GameL), for launchers that
+don't keep one. No Qt, so the home page's status line can use it.
 
 Home folders are read late (Path.home() at call time), so tests can point HOME at a sandbox.
 """
+import binascii
 import json
 import os
 import re
 import sqlite3
 import time
+import unicodedata
 from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
 from urllib.request import pathname2url
 
 from grimoire.i18n import tr, tr_noop
+from grimoire.paths import CONFIG
 from grimoire.spells.gamel import vdf
 
-SOURCES = {"steam": "Steam", "heroic": "Heroic", "lutris": "Lutris"}
+# launcher names stay as they are; "native" and "flatpak" are shown with tr("grimoire.spells.gamel.library", …)
+SOURCES = {"steam": "Steam", "heroic": "Heroic", "lutris": "Lutris", "itch": "itch", "bottles": "Bottles",
+           "roblox": "Roblox", "flatpak": "Flatpak", "native": tr_noop("grimoire.spells.gamel.library", "Native")}
 STORES = {"legendary": "Epic", "gog": "GOG", "nile": "Amazon",       # store names stay as they are
           "sideload": tr_noop("grimoire.spells.gamel.library", "Sideloaded")}
+# sources whose own files say when a game was last played; the others use GameL's played.json
+TRACKED = {"steam", "heroic", "lutris", "itch"}
 
 # Steam's own runtimes and compatibility tools also have app manifests; they aren't games
 # (runtimes, Proton builds, anti-cheat runtimes); names and toolmanifest.vdf catch newer ones
@@ -42,7 +51,8 @@ class Game:
     store: str = ""             # Heroic: legendary | gog | nile | sideload; Lutris: its runner
     flatpak: bool = False       # the launcher is the Flatpak one
     note: str = ""              # e.g. Steam is still downloading it
-    extra: dict = field(default_factory=dict)
+    icon: str = ""              # an app icon, drawn small on the tile when there's no cover
+    extra: dict = field(default_factory=dict)   # shortcut, desktop (a .desktop path), bottle, dup (a key it repeats)
 
     @property
     def key(self) -> str:
@@ -52,7 +62,18 @@ class Game:
     def source_name(self) -> str:
         if self.source == "heroic" and self.store in STORES:
             return "Heroic · {store}".format(store=tr("grimoire.spells.gamel.library", STORES[self.store]))
+        if self.source == "steam" and self.extra.get("shortcut"):
+            return "Steam · {kind}".format(kind=tr("grimoire.spells.gamel.library", "Non-Steam"))
+        if self.source == "roblox":
+            return "Sober" if self.id == "sober" else "Vinegar"
+        if self.source == "native":
+            return tr("grimoire.spells.gamel.library", SOURCES["native"])
         return SOURCES.get(self.source, self.source)
+
+    @property
+    def tracked(self) -> bool:
+        """Whether "never played" can be told apart from "not known"."""
+        return self.source in TRACKED or bool(self.last_played)
 
 
 def _home() -> Path:
@@ -196,7 +217,59 @@ def scan_steam() -> list[Game]:
                 games[appid] = Game("steam", appid, name, str(folder), _int(st.get("SizeOnDisk")),
                                     _ts(max(last, _int(st.get("LastPlayed")))), mins,
                                     steam_cover(root, appid), flatpak=flat, note=note)
+        for g in scan_shortcuts(root, flat):
+            games.setdefault(g.id, g)
     return list(games.values())
+
+
+def shortcut_id(appid, exe: str, name: str) -> str:
+    """A shortcut's 32-bit app id as Steam shows it (unsigned). Files from before 2020 have none: Steam derives it
+    from the program and name the same way."""
+    if isinstance(appid, int) and appid:
+        return str(appid & 0xFFFFFFFF)
+    return str(binascii.crc32((exe + name).encode("utf-8")) | 0x80000000)
+
+
+def shortcut_gameid(appid: str) -> str:
+    """The 64-bit id steam://rungameid/ wants for a non-Steam shortcut."""
+    return str((int(appid) << 32) | 0x02000000)
+
+
+def _grid(user: Path, appid: str) -> str:
+    """Artwork Steam (or the user) set for a shortcut: the portrait one first."""
+    for name in (f"{appid}p", appid, f"{appid}_hero"):
+        for ext in ("png", "jpg", "jpeg", "webp"):
+            p = user / "config/grid" / f"{name}.{ext}"
+            if p.is_file():
+                return str(p)
+    return ""
+
+
+def scan_shortcuts(root: Path, flat: bool) -> list[Game]:
+    """Non-Steam games added to Steam (userdata/<user>/config/shortcuts.vdf, binary). Hidden ones stay hidden."""
+    out: dict[str, Game] = {}
+    try:
+        users = sorted(d for d in (root / "userdata").iterdir() if d.is_dir())
+    except OSError:
+        return []
+    for u in users:
+        items = vdf.block(vdf.load_binary(u / "config/shortcuts.vdf"), "shortcuts")
+        for d in items.values():
+            if not isinstance(d, dict):
+                continue
+            name = str(vdf.find(d, "AppName") or "").strip()
+            exe = str(vdf.find(d, "Exe") or "")
+            if not name or _int(vdf.find(d, "IsHidden")):
+                continue
+            appid = shortcut_id(vdf.find(d, "appid"), exe, name)
+            if appid in out:
+                continue
+            start = str(vdf.find(d, "StartDir") or "").strip().strip('"')
+            icon = str(vdf.find(d, "icon") or "").strip().strip('"')
+            out[appid] = Game("steam", appid, name, start if os.path.isabs(start) else "", 0,
+                              _ts(_int(vdf.find(d, "LastPlayTime"))), None, _grid(u, appid), flatpak=flat,
+                              icon=icon if os.path.isabs(icon) else "", extra={"shortcut": True})
+    return list(out.values())
 
 
 # ---------------------------------------------------------------- Heroic
@@ -326,26 +399,91 @@ def scan_lutris() -> list[Game]:
             if not ID_RE.match(gid) or gid in games or not r.get("name"):
                 continue
             hours = r.get("playtime")
+            runner = str(r.get("runner") or "")
+            extra = {"slug": r.get("slug") or ""}
+            if runner == "steam" and ID_RE.match(str(r.get("service_id") or "")):
+                extra["dup"] = f"steam:{r['service_id']}"          # Lutris' entry for a Steam game
             games[gid] = Game("lutris", gid, str(r["name"]), str(r.get("directory") or ""), 0,
                               _ts(_int(r.get("lastplayed"))),
                               float(hours) * 60 if isinstance(hours, (int, float)) else 0,
-                              lutris_cover(data, str(r.get("slug") or "")), store=str(r.get("runner") or ""),
-                              flatpak=flat, extra={"slug": r.get("slug") or ""})
+                              lutris_cover(data, str(r.get("slug") or "")), store=runner,
+                              flatpak=flat, extra=extra)
     return list(games.values())
 
 
+# ---------------------------------------------------------------- GameL's own history
+def played_file() -> Path:
+    return CONFIG / "gamel-played.json"
+
+
+def played() -> dict[str, float]:
+    """key -> when it was last started from GameL."""
+    d = _json(played_file())
+    return {k: v for k, v in d.items() if isinstance(k, str) and _ts(v)} if isinstance(d, dict) else {}
+
+
+def mark_played(key: str, when: float | None = None):
+    d = played()
+    d[key] = when or time.time()
+    f = played_file()
+    f.parent.mkdir(parents=True, exist_ok=True)
+    tmp = f.with_name(f.name + ".tmp")
+    tmp.write_text(json.dumps(dict(sorted(d.items(), key=lambda kv: -kv[1])[:500]), indent=1))
+    os.replace(tmp, f)
+
+
 # ---------------------------------------------------------------- all of them
-SCANNERS = {"steam": scan_steam, "heroic": scan_heroic, "lutris": scan_lutris}
+def _scanners() -> dict:
+    from grimoire.spells.gamel import others
+    return {"steam": scan_steam, "heroic": scan_heroic, "lutris": scan_lutris, "itch": others.scan_itch,
+            "bottles": others.scan_bottles, "roblox": others.scan_roblox, "desktop": others.scan_desktop}
+
+
+def norm(name: str) -> str:
+    """A name for spotting the same game twice: letters and digits only, no accents, no ™/®."""
+    s = unicodedata.normalize("NFKD", name).casefold()
+    return "".join(c for c in s if c.isalnum())
+
+
+# the launcher's own entry wins; Steam shortcuts, Lutris' Steam entries and menu entries are the weak copies
+_RANK = {"steam": 0, "heroic": 1, "lutris": 2, "itch": 3, "bottles": 4, "roblox": 5, "flatpak": 6, "native": 7}
+
+
+def _weak(g: Game) -> bool:
+    return g.source in ("flatpak", "native") or bool(g.extra.get("shortcut") or g.extra.get("dup"))
+
+
+def dedupe(games: list[Game]) -> list[Game]:
+    """One tile per game: a weak copy goes when the game it points at (extra["dup"]) or a game of the same name is
+    already listed. Two real installs (the same game in Steam and Heroic) both stay."""
+    keys = {g.key for g in games if not _weak(g)}
+    names = {norm(g.name) for g in games if not _weak(g)}
+    out, seen = [], set()
+    for g in sorted(games, key=lambda g: (_weak(g), _RANK.get(g.source, 9))):
+        if g.key in seen:
+            continue
+        if _weak(g) and (g.extra.get("dup") in keys or norm(g.name) in names):
+            continue
+        seen.add(g.key)
+        if _weak(g):
+            names.add(norm(g.name))
+        out.append(g)
+    return out
 
 
 def scan() -> tuple[list[Game], list[str]]:
-    """Every installed game, plus a problem line for any launcher that couldn't be read."""
+    """Every installed game once, plus a problem line for any launcher that couldn't be read."""
     games, problems = [], []
-    for src, fn in SCANNERS.items():
+    for src, fn in _scanners().items():
         try:
             games += fn()
         except Exception as e:                       # one odd file shouldn't hide the other launchers
-            problems.append("{source}: {error}".format(source=SOURCES[src], error=e))
+            label = tr("grimoire.spells.gamel.library", "Menu games") if src == "desktop" else SOURCES[src]
+            problems.append("{source}: {error}".format(source=label, error=e))
+    games = dedupe(games)
+    history = played()
+    for g in games:
+        g.last_played = max(g.last_played, history.get(g.key, 0))
     return games, problems
 
 
