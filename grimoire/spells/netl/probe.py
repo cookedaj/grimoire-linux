@@ -371,8 +371,11 @@ class Names:
         if addr.is_unspecified or addr.is_loopback or addr.is_multicast:
             self.cache[ip] = ""
             return ""
+        try:
+            self.pool.submit(self._look, ip)
+        except RuntimeError:                    # the app (and Python) is shutting down
+            return ""
         self.cache[ip] = None
-        self.pool.submit(self._look, ip)
         return None
 
     def _look(self, ip: str):
