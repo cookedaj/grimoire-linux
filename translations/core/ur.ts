@@ -3551,10 +3551,19 @@
         <location filename="../../grimoire/spells/__init__.py"/>
         <source>Emoji, symbols and every Unicode character on a hotkey: search in your language, skin tones, favorites and a full Unicode block browser</source>
         <translation>ایک ہاٹ کی پر ایموجی، علامات اور ہر Unicode حرف: اپنی زبان میں تلاش، جلد کی رنگتیں، پسندیدہ اور مکمل Unicode بلاک براؤزر</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/__init__.py"/>
         <source>Google Drive, OneDrive and Dropbox as folders on your PC through rclone: sign in from your browser, mount, see the space left and what is still uploading, and open them in VaultL</source>
         <translation>‏rclone کے ذریعے Google Drive، OneDrive اور Dropbox آپ کے PC پر فولڈرز کی صورت میں: براؤزر سے سائن ان کریں، ماؤنٹ کریں، باقی جگہ اور ابھی اپ لوڈ ہونے والی چیزیں دیکھیں، اور انہیں VaultL میں کھولیں</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/__init__.py"/>
         <source>Your pictures: a fast thumbnail grid, a full view with zoom, turns, slideshow and EXIF info, plus rename, Trash and set as wallpaper</source>
         <translation>آپ کی تصویریں: تیز تھمب نیل گرڈ، زوم، گھماؤ، سلائیڈ شو اور EXIF معلومات کے ساتھ پورا منظر، نیز نام بدلنا، ردی اور وال پیپر بنانا</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/__init__.py"/>
         <source>Install and remove apps from Flathub, Ubuntu&apos;s archive and the Snap Store: search, screenshots, a preview of every change, and each Flatpak&apos;s permissions</source>
         <translation>‏Flathub، Ubuntu کے آرکائیو اور Snap Store سے ایپس انسٹال کریں اور ہٹائیں: تلاش، اسکرین شاٹس، ہر تبدیلی کا پیش منظر اور ہر Flatpak کی اجازتیں</translation>
     </message>
