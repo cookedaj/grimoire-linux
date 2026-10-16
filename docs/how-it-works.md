@@ -99,6 +99,15 @@ what goes over the network, see [security.md](security.md).
   there. Upload state comes from the mount's own remote-control socket in `$XDG_RUNTIME_DIR` (read-only `vfs/stats`;
   without an rc password rclone refuses its config and command calls), space from `rclone about`, and Activity from
   `journalctl --user -u` the service. VaultL lists `fuse.rclone` mounts under Drives with a cloud icon.
+- **StoreL** reads the AppStream catalogs already on disk (Flathub's `appstream.xml.gz` under
+  `/var/lib/flatpak/appstream` and `~/.local/share/flatpak/appstream`, Ubuntu's DEP-11 files in
+  `/var/lib/swcatalog`), merges an app found in both and keeps the result in `~/.cache/grimoire/storel/catalog.json`
+  until one of those files changes. Installed apps come from `flatpak list`, `dpkg-query` and `snap list`. An app's
+  sizes come from `apt-cache` or `flatpak remote-info`; screenshots are downloaded over HTTPS when you open its page
+  and kept in `~/.cache/grimoire/storel/media` (trimmed to 300 MB). Your Flatpaks install and uninstall as you
+  (`flatpak --user`, data in `~/.var/app` stays); APT, system Flatpaks and snaps go through its root helper, one
+  password prompt per batch, after an `apt-get -s` preview. Removals never purge or autoremove. Permissions are your
+  own `flatpak override --user` entries (`~/.local/share/flatpak/overrides/<app>`); Reset drops them.
 
 ## Installs
 
@@ -132,6 +141,7 @@ grimoire/            the app (PySide6)
 plasma/              the MuraL wallpaper plugin and the LaunchL panel widget
   spells/widgetl/    WidgetL install / add / remove, face previews, page, CLI
   spells/cloudl/     CloudL rclone remotes, mount services, space and upload state, page
+  spells/storel/     StoreL catalog (AppStream), installed apps, plans, queue, Flatpak permissions, root helper, page
 plasma/              the MuraL wallpaper plugin, the LaunchL panel widget and WidgetL's desktop widgets
 bin/                 launchers
 install.sh           copies the app into ~/.local/share/grimoire/app and links it in

@@ -409,6 +409,27 @@ def _viewl(page, wait):
 
 PREPARE["viewl"] = _viewl
 PAGES.insert(PAGES.index("settings"), "viewl")
+
+
+def _storel(page, wait):
+    """Home with a made-up set of installed apps (the catalog itself is Flathub's and Ubuntu's public metadata)."""
+    for _ in range(100):
+        if page.loaded:
+            break
+        wait(200)
+    wait(1500)
+
+    def flat(app_id, name, version, size, scope="system"):
+        return {"id": app_id, "ref": f"app/{app_id}/x86_64/stable", "scope": scope, "version": version,
+                "origin": "flathub", "name": name, "size": size}
+    page._installed({"flatpak": [flat("org.mozilla.firefox", "Firefox", "144.0", 270_000_000),
+                                 flat("org.kde.krita", "Krita", "5.3.1", 610_000_000, "user"),
+                                 flat("com.obsproject.Studio", "OBS Studio", "32.2.2", 528_000_000)],
+                     "apt": {}, "snap": [], "desktop": [], "remotes": {"flathub": ["user", "system"]}})
+
+
+PREPARE["storel"] = _storel
+PAGES.append("storel")
 WAIT = {"widgetl": 5000, "mural": 6000, "systeml": 30000, "netl": 30000, "optimizel": 5000, "terminall": 3500, "vaultl": 3000}
 
 

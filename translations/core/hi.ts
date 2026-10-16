@@ -3555,6 +3555,8 @@
         <translation>rclone के ज़रिए Google Drive, OneDrive और Dropbox आपके PC पर फ़ोल्डर के रूप में: ब्राउज़र से साइन इन करें, माउंट करें, बची जगह और अभी अपलोड हो रही चीज़ें देखें, और उन्हें VaultL में खोलें</translation>
         <source>Your pictures: a fast thumbnail grid, a full view with zoom, turns, slideshow and EXIF info, plus rename, Trash and set as wallpaper</source>
         <translation>आपकी तस्वीरें: तेज़ थंबनेल ग्रिड, ज़ूम, घुमाव, स्लाइड शो और EXIF जानकारी के साथ पूरा दृश्य, साथ में नाम बदलना, रद्दी और वॉलपेपर बनाना</translation>
+        <source>Install and remove apps from Flathub, Ubuntu&apos;s archive and the Snap Store: search, screenshots, a preview of every change, and each Flatpak&apos;s permissions</source>
+        <translation>Flathub, Ubuntu के संग्रह और Snap Store से ऐप इंस्टॉल करें और हटाएँ: खोज, स्क्रीनशॉट, हर बदलाव का पूर्वावलोकन और हर Flatpak की अनुमतियाँ</translation>
     </message>
 </context>
 <context>

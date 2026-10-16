@@ -3675,6 +3675,8 @@
         <translation>‏Google Drive وOneDrive وDropbox كمجلدات على حاسوبك عبر rclone: سجّل الدخول من متصفحك، ثم ركّبها، وشاهد المساحة المتبقية وما زال يُرفع، وافتحها في VaultL</translation>
         <source>Your pictures: a fast thumbnail grid, a full view with zoom, turns, slideshow and EXIF info, plus rename, Trash and set as wallpaper</source>
         <translation>صورك: شبكة مصغّرات سريعة، وعرض كامل مع التكبير والتدوير وعرض الشرائح ومعلومات EXIF، إضافةً إلى إعادة التسمية والسلة والتعيين كخلفية</translation>
+        <source>Install and remove apps from Flathub, Ubuntu&apos;s archive and the Snap Store: search, screenshots, a preview of every change, and each Flatpak&apos;s permissions</source>
+        <translation>ثبّت التطبيقات وأزلها من Flathub وأرشيف Ubuntu ومتجر Snap: بحث ولقطات شاشة ومعاينة لكل تغيير وأذونات كل تطبيق Flatpak</translation>
     </message>
 </context>
 <context>

@@ -3525,6 +3525,8 @@
         <translation>通过 rclone 把 Google Drive、OneDrive 和 Dropbox 变成电脑上的文件夹：在浏览器中登录、挂载、查看剩余空间和仍在上传的内容，并在 VaultL 中打开</translation>
         <source>Your pictures: a fast thumbnail grid, a full view with zoom, turns, slideshow and EXIF info, plus rename, Trash and set as wallpaper</source>
         <translation>你的图片：快速的缩略图网格，可缩放、旋转、幻灯片放映和查看 EXIF 信息的完整视图，还能重命名、移到回收站和设为壁纸</translation>
+        <source>Install and remove apps from Flathub, Ubuntu&apos;s archive and the Snap Store: search, screenshots, a preview of every change, and each Flatpak&apos;s permissions</source>
+        <translation>从 Flathub、Ubuntu 软件仓库和 Snap Store 安装和删除应用：搜索、截图、每次更改前的预览，以及每个 Flatpak 的权限</translation>
     </message>
 </context>
 <context>

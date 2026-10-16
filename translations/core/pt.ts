@@ -3555,6 +3555,8 @@
         <translation>Google Drive, OneDrive e Dropbox como pastas no seu PC com o rclone: entre pelo navegador, monte, veja o espaço livre e o que ainda está sendo enviado, e abra no VaultL</translation>
         <source>Your pictures: a fast thumbnail grid, a full view with zoom, turns, slideshow and EXIF info, plus rename, Trash and set as wallpaper</source>
         <translation>Suas imagens: uma grade de miniaturas rápida, uma visualização completa com zoom, giros, apresentação e informações EXIF, além de renomear, lixeira e definir como papel de parede</translation>
+        <source>Install and remove apps from Flathub, Ubuntu&apos;s archive and the Snap Store: search, screenshots, a preview of every change, and each Flatpak&apos;s permissions</source>
+        <translation>Instale e remova apps do Flathub, do arquivo do Ubuntu e da Snap Store: pesquisa, capturas de tela, prévia de cada mudança e as permissões de cada Flatpak</translation>
     </message>
 </context>
 <context>

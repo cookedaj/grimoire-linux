@@ -306,3 +306,20 @@ SPELLS.append(Spell("viewl", "ViewL",
                     tr_noop("grimoire.spells", "Your pictures: a fast thumbnail grid, a full view with zoom, turns, "
                                                "slideshow and EXIF info, plus rename, Trash and set as wallpaper"),
                     _viewl, "viewl", _viewl_status))
+
+
+def _storel():
+    from grimoire.spells.storel.page import StoreLPage
+    return StoreLPage()
+
+
+def _storel_status() -> str:
+    from grimoire.spells.storel.library import status_line
+    return status_line()
+
+
+SPELLS.append(Spell("storel", "StoreL",
+                    tr_noop("grimoire.spells", "Install and remove apps from Flathub, Ubuntu's archive and the Snap "
+                                               "Store: search, screenshots, a preview of every change, and each "
+                                               "Flatpak's permissions"),
+                    _storel, "storel", _storel_status))

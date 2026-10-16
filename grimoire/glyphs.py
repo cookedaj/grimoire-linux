@@ -397,6 +397,21 @@ def _draw(name: str, p: QPainter):
     elif name == "more":                                   # three dots
         for x in (6, 12, 18):
             p.drawEllipse(QPointF(x, 12), 0.9, 0.9)
+    elif name == "storel":                                 # a shopping bag with its handle: the app store
+        path = QPainterPath(QPointF(5.5, 8)); path.lineTo(18.5, 8); path.lineTo(19.5, 20.5); path.lineTo(4.5, 20.5)
+        path.closeSubpath(); p.drawPath(path)
+        handle = QPainterPath(QPointF(9, 10.5)); handle.lineTo(9, 6.5); handle.cubicTo(9, 2.5, 15, 2.5, 15, 6.5)
+        handle.lineTo(15, 10.5); p.drawPath(handle)
+    elif name == "flask":                                  # a lab flask: science
+        path = QPainterPath(QPointF(10, 3.5)); path.lineTo(10, 9.5); path.lineTo(4.5, 19); path.lineTo(5.5, 20.5)
+        path.lineTo(18.5, 20.5); path.lineTo(19.5, 19); path.lineTo(14, 9.5); path.lineTo(14, 3.5); p.drawPath(path)
+        p.drawLine(QPointF(8.5, 3.5), QPointF(15.5, 3.5)); p.drawLine(QPointF(7.5, 15), QPointF(16.5, 15))
+    elif name == "cap":                                    # a graduation cap: education
+        path = QPainterPath(QPointF(12, 5)); path.lineTo(22, 9.5); path.lineTo(12, 14); path.lineTo(2, 9.5)
+        path.closeSubpath(); p.drawPath(path)
+        brim = QPainterPath(QPointF(6.5, 11.5)); brim.lineTo(6.5, 16.5); brim.cubicTo(9, 19, 15, 19, 17.5, 16.5)
+        brim.lineTo(17.5, 11.5); p.drawPath(brim)
+        p.drawLine(QPointF(21, 10), QPointF(21, 15))
 
 
 def _pixmap(name: str, color: str, size: int) -> QPixmap:
