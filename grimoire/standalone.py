@@ -42,6 +42,10 @@ EXTRA = {"vaultl": {"GenericName": "File Manager", "Categories": "Utility;System
                                "image/x-adobe-dng;image/x-canon-cr2;image/x-canon-cr3;image/x-nikon-nef;"
                                "image/x-sony-arw;image/x-fuji-raf;image/x-olympus-orf;image/x-panasonic-rw2;"
                                "image/x-pentax-pef;image/x-samsung-srw;"}}
+# one statement per spell below, so spells added in parallel merge cleanly
+# ReadL shows up in "Open with" for these; it never makes itself the default
+EXTRA["readl"] = {"GenericName": "Document Viewer", "Categories": "Office;Viewer;",
+                  "MimeType": "application/pdf;application/epub+zip;text/markdown;"}
 # spells merged into another: their menu entries stay (hidden), since the system's default-app setting may name them
 MERGED = {"filel": "vaultl", "tidyl": "vaultl"}
 

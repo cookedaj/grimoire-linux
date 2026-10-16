@@ -412,6 +412,52 @@ def _draw(name: str, p: QPainter):
         brim = QPainterPath(QPointF(6.5, 11.5)); brim.lineTo(6.5, 16.5); brim.cubicTo(9, 19, 15, 19, 17.5, 16.5)
         brim.lineTo(17.5, 11.5); p.drawPath(brim)
         p.drawLine(QPointF(21, 10), QPointF(21, 15))
+    elif name == "read":                                   # an open book
+        left = QPainterPath(QPointF(12, 7)); left.cubicTo(9.5, 5, 6, 4.8, 3.5, 5.5); left.lineTo(3.5, 18.5)
+        left.cubicTo(6, 17.8, 9.5, 18, 12, 20); p.drawPath(left)
+        right = QPainterPath(QPointF(12, 7)); right.cubicTo(14.5, 5, 18, 4.8, 20.5, 5.5); right.lineTo(20.5, 18.5)
+        right.cubicTo(18, 17.8, 14.5, 18, 12, 20); p.drawPath(right)
+        p.drawLine(QPointF(12, 7), QPointF(12, 20))
+    elif name == "sidebar":                                # a window with a side panel
+        p.drawRoundedRect(r(3.5, 4.5, 17, 15), 2, 2)
+        p.drawLine(QPointF(9.5, 4.5), QPointF(9.5, 19.5))
+        for y in (8.5, 11.5, 14.5):
+            p.drawLine(QPointF(5.5, y), QPointF(7.5, y))
+    elif name in ("zoomin", "zoomout"):                    # a magnifier with + or −
+        p.drawEllipse(QPointF(10.5, 10.5), 6, 6)
+        p.drawLine(QPointF(15, 15), QPointF(20, 20))
+        p.drawLine(QPointF(8, 10.5), QPointF(13, 10.5))
+        if name == "zoomin":
+            p.drawLine(QPointF(10.5, 8), QPointF(10.5, 13))
+    elif name == "single":                                 # one page
+        p.drawRoundedRect(r(7, 3.5, 10, 17), 1.5, 1.5)
+    elif name == "continuous":                             # pages one under the other
+        p.drawRoundedRect(r(7, 2, 10, 9), 1.5, 1.5)
+        p.drawRoundedRect(r(7, 13, 10, 9), 1.5, 1.5)
+    elif name == "twopage":                                # two pages side by side
+        p.drawRoundedRect(r(2.5, 5, 9, 14), 1.5, 1.5)
+        p.drawRoundedRect(r(12.5, 5, 9, 14), 1.5, 1.5)
+    elif name == "day":                                    # sun
+        p.drawEllipse(QPointF(12, 12), 4, 4)
+        for a, b in (((12, 2.5), (12, 4.5)), ((12, 19.5), (12, 21.5)), ((2.5, 12), (4.5, 12)),
+                     ((19.5, 12), (21.5, 12)), ((5.3, 5.3), (6.7, 6.7)), ((17.3, 17.3), (18.7, 18.7)),
+                     ((5.3, 18.7), (6.7, 17.3)), ((17.3, 6.7), (18.7, 5.3))):
+            p.drawLine(QPointF(*a), QPointF(*b))
+    elif name == "night":                                  # crescent moon
+        path = QPainterPath(); path.addEllipse(QPointF(12, 12), 8, 8)
+        cut = QPainterPath(); cut.addEllipse(QPointF(16.5, 8.5), 6.5, 6.5)
+        p.drawPath(path.subtracted(cut))
+    elif name == "paper":                                  # a sheet with lines of text
+        path = QPainterPath(QPointF(6, 3.5)); path.lineTo(14.5, 3.5); path.lineTo(18.5, 7.5); path.lineTo(18.5, 20.5)
+        path.lineTo(6, 20.5); path.closeSubpath(); p.drawPath(path)
+        for y in (10, 13, 16):
+            p.drawLine(QPointF(9, y), QPointF(15.5, y))
+    elif name == "bookmark":                               # a ribbon
+        path = QPainterPath(QPointF(7, 3.5)); path.lineTo(17, 3.5); path.lineTo(17, 20.5); path.lineTo(12, 16.5)
+        path.lineTo(7, 20.5); path.closeSubpath(); p.drawPath(path)
+    elif name == "fullscreen":                             # four corners pointing out
+        for x, y, dx, dy in ((4, 4, 1, 1), (20, 4, -1, 1), (4, 20, 1, -1), (20, 20, -1, -1)):
+            p.drawLine(QPointF(x, y), QPointF(x + 5 * dx, y)); p.drawLine(QPointF(x, y), QPointF(x, y + 5 * dy))
 
 
 def _pixmap(name: str, color: str, size: int) -> QPixmap:

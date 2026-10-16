@@ -3597,13 +3597,10 @@
         <source>Install and remove apps from Flathub, Ubuntu&apos;s archive and the Snap Store: search, screenshots, a preview of every change, and each Flatpak&apos;s permissions</source>
         <translation>Установка и удаление приложений из Flathub, архива Ubuntu и Snap Store: поиск, снимки экрана, предпросмотр каждого изменения и разрешения каждого Flatpak</translation>
     </message>
-</context>
-<context>
-    <name>grimoire.standalone</name>
     <message>
-        <location filename="../../grimoire/standalone.py"/>
-        <source>{id} has no standalone command yet</source>
-        <translation>У {id} пока нет отдельной команды</translation>
+        <location filename="../../grimoire/spells/__init__.py"/>
+        <source>A quiet reader for PDFs, EPUB books, Markdown and text: covers, contents, search, bookmarks, night and paper pages, and it remembers where you stopped</source>
+        <translation>Спокойная читалка для PDF, книг EPUB, Markdown и текста: обложки, оглавление, поиск, закладки, ночные и бумажные страницы, и она помнит, где вы остановились</translation>
     </message>
 </context>
 <context>
@@ -4028,6 +4025,13 @@
         <location filename="../../grimoire/updateview.py"/>
         <source>Nothing new on GitHub since your version.</source>
         <translation>На GitHub нет ничего нового с вашей версии.</translation>
+    </message>
+</context>
+<context>
+    <name>grimoire.standalone</name>
+    <message>
+        <source>{id} has no standalone command yet</source>
+        <translation type="vanished">У {id} пока нет отдельной команды</translation>
     </message>
 </context>
 </TS>

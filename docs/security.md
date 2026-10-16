@@ -174,3 +174,19 @@ server never follow redirects (they carry the key and token), and only https is 
 **Settings sync.** The same `.grimoire-backup` zip as a file (without MuraL's wallpaper library), at most 1 MB,
 in your `user_settings` row. Restoring it goes through the same checks, preview and safety backup as any backup
 file. The older GitHub gist backup stays available in Settings → GitHub backup as an optional extra.
+
+## ReadL: untrusted documents
+
+PDFs go to pdfium (QtPdf) and are only drawn; ReadL never runs PDF JavaScript, forms or embedded files, and a link
+opens only when you click it (http, https and mailto). EPUBs are zips of web pages, so `readl/epub.py` treats them
+as hostile: nothing is extracted to disk; members are found by exact name in the zip's index and a reference that
+leaves the book (`../`, absolute paths, other schemes) resolves to nothing; every read is capped while inflating
+(the sizes a zip declares can lie), and archives with too many entries, too much declared content or
+bomb-like compression are refused. XML with entity declarations is refused before parsing (billion laughs, XXE).
+Chapters are rebuilt from an allowlist of tags and attributes: scripts, styles, forms, frames, objects and event
+handlers are dropped, and nesting is flattened past 40 levels. Images must come from inside the book, are sniffed
+as PNG, JPEG, GIF, BMP or WebP (never SVG) and decoded with a size check first. The view itself
+(`readl/bookview.py`) answers every resource request it didn't decode itself with an empty pixel, so nothing is
+fetched from the network or your disk; Markdown is shown with raw HTML as text and only images next to the file.
+The reading history (`readl.json`: file paths, places, bookmarks) stays on the PC: backups and settings sync leave
+it out.

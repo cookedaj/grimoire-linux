@@ -47,6 +47,7 @@ RULES = [                                      # (pattern on the archive path, k
 ]
 EXCLUDE = {"data/optimizel.json", "data/performance-mode.json",      # machine undo state, see above
            "config/session.json"}                                     # who's signed in on this PC (session.py)
+EXCLUDE |= {"config/readl.json"}           # ReadL's reading history: paths of your files on this PC, never synced
 MAX_ARCHIVE = 4 << 30                          # the whole file
 MAX_TOTAL = 4 << 30                            # everything it expands to
 MAX_FILES = 2000                               # entries of any kind

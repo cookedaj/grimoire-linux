@@ -504,6 +504,58 @@ PAGES.append("cloudl")
 PREPARE["cloudl"] = _cloudl
 
 
+def _readl(page, wait):
+    """A made-up little library (a PDF, an EPUB with an abstract cover, Markdown notes) with some reading progress,
+    then the PDF open at its second page with the thumbnails showing."""
+    import zipfile
+    from PySide6.QtCore import QMarginsF
+    from PySide6.QtGui import QPageSize, QPdfWriter, QTextDocument
+    from grimoire.spells.readl import library
+    docs = Path.home() / "Documents/Reading"
+    docs.mkdir(parents=True, exist_ok=True)
+    text = ("The keeper wrote every evening about the weather, the ships and the long slow turn of the lamp. "
+            "Nothing much happened, and that was the point of it. ") * 4
+    doc = QTextDocument()
+    doc.setHtml("".join(f"<h1>{n}. {t}</h1>" + f"<p>{text}</p>" * 7 for n, t in enumerate(
+        ("Arrival", "Weather", "Ships", "The Lamp", "Winter", "Letters", "Fog", "Departure"), 1)))
+    w = QPdfWriter(str(docs / "The Lighthouse Log.pdf"))
+    w.setPageSize(QPageSize(QPageSize.PageSizeId.A5))
+    w.setPageMargins(QMarginsF(16, 16, 16, 16))
+    w.setTitle("The Lighthouse Log")
+    doc.print_(w)
+    del w
+    cover = docs / "cover.png"
+    _image(cover, 2, (600, 900))
+    with zipfile.ZipFile(docs / "The Salt Road.epub", "w") as z:
+        z.writestr("mimetype", "application/epub+zip", compress_type=zipfile.ZIP_STORED)
+        z.writestr("META-INF/container.xml", '<container xmlns="urn:oasis:names:tc:opendocument:xmlns:container">'
+                   '<rootfiles><rootfile full-path="c.opf"/></rootfiles></container>')
+        z.writestr("c.opf", '<package xmlns="http://www.idpf.org/2007/opf" version="3.0"><metadata xmlns:dc="http://'
+                   'purl.org/dc/elements/1.1/"><dc:title>The Salt Road</dc:title><dc:creator>A. Wanderer'
+                   '</dc:creator></metadata><manifest><item id="a" href="a.xhtml" media-type="application/xhtml+xml"'
+                   '/><item id="i" href="cover.png" media-type="image/png" properties="cover-image"/></manifest>'
+                   '<spine><itemref idref="a"/></spine></package>')
+        z.writestr("a.xhtml", f"<html><body><h1>The Flats</h1><p>{text}</p></body></html>")
+        z.write(cover, "cover.png")
+    cover.unlink()
+    (docs / "Field notes.md").write_text("# Field notes\n\n" + text + "\n")
+    for name, progress, hours in (("Field notes.md", 0.4, 30), ("The Salt Road.epub", 0.62, 6),
+                                  ("The Lighthouse Log.pdf", 0.18, 1)):
+        import time
+        library.update(docs / name, opened=time.time() - hours * 3600, progress=progress)
+    page.open_file(str(docs / "The Lighthouse Log.pdf"))
+    wait(1500)
+    page.reader.side.show_tab("pages")
+    page.reader.set_layout("two")
+    page.reader.set_fit("page")
+    page.reader.view.go(2)
+
+
+PREPARE["readl"] = _readl
+PAGES.append("readl")
+WAIT["readl"] = 3000
+
+
 def main():
     names = [a for a in sys.argv[1:] if a in PAGES] or PAGES
     if os.environ.get("GRIMOIRE_SCREENSHOTS") == "1":

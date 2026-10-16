@@ -323,3 +323,20 @@ SPELLS.append(Spell("storel", "StoreL",
                                                "Store: search, screenshots, a preview of every change, and each "
                                                "Flatpak's permissions"),
                     _storel, "storel", _storel_status))
+
+
+def _readl():
+    from grimoire.spells.readl.page import ReadLPage
+    return ReadLPage()
+
+
+def _readl_status() -> str:
+    from grimoire.spells.readl.library import status_line
+    return status_line()
+
+
+SPELLS.append(Spell("readl", "ReadL",
+                    tr_noop("grimoire.spells", "A quiet reader for PDFs, EPUB books, Markdown and text: covers, "
+                                               "contents, search, bookmarks, night and paper pages, and it "
+                                               "remembers where you stopped"),
+                    _readl, "read", _readl_status))
