@@ -46,6 +46,8 @@ optdepends=(
     'qt6-translations: Qt dialogs in your language'
     'noto-fonts: Arabic, Urdu, Hindi and Bengali text'
     'noto-fonts-cjk: Chinese text'
+    'rclone: CloudL cloud drives'
+    'fuse3: CloudL mounts (fusermount3)'
 )
 makedepends=('git')
 provides=("$_pkgname")

@@ -3101,6 +3101,11 @@
         <source>Desktop widgets in black and white: a clock, your system&apos;s readings, the weather and what&apos;s playing</source>
         <translation>Widgets de escritorio en blanco y negro: un reloj, las lecturas de tu sistema, el tiempo y lo que está sonando</translation>
     </message>
+    <message>
+        <location filename="../../grimoire/spells/__init__.py"/>
+        <source>Google Drive, OneDrive and Dropbox as folders on your PC through rclone: sign in from your browser, mount, see the space left and what is still uploading, and open them in VaultL</source>
+        <translation>Google Drive, OneDrive y Dropbox como carpetas en tu PC con rclone: inicia sesión desde el navegador, móntalos, mira el espacio libre y lo que aún se está subiendo, y ábrelos en VaultL</translation>
+    </message>
 </context>
 <context>
     <name>grimoire.standalone</name>

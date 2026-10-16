@@ -6,6 +6,7 @@
 #                             Kickoff back first if LaunchL replaced it), auto-tidy and alert timers and SightsL and
 #                             tray autostart (and stops the tray); keep your settings so a later install picks them up
 #                             WidgetL's desktop widgets are taken off the desktops and panels, then removed
+#                             CloudL's mounts are unmounted and their services removed (accounts stay in rclone)
 #   ./uninstall.sh --purge    also move Grimoire's settings, logs and cache to the Trash
 # The root helpers install.sh put in /usr/local/libexec/grimoire-linux (and their polkit file) are removed with one
 # password prompt; cancel it and the exact command to remove them later is printed. A package's own helpers in
@@ -177,6 +178,18 @@ for unit in grimoire-tidyl grimoire-systeml-alerts grimoire-netl-usage grimoire-
     fi
 done
 run rm -f "$CONFIG/autostart/grimoire-sightc.desktop" "$CONFIG/autostart/grimoire-tray.desktop" "$CONFIG/autostart/grimoire.desktop"
+# CloudL's mounts: unmount (the service's ExecStop runs fusermount3) and remove the services it wrote. The rclone
+# accounts in rclone.conf, the files online and rclone's cache stay; ~/Cloud/<name> folders go only when empty.
+for svc in "$UNITS"/grimoire-cloudl-*.service; do
+    if [ -f "$svc" ] && head -n1 "$svc" | grep -q "^# written by Grimoire Linux (CloudL)"; then
+        unit="$(basename "$svc")"
+        point="$(sed -n 's|^ExecStop=.* "%h/\(Cloud/.*\)"$|\1|p' "$svc")"
+        run systemctl --user disable --now "$unit" 2>/dev/null || true
+        run rm -f "$svc"
+        run systemctl --user daemon-reload 2>/dev/null || true
+        if [ -n "$point" ] && [ -d "$HOME/$point" ]; then run rmdir "$HOME/$point" 2>/dev/null || true; fi
+    fi
+done
 
 # wallpapers in use, before their plugin and pictures go
 release_wallpapers

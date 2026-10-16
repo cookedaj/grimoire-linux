@@ -150,6 +150,18 @@ looks up where you are) with line icons and the next five days, and **Now Playin
 video, with the cover in grayscale and the play controls. The page previews each one, installs them and adds them
 to your desktop; `grimoire-widgetl add clock|system|weather|nowplaying` does the same from a terminal.
 
+### CloudL: Google Drive, OneDrive and Dropbox as folders
+
+![CloudL](docs/screenshots/cloudl.png)
+
+Your cloud drives as folders in `~/Cloud` that every app can open, through [rclone](https://rclone.org). **Add a
+drive** runs rclone's own browser sign-in for Google Drive, OneDrive or Dropbox (any other rclone service can be set
+up with `rclone config`, and shows up too); rclone keeps the key in its own config, which Grimoire never reads.
+**Mount** starts a small per-user service (optionally at every login) with a local cache, so files open fast and
+changes upload in the background. Each drive shows its space used and free and what is still uploading, **Open**
+takes you there in VaultL (where mounted drives are listed under Drives), and **Activity** shows the mount's log and
+errors. Plasma's own kio-gdrive (`gdrive:/` in Dolphin) is an alternative for Google Drive alone.
+
 ### Tray, Settings and updates
 
 ![Tray icon and menu](docs/screenshots/tray.png)
@@ -233,7 +245,7 @@ update with your system; the in-app updater is off there.
 KDE Plasma 6 (Wayland is best; made on Kubuntu 26.04) and Python 3.12+ with PySide6, Pillow and psutil, plus
 layer-shell-qt (SightsL), Qt Multimedia (video wallpapers), pyte (TerminalL) and dbus-python (GitHub sign-in).
 Optional: ffmpeg (video thumbnails, recordings), Spectacle (ShotL), NetworkManager (NetL controls), PipeWire's
-`pw-dump`/`wpctl` (AudioL; on every Plasma 6 system), rsync.
+`pw-dump`/`wpctl` (AudioL; on every Plasma 6 system), rclone and fuse3 (CloudL), rsync.
 
 ```bash
 # Ubuntu / Kubuntu / Debian
@@ -251,7 +263,7 @@ sudo pacman -S pyside6 python-pillow python-psutil python-pyte python-dbus layer
 Press **Install** on a spell's card on the home page (or `./install.sh --all`), or run `grimoire-mural`,
 `grimoire-sightc`, `grimoire-vaultl`, `grimoire-optimizel`, `grimoire-systeml`, `grimoire-terminall`,
 `grimoire-shotl`, `grimoire-focusl`, `grimoire-netl`, `grimoire-gamel` or `grimoire-audiol` directly. Command-line helpers:
-`grimoire-shotl`, `grimoire-focusl`, `grimoire-netl` or `grimoire-widgetl` directly. Command-line helpers:
+`grimoire-shotl`, `grimoire-focusl`, `grimoire-netl`, `grimoire-widgetl` or `grimoire-cloudl` directly. Command-line helpers:
 `grimoire-sightc on|off|toggle|next`, `grimoire-vaultl [folder]`, `grimoire-vaultl tidy run|undo|enable|disable|status`,
 `grimoire-systeml alerts check|enable|disable|status`, `grimoire-focusl start|stop|status`,
 `grimoire-gamel list|status|play <launcher:id>`, `grimoire-updatel check|enable|disable|status`, `grimoire update`.

@@ -257,3 +257,20 @@ SPELLS.append(Spell("widgetl", "WidgetL",
                     tr_noop("grimoire.spells", "Desktop widgets in black and white: a clock, your system's readings, "
                                                "the weather and what's playing"),
                     _widgetl, "widgets", _widgetl_status))
+
+
+def _cloudl():
+    from grimoire.spells.cloudl.page import CloudLPage
+    return CloudLPage()
+
+
+def _cloudl_status() -> str:
+    from grimoire.spells.cloudl.rclone import status_line
+    return status_line()
+
+
+SPELLS.append(Spell("cloudl", "CloudL",
+                    tr_noop("grimoire.spells", "Google Drive, OneDrive and Dropbox as folders on your PC through "
+                                               "rclone: sign in from your browser, mount, see the space left and "
+                                               "what is still uploading, and open them in VaultL"),
+                    _cloudl, "cloud", _cloudl_status))
