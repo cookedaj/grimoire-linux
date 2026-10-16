@@ -39,9 +39,8 @@ AREAS = (                                        # one per line: spells add thei
     "glyphl",
     "cloudl",
     "viewl",
+    "storel",
 )
-AREAS = ("core", "mural", "sightc", "vaultl", "optimizel", "systeml", "terminall", "shotl", "launchl", "focusl",
-         "netl", "gamel", "updatel", "audiol", "widgetl", "storel")
 TRANSLATIONS = ROOT / "translations"
 MACHINE = CONFIG_ROOT / "language"               # the last choice on this PC: the sign-in screen and guests follow it
 SANS, MONO = "IBM Plex Sans", "IBM Plex Mono"
