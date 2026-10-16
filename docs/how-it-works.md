@@ -79,6 +79,15 @@ what goes over the network, see [security.md](security.md).
   city search runs only when you press Search) and Plasma's MPRIS model (Now Playing). The page installs them with
   `kpackagetool6` and adds one to the desktop with a desktop script; `uninstall.sh` takes them off every desktop and
   panel before removing them.
+- **StoreL** reads the AppStream catalogs already on disk (Flathub's `appstream.xml.gz` under
+  `/var/lib/flatpak/appstream` and `~/.local/share/flatpak/appstream`, Ubuntu's DEP-11 files in
+  `/var/lib/swcatalog`), merges an app found in both and keeps the result in `~/.cache/grimoire/storel/catalog.json`
+  until one of those files changes. Installed apps come from `flatpak list`, `dpkg-query` and `snap list`. An app's
+  sizes come from `apt-cache` or `flatpak remote-info`; screenshots are downloaded over HTTPS when you open its page
+  and kept in `~/.cache/grimoire/storel/media` (trimmed to 300 MB). Your Flatpaks install and uninstall as you
+  (`flatpak --user`, data in `~/.var/app` stays); APT, system Flatpaks and snaps go through its root helper, one
+  password prompt per batch, after an `apt-get -s` preview. Removals never purge or autoremove. Permissions are your
+  own `flatpak override --user` entries (`~/.local/share/flatpak/overrides/<app>`); Reset drops them.
 
 ## Installs
 
@@ -111,6 +120,7 @@ grimoire/            the app (PySide6)
   spells/updatel/    UpdateL sources (APT, Flatpak, Snap, fwupd), runs, daily check/timer, root helper, page
 plasma/              the MuraL wallpaper plugin and the LaunchL panel widget
   spells/widgetl/    WidgetL install / add / remove, face previews, page, CLI
+  spells/storel/     StoreL catalog (AppStream), installed apps, plans, queue, Flatpak permissions, root helper, page
 plasma/              the MuraL wallpaper plugin, the LaunchL panel widget and WidgetL's desktop widgets
 bin/                 launchers
 install.sh           copies the app into ~/.local/share/grimoire/app and links it in

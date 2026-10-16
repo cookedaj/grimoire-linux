@@ -1,10 +1,10 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 """The root helpers, run only from root-owned system copies.
 
-Each spell that needs root (MuraL, OptimizeL, SystemL, FocusL, UpdateL) has a whitelisted root-helper.sh. pkexec
-runs it as root, so the copy it runs must be one only root can change: the per-user app in ~/.local/share is writable
-by any process running as you, and a helper edited there would get root at the next password prompt. So the helpers
-live in
+Each spell that needs root (MuraL, OptimizeL, SystemL, FocusL, UpdateL, StoreL) has a whitelisted root-helper.sh.
+pkexec runs it as root, so the copy it runs must be one only root can change: the per-user app in ~/.local/share is
+writable by any process running as you, and a helper edited there would get root at the next password prompt. So the
+helpers live in
 
     /usr/libexec/grimoire-linux/<spell>-root-helper.sh          distro packages (.deb, AUR)
     /usr/local/libexec/grimoire-linux/<spell>-root-helper.sh    ./install.sh (one password prompt when they change)
@@ -49,6 +49,7 @@ SPELLS = {
     "systeml": "Grimoire Linux SystemL needs your password to manage processes, services or swap",
     "focusl": "Grimoire Linux FocusL needs your password to block or unblock sites in /etc/hosts",
     "updatel": "Grimoire Linux UpdateL needs your password to install system updates",
+    "storel": "Grimoire Linux StoreL needs your password to install or remove apps",
 }
 
 

@@ -10,6 +10,7 @@ things that change the system, and those go through small helper scripts that kn
 | `systeml-root-helper.sh` | other users' processes, system services, emptying swap | (nothing to restore) |
 | `focusl-root-helper.sh` | a marked block of focus-time sites in `/etc/hosts` | `/var/lib/grimoire-focusl`; the block is removed when the session ends |
 | `updatel-root-helper.sh` | `apt-get update`/upgrade of checked package names, system Flatpaks, snaps, fwupd devices | (apt keeps its own log); upgrades are simulated first, removals need `--removals=` with the exact list confirmed in the preview (anything else is refused before changes), `kubuntu-desktop`/IBM Plex fonts are never removed |
+| `storel-root-helper.sh` | installing/removing checked APT package names, system Flatpak apps (`app/…` refs from a checked remote) and snaps | (apt keeps its own log); each APT step is simulated right before it runs: removing anything Essential, Priority required/important or on its protected list (the desktop, its fonts, boot and system packages) is refused, other removals must match `--removals=` from the preview, removals never purge |
 
 Every helper validates its arguments and refuses anything else; files it writes carry a Grimoire mark so "off"
 only ever removes what Grimoire put there. Your own files are never deleted: they go to the Trash.
@@ -51,7 +52,9 @@ API for the newest commit on `main` (no account, no identifiers beyond a normal 
 Settings → General or with `GRIMOIRE_NO_UPDATE_CHECK=1`). Packaged installs (.deb, AUR) don't check at all.
 On demand only: the MuraL community store (KDE Store, Wallhaven) when you open it and install, NetL's public IP and
 ping checks when you press them, UpdateL's Check now (Flatpak remotes, fwupd metadata; its optional daily check does
-the same) and changelogs when you open one, GitHub sign-in / gist backup, and your Grimoire account (sign-in, settings sync)
+the same) and changelogs when you open one, StoreL's app sizes (`flatpak remote-info`), screenshots and remote icons (HTTPS
+from Flathub's and Ubuntu's media servers) when you open an app, its Snap search and "download the app list again",
+GitHub sign-in / gist backup, and your Grimoire account (sign-in, settings sync)
 when you use one; guests never go online for it. There is no telemetry and no analytics.
 Once you put WidgetL's Weather widget on the desktop and pick a place, it asks Open-Meteo (api.open-meteo.com) for
 the forecast at that place's coordinates every 30 minutes; its city search (geocoding-api.open-meteo.com) sends what you

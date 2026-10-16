@@ -3101,6 +3101,11 @@
         <source>Desktop widgets in black and white: a clock, your system&apos;s readings, the weather and what&apos;s playing</source>
         <translation>সাদা-কালো ডেস্কটপ উইজেট: একটি ঘড়ি, আপনার সিস্টেমের রিডিং, আবহাওয়া এবং যা বাজছে</translation>
     </message>
+    <message>
+        <location filename="../../grimoire/spells/__init__.py"/>
+        <source>Install and remove apps from Flathub, Ubuntu&apos;s archive and the Snap Store: search, screenshots, a preview of every change, and each Flatpak&apos;s permissions</source>
+        <translation>Flathub, Ubuntu-র আর্কাইভ ও Snap Store থেকে অ্যাপ ইনস্টল করুন ও সরান: খোঁজ, স্ক্রিনশট, প্রতিটি পরিবর্তনের প্রিভিউ এবং প্রতিটি Flatpak-এর অনুমতি</translation>
+    </message>
 </context>
 <context>
     <name>grimoire.standalone</name>

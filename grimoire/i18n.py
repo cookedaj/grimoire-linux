@@ -21,7 +21,7 @@ LANGUAGES = {"en": "English", "zh_CN": "中文（简体）", "hi": "हिन्
 RTL = {"ar", "ur"}
 QT_LOCALE = {"pt": "pt_BR"}                      # our code → Qt's locale / qtbase catalog name when they differ
 AREAS = ("core", "mural", "sightc", "vaultl", "optimizel", "systeml", "terminall", "shotl", "launchl", "focusl",
-         "netl", "gamel", "updatel", "audiol", "widgetl")
+         "netl", "gamel", "updatel", "audiol", "widgetl", "storel")
 TRANSLATIONS = ROOT / "translations"
 MACHINE = CONFIG_ROOT / "language"               # the last choice on this PC: the sign-in screen and guests follow it
 SANS, MONO = "IBM Plex Sans", "IBM Plex Mono"

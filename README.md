@@ -150,6 +150,19 @@ looks up where you are) with line icons and the next five days, and **Now Playin
 video, with the cover in grayscale and the play controls. The page previews each one, installs them and adds them
 to your desktop; `grimoire-widgetl add clock|system|weather|nowplaying` does the same from a terminal.
 
+### StoreL: install and remove apps
+
+![StoreL](docs/screenshots/storel.png)
+
+An app store in black and white, in place of Discover: Flathub and Ubuntu's archive (and the Snap Store when snapd is
+installed) in one catalog read from the AppStream data already on your PC, with hand-picked apps, ten categories and
+one search across every source. An app's page has its screenshots (the only colour in StoreL), description, size and
+license, and lets you pick where to get it when it's in several places, and whether a Flatpak is just for you (no
+password) or for everyone. Every APT install or removal is simulated first and shows everything that would be
+installed and removed; removing the desktop, its fonts or required system packages is refused. Changes run in a queue
+with progress, one password prompt per batch. Installed lists what you can remove (never essential packages), and
+Permissions does Flatseal's job: each Flatpak's sandbox as switches you can override and reset. Updates stay in UpdateL.
+
 ### Tray, Settings and updates
 
 ![Tray icon and menu](docs/screenshots/tray.png)
@@ -286,7 +299,8 @@ downloaded when you press Install, and archives are unpacked defensively. Detail
 
 Only what lives outside your home: the SDDM login theme and Plymouth boot animation (MuraL), system-wide tweaks such
 as sysctl, zram and services (OptimizeL), acting on system services or other users' processes (SystemL), and
-`/etc/hosts` for blocking sites while you focus (FocusL). Each asks at the moment you do it, never in the background.
+`/etc/hosts` for blocking sites while you focus (FocusL), system updates (UpdateL) and installing or removing
+system apps (StoreL; your own Flatpaks need no password). Each asks at the moment you do it, never in the background.
 
 ### Does it work on X11 or GNOME?
 
@@ -303,7 +317,8 @@ A source install checks GitHub every few hours (turn it off in Settings → Gene
 ### What about privacy?
 
 No telemetry, no analytics, and Guest mode needs no account. The app only goes online when you ask (community store, NetL's
-public-IP and ping checks, UpdateL's Check now and changelogs, GitHub backup, your account's sign-in and settings sync)
+public-IP and ping checks, UpdateL's Check now and changelogs, StoreL's app sizes, screenshots and Snap search,
+GitHub backup, your account's sign-in and settings sync)
 and for the update check, which is one request to GitHub's public API.
 
 ### How do I uninstall?

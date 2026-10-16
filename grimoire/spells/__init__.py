@@ -257,3 +257,20 @@ SPELLS.append(Spell("widgetl", "WidgetL",
                     tr_noop("grimoire.spells", "Desktop widgets in black and white: a clock, your system's readings, "
                                                "the weather and what's playing"),
                     _widgetl, "widgets", _widgetl_status))
+
+
+def _storel():
+    from grimoire.spells.storel.page import StoreLPage
+    return StoreLPage()
+
+
+def _storel_status() -> str:
+    from grimoire.spells.storel.library import status_line
+    return status_line()
+
+
+SPELLS.append(Spell("storel", "StoreL",
+                    tr_noop("grimoire.spells", "Install and remove apps from Flathub, Ubuntu's archive and the Snap "
+                                               "Store: search, screenshots, a preview of every change, and each "
+                                               "Flatpak's permissions"),
+                    _storel, "storel", _storel_status))

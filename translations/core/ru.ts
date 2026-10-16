@@ -3127,6 +3127,11 @@
         <source>Desktop widgets in black and white: a clock, your system&apos;s readings, the weather and what&apos;s playing</source>
         <translation>Чёрно-белые виджеты рабочего стола: часы, показатели системы, погода и то, что сейчас играет</translation>
     </message>
+    <message>
+        <location filename="../../grimoire/spells/__init__.py"/>
+        <source>Install and remove apps from Flathub, Ubuntu&apos;s archive and the Snap Store: search, screenshots, a preview of every change, and each Flatpak&apos;s permissions</source>
+        <translation>Установка и удаление приложений из Flathub, архива Ubuntu и Snap Store: поиск, снимки экрана, предпросмотр каждого изменения и разрешения каждого Flatpak</translation>
+    </message>
 </context>
 <context>
     <name>grimoire.standalone</name>
