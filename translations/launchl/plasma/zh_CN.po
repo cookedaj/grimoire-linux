@@ -81,6 +81,10 @@ msgid "This launcher"
 msgstr "本启动器"
 
 #: launchl
+msgid "Calculator · Enter copies the result"
+msgstr "计算器 · 按 Enter 复制结果"
+
+#: launchl
 msgid "Run %1"
 msgstr "运行 %1"
 
@@ -107,6 +111,14 @@ msgstr "从收藏中移除"
 #: launchl
 msgid "Add to Favorites"
 msgstr "添加到收藏"
+
+#: launchl
+msgid "Edit…"
+msgstr "编辑…"
+
+#: launchl
+msgid "Hide from Menu"
+msgstr "从菜单中隐藏"
 
 #: launchl
 msgid "Search"

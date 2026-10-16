@@ -81,6 +81,10 @@ msgid "This launcher"
 msgstr "এই লঞ্চার"
 
 #: launchl
+msgid "Calculator · Enter copies the result"
+msgstr "ক্যালকুলেটর · Enter চাপলে ফলাফল কপি হয়"
+
+#: launchl
 msgid "Run %1"
 msgstr "%1 চালান"
 
@@ -107,6 +111,14 @@ msgstr "প্রিয় থেকে সরান"
 #: launchl
 msgid "Add to Favorites"
 msgstr "প্রিয়তে যোগ করুন"
+
+#: launchl
+msgid "Edit…"
+msgstr "সম্পাদনা…"
+
+#: launchl
+msgid "Hide from Menu"
+msgstr "মেনু থেকে লুকান"
 
 #: launchl
 msgid "Search"

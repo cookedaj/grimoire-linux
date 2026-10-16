@@ -2,6 +2,232 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="bn" sourcelanguage="en">
 <context>
+    <name>grimoire.spells.launchl.appedit</name>
+    <message>
+        <location filename="../../grimoire/spells/launchl/appedit.py"/>
+        <source>A double quote isn&apos;t closed.</source>
+        <translation>একটি ডাবল কোট বন্ধ করা হয়নি।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/appedit.py"/>
+        <source>A single quote isn&apos;t closed.</source>
+        <translation>একটি সিঙ্গেল কোট বন্ধ করা হয়নি।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/appedit.py"/>
+        <source>The command can&apos;t be empty.</source>
+        <translation>কমান্ড খালি রাখা যাবে না।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/appedit.py"/>
+        <source>The command can&apos;t contain line breaks or other control characters.</source>
+        <translation>কমান্ডে লাইন ব্রেক বা অন্য কোনো কন্ট্রোল অক্ষর থাকতে পারে না।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/appedit.py"/>
+        <source>%{code} isn&apos;t a field code menus know; write %% for a percent sign.</source>
+        <translation>%{code} এমন কোনো ফিল্ড কোড নয় যা মেনু চেনে; শতাংশ চিহ্নের জন্য %% লিখুন।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/appedit.py"/>
+        <source>{program} isn&apos;t installed or isn&apos;t in your PATH, so the app may not start.</source>
+        <translation>{program} ইনস্টল করা নেই বা আপনার PATH-এ নেই, তাই অ্যাপটি চালু নাও হতে পারে।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/appedit.py"/>
+        <source>That desktop file is too big to be a menu entry.</source>
+        <translation>এই desktop ফাইলটি মেনু এন্ট্রি হওয়ার জন্য অনেক বড়।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/appedit.py"/>
+        <source>“{id}” isn&apos;t an app id.</source>
+        <translation>“{id}” কোনো অ্যাপ আইডি নয়।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/appedit.py"/>
+        <source>No app called {id} is installed.</source>
+        <translation>{id} নামে কোনো অ্যাপ ইনস্টল করা নেই।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/appedit.py"/>
+        <source>{id} isn&apos;t a menu entry.</source>
+        <translation>{id} কোনো মেনু এন্ট্রি নয়।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/appedit.py"/>
+        <source>Names and icons can&apos;t contain line breaks.</source>
+        <translation>নাম ও আইকনে লাইন ব্রেক থাকতে পারে না।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/appedit.py"/>
+        <source>The name can&apos;t be empty.</source>
+        <translation>নাম খালি রাখা যাবে না।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/appedit.py"/>
+        <source>The app&apos;s desktop file is gone.</source>
+        <translation>অ্যাপের desktop ফাইলটি আর নেই।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/appedit.py"/>
+        <source>{id} has no changes to undo: it&apos;s your own app, not a copy of a system one.</source>
+        <translation>{id}-এ ফেরানোর মতো কোনো পরিবর্তন নেই: এটি আপনার নিজের অ্যাপ, কোনো সিস্টেম অ্যাপের কপি নয়।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/appedit.py"/>
+        <source>{id} has no changes to undo.</source>
+        <translation>{id}-এ ফেরানোর মতো কোনো পরিবর্তন নেই।</translation>
+    </message>
+</context>
+<context>
+    <name>grimoire.spells.launchl.editor</name>
+    <message>
+        <location filename="../../grimoire/spells/launchl/editor.py"/>
+        <source>[link]</source>
+        <translation>[লিংক]</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/editor.py"/>
+        <source>[links]</source>
+        <translation>[লিংকগুলো]</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/editor.py"/>
+        <source>[file]</source>
+        <translation>[ফাইল]</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/editor.py"/>
+        <source>[files]</source>
+        <translation>[ফাইলগুলো]</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/editor.py"/>
+        <source>Edit app</source>
+        <translation>অ্যাপ সম্পাদনা</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/editor.py"/>
+        <source>Loading…</source>
+        <translation>লোড হচ্ছে…</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/editor.py"/>
+        <source>An icon name from your theme, or an image file</source>
+        <translation>আপনার থিমের একটি আইকনের নাম, অথবা একটি ছবির ফাইল</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/editor.py"/>
+        <source>Choose…</source>
+        <translation>বেছে নিন…</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/editor.py"/>
+        <source>Name</source>
+        <translation>নাম</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/editor.py"/>
+        <source>Icon</source>
+        <translation>আইকন</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/editor.py"/>
+        <source>Command</source>
+        <translation>কমান্ড</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/editor.py"/>
+        <source>WILL RUN</source>
+        <translation>যা চলবে</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/editor.py"/>
+        <source>Hide from the menu</source>
+        <translation>মেনু থেকে লুকান</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/editor.py"/>
+        <source>It stays installed and still opens files; only the menus leave it out.</source>
+        <translation>এটি ইনস্টল থাকে এবং ফাইলও খোলে; শুধু মেনুতে দেখা যায় না।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/editor.py"/>
+        <source>Reset to default</source>
+        <translation>ডিফল্টে ফেরান</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/editor.py"/>
+        <source>Cancel</source>
+        <translation>বাতিল</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/editor.py"/>
+        <source>Save</source>
+        <translation>সংরক্ষণ করুন</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/editor.py"/>
+        <source>Edit {app}</source>
+        <translation>{app} সম্পাদনা</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/editor.py"/>
+        <source>This app&apos;s menu entry is your own file: {path}</source>
+        <translation>এই অ্যাপের মেনু এন্ট্রি আপনার নিজের ফাইল: {path}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/editor.py"/>
+        <source>Your changes are in {path}. The system file ({system}) is never changed; Reset to default moves your copy to the Trash.</source>
+        <translation>আপনার পরিবর্তনগুলো আছে {path}-এ। সিস্টেম ফাইল ({system}) কখনো বদলানো হয় না; ডিফল্টে ফেরান আপনার কপিটি ট্র্যাশে সরায়।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/editor.py"/>
+        <source>Saving makes your own copy in {path}. The system file ({system}) isn&apos;t changed.</source>
+        <translation>সংরক্ষণ করলে {path}-এ আপনার নিজের একটি কপি তৈরি হয়। সিস্টেম ফাইল ({system}) বদলায় না।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/editor.py"/>
+        <source>This app normally starts through D-Bus. Saving a new command switches that off, so your command is what runs.</source>
+        <translation>এই অ্যাপটি সাধারণত D-Bus দিয়ে চালু হয়। নতুন কমান্ড সংরক্ষণ করলে তা বন্ধ হয়ে যায়, যাতে আপনার কমান্ডই চলে।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/editor.py"/>
+        <source>Your icon theme has no icon called {icon}.</source>
+        <translation>আপনার আইকন থিমে {icon} নামে কোনো আইকন নেই।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/editor.py"/>
+        <source>Choose an icon</source>
+        <translation>একটি আইকন বেছে নিন</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/editor.py"/>
+        <source>Images (*.png *.svg *.svgz *.xpm)</source>
+        <translation>ছবি (*.png *.svg *.svgz *.xpm)</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/editor.py"/>
+        <source>Saving…</source>
+        <translation>সংরক্ষণ হচ্ছে…</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/editor.py"/>
+        <source>Resetting…</source>
+        <translation>ডিফল্টে ফেরানো হচ্ছে…</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/editor.py"/>
+        <source>Put {app} back the way it was installed? Your copy of its menu entry goes to the Trash.</source>
+        <translation>{app} যেমন ইনস্টল হয়েছিল তেমন অবস্থায় ফেরাবেন? এর মেনু এন্ট্রির আপনার কপিটি ট্র্যাশে যাবে।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/editor.py"/>
+        <source>Can&apos;t edit this app</source>
+        <translation>এই অ্যাপটি সম্পাদনা করা যাচ্ছে না</translation>
+    </message>
+</context>
+<context>
     <name>grimoire.spells.launchl.page</name>
     <message>
         <location filename="../../grimoire/spells/launchl/page.py"/>
@@ -37,6 +263,16 @@
         <location filename="../../grimoire/spells/launchl/page.py"/>
         <source>Restore Kickoff</source>
         <translation>Kickoff ফিরিয়ে আনুন</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/page.py"/>
+        <source>APPS YOU CHANGED</source>
+        <translation>আপনার বদলানো অ্যাপ</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/page.py"/>
+        <source>Right-click an app in LaunchL to edit its name, icon or command, or to hide it. Changes are your own copies; system files are never touched.</source>
+        <translation>LaunchL-এ কোনো অ্যাপে রাইট-ক্লিক করে এর নাম, আইকন বা কমান্ড বদলান, অথবা এটি লুকান। পরিবর্তনগুলো আপনার নিজের কপিতে থাকে; সিস্টেম ফাইল কখনো ছোঁয়া হয় না।</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/launchl/page.py"/>
@@ -110,6 +346,41 @@
     </message>
     <message>
         <location filename="../../grimoire/spells/launchl/page.py"/>
+        <source>No changed apps.</source>
+        <translation>কোনো বদলানো অ্যাপ নেই।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/page.py"/>
+        <source>hidden</source>
+        <translation>লুকানো</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/page.py"/>
+        <source>edited</source>
+        <translation>সম্পাদিত</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/page.py"/>
+        <source>Edit…</source>
+        <translation>সম্পাদনা…</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/page.py"/>
+        <source>Show in menu</source>
+        <translation>মেনুতে দেখান</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/page.py"/>
+        <source>Reset</source>
+        <translation>রিসেট</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/page.py"/>
+        <source>Back to the default; your copy goes to the Trash</source>
+        <translation>ডিফল্টে ফেরান; আপনার কপি ট্র্যাশে যায়</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/page.py"/>
         <source>Working…</source>
         <translation>কাজ চলছে…</translation>
     </message>
@@ -142,6 +413,16 @@ Kickoff ফিরিয়ে আনুন সেটিকে ঠিক আগ�
     </message>
     <message>
         <location filename="../../grimoire/spells/launchl/page.py"/>
+        <source>Couldn&apos;t show the app again: {error}</source>
+        <translation>অ্যাপটি আবার দেখানো গেল না: {error}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/page.py"/>
+        <source>Couldn&apos;t reset the app: {error}</source>
+        <translation>অ্যাপটি রিসেট করা গেল না: {error}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/page.py"/>
         <source>Couldn&apos;t replace the launcher: {error}</source>
         <translation>লঞ্চার বদলানো গেল না: {error}</translation>
     </message>
@@ -164,6 +445,16 @@ Kickoff ফিরিয়ে আনুন সেটিকে ঠিক আগ�
         <location filename="../../grimoire/spells/launchl/page.py"/>
         <source>Press Meta to open it.</source>
         <translation>খুলতে Meta চাপুন।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/page.py"/>
+        <source>The app is back in the menu.</source>
+        <translation>অ্যাপটি আবার মেনুতে আছে।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/page.py"/>
+        <source>The app is back to its default. Your copy is in the Trash.</source>
+        <translation>অ্যাপটি ডিফল্টে ফিরে গেছে। আপনার কপি ট্র্যাশে আছে।</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/launchl/page.py"/>

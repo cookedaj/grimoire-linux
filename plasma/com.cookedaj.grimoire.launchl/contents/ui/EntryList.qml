@@ -16,6 +16,8 @@ ListView {
     property bool keyboardNav: false
     property string emptyText: ""
     property bool sections: true             // headers from the model's "group" role (A, B, ...; runner names)
+    property real hideNumber: NaN            // rows showing just this number are hidden (KRunner's calculator row)
+    property string hiddenSection: ""        // ... and their header
 
     signal activated(int index)
     signal hovered(int index)
@@ -36,7 +38,9 @@ ListView {
         if (currentIndex < 0 || currentIndex >= count) {
             currentIndex = count > 0 ? 0 : -1
         }
+        rescan()
     }
+    onHideNumberChanged: rescan()
     topMargin: 6
     bottomMargin: 6
     delegate: Entry {}
@@ -46,9 +50,9 @@ ListView {
     section.delegate: Item {
         required property string section
         width: ListView.view.width
-        height: section === "" ? 0 : 30
+        height: section === "" || section === ListView.view.hiddenSection ? 0 : 30
         Text {
-            visible: parent.section !== ""
+            visible: parent.height > 0
             anchors.left: parent.left
             anchors.leftMargin: 18
             anchors.bottom: parent.bottom
@@ -92,9 +96,26 @@ ListView {
         hovered(i)
     }
 
+    // rows the cursor skips: separators and hidden duplicates
     function isSeparator(i: int): bool {
         const item = itemAtIndex(i)
-        return item !== null && item.separator === true
+        return item !== null && (item.separator === true || item.skip === true)
+    }
+
+    // the header of a hidden row's group goes too (the group of KRunner's calculator, which has only that row)
+    function rescan() {
+        Qt.callLater(scanHidden)
+    }
+    function scanHidden() {
+        let s = ""
+        for (let i = 0; i < count && isNaN(hideNumber) === false; i++) {
+            const item = itemAtIndex(i)
+            if (item && item.skip === true) {
+                s = item.group
+                break
+            }
+        }
+        hiddenSection = s
     }
 
     // Move the current row by step (skipping separators); false when already at that end

@@ -7,15 +7,53 @@
     python3 -m grimoire.spells.launchl restore [--dry-run] put the recorded Kickoff back and take LaunchL out
     python3 -m grimoire.spells.launchl uninstall          restore Kickoff if LaunchL replaced it, then remove the package
                                                           (exit 3: kept, because LaunchL is still in a panel)
+    python3 -m grimoire.spells.launchl edit ID             the Edit dialog for an app (ID: org.kde.dolphin.desktop)
+    python3 -m grimoire.spells.launchl hide|unhide ID      leave an app out of the menus, or show it again
+    python3 -m grimoire.spells.launchl reset ID            undo every change to an app (your copy goes to the Trash)
+    python3 -m grimoire.spells.launchl edited              the apps you changed
 """
 import json
 import sys
 
 from grimoire.spells.launchl import panel
 
+APP_COMMANDS = ("edit", "hide", "unhide", "reset")
+
+
+def apps(cmd: str, app_id: str) -> int:
+    """Edit/hide/reset an app's menu entry (appedit.py; no Qt except the dialog)."""
+    from grimoire.spells.launchl import appedit
+    if not appedit.valid_id(app_id):
+        print(f"LaunchL: {app_id!r} isn't a desktop file id (like org.kde.dolphin.desktop)", file=sys.stderr)
+        return 2
+    if cmd == "edit":
+        from grimoire.spells.launchl import editor
+        return editor.run(app_id)
+    try:
+        if cmd == "reset":
+            print(f"Moved {appedit.reset(app_id)} to the Trash")
+        else:
+            path = appedit.hide(app_id, cmd == "hide")
+            print(f"{app_id} {'hidden from' if cmd == 'hide' else 'back in'} the menu ({path})")
+    except (LookupError, ValueError, OSError) as err:
+        print(f"LaunchL: {err}", file=sys.stderr)
+        return 1
+    appedit.rebuild()
+    return 0
+
 
 def main(argv: list[str]) -> int:
     cmd, dry = (argv[0] if argv else "status"), "--dry-run" in argv
+    if cmd in APP_COMMANDS:
+        if len(argv) != 2:
+            print(__doc__)
+            return 2
+        return apps(cmd, argv[1])
+    if cmd == "edited":
+        from grimoire.spells.launchl import appedit
+        for app in appedit.edited():
+            print(f"{app.id}\t{'hidden' if app.hidden else 'edited'}\t{app.name}")
+        return 0
     try:
         if cmd == "status":
             print(panel.status())

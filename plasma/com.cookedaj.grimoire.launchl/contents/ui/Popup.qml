@@ -16,6 +16,7 @@ import org.kde.plasma.plasmoid
 import org.kde.kirigami as Kirigami
 import org.kde.ksvg as KSvg
 import org.kde.coreaddons as KCoreAddons
+import "calc.js" as Calc
 
 FocusScope {
     id: popup
@@ -90,6 +91,37 @@ FocusScope {
     function matches(q: string, hay: string): bool {
         const words = " " + hay.toLowerCase().replace(/[\s!-\/:-@\[-`{-~·،؛]+/g, " ")
         return q.toLowerCase().split(/\s+/).filter(w => w !== "").every(w => words.includes(" " + w))
+    }
+
+    // the built-in calculator: a sum typed in the search shows its result on top; Enter copies it.
+    // Unit conversions ("12 km to mi") don't parse here and stay with KRunner's unit converter below.
+    function calcResults(q: string): var {
+        if (q.startsWith(">")) {
+            return []
+        }
+        const decimal = Qt.locale().decimalPoint
+        const value = Calc.calculate(q, decimal)
+        if (value === "") {
+            return []
+        }
+        return [{ name: value, description: i18n("Calculator · Enter copies the result"),
+                  icon: "accessories-calculator-symbolic", mask: true, calc: true,
+                  number: Calc.numberIn(value, decimal), run: () => popup.copyText(value) }]
+    }
+
+    function searchExtras(q: string): var {
+        return calcResults(q).concat(grimoireResults(q))
+    }
+
+    TextEdit {                                   // the clipboard, through a hidden text field
+        id: clipboard
+        visible: false
+        textFormat: TextEdit.PlainText
+    }
+    function copyText(text: string) {
+        clipboard.text = text
+        clipboard.selectAll()
+        clipboard.copy()
     }
 
     function grimoireResults(q: string): var {
@@ -209,7 +241,12 @@ FocusScope {
                 ? { text: i18n("Remove from Favorites"), actionId: "_launchl_unfavorite", favoriteId: favId }
                 : { text: i18n("Add to Favorites"), actionId: "_launchl_favorite", favoriteId: favId })
         }
-        const own = entry.model.hasActionList ? (entry.model.actionList || []) : []
+        // apps: Grimoire's editor instead of KDE's menu editor (which edits the whole menu)
+        const appId = launchl.haveCommands["grimoire-launchl"] ? desktopId(entry.model.favoriteId) : ""
+        let own = entry.model.hasActionList ? (entry.model.actionList || []) : []
+        if (appId) {
+            own = own.filter(a => a.actionId !== "editApplication")
+        }
         if (acts.length && own.length) {
             acts.push({ type: "separator" })
         }
@@ -222,6 +259,11 @@ FocusScope {
             } else {
                 acts.push(a)
             }
+        }
+        if (appId) {
+            acts.push({ type: "separator" },
+                      { text: i18n("Edit…"), actionId: "_launchl_edit", app: appId },
+                      { text: i18n("Hide from Menu"), actionId: "_launchl_hide", app: appId })
         }
         // no separators at either end or twice in a row
         for (let i = acts.length - 1; i >= 0; i--) {
@@ -243,6 +285,18 @@ FocusScope {
         menu.open()
     }
 
+    // an entry's desktop file id ("org.kde.dolphin.desktop") from its favorite id, or "" when it isn't an app
+    function desktopId(favoriteId): string {
+        let s = String(favoriteId || "")
+        if (s.startsWith("applications:")) {
+            s = s.slice(13)
+        } else if (s.startsWith("file://") || s.startsWith("/")) {
+            const m = decodeURIComponent(s).match(/\/applications\/(.+\.desktop)$/)
+            s = m ? m[1].replace(/\//g, "-") : ""
+        }
+        return /^[A-Za-z0-9][A-Za-z0-9._+-]*\.desktop$/.test(s) ? s : ""
+    }
+
     ActionMenu {
         id: menu
         property var target: null
@@ -252,6 +306,12 @@ FocusScope {
                 fav.addFavorite(action.favoriteId)
             } else if (action.actionId === "_launchl_unfavorite") {
                 fav.removeFavorite(action.favoriteId)
+            } else if (action.actionId === "_launchl_edit") {
+                launchl.runDetached("grimoire-launchl edit " + launchl.shq(action.app))
+                popup.close()
+            } else if (action.actionId === "_launchl_hide") {
+                // the menu rebuilds itself once KDE's app cache is updated
+                launchl.runDetached("grimoire-launchl hide " + launchl.shq(action.app))
             } else if (target && target.model.trigger(target.row, action.actionId, action.actionArgument)) {
                 popup.close()
             }
@@ -322,7 +382,7 @@ FocusScope {
     Connections {
         target: launchl
         function onHaveCommandsChanged() {       // the probe finished: Grimoire's entries may have changed
-            results.extras = popup.grimoireResults(search.text)
+            results.extras = popup.searchExtras(search.text)
         }
         function onExpandedChanged() {
             if (launchl.expanded) {
@@ -478,7 +538,7 @@ FocusScope {
                     font.pixelSize: 14
                     Keys.priority: Keys.BeforeItem
                     Keys.onPressed: event => popup.handleKey(event)
-                    onTextChanged: results.extras = popup.grimoireResults(text)
+                    onTextChanged: results.extras = popup.searchExtras(text)
                     Accessible.name: i18n("Search")
                     Accessible.role: Accessible.EditableText
 

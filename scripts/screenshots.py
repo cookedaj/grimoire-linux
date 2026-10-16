@@ -164,6 +164,9 @@ def offline_stubs():
     panel.scan = lambda: [{"id": 1, "order": "2;3;4", "widgets": [
         {"id": 2, "type": "org.kde.plasma.kickoff"}, {"id": 3, "type": "org.kde.plasma.icontasks"},
         {"id": 4, "type": "org.kde.plasma.systemtray"}]}]
+    from grimoire.spells.launchl import appedit                  # sample apps changed with LaunchL's Edit…
+    appedit.edited = lambda: [appedit.App(id="org.kde.kate.desktop", name="Kate", hidden=True, edited=True),
+                              appedit.App(id="org.kde.konsole.desktop", name="Terminal", edited=True)]
     from grimoire.spells.widgetl import widgets
     widgets.is_installed = lambda wid: True
     widgets.needs_update = lambda wid: False

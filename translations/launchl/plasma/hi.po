@@ -81,6 +81,10 @@ msgid "This launcher"
 msgstr "यही लॉन्चर"
 
 #: launchl
+msgid "Calculator · Enter copies the result"
+msgstr "कैलकुलेटर · Enter दबाकर नतीजा कॉपी करें"
+
+#: launchl
 msgid "Run %1"
 msgstr "%1 चलाएँ"
 
@@ -107,6 +111,14 @@ msgstr "पसंदीदा से हटाएँ"
 #: launchl
 msgid "Add to Favorites"
 msgstr "पसंदीदा में जोड़ें"
+
+#: launchl
+msgid "Edit…"
+msgstr "संपादित करें…"
+
+#: launchl
+msgid "Hide from Menu"
+msgstr "मेन्यू से छिपाएँ"
 
 #: launchl
 msgid "Search"

@@ -81,6 +81,10 @@ msgid "This launcher"
 msgstr "هذا المشغّل"
 
 #: launchl
+msgid "Calculator · Enter copies the result"
+msgstr "الآلة الحاسبة · Enter ينسخ النتيجة"
+
+#: launchl
 msgid "Run %1"
 msgstr "شغّل %1"
 
@@ -107,6 +111,14 @@ msgstr "أزل من المفضلة"
 #: launchl
 msgid "Add to Favorites"
 msgstr "أضف إلى المفضلة"
+
+#: launchl
+msgid "Edit…"
+msgstr "حرّر…"
+
+#: launchl
+msgid "Hide from Menu"
+msgstr "أخفِ من القائمة"
 
 #: launchl
 msgid "Search"

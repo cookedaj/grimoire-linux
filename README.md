@@ -108,6 +108,9 @@ usage. Public IP and ping checks only run when you press them.
 
 A black & white panel launcher in Kickoff's place: favorites, every app by category, places and recent files,
 search that also finds files, does sums and unit conversions and runs Grimoire's spells, plus the leave buttons.
+Type a sum (`12*7+3`, `2^10`, `sqrt(2)`, `15% of 80`) and the answer is the top result; Enter copies it. Right-click
+an app to **Edit…** its name, icon or command, or **Hide from Menu**: changes are your own copy in
+`~/.local/share/applications`, system files are never touched, and Reset puts the app back (your copy goes to the Trash).
 
 ### GameL: one game library
 

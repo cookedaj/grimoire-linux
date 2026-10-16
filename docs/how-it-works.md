@@ -54,7 +54,11 @@ what goes over the network, see [security.md](security.md).
 - **LaunchL** is a Plasma panel widget (`plasma/com.cookedaj.grimoire.launchl`, QML on Plasma's own kicker models,
   the same ones Kickoff uses). Its page installs the widget with `kpackagetool6` and can swap it in for Kickoff:
   it records the panel, position, settings, shortcut and favorites order first, so **Restore Kickoff** puts back
-  exactly what was there. `uninstall.sh` restores Kickoff before removing the widget.
+  exactly what was there. `uninstall.sh` restores Kickoff before removing the widget. Its calculator is a small
+  parser in `calc.js` (no `eval`); anything it can't read, like unit conversions, is left to KRunner. **Edit…** and
+  **Hide from Menu** (`grimoire-launchl edit|hide ID`, `appedit.py` + `editor.py`) copy the app's system `.desktop`
+  file to `~/.local/share/applications/<id>`, change only the keys you edited (`NoDisplay=true` hides it), mark it
+  `X-Grimoire-Edited` and run `kbuildsycoca6`; Reset moves that copy to the Trash.
 - **GameL** only reads the launchers' own files: Steam's `libraryfolders.vdf`, `appmanifest_*.acf` and each user's
   `localconfig.vdf` (last played, playtime; a small KeyValues parser in `vdf.py`), covers from Steam's
   `appcache/librarycache` (turned gray when shown), Heroic's `installed.json` files and `store/timestamp.json`, and
