@@ -3547,33 +3547,10 @@
         <source>Your phone on this PC through KDE Connect: send files, ring it, share the clipboard, browse its files, read and dismiss its notifications, text messages, media and commands</source>
         <translation>通过 KDE Connect 在这台电脑上使用你的手机：发送文件、让它响铃、共享剪贴板、浏览其文件、查看和清除其通知、短信、媒体和命令</translation>
     </message>
-</context>
-<context>
-    <name>grimoire.standalone</name>
     <message>
-        <location filename="../../grimoire/standalone.py"/>
-        <source>{id} has no standalone command yet</source>
-        <translation>{id} 还没有独立命令</translation>
-    </message>
-    <message>
-        <source>Emoji, symbols and every Unicode character on a hotkey: search in your language, skin tones, favorites and a full Unicode block browser</source>
-        <translation type="vanished">一个快捷键即可使用表情、符号和所有 Unicode 字符：用你的语言搜索、肤色、收藏，以及完整的 Unicode 区块浏览器</translation>
-    </message>
-    <message>
-        <source>Google Drive, OneDrive and Dropbox as folders on your PC through rclone: sign in from your browser, mount, see the space left and what is still uploading, and open them in VaultL</source>
-        <translation type="vanished">通过 rclone 把 Google Drive、OneDrive 和 Dropbox 变成电脑上的文件夹：在浏览器中登录、挂载、查看剩余空间和仍在上传的内容，并在 VaultL 中打开</translation>
-    </message>
-    <message>
-        <source>Your pictures: a fast thumbnail grid, a full view with zoom, turns, slideshow and EXIF info, plus rename, Trash and set as wallpaper</source>
-        <translation type="vanished">你的图片：快速的缩略图网格，可缩放、旋转、幻灯片放映和查看 EXIF 信息的完整视图，还能重命名、移到回收站和设为壁纸</translation>
-    </message>
-    <message>
-        <source>Install and remove apps from Flathub, Ubuntu&apos;s archive and the Snap Store: search, screenshots, a preview of every change, and each Flatpak&apos;s permissions</source>
-        <translation type="vanished">从 Flathub、Ubuntu 软件仓库和 Snap Store 安装和删除应用：搜索、截图、每次更改前的预览，以及每个 Flatpak 的权限</translation>
-    </message>
-    <message>
-        <source>A quiet reader for PDFs, EPUB books, Markdown and text: covers, contents, search, bookmarks, night and paper pages, and it remembers where you stopped</source>
-        <translation type="vanished">安静的阅读器，适用于 PDF、EPUB 电子书、Markdown 和文本：封面、目录、搜索、书签、夜间和纸张页面，并记住你读到哪里</translation>
+        <location filename="../../grimoire/spells/__init__.py"/>
+        <source>Markdown notes and a text editor in one: a notes folder with search, tags, [[links]] and backlinks, a live preview, tabs, and syntax colors for code</source>
+        <translation>Markdown 笔记与文本编辑器合二为一：带搜索、标签、[[链接]] 和反向链接的笔记文件夹，实时预览、标签页和代码语法着色</translation>
     </message>
 </context>
 <context>
@@ -3988,6 +3965,33 @@
         <location filename="../../grimoire/updateview.py"/>
         <source>Nothing new on GitHub since your version.</source>
         <translation>自你的版本以来，GitHub 上没有新内容。</translation>
+    </message>
+</context>
+<context>
+    <name>grimoire.standalone</name>
+    <message>
+        <source>{id} has no standalone command yet</source>
+        <translation type="vanished">{id} 还没有独立命令</translation>
+    </message>
+    <message>
+        <source>Emoji, symbols and every Unicode character on a hotkey: search in your language, skin tones, favorites and a full Unicode block browser</source>
+        <translation type="vanished">一个快捷键即可使用表情、符号和所有 Unicode 字符：用你的语言搜索、肤色、收藏，以及完整的 Unicode 区块浏览器</translation>
+    </message>
+    <message>
+        <source>Google Drive, OneDrive and Dropbox as folders on your PC through rclone: sign in from your browser, mount, see the space left and what is still uploading, and open them in VaultL</source>
+        <translation type="vanished">通过 rclone 把 Google Drive、OneDrive 和 Dropbox 变成电脑上的文件夹：在浏览器中登录、挂载、查看剩余空间和仍在上传的内容，并在 VaultL 中打开</translation>
+    </message>
+    <message>
+        <source>Your pictures: a fast thumbnail grid, a full view with zoom, turns, slideshow and EXIF info, plus rename, Trash and set as wallpaper</source>
+        <translation type="vanished">你的图片：快速的缩略图网格，可缩放、旋转、幻灯片放映和查看 EXIF 信息的完整视图，还能重命名、移到回收站和设为壁纸</translation>
+    </message>
+    <message>
+        <source>Install and remove apps from Flathub, Ubuntu&apos;s archive and the Snap Store: search, screenshots, a preview of every change, and each Flatpak&apos;s permissions</source>
+        <translation type="vanished">从 Flathub、Ubuntu 软件仓库和 Snap Store 安装和删除应用：搜索、截图、每次更改前的预览，以及每个 Flatpak 的权限</translation>
+    </message>
+    <message>
+        <source>A quiet reader for PDFs, EPUB books, Markdown and text: covers, contents, search, bookmarks, night and paper pages, and it remembers where you stopped</source>
+        <translation type="vanished">安静的阅读器，适用于 PDF、EPUB 电子书、Markdown 和文本：封面、目录、搜索、书签、夜间和纸张页面，并记住你读到哪里</translation>
     </message>
 </context>
 </TS>

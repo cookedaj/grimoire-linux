@@ -497,6 +497,28 @@ def _draw(name: str, p: QPainter):
         path = QPainterPath(QPointF(6, 6)); path.lineTo(15, 12); path.lineTo(6, 18); path.closeSubpath()
         p.drawPath(path)
         p.drawLine(QPointF(18, 6), QPointF(18, 18))
+    elif name == "notel":                                  # a notebook: spine, lines and a corner fold
+        p.drawRoundedRect(r(5, 3.5, 14, 17), 1.8, 1.8)
+        p.drawLine(QPointF(8.5, 3.5), QPointF(8.5, 20.5))
+        for y in (8.5, 12, 15.5):
+            p.drawLine(QPointF(11, y), QPointF(16.5, y))
+    elif name == "pin":                                    # a push pin, tilted
+        head = QPainterPath(QPointF(13.5, 3.5)); head.lineTo(20.5, 10.5); head.lineTo(17.5, 11.5)
+        head.lineTo(13.5, 15.5); head.lineTo(13, 18.5); head.lineTo(5.5, 11); head.lineTo(8.5, 10.5)
+        head.lineTo(12.5, 6.5); head.closeSubpath(); p.drawPath(head)
+        p.drawLine(QPointF(9.2, 14.8), QPointF(3.8, 20.2))
+    elif name == "tag":                                    # a price tag with its hole
+        path = QPainterPath(QPointF(3.5, 4.5)); path.lineTo(11.5, 4.5); path.lineTo(20, 13); path.lineTo(13, 20)
+        path.lineTo(3.5, 11.5); path.closeSubpath(); p.drawPath(path)
+        p.drawEllipse(QPointF(8, 9), 1.4, 1.4)
+    elif name == "calendar":                               # a day page
+        p.drawRoundedRect(r(3.5, 5, 17, 15.5), 2, 2)
+        p.drawLine(QPointF(3.5, 9.5), QPointF(20.5, 9.5))
+        p.drawLine(QPointF(8, 3), QPointF(8, 6.5)); p.drawLine(QPointF(16, 3), QPointF(16, 6.5))
+        p.drawRoundedRect(r(7.5, 12.5, 4, 4), 0.8, 0.8)
+    elif name == "more":                                   # three dots
+        for x in (6, 12, 18):
+            p.drawEllipse(QPointF(x, 12), 1.2, 1.2)
 
 
 def _pixmap(name: str, color: str, size: int) -> QPixmap:

@@ -46,6 +46,9 @@ EXTRA = {"vaultl": {"GenericName": "File Manager", "Categories": "Utility;System
 # ReadL shows up in "Open with" for these; it never makes itself the default
 EXTRA["readl"] = {"GenericName": "Document Viewer", "Categories": "Office;Viewer;",
                   "MimeType": "application/pdf;application/epub+zip;text/markdown;"}
+# in "Open with" for text files, never made the default (Kate's InitialPreference is higher)
+EXTRA["notel"] = {"GenericName": "Text Editor", "Categories": "Utility;TextEditor;",
+                  "MimeType": "text/plain;text/markdown;text/x-markdown;", "InitialPreference": "1"}
 # spells merged into another: their menu entries stay (hidden), since the system's default-app setting may name them
 MERGED = {"filel": "vaultl", "tidyl": "vaultl"}
 

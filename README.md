@@ -230,6 +230,17 @@ the music or video playing on it, commands set up on it, typing and a touchpad f
 on. **Add a device** lists phones asking to pair or nearby, with the key to compare, and how to get the app. Needs
 KDE Connect (`sudo apt install kdeconnect`) and its phone app (Google Play, F-Droid or the App Store), on the same
 network.
+### NoteL: Markdown notes and a text editor
+
+![NoteL](docs/screenshots/notel.png)
+
+Your notes as plain Markdown files in a folder (`~/Documents/Notes` by default, or any folder you pick; an existing
+Obsidian vault works as is): folders and pinned notes in the sidebar, fast full-text search, #tags and [[wiki links]]
+with backlinks, a live preview beside the editor or on its own, tabs, find and replace, a daily note and export to
+PDF or HTML. Notes save as you type, atomically, and a file another program changed is never overwritten: you choose
+to reload theirs, keep yours or keep both. It also opens any text file (`grimoire-notel file…`, or **Open with** in
+VaultL and Dolphin) with line numbers and black & white syntax colors for Python, shell, JSON, YAML, INI/TOML,
+Markdown and C-like languages. The preview never loads remote images and links open only when you click them.
 
 ### Tray, Settings and updates
 
@@ -346,7 +357,8 @@ directly. Command-line helpers:
 `grimoire-shotl`, `grimoire-focusl`, `grimoire-netl` or `grimoire-widgetl` directly. Command-line helpers:
 `grimoire-sightc on|off|toggle|next`, `grimoire-vaultl [folder]`, `grimoire-vaultl tidy run|undo|enable|disable|status`,
 `grimoire-systeml alerts check|enable|disable|status`, `grimoire-focusl start|stop|status`,
-`grimoire-gamel list|status|play <launcher:id>`, `grimoire-updatel check|enable|disable|status`, `grimoire update`.
+`grimoire-gamel list|status|play <launcher:id>`, `grimoire-updatel check|enable|disable|status`,
+`grimoire-notel [file…]|--daily`, `grimoire update`.
 
 To make VaultL the default file manager: `xdg-mime default grimoire-vaultl.desktop inode/directory` (switch back in
 System Settings → Default Applications).

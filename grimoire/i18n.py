@@ -42,6 +42,7 @@ AREAS = (                                        # one per line: spells add thei
     "storel",
     "readl",
     "phonel",
+    "notel",
 )
 TRANSLATIONS = ROOT / "translations"
 MACHINE = CONFIG_ROOT / "language"               # the last choice on this PC: the sign-in screen and guests follow it

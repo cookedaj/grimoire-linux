@@ -3577,33 +3577,10 @@
         <source>Your phone on this PC through KDE Connect: send files, ring it, share the clipboard, browse its files, read and dismiss its notifications, text messages, media and commands</source>
         <translation>Seu celular neste PC pelo KDE Connect: envie arquivos, faça-o tocar, compartilhe a área de transferência, navegue pelos arquivos, leia e dispense as notificações, mensagens de texto, mídia e comandos</translation>
     </message>
-</context>
-<context>
-    <name>grimoire.standalone</name>
     <message>
-        <location filename="../../grimoire/standalone.py"/>
-        <source>{id} has no standalone command yet</source>
-        <translation>{id} ainda não tem um comando próprio</translation>
-    </message>
-    <message>
-        <source>Emoji, symbols and every Unicode character on a hotkey: search in your language, skin tones, favorites and a full Unicode block browser</source>
-        <translation type="vanished">Emoji, símbolos e todos os caracteres Unicode num atalho: pesquisa no seu idioma, tons de pele, favoritos e um navegador completo de blocos Unicode</translation>
-    </message>
-    <message>
-        <source>Google Drive, OneDrive and Dropbox as folders on your PC through rclone: sign in from your browser, mount, see the space left and what is still uploading, and open them in VaultL</source>
-        <translation type="vanished">Google Drive, OneDrive e Dropbox como pastas no seu PC com o rclone: entre pelo navegador, monte, veja o espaço livre e o que ainda está sendo enviado, e abra no VaultL</translation>
-    </message>
-    <message>
-        <source>Your pictures: a fast thumbnail grid, a full view with zoom, turns, slideshow and EXIF info, plus rename, Trash and set as wallpaper</source>
-        <translation type="vanished">Suas imagens: uma grade de miniaturas rápida, uma visualização completa com zoom, giros, apresentação e informações EXIF, além de renomear, lixeira e definir como papel de parede</translation>
-    </message>
-    <message>
-        <source>Install and remove apps from Flathub, Ubuntu&apos;s archive and the Snap Store: search, screenshots, a preview of every change, and each Flatpak&apos;s permissions</source>
-        <translation type="vanished">Instale e remova apps do Flathub, do arquivo do Ubuntu e da Snap Store: pesquisa, capturas de tela, prévia de cada mudança e as permissões de cada Flatpak</translation>
-    </message>
-    <message>
-        <source>A quiet reader for PDFs, EPUB books, Markdown and text: covers, contents, search, bookmarks, night and paper pages, and it remembers where you stopped</source>
-        <translation type="vanished">Um leitor tranquilo para PDFs, livros EPUB, Markdown e texto: capas, sumário, busca, marcadores, páginas noturnas e de papel, e ele lembra onde você parou</translation>
+        <location filename="../../grimoire/spells/__init__.py"/>
+        <source>Markdown notes and a text editor in one: a notes folder with search, tags, [[links]] and backlinks, a live preview, tabs, and syntax colors for code</source>
+        <translation>Notas em Markdown e um editor de texto num só: uma pasta de notas com pesquisa, tags, [[links]] e links de entrada, prévia ao vivo, abas e cores de sintaxe para código</translation>
     </message>
 </context>
 <context>
@@ -4023,6 +4000,33 @@
         <location filename="../../grimoire/updateview.py"/>
         <source>Nothing new on GitHub since your version.</source>
         <translation>Nada de novo no GitHub desde a sua versão.</translation>
+    </message>
+</context>
+<context>
+    <name>grimoire.standalone</name>
+    <message>
+        <source>{id} has no standalone command yet</source>
+        <translation type="vanished">{id} ainda não tem um comando próprio</translation>
+    </message>
+    <message>
+        <source>Emoji, symbols and every Unicode character on a hotkey: search in your language, skin tones, favorites and a full Unicode block browser</source>
+        <translation type="vanished">Emoji, símbolos e todos os caracteres Unicode num atalho: pesquisa no seu idioma, tons de pele, favoritos e um navegador completo de blocos Unicode</translation>
+    </message>
+    <message>
+        <source>Google Drive, OneDrive and Dropbox as folders on your PC through rclone: sign in from your browser, mount, see the space left and what is still uploading, and open them in VaultL</source>
+        <translation type="vanished">Google Drive, OneDrive e Dropbox como pastas no seu PC com o rclone: entre pelo navegador, monte, veja o espaço livre e o que ainda está sendo enviado, e abra no VaultL</translation>
+    </message>
+    <message>
+        <source>Your pictures: a fast thumbnail grid, a full view with zoom, turns, slideshow and EXIF info, plus rename, Trash and set as wallpaper</source>
+        <translation type="vanished">Suas imagens: uma grade de miniaturas rápida, uma visualização completa com zoom, giros, apresentação e informações EXIF, além de renomear, lixeira e definir como papel de parede</translation>
+    </message>
+    <message>
+        <source>Install and remove apps from Flathub, Ubuntu&apos;s archive and the Snap Store: search, screenshots, a preview of every change, and each Flatpak&apos;s permissions</source>
+        <translation type="vanished">Instale e remova apps do Flathub, do arquivo do Ubuntu e da Snap Store: pesquisa, capturas de tela, prévia de cada mudança e as permissões de cada Flatpak</translation>
+    </message>
+    <message>
+        <source>A quiet reader for PDFs, EPUB books, Markdown and text: covers, contents, search, bookmarks, night and paper pages, and it remembers where you stopped</source>
+        <translation type="vanished">Um leitor tranquilo para PDFs, livros EPUB, Markdown e texto: capas, sumário, busca, marcadores, páginas noturnas e de papel, e ele lembra onde você parou</translation>
     </message>
 </context>
 </TS>
