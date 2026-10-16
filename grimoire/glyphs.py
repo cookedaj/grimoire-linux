@@ -307,6 +307,10 @@ def _draw(name: str, p: QPainter):
         p.drawLine(QPointF(16.75, 7.25), QPointF(16.75, 5.3)); p.drawLine(QPointF(16.75, 7.25), QPointF(18.3, 7.25))
         p.drawRoundedRect(r(3.5, 13, 7.5, 7.5), 1.8, 1.8)
         p.drawRoundedRect(r(13, 13, 7.5, 7.5), 1.8, 1.8)
+    elif name == "proton":                                 # an atom: a nucleus with two crossing orbits
+        p.drawEllipse(QPointF(12, 12), 1.6, 1.6)
+        for angle in (35, -35):
+            p.save(); p.translate(12, 12); p.rotate(angle); p.drawEllipse(r(-9.5, -4, 19, 8)); p.restore()
 
 
 def _pixmap(name: str, color: str, size: int) -> QPixmap:

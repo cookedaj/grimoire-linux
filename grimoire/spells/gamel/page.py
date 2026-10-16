@@ -1,6 +1,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
-"""GameL page: every installed game from Steam, Heroic and Lutris in one grid or list, with search, sorting and a
-details panel (play, open its folder in VaultL); plus the MangoHud overlay and Performance mode, both manual switches.
+"""GameL page: every installed game (Steam and its non-Steam shortcuts, Heroic, Lutris, itch, Bottles, Roblox,
+Flatpak and native menu games) in one grid or list, with search, sorting and a details panel (play, Protontricks,
+open its folder in VaultL); plus the MangoHud overlay, Performance mode (both manual switches) and the Proton panel.
 
 The library is read on a worker thread each time the page is shown; covers are turned gray (and cached) on a worker
 too. Nothing here changes anything on its own when a game starts.
@@ -20,15 +21,17 @@ from grimoire.fsutil import human, tilde
 from grimoire.glyphs import glyph
 from grimoire.i18n import tr, tr_noop
 from grimoire.jobs import POOL, Job
-from grimoire.spells.gamel import launch, library, overlay
+from grimoire.spells.gamel import launch, library, overlay, proton
 from grimoire.spells.gamel.library import SOURCES, Game
+from grimoire.spells.gamel.protonview import ProtonPanel
 from grimoire.widgets import Switch
 
 COVER = QSize(240, 360)          # covers are made at this size, then shown smaller
 GRID_ICON = QSize(120, 180)
 # shown with tr("grimoire.spells.gamel.page", …); launcher names stay as they are
 FILTERS = [("all", tr_noop("grimoire.spells.gamel.page", "All games")),
-           ("steam", "Steam"), ("heroic", "Heroic"), ("lutris", "Lutris")]
+           ("steam", "Steam"), ("heroic", "Heroic"), ("lutris", "Lutris"), ("itch", "itch"), ("bottles", "Bottles"),
+           ("roblox", "Roblox"), ("flatpak", "Flatpak"), ("native", tr_noop("grimoire.spells.gamel.page", "Native"))]
 SORT_NAMES = {"name": tr_noop("grimoire.spells.gamel.page", "Name"),
               "last": tr_noop("grimoire.spells.gamel.page", "Last played"),
               "size": tr_noop("grimoire.spells.gamel.page", "Size"),
@@ -92,6 +95,7 @@ def make_cover(g: Game) -> QImage:
     p.setRenderHint(QPainter.RenderHint.Antialiasing)
     p.setRenderHint(QPainter.RenderHint.SmoothPixmapTransform)
     src = QImage(g.cover) if g.cover else QImage()
+    icon = QImage(g.icon) if g.icon and src.isNull() else QImage()
     if not src.isNull():
         gray = src.convertToFormat(QImage.Format.Format_Grayscale8)
         portrait = src.height() >= src.width()
@@ -106,8 +110,21 @@ def make_cover(g: Game) -> QImage:
         f.setWeight(QFont.Weight.DemiBold)
         p.setFont(f)
         p.setPen(QColor("#d0d0d0"))
-        p.drawText(QRectF(20, 20, COVER.width() - 40, COVER.height() - 80),
-                   Qt.AlignmentFlag.AlignCenter | Qt.TextFlag.TextWordWrap, g.name)
+        box = QRectF(20, 20, COVER.width() - 40, COVER.height() - 80)
+        if not icon.isNull():                              # an app icon in grays above the name
+            side = 112
+            small = icon.scaled(QSize(side, side), Qt.AspectRatioMode.KeepAspectRatio,
+                                Qt.TransformationMode.SmoothTransformation)
+            ic = small.convertToFormat(QImage.Format.Format_Grayscale8).convertToFormat(QImage.Format.Format_ARGB32)
+            ic.setAlphaChannel(small.convertToFormat(QImage.Format.Format_Alpha8))     # keep its transparency
+            p.drawImage((COVER.width() - ic.width()) // 2, 70 + (side - ic.height()) // 2, ic)
+            f.setPixelSize(22)
+            p.setFont(f)
+            box = QRectF(20, 200, COVER.width() - 40, COVER.height() - 260)
+            p.drawText(box, Qt.AlignmentFlag.AlignHCenter | Qt.AlignmentFlag.AlignTop | Qt.TextFlag.TextWordWrap,
+                       g.name)
+        else:
+            p.drawText(box, Qt.AlignmentFlag.AlignCenter | Qt.TextFlag.TextWordWrap, g.name)
         f.setPixelSize(14)
         f.setWeight(QFont.Weight.Medium)
         source = g.source_name.upper()
@@ -231,16 +248,20 @@ class LibraryPanel(QWidget):
         self.d = {}
         start = Qt.AlignmentFlag.AlignAbsolute | (Qt.AlignmentFlag.AlignRight if QApplication.isRightToLeft()
                                                   else Qt.AlignmentFlag.AlignLeft)
+        self.d_keys = {}
         for r, (key, name) in enumerate((("path", tr("grimoire.spells.gamel.page", "Folder")),
                                          ("size", tr("grimoire.spells.gamel.page", "Size")),
                                          ("playtime", tr("grimoire.spells.gamel.page", "Playtime")),
-                                         ("last", tr("grimoire.spells.gamel.page", "Last played")))):
-            info.addWidget(_label(name, "Muted"), r, 0, Qt.AlignmentFlag.AlignTop)
+                                         ("last", tr("grimoire.spells.gamel.page", "Last played")),
+                                         ("tool", tr("grimoire.spells.gamel.page", "Runs with")))):
+            k = _label(name, "Muted")
+            info.addWidget(k, r, 0, Qt.AlignmentFlag.AlignTop)
             v = _label("", "", wrap=True)
             v.setAlignment(start)              # a path or "3.0 GB" would else sit on the left in right-to-left
             v.setTextInteractionFlags(Qt.TextInteractionFlag.TextSelectableByMouse)
             info.addWidget(v, r, 1)
             self.d[key] = v
+            self.d_keys[key] = k
         info.setColumnStretch(1, 1)
         dl.addLayout(info)
         self.d_note = _label("", "Muted", wrap=True)
@@ -252,6 +273,10 @@ class LibraryPanel(QWidget):
         self.copy_btn.setToolTip(overlay.STEAM_OPTION)
         self.copy_btn.clicked.connect(self.page.copy_option)
         dl.addWidget(self.copy_btn)
+        self.tricks_btn = QPushButton("Protontricks")
+        self.tricks_btn.setToolTip(tr("grimoire.spells.gamel.page", "Winetricks for this game's Proton prefix"))
+        self.tricks_btn.clicked.connect(self.protontricks)
+        dl.addWidget(self.tricks_btn)
         self.folder_btn = QPushButton(glyph("vault", 16),
                                       "  " + tr("grimoire.spells.gamel.page", "Open folder in VaultL"))
         self.folder_btn.clicked.connect(self.open_folder)
@@ -311,16 +336,18 @@ class LibraryPanel(QWidget):
             it.setSizeHint(QSize(146, 236))
             self.grid.addItem(it)
             row = _Item([g.name, g.source_name, human(self.page.size_of(g)) if self.page.size_of(g) else "–",
-                         library.hours(g.playtime) if g.playtime else "–", _ago(g.last_played)])
+                         library.hours(g.playtime) if g.playtime else "–",
+                         _ago(g.last_played) if g.tracked else "–"])
             for c in (2, 3):
                 row.setTextAlignment(c, Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter)
             self.list.addTopLevelItem(row)
         self.grid.blockSignals(False)
         self.list.blockSignals(False)
         if not self.games:
-            self.empty.setText(tr("grimoire.spells.gamel.page", "No games found. GameL looks for Steam, Heroic and "
-                                                                "Lutris libraries in their usual places, including "
-                                                                "their Flatpak versions."))
+            self.empty.setText(tr("grimoire.spells.gamel.page", "No games found. GameL looks for Steam, Heroic, "
+                                                                "Lutris, itch and Bottles libraries in their usual "
+                                                                "places (their Flatpak versions too), Roblox through "
+                                                                "Sober and Vinegar, and games in the app menu."))
         else:
             self.empty.setText(tr("grimoire.spells.gamel.page", "No game matches “{query}”.").format(
                 query=self.search.text().strip()))
@@ -366,7 +393,13 @@ class LibraryPanel(QWidget):
         else:
             self.d["size"].setText(tr("grimoire.spells.gamel.page", "Not known"))
         self.d["playtime"].setText(library.hours(g.playtime))
-        self.d["last"].setText(_ago(g.last_played))
+        self.d["last"].setText(_ago(g.last_played) if g.tracked else tr("grimoire.spells.gamel.page", "Not known"))
+        tool = self.page.tool_of(g)
+        self.d["tool"].setText(tool)
+        self.d["tool"].setVisible(bool(tool))
+        self.d_keys["tool"].setVisible(bool(tool))
+        self.tricks_btn.setVisible(g.source == "steam" and not g.extra.get("shortcut")
+                                   and bool(launch.protontricks_argv(g.id)))
         self.d_note.setText(g.note)
         self.d_note.setVisible(bool(g.note))
         steam_hint = g.source == "steam" and overlay.load()["mangohud"] and overlay.installed()
@@ -400,6 +433,19 @@ class LibraryPanel(QWidget):
         else:
             text = tr("grimoire.spells.gamel.page", "Starting {name} through {launcher}.")
         self.page.say(text.format(name=g.name, launcher=g.source_name))
+
+    def protontricks(self):
+        g = self.current
+        if not g:
+            return
+        try:
+            launch.protontricks(g.id)
+        except (OSError, ValueError) as e:
+            self.page.say(tr("grimoire.spells.gamel.page", "Couldn't open Protontricks: {error}").format(error=e))
+            return
+        text = tr("grimoire.spells.gamel.page", "Opening Protontricks for {name}. If it says there's no prefix, "
+                                                "start the game once first.")
+        self.page.say(text.format(name=i18n.isolate(g.name)))
 
     def open_folder(self):
         if self.current and self.current.path:
@@ -640,6 +686,7 @@ class GameLPage(QWidget):
         self.setObjectName("Page")
         self.sig = _Signals()
         self.games: list[Game] = []
+        self.mapping: dict = {}                     # Steam's CompatToolMapping: tool -> app ids
         self._images: dict[str, QImage] = {}       # _ck(game) -> gray cover, kept across rescans
         self._pix: dict[str, QPixmap] = {}
         self._sizes: dict[str, int] = {}
@@ -667,11 +714,16 @@ class GameLPage(QWidget):
             b.setCheckable(True)
             b.clicked.connect(lambda _=False, f=fid: self.show_panel("library", f))
             nl.addWidget(b)
+            b.setVisible(fid == "all")                 # the others show once a scan finds their games
             self.nav[fid] = b
         nl.addSpacing(10)
         nl.addWidget(_label(tr("grimoire.spells.gamel.page", "WHILE YOU PLAY"), "NavSection"))
         for pid, name, icon in (("overlay", tr("grimoire.spells.gamel.page", "Overlay"), "system"),
-                                ("perf", tr("grimoire.spells.gamel.page", "Performance mode"), "optimize")):
+                                ("perf", tr("grimoire.spells.gamel.page", "Performance mode"), "optimize"),
+                                ("proton", "Proton", "proton")):
+            if pid == "proton":
+                nl.addSpacing(10)
+                nl.addWidget(_label(tr("grimoire.spells.gamel.page", "COMPATIBILITY"), "NavSection"))
             b = QPushButton(glyph(icon, 18), "  " + name)
             b.setObjectName("SubNavItem")
             b.setCheckable(True)
@@ -689,7 +741,8 @@ class GameLPage(QWidget):
         self.heading = _label("", "PageHeading")
         right.addWidget(self.heading)
         self.stack = QStackedWidget()
-        self.panels = {"library": LibraryPanel(self), "overlay": OverlayPanel(self), "perf": PerfPanel(self)}
+        self.panels = {"library": LibraryPanel(self), "overlay": OverlayPanel(self), "perf": PerfPanel(self),
+                       "proton": ProtonPanel(self)}
         for p in self.panels.values():
             self.stack.addWidget(p)
         right.addWidget(self.stack, 1)
@@ -716,7 +769,8 @@ class GameLPage(QWidget):
             lib.fill()
         else:
             self.heading.setText({"overlay": tr("grimoire.spells.gamel.page", "Overlay"),
-                                  "perf": tr("grimoire.spells.gamel.page", "Performance mode")}[pid])
+                                  "perf": tr("grimoire.spells.gamel.page", "Performance mode"),
+                                  "proton": "Proton"}[pid])
             self.panels[pid].load()
         self.stack.setCurrentWidget(self.panels[pid])
 
@@ -726,19 +780,21 @@ class GameLPage(QWidget):
             self._again = True
             return
         self._scanning = True
-        POOL.start(Job(library.scan, self.sig.scanned.emit))
+        POOL.start(Job(lambda: (*library.scan(), proton.mapping()), self.sig.scanned.emit))
 
     def _scanned(self, result):
         self._scanning = False
         if self._again:
             self._again = False
             self.scan()
-        games, problems = result
+        games, problems, self.mapping = result
         self.games = games
         counts = {src: sum(g.source == src for g in games) for src in SOURCES}
+        lib = self.panels["library"]
         for fid, name in FILTERS:
             n = len(games) if fid == "all" else counts[fid]
             self.nav[fid].setText("  {name}   {n}".format(name=tr("grimoire.spells.gamel.page", name), n=n))
+            self.nav[fid].setVisible(fid == "all" or n > 0 or lib.source == fid)   # only launchers with games
         self.foot.setText("; ".join(problems))
         self.panels["library"].set_games(games)
         todo = [g for g in games if self._ck(g) not in self._images]
@@ -754,7 +810,7 @@ class GameLPage(QWidget):
     @staticmethod
     def _ck(g: Game) -> str:
         """Covers are cached per game and image file, so a cover Steam downloads later replaces the placeholder."""
-        return f"{g.key}\n{g.cover}"
+        return f"{g.key}\n{g.cover}\n{g.icon}"
 
     def pixmap(self, g: Game) -> QPixmap:
         ck = self._ck(g)
@@ -771,6 +827,16 @@ class GameLPage(QWidget):
         from PySide6.QtGui import QIcon
         return QIcon(self.pixmap(g).scaled(GRID_ICON * 2, Qt.AspectRatioMode.KeepAspectRatio,
                                            Qt.TransformationMode.SmoothTransformation))
+
+    def tool_of(self, g: Game) -> str:
+        """The compatibility tool Steam was told to run this game with ("" when it wasn't, or isn't Steam's)."""
+        if g.source != "steam":
+            return ""
+        for name, ids in self.mapping.items():
+            if g.id in ids:
+                return name
+        default = next((name for name, ids in self.mapping.items() if "0" in ids), "")
+        return tr("grimoire.spells.gamel.page", "{tool} (Steam's default)").format(tool=default) if default else ""
 
     def size_of(self, g: Game) -> int:
         return g.size or self._sizes.get(g.key, 0)

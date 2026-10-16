@@ -113,11 +113,15 @@ search that also finds files, does sums and unit conversions and runs Grimoire's
 
 ![GameL](docs/screenshots/gamel.png)
 
-Every installed game from Steam (including Flatpak Steam and extra library folders), Heroic (Epic, GOG, Amazon and
-sideloaded) and Lutris in one grid of gray covers or a list: search, sort by name, last played, size or playtime,
-see where a game lives and open its folder in VaultL, and press Play to start it through its own launcher. A
-black & white MangoHud overlay (FPS, frame times, CPU/GPU load and temperature, RAM, VRAM; Shift_R+F12 shows or hides
-it) and Performance mode sit one click away. Both are manual switches: starting a game never changes anything else.
+Every game on the PC in one grid of gray covers or a list: Steam (including Flatpak Steam, extra library folders and
+your non-Steam shortcuts), Heroic (Epic, GOG, Amazon and sideloaded), Lutris, itch, Bottles, Roblox (Sober to play,
+Vinegar for Studio, each with its own tile) and every game in the app menu, native or Flatpak, each listed once.
+Search, sort by name, last played, size or playtime, see where a game lives and open its folder in VaultL, and press
+Play to start it through its own launcher. A black & white MangoHud overlay (FPS, frame times, CPU/GPU load and
+temperature, RAM, VRAM; Shift_R+F12 shows or hides it) and Performance mode sit one click away. Both are manual
+switches: starting a game never changes anything else. The Proton panel folds in ProtonUp-Qt: install GE-Proton
+releases from GitHub (checksum-verified, only when you click Install), see which games Steam runs on which build,
+move old builds to the Trash, and open Protontricks for any Steam game.
 Meta opens it. **Replace launcher** records your Kickoff first, so **Restore Kickoff** puts back exactly what was there.
 
 ### UpdateL: every update in one place

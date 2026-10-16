@@ -5,13 +5,28 @@
     <name>grimoire.spells.gamel.library</name>
     <message>
         <location filename="../../grimoire/spells/gamel/library.py"/>
+        <source>Native</source>
+        <translation>নেটিভ</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/library.py"/>
         <source>Sideloaded</source>
         <translation>সাইডলোড</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/gamel/library.py"/>
+        <source>Non-Steam</source>
+        <translation>নন-Steam</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/library.py"/>
         <source>Steam hasn&apos;t finished downloading or updating it.</source>
         <translation>Steam এখনও এটি ডাউনলোড বা আপডেট শেষ করেনি।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/library.py"/>
+        <source>Menu games</source>
+        <translation>মেনুর গেম</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/gamel/library.py"/>
@@ -79,6 +94,14 @@
     </message>
 </context>
 <context>
+    <name>grimoire.spells.gamel.others</name>
+    <message>
+        <location filename="../../grimoire/spells/gamel/others.py"/>
+        <source>reading Bottles needs python3-yaml (sudo apt install python3-yaml)</source>
+        <translation>Bottles পড়তে python3-yaml লাগে (sudo apt install python3-yaml)</translation>
+    </message>
+</context>
+<context>
     <name>grimoire.spells.gamel.overlay</name>
     <message>
         <location filename="../../grimoire/spells/gamel/overlay.py"/>
@@ -112,6 +135,11 @@
         <location filename="../../grimoire/spells/gamel/page.py"/>
         <source>All games</source>
         <translation>সব গেম</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/page.py"/>
+        <source>Native</source>
+        <translation>নেটিভ</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/gamel/page.py"/>
@@ -176,8 +204,18 @@
     </message>
     <message>
         <location filename="../../grimoire/spells/gamel/page.py"/>
+        <source>Runs with</source>
+        <translation>চলে যেটি দিয়ে</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/page.py"/>
         <source>Copy launch option</source>
         <translation>লঞ্চ অপশন কপি করুন</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/page.py"/>
+        <source>Winetricks for this game&apos;s Proton prefix</source>
+        <translation>এই গেমের Proton প্রিফিক্সের জন্য Winetricks</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/gamel/page.py"/>
@@ -191,8 +229,8 @@
     </message>
     <message>
         <location filename="../../grimoire/spells/gamel/page.py"/>
-        <source>No games found. GameL looks for Steam, Heroic and Lutris libraries in their usual places, including their Flatpak versions.</source>
-        <translation>কোনো গেম পাওয়া যায়নি। GameL Steam, Heroic ও Lutris-এর লাইব্রেরি তাদের সাধারণ জায়গায় খোঁজে, তাদের Flatpak সংস্করণসহ।</translation>
+        <source>No games found. GameL looks for Steam, Heroic, Lutris, itch and Bottles libraries in their usual places (their Flatpak versions too), Roblox through Sober and Vinegar, and games in the app menu.</source>
+        <translation>কোনো গেম পাওয়া যায়নি। GameL স্বাভাবিক জায়গাগুলোতে Steam, Heroic, Lutris, itch ও Bottles লাইব্রেরি খোঁজে (তাদের Flatpak সংস্করণও), Sober ও Vinegar দিয়ে Roblox, আর অ্যাপ মেনুর গেমগুলো।</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/gamel/page.py"/>
@@ -228,6 +266,16 @@
         <location filename="../../grimoire/spells/gamel/page.py"/>
         <source>Starting {name} through {launcher}.</source>
         <translation>{launcher} দিয়ে {name} চালু হচ্ছে।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/page.py"/>
+        <source>Couldn&apos;t open Protontricks: {error}</source>
+        <translation>Protontricks খোলা যায়নি: {error}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/page.py"/>
+        <source>Opening Protontricks for {name}. If it says there&apos;s no prefix, start the game once first.</source>
+        <translation>{name}-এর জন্য Protontricks খোলা হচ্ছে। যদি বলে কোনো প্রিফিক্স নেই, আগে গেমটি একবার চালান।</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/gamel/page.py"/>
@@ -456,8 +504,323 @@
     </message>
     <message>
         <location filename="../../grimoire/spells/gamel/page.py"/>
+        <source>COMPATIBILITY</source>
+        <translation>সামঞ্জস্য</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/page.py"/>
+        <source>{tool} (Steam&apos;s default)</source>
+        <translation>{tool} (Steam-এর ডিফল্ট)</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/page.py"/>
         <source>Copied “{option}”. Paste it into the game&apos;s Launch options in Steam.</source>
         <translation>“{option}” কপি হয়েছে। এটি Steam-এ গেমের Launch options-এ পেস্ট করুন।</translation>
+    </message>
+    <message>
+        <source>No games found. GameL looks for Steam, Heroic and Lutris libraries in their usual places, including their Flatpak versions.</source>
+        <translation type="vanished">কোনো গেম পাওয়া যায়নি। GameL Steam, Heroic ও Lutris-এর লাইব্রেরি তাদের সাধারণ জায়গায় খোঁজে, তাদের Flatpak সংস্করণসহ।</translation>
+    </message>
+</context>
+<context>
+    <name>grimoire.spells.gamel.proton</name>
+    <message>
+        <location filename="../../grimoire/spells/gamel/proton.py"/>
+        <source>GitHub&apos;s hourly limit is used up; try again after {time}.</source>
+        <translation>GitHub-এর ঘণ্টাপ্রতি সীমা শেষ; {time}-এর পরে আবার চেষ্টা করুন।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/proton.py"/>
+        <source>GitHub&apos;s hourly limit is used up; try again later.</source>
+        <translation>GitHub-এর ঘণ্টাপ্রতি সীমা শেষ; পরে আবার চেষ্টা করুন।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/proton.py"/>
+        <source>GitHub answered {code}.</source>
+        <translation>GitHub উত্তর দিয়েছে {code}।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/proton.py"/>
+        <source>Couldn&apos;t reach GitHub (offline?): {reason}</source>
+        <translation>GitHub-এ পৌঁছানো যায়নি (অফলাইন?): {reason}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/proton.py"/>
+        <source>GitHub sent an answer that isn&apos;t JSON.</source>
+        <translation>GitHub এমন উত্তর পাঠিয়েছে যা JSON নয়।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/proton.py"/>
+        <source>The checksum file is too large.</source>
+        <translation>চেকসাম ফাইলটি খুব বড়।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/proton.py"/>
+        <source>The release&apos;s checksum file doesn&apos;t list {name}.</source>
+        <translation>রিলিজের চেকসাম ফাইলে {name} নেই।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/proton.py"/>
+        <source>The download is larger than the safety limit; not installing it.</source>
+        <translation>ডাউনলোডটি নিরাপত্তা সীমার চেয়ে বড়; ইনস্টল করা হবে না।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/proton.py"/>
+        <source>The download failed: {code}.</source>
+        <translation>ডাউনলোড ব্যর্থ: {code}।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/proton.py"/>
+        <source>The download failed (offline?): {reason}</source>
+        <translation>ডাউনলোড ব্যর্থ (অফলাইন?): {reason}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/proton.py"/>
+        <source>The archive has too many files; not installing it.</source>
+        <translation>আর্কাইভে অনেক বেশি ফাইল; ইনস্টল করা হবে না।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/proton.py"/>
+        <source>The archive contains an unexpected path ({name}); not installing it.</source>
+        <translation>আর্কাইভে অপ্রত্যাশিত পাথ আছে ({name}); ইনস্টল করা হবে না।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/proton.py"/>
+        <source>The archive contains a special file ({name}); not installing it.</source>
+        <translation>আর্কাইভে একটি বিশেষ ফাইল আছে ({name}); ইনস্টল করা হবে না।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/proton.py"/>
+        <source>The archive contains a link out of its folder ({name}); not installing it.</source>
+        <translation>আর্কাইভে নিজের ফোল্ডারের বাইরে যাওয়া লিংক আছে ({name}); ইনস্টল করা হবে না।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/proton.py"/>
+        <source>The archive expands too large; not installing it.</source>
+        <translation>আর্কাইভ খুললে খুব বড় হয়ে যায়; ইনস্টল করা হবে না।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/proton.py"/>
+        <source>{name} is already installed.</source>
+        <translation>{name} আগেই ইনস্টল করা আছে।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/proton.py"/>
+        <source>The archive is damaged or unsafe: {error}</source>
+        <translation>আর্কাইভটি নষ্ট বা অনিরাপদ: {error}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/proton.py"/>
+        <source>The archive isn&apos;t laid out like a Proton build; not installing it.</source>
+        <translation>আর্কাইভটি Proton বিল্ডের মতো সাজানো নয়; ইনস্টল করা হবে না।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/proton.py"/>
+        <source>That isn&apos;t a GE-Proton release.</source>
+        <translation>এটি GE-Proton রিলিজ নয়।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/proton.py"/>
+        <source>Not enough free space: it needs about {size}.</source>
+        <translation>যথেষ্ট খালি জায়গা নেই: প্রায় {size} লাগবে।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/proton.py"/>
+        <source>The download doesn&apos;t match the release&apos;s checksum; not installing it.</source>
+        <translation>ডাউনলোডটি রিলিজের চেকসামের সঙ্গে মেলে না; ইনস্টল করা হবে না।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/proton.py"/>
+        <source>GameL only removes builds in compatibilitytools.d.</source>
+        <translation>GameL শুধু compatibilitytools.d-এর বিল্ড সরায়।</translation>
+    </message>
+</context>
+<context>
+    <name>grimoire.spells.gamel.protonview</name>
+    <message>
+        <location filename="../../grimoire/spells/gamel/protonview.py"/>
+        <source>GE-Proton is a community build of Proton with extra fixes and video codecs. Install a build here, restart Steam, then pick it for a game in Steam: right-click the game, Properties, Compatibility. GameL never changes a game&apos;s settings.</source>
+        <translation>GE-Proton হলো কমিউনিটির তৈরি Proton, বাড়তি সংশোধন আর ভিডিও কোডেকসহ। এখানে একটি বিল্ড ইনস্টল করুন, Steam আবার চালু করুন, তারপর Steam-এ গেমের জন্য সেটি বেছে নিন: গেমে রাইট-ক্লিক, Properties, Compatibility। GameL কখনো কোনো গেমের সেটিং বদলায় না।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/protonview.py"/>
+        <source>Install into</source>
+        <translation>যেখানে ইনস্টল হবে</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/protonview.py"/>
+        <source>Which Steam gets new builds</source>
+        <translation>কোন Steam নতুন বিল্ড পাবে</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/protonview.py"/>
+        <source>Steam isn&apos;t installed</source>
+        <translation>Steam ইনস্টল করা নেই</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/protonview.py"/>
+        <source>GE-Proton builds go into Steam&apos;s compatibilitytools.d folder; GameL found no Steam here.</source>
+        <translation>GE-Proton বিল্ড Steam-এর compatibilitytools.d ফোল্ডারে যায়; GameL এখানে কোনো Steam পায়নি।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/protonview.py"/>
+        <source>Installed</source>
+        <translation>ইনস্টল করা</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/protonview.py"/>
+        <source>GE-Proton releases</source>
+        <translation>GE-Proton রিলিজ</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/protonview.py"/>
+        <source>Check GitHub again</source>
+        <translation>আবার GitHub দেখুন</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/protonview.py"/>
+        <source>Open Protontricks</source>
+        <translation>Protontricks খুলুন</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/protonview.py"/>
+        <source>Runs Winetricks in a Steam game&apos;s Proton prefix, to add the DLLs, fonts or runtimes a game asks for. Opens its game picker; a game&apos;s own button is in the library.</source>
+        <translation>Steam গেমের Proton প্রিফিক্সে Winetricks চালায়, যাতে গেম যে DLL, ফন্ট বা রানটাইম চায় তা যোগ করা যায়। এটি গেম বাছাইয়ের তালিকা খোলে; প্রতিটি গেমের নিজস্ব বোতাম লাইব্রেরিতে আছে।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/protonview.py"/>
+        <source>Protontricks isn&apos;t installed</source>
+        <translation>Protontricks ইনস্টল করা নেই</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/protonview.py"/>
+        <source>Install it from Flathub, then come back here:</source>
+        <translation>Flathub থেকে ইনস্টল করে এখানে ফিরে আসুন:</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/protonview.py"/>
+        <source>Steam (Flatpak)</source>
+        <translation>Steam (Flatpak)</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/protonview.py"/>
+        <source>Looking at GitHub…</source>
+        <translation>GitHub দেখা হচ্ছে…</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/protonview.py"/>
+        <source>Installed and updated by Steam</source>
+        <translation>Steam ইনস্টল ও আপডেট করে</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/protonview.py"/>
+        <source>Steam&apos;s default for every game</source>
+        <translation>সব গেমের জন্য Steam-এর ডিফল্ট</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/protonview.py"/>
+        <source>Used by: {games}</source>
+        <translation>ব্যবহার করে: {games}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/protonview.py"/>
+        <source>No game is set to it</source>
+        <translation>কোনো গেম এটি ব্যবহার করে না</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/protonview.py"/>
+        <source>Remove</source>
+        <translation>সরান</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/protonview.py"/>
+        <source>No Proton builds yet.</source>
+        <translation>এখনো কোনো Proton বিল্ড নেই।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/protonview.py"/>
+        <source>GitHub listed no releases.</source>
+        <translation>GitHub কোনো রিলিজ দেখায়নি।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/protonview.py"/>
+        <source>Released {date} · {size}</source>
+        <translation>{date}-এ প্রকাশিত · {size}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/protonview.py"/>
+        <source>Latest</source>
+        <translation>সর্বশেষ</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/protonview.py"/>
+        <source>Installing…</source>
+        <translation>ইনস্টল হচ্ছে…</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/protonview.py"/>
+        <source>Install</source>
+        <translation>ইনস্টল করুন</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/protonview.py"/>
+        <source>Cancel</source>
+        <translation>বাতিল</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/protonview.py"/>
+        <source>Downloading {name}…</source>
+        <translation>{name} ডাউনলোড হচ্ছে…</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/protonview.py"/>
+        <source>{done} of {total}</source>
+        <translation>{total}-এর মধ্যে {done}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/protonview.py"/>
+        <source>Stopped installing {name}.</source>
+        <translation>{name} ইনস্টল থামানো হয়েছে।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/protonview.py"/>
+        <source>Couldn&apos;t install {name}: {error}</source>
+        <translation>{name} ইনস্টল করা যায়নি: {error}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/protonview.py"/>
+        <source>{name} is installed. Restart Steam, then pick it in a game&apos;s Properties, Compatibility.</source>
+        <translation>{name} ইনস্টল হয়েছে। Steam আবার চালু করুন, তারপর গেমের Properties, Compatibility-তে এটি বেছে নিন।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/protonview.py"/>
+        <source>Move {name} to the Trash?</source>
+        <translation>{name} ট্র্যাশে সরাবেন?</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/protonview.py"/>
+        <source>Steam is set to run some games with it; they need another tool picked afterwards.</source>
+        <translation>Steam কিছু গেম এটি দিয়ে চালানোর জন্য সেট করা; পরে সেগুলোর জন্য অন্য টুল বেছে নিতে হবে।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/protonview.py"/>
+        <source>Couldn&apos;t remove {name}: {error}</source>
+        <translation>{name} সরানো যায়নি: {error}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/protonview.py"/>
+        <source>{name} is in the Trash.</source>
+        <translation>{name} ট্র্যাশে আছে।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/protonview.py"/>
+        <source>Couldn&apos;t open Protontricks: {error}</source>
+        <translation>Protontricks খোলা যায়নি: {error}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/gamel/protonview.py"/>
+        <source>Opening Protontricks…</source>
+        <translation>Protontricks খোলা হচ্ছে…</translation>
     </message>
 </context>
 </TS>
