@@ -311,6 +311,19 @@ def _draw(name: str, p: QPainter):
         p.drawEllipse(QPointF(12, 12), 1.6, 1.6)
         for angle in (35, -35):
             p.save(); p.translate(12, 12); p.rotate(angle); p.drawEllipse(r(-9.5, -4, 19, 8)); p.restore()
+    elif name == "glyphl":                                 # a character tile with a smiling face: GlyphL
+        p.drawRoundedRect(r(3.5, 3.5, 17, 17), 3.5, 3.5)
+        p.drawPoint(QPointF(9.2, 10)); p.drawPoint(QPointF(14.8, 10))
+        smile = QPainterPath(QPointF(8, 13.6)); smile.cubicTo(9.5, 17.4, 14.5, 17.4, 16, 13.6); p.drawPath(smile)
+    elif name == "star":                                   # five-pointed outline star: favorites
+        import math
+        path = QPainterPath()
+        for i in range(10):
+            rad = 8.6 if i % 2 == 0 else 3.7
+            ang = math.radians(-90 + i * 36)
+            pt = QPointF(12 + rad * math.cos(ang), 12.8 + rad * math.sin(ang))
+            path.moveTo(pt) if i == 0 else path.lineTo(pt)
+        path.closeSubpath(); p.drawPath(path)
 
 
 def _pixmap(name: str, color: str, size: int) -> QPixmap:

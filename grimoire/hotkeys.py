@@ -67,11 +67,15 @@ COMMANDS = [   # id, name (English for KDE; Hotkey.label translates it), bin nam
     ("shot-full", tr_noop("grimoire.hotkeys", "Screenshot the whole screen"), ("grimoire-shotl", "full")),
     ("record", tr_noop("grimoire.hotkeys", "Start/stop screen recording"), ("grimoire-shotl", "record", "toggle")),
 ]
+# an optional 4th field is the suggested key (Settings → Hotkeys offers it as the default; nothing binds it alone)
+COMMANDS.append(("glyphs", tr_noop("grimoire.hotkeys", "Open GlyphL (emoji and symbols)"),
+                 ("grimoire-glyphl", "toggle"), META | ALT | 0x2E))    # Meta+Alt+.: Meta+. is Plasma's emoji selector
 
 
 def _commands() -> list[Hotkey]:
-    return [Hotkey(f"grimoire-hotkey-{cid}.desktop", LAUNCH, f"Grimoire: {name}", name, 0, "command", cmd)
-            for cid, name, cmd in COMMANDS if (standalone.BIN / cmd[0]).is_file()]
+    return [Hotkey(f"grimoire-hotkey-{c[0]}.desktop", LAUNCH, f"Grimoire: {c[1]}", c[1], c[3] if len(c) > 3 else 0,
+                   "command", c[2])
+            for c in COMMANDS if (standalone.BIN / c[2][0]).is_file()]
 
 
 def catalog() -> list[Hotkey]:

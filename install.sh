@@ -140,6 +140,8 @@ cat > "$DATA/dbus-1/services/org.freedesktop.FileManager1.service" <<EOF
 Name=org.freedesktop.FileManager1
 Exec=$BIN/grimoire-vaultl --file-manager-service
 EOF
+# GlyphL's popup stays resident between hotkey presses: stop it so the next press runs the new code
+pkill -f '^(/usr/bin/)?python3 -m grimoire\.spells\.glyphl( |$)' 2>/dev/null || true
 
 # 5. the root helpers, system-wide and root-owned (grimoire/roothelper.py; one pkexec prompt when they changed).
 #    Never fails the install: without them only the features that need root are unavailable.

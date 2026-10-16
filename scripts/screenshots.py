@@ -374,6 +374,17 @@ def _updatel(page, wait):
 PREPARE["updatel"] = _updatel
 PAGES.insert(PAGES.index("settings"), "updatel")
 PREPARE["audiol"] = _audiol
+
+
+def _glyphl(page, wait):
+    picker = page.picker
+    picker._select_category("emoji:1")
+    wait(400)
+    picker.grid.setCurrentIndex(picker.model.index(14))
+
+
+PREPARE["glyphl"] = _glyphl
+PAGES.append("glyphl")
 WAIT = {"widgetl": 5000, "mural": 6000, "systeml": 30000, "netl": 30000, "optimizel": 5000, "terminall": 3500, "vaultl": 3000}
 
 

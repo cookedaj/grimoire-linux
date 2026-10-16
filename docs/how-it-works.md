@@ -79,6 +79,15 @@ what goes over the network, see [security.md](security.md).
   city search runs only when you press Search) and Plasma's MPRIS model (Now Playing). The page installs them with
   `kpackagetool6` and adds one to the desktop with a desktop script; `uninstall.sh` takes them off every desktop and
   panel before removing them.
+- **GlyphL** reads emoji names and keywords from Plasma's own emoji dictionaries
+  (`/usr/share/plasma/emoji/<lang>.dict`, Unicode CLDR annotations) in your language plus English; without them it
+  uses a bundled English list (`emoji.tsv.gz`, CLDR data under the Unicode license, generated with
+  `scripts/glyphl_data.py` like the block list). Character names come from Python's `unicodedata` (English only:
+  Unicode publishes no translations). `grimoire-glyphl` starts one popup process per session and leaves it running
+  hidden, so the next press is instant and what you copied stays in the clipboard (on Wayland copied text lives as
+  long as the app that copied it); later presses only send "toggle" over `$XDG_RUNTIME_DIR/grimoire-glyphl.sock`.
+  It quits after 30 minutes hidden. Recent, favorites and the skin tone are in `~/.config/grimoire/glyphl.json`.
+  It never types into other apps: KDE's Wayland session doesn't allow that, so it copies and closes.
 
 ## Installs
 
