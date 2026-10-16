@@ -2,6 +2,232 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="zh_CN" sourcelanguage="en">
 <context>
+    <name>grimoire.spells.launchl.appedit</name>
+    <message>
+        <location filename="../../grimoire/spells/launchl/appedit.py"/>
+        <source>A double quote isn&apos;t closed.</source>
+        <translation>双引号没有闭合。</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/appedit.py"/>
+        <source>A single quote isn&apos;t closed.</source>
+        <translation>单引号没有闭合。</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/appedit.py"/>
+        <source>The command can&apos;t be empty.</source>
+        <translation>命令不能为空。</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/appedit.py"/>
+        <source>The command can&apos;t contain line breaks or other control characters.</source>
+        <translation>命令不能包含换行符或其他控制字符。</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/appedit.py"/>
+        <source>%{code} isn&apos;t a field code menus know; write %% for a percent sign.</source>
+        <translation>%{code} 不是菜单认识的字段代码；百分号请写成 %%。</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/appedit.py"/>
+        <source>{program} isn&apos;t installed or isn&apos;t in your PATH, so the app may not start.</source>
+        <translation>{program} 未安装或不在 PATH 中，应用可能无法启动。</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/appedit.py"/>
+        <source>That desktop file is too big to be a menu entry.</source>
+        <translation>这个 desktop 文件太大，不像是菜单项。</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/appedit.py"/>
+        <source>“{id}” isn&apos;t an app id.</source>
+        <translation>“{id}”不是应用 ID。</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/appedit.py"/>
+        <source>No app called {id} is installed.</source>
+        <translation>没有安装名为 {id} 的应用。</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/appedit.py"/>
+        <source>{id} isn&apos;t a menu entry.</source>
+        <translation>{id} 不是菜单项。</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/appedit.py"/>
+        <source>Names and icons can&apos;t contain line breaks.</source>
+        <translation>名称和图标不能包含换行符。</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/appedit.py"/>
+        <source>The name can&apos;t be empty.</source>
+        <translation>名称不能为空。</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/appedit.py"/>
+        <source>The app&apos;s desktop file is gone.</source>
+        <translation>应用的 desktop 文件不见了。</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/appedit.py"/>
+        <source>{id} has no changes to undo: it&apos;s your own app, not a copy of a system one.</source>
+        <translation>{id} 没有可撤销的更改：这是你自己的应用，不是系统应用的副本。</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/appedit.py"/>
+        <source>{id} has no changes to undo.</source>
+        <translation>{id} 没有可撤销的更改。</translation>
+    </message>
+</context>
+<context>
+    <name>grimoire.spells.launchl.editor</name>
+    <message>
+        <location filename="../../grimoire/spells/launchl/editor.py"/>
+        <source>[link]</source>
+        <translation>[链接]</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/editor.py"/>
+        <source>[links]</source>
+        <translation>[多个链接]</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/editor.py"/>
+        <source>[file]</source>
+        <translation>[文件]</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/editor.py"/>
+        <source>[files]</source>
+        <translation>[多个文件]</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/editor.py"/>
+        <source>Edit app</source>
+        <translation>编辑应用</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/editor.py"/>
+        <source>Loading…</source>
+        <translation>正在加载…</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/editor.py"/>
+        <source>An icon name from your theme, or an image file</source>
+        <translation>主题中的图标名称，或一个图片文件</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/editor.py"/>
+        <source>Choose…</source>
+        <translation>选择…</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/editor.py"/>
+        <source>Name</source>
+        <translation>名称</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/editor.py"/>
+        <source>Icon</source>
+        <translation>图标</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/editor.py"/>
+        <source>Command</source>
+        <translation>命令</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/editor.py"/>
+        <source>WILL RUN</source>
+        <translation>将要运行</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/editor.py"/>
+        <source>Hide from the menu</source>
+        <translation>从菜单中隐藏</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/editor.py"/>
+        <source>It stays installed and still opens files; only the menus leave it out.</source>
+        <translation>应用仍然已安装，也仍能打开文件；只是菜单里不再显示。</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/editor.py"/>
+        <source>Reset to default</source>
+        <translation>恢复默认</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/editor.py"/>
+        <source>Cancel</source>
+        <translation>取消</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/editor.py"/>
+        <source>Save</source>
+        <translation>保存</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/editor.py"/>
+        <source>Edit {app}</source>
+        <translation>编辑 {app}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/editor.py"/>
+        <source>This app&apos;s menu entry is your own file: {path}</source>
+        <translation>这个应用的菜单项是你自己的文件：{path}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/editor.py"/>
+        <source>Your changes are in {path}. The system file ({system}) is never changed; Reset to default moves your copy to the Trash.</source>
+        <translation>你的更改保存在 {path}。系统文件（{system}）永远不会被修改；“恢复默认”会把你的副本移到回收站。</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/editor.py"/>
+        <source>Saving makes your own copy in {path}. The system file ({system}) isn&apos;t changed.</source>
+        <translation>保存时会在 {path} 创建你自己的副本。系统文件（{system}）不会被修改。</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/editor.py"/>
+        <source>This app normally starts through D-Bus. Saving a new command switches that off, so your command is what runs.</source>
+        <translation>这个应用通常通过 D-Bus 启动。保存新命令会关闭这一方式，这样运行的就是你的命令。</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/editor.py"/>
+        <source>Your icon theme has no icon called {icon}.</source>
+        <translation>你的图标主题中没有名为 {icon} 的图标。</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/editor.py"/>
+        <source>Choose an icon</source>
+        <translation>选择图标</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/editor.py"/>
+        <source>Images (*.png *.svg *.svgz *.xpm)</source>
+        <translation>图片 (*.png *.svg *.svgz *.xpm)</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/editor.py"/>
+        <source>Saving…</source>
+        <translation>正在保存…</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/editor.py"/>
+        <source>Resetting…</source>
+        <translation>正在恢复…</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/editor.py"/>
+        <source>Put {app} back the way it was installed? Your copy of its menu entry goes to the Trash.</source>
+        <translation>把 {app} 恢复成安装时的样子？你的菜单项副本将移到回收站。</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/editor.py"/>
+        <source>Can&apos;t edit this app</source>
+        <translation>无法编辑这个应用</translation>
+    </message>
+</context>
+<context>
     <name>grimoire.spells.launchl.page</name>
     <message>
         <location filename="../../grimoire/spells/launchl/page.py"/>
@@ -37,6 +263,16 @@
         <location filename="../../grimoire/spells/launchl/page.py"/>
         <source>Restore Kickoff</source>
         <translation>恢复 Kickoff</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/page.py"/>
+        <source>APPS YOU CHANGED</source>
+        <translation>你修改过的应用</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/page.py"/>
+        <source>Right-click an app in LaunchL to edit its name, icon or command, or to hide it. Changes are your own copies; system files are never touched.</source>
+        <translation>在 LaunchL 中右键单击应用，即可修改它的名称、图标或命令，或者把它隐藏。修改都保存在你自己的副本里；系统文件从不改动。</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/launchl/page.py"/>
@@ -110,6 +346,41 @@
     </message>
     <message>
         <location filename="../../grimoire/spells/launchl/page.py"/>
+        <source>No changed apps.</source>
+        <translation>没有修改过的应用。</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/page.py"/>
+        <source>hidden</source>
+        <translation>已隐藏</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/page.py"/>
+        <source>edited</source>
+        <translation>已编辑</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/page.py"/>
+        <source>Edit…</source>
+        <translation>编辑…</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/page.py"/>
+        <source>Show in menu</source>
+        <translation>在菜单中显示</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/page.py"/>
+        <source>Reset</source>
+        <translation>恢复</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/page.py"/>
+        <source>Back to the default; your copy goes to the Trash</source>
+        <translation>恢复默认；你的副本会移到回收站</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/page.py"/>
         <source>Working…</source>
         <translation>正在处理…</translation>
     </message>
@@ -142,6 +413,16 @@ Restore Kickoff puts it back exactly as it was.</source>
     </message>
     <message>
         <location filename="../../grimoire/spells/launchl/page.py"/>
+        <source>Couldn&apos;t show the app again: {error}</source>
+        <translation>无法重新显示该应用：{error}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/page.py"/>
+        <source>Couldn&apos;t reset the app: {error}</source>
+        <translation>无法恢复该应用：{error}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/page.py"/>
         <source>Couldn&apos;t replace the launcher: {error}</source>
         <translation>无法替换启动器：{error}</translation>
     </message>
@@ -164,6 +445,16 @@ Restore Kickoff puts it back exactly as it was.</source>
         <location filename="../../grimoire/spells/launchl/page.py"/>
         <source>Press Meta to open it.</source>
         <translation>按 Meta 键打开它。</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/page.py"/>
+        <source>The app is back in the menu.</source>
+        <translation>该应用已回到菜单中。</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/page.py"/>
+        <source>The app is back to its default. Your copy is in the Trash.</source>
+        <translation>该应用已恢复默认。你的副本在回收站中。</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/launchl/page.py"/>

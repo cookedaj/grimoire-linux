@@ -6,6 +6,7 @@
     SPDX-License-Identifier: GPL-3.0-or-later
 */
 import QtQuick
+import "calc.js" as Calc
 
 Item {
     id: entry
@@ -14,13 +15,19 @@ Item {
 
     readonly property ListView view: ListView.view      // an EntryList (not typed: EntryList uses Entry, a cycle)
     readonly property bool separator: model.isSeparator === true
+    readonly property string group: model.group === undefined || model.group === null ? "" : String(model.group)
+    // the same number LaunchL's calculator shows on top (KRunner's calculator row): hidden, the cursor skips it
+    readonly property bool skip: view !== null && !isNaN(view.hideNumber) && !separator
+        && Calc.sameNumber(model.display, view.hideNumber, Qt.locale().decimalPoint)
+    onSkipChanged: view.rescan()
     readonly property string description: {
         const d = model.description === undefined || model.description === null ? "" : String(model.description)
         return view && view.twoLine && d !== model.display ? d : ""
     }
 
     width: view ? view.width : 0
-    height: separator ? 11 : content.implicitHeight
+    height: skip ? 0 : separator ? 11 : content.implicitHeight
+    visible: !skip
 
     Rectangle {
         visible: entry.separator

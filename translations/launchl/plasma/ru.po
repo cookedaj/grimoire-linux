@@ -81,6 +81,10 @@ msgid "This launcher"
 msgstr "Это меню запуска"
 
 #: launchl
+msgid "Calculator · Enter copies the result"
+msgstr "Калькулятор · Enter копирует результат"
+
+#: launchl
 msgid "Run %1"
 msgstr "Выполнить %1"
 
@@ -107,6 +111,14 @@ msgstr "Убрать из избранного"
 #: launchl
 msgid "Add to Favorites"
 msgstr "Добавить в избранное"
+
+#: launchl
+msgid "Edit…"
+msgstr "Изменить…"
+
+#: launchl
+msgid "Hide from Menu"
+msgstr "Скрыть из меню"
 
 #: launchl
 msgid "Search"

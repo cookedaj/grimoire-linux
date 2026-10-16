@@ -81,6 +81,10 @@ msgid "This launcher"
 msgstr "Este lançador"
 
 #: launchl
+msgid "Calculator · Enter copies the result"
+msgstr "Calculadora · Enter copia o resultado"
+
+#: launchl
 msgid "Run %1"
 msgstr "Executar %1"
 
@@ -107,6 +111,14 @@ msgstr "Remover dos favoritos"
 #: launchl
 msgid "Add to Favorites"
 msgstr "Adicionar aos favoritos"
+
+#: launchl
+msgid "Edit…"
+msgstr "Editar…"
+
+#: launchl
+msgid "Hide from Menu"
+msgstr "Ocultar do menu"
 
 #: launchl
 msgid "Search"

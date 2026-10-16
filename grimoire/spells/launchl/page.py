@@ -3,9 +3,9 @@
 from PySide6.QtCore import QObject, Qt, Signal
 from PySide6.QtWidgets import QHBoxLayout, QLabel, QMessageBox, QPushButton, QVBoxLayout, QWidget
 
-from grimoire.i18n import tr, tr_noop
+from grimoire.i18n import isolate, ltr, tr, tr_noop
 from grimoire.jobs import POOL, Job
-from grimoire.spells.launchl import panel
+from grimoire.spells.launchl import appedit, panel
 
 NAMES = {"org.kde.plasma.kickoff": "Kickoff",
          "org.kde.plasma.kicker": tr_noop("grimoire.spells.launchl.page", "Application Menu"),
@@ -78,6 +78,19 @@ class LaunchLPage(QWidget):
         lay.addLayout(row)
         self.note = _label("", "Muted")
         lay.addWidget(self.note)
+        lay.addSpacing(24)
+
+        # apps changed with LaunchL's right-click "Edit…" / "Hide from Menu" (hidden ones are only reachable here)
+        lay.addWidget(_label(tr("grimoire.spells.launchl.page", "APPS YOU CHANGED"), "Section"))
+        self.edits_note = _label(tr("grimoire.spells.launchl.page",
+                                    "Right-click an app in LaunchL to edit its name, icon or command, or to hide "
+                                    "it. Changes are your own copies; system files are never touched."), "Muted")
+        lay.addWidget(self.edits_note)
+        self.edits = QVBoxLayout()
+        self.edits.setSpacing(4)
+        lay.addLayout(self.edits)
+        self.edits_status = _label("", "Muted")
+        lay.addWidget(self.edits_status)
         lay.addStretch(1)
         self.refresh()
 
@@ -90,7 +103,8 @@ class LaunchLPage(QWidget):
 
     @staticmethod
     def _read() -> dict:
-        info = {"installed": panel.is_installed(), "update": panel.needs_update(), "record": panel.load_state()}
+        info = {"installed": panel.is_installed(), "update": panel.needs_update(), "record": panel.load_state(),
+                "edited": appedit.edited()}
         try:
             info["panels"] = panel.scan()
         except (RuntimeError, ValueError) as err:
@@ -143,6 +157,55 @@ class LaunchLPage(QWidget):
             launcher=_name(record["type"], "Kickoff")) if record else tr("grimoire.spells.launchl.page",
                                                                           "Restore Kickoff"))
         self.install_btn.setEnabled(True)
+        self._show_edits(info.get("edited", []))
+
+    def _show_edits(self, apps: list):
+        while self.edits.count():
+            item = self.edits.takeAt(0)
+            if item.widget():
+                item.widget().deleteLater()
+        if not apps:
+            self.edits.addWidget(_label(tr("grimoire.spells.launchl.page", "No changed apps."), "Muted"))
+            return
+        for app in apps:
+            line = QWidget()
+            row = QHBoxLayout(line)
+            row.setContentsMargins(0, 2, 0, 2)
+            row.setSpacing(8)
+            name = QLabel(isolate(app.name or app.id))
+            name.setTextFormat(Qt.TextFormat.PlainText)
+            row.addWidget(name)
+            state = QLabel(tr("grimoire.spells.launchl.page", "hidden") if app.hidden
+                           else tr("grimoire.spells.launchl.page", "edited"))
+            state.setObjectName("Muted")
+            row.addWidget(state)
+            row.addStretch(1)
+            if app.hidden:
+                show = QPushButton(tr("grimoire.spells.launchl.page", "Show in menu"))
+                show.clicked.connect(lambda _=False, a=app.id: self._start("unhide", lambda: self._apply(
+                    appedit.hide, a, False)))
+                row.addWidget(show)
+            edit = QPushButton(tr("grimoire.spells.launchl.page", "Edit…"))
+            edit.clicked.connect(lambda _=False, a=app.id: self._edit(a))
+            row.addWidget(edit)                       # Edit and Reset line up from row to row
+            reset = QPushButton(tr("grimoire.spells.launchl.page", "Reset"))
+            reset.setToolTip(tr("grimoire.spells.launchl.page", "Back to the default; your copy goes to the Trash"))
+            reset.clicked.connect(lambda _=False, a=app.id: self._start("reset", lambda: self._apply(
+                appedit.reset, a)))
+            row.addWidget(reset)
+            line.setToolTip(ltr(app.id))
+            self.edits.addWidget(line)
+
+    @staticmethod
+    def _apply(fn, *args):
+        fn(*args)
+        appedit.rebuild()
+
+    def _edit(self, app_id: str):
+        from grimoire.spells.launchl.editor import EditDialog
+        dlg = EditDialog(app_id, self)
+        dlg.finished.connect(lambda _r: self.refresh())
+        dlg.open()
 
     def _busy(self, on: bool):
         for b in (self.install_btn, self.replace_btn, self.restore_btn):
@@ -152,7 +215,7 @@ class LaunchLPage(QWidget):
 
     def _start(self, what: str, fn):
         self._busy(True)
-        self.note.setText(tr("grimoire.spells.launchl.page", "Working…"))
+        self._note_for(what).setText(tr("grimoire.spells.launchl.page", "Working…"))
 
         def guarded():
             try:
@@ -160,6 +223,9 @@ class LaunchLPage(QWidget):
             except Exception as err:      # anything uncaught would leave the buttons off and "Working…" for good
                 return str(err) or type(err).__name__, None
         POOL.start(Job(guarded, lambda r: self.sig.done.emit((what, r[0], r[1]))))
+
+    def _note_for(self, what: str) -> QLabel:
+        return self.edits_status if what in ("unhide", "reset") else self.note
 
     def _install(self):
         self._start("install", panel.install)
@@ -191,15 +257,22 @@ class LaunchLPage(QWidget):
             return
         if error:
             failed = {"install": tr("grimoire.spells.launchl.page", "Couldn't install the widget: {error}"),
+                      "unhide": tr("grimoire.spells.launchl.page", "Couldn't show the app again: {error}"),
+                      "reset": tr("grimoire.spells.launchl.page", "Couldn't reset the app: {error}"),
                       "replace": tr("grimoire.spells.launchl.page", "Couldn't replace the launcher: {error}"),
                       "restore": tr("grimoire.spells.launchl.page", "Couldn't restore the launcher: {error}")}
-            self.note.setText(failed.get(what, "{error}").format(error=error))
+            self._note_for(what).setText(failed.get(what, "{error}").format(error=error))
         elif what == "install":
             self.note.setText(tr("grimoire.spells.launchl.page",
                                  "Widget installed. Plasma picks up a new version when it next restarts."))
         elif what == "replace":
             self.note.setText(tr("grimoire.spells.launchl.page", "LaunchL is in your panel. {next}").format(
                 next=result.get("check") or tr("grimoire.spells.launchl.page", "Press Meta to open it.")))
+        elif what == "unhide":
+            self.edits_status.setText(tr("grimoire.spells.launchl.page", "The app is back in the menu."))
+        elif what == "reset":
+            self.edits_status.setText(tr("grimoire.spells.launchl.page",
+                                         "The app is back to its default. Your copy is in the Trash."))
         elif what == "restore":
             self.note.setText(tr("grimoire.spells.launchl.page", "{launcher} is back in your panel.").format(
                 launcher=_name(result["type"], "Kickoff")))

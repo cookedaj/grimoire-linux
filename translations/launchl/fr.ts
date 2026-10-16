@@ -2,6 +2,232 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="fr" sourcelanguage="en">
 <context>
+    <name>grimoire.spells.launchl.appedit</name>
+    <message>
+        <location filename="../../grimoire/spells/launchl/appedit.py"/>
+        <source>A double quote isn&apos;t closed.</source>
+        <translation>Un guillemet double n’est pas fermé.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/appedit.py"/>
+        <source>A single quote isn&apos;t closed.</source>
+        <translation>Un guillemet simple n’est pas fermé.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/appedit.py"/>
+        <source>The command can&apos;t be empty.</source>
+        <translation>La commande ne peut pas être vide.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/appedit.py"/>
+        <source>The command can&apos;t contain line breaks or other control characters.</source>
+        <translation>La commande ne peut pas contenir de retours à la ligne ni d’autres caractères de contrôle.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/appedit.py"/>
+        <source>%{code} isn&apos;t a field code menus know; write %% for a percent sign.</source>
+        <translation>%{code} n’est pas un code de champ connu des menus ; écrivez %% pour un signe pourcentage.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/appedit.py"/>
+        <source>{program} isn&apos;t installed or isn&apos;t in your PATH, so the app may not start.</source>
+        <translation>{program} n’est pas installé ou n’est pas dans votre PATH : l’application risque de ne pas démarrer.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/appedit.py"/>
+        <source>That desktop file is too big to be a menu entry.</source>
+        <translation>Ce fichier desktop est trop gros pour être une entrée de menu.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/appedit.py"/>
+        <source>“{id}” isn&apos;t an app id.</source>
+        <translation>« {id} » n’est pas un identifiant d’application.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/appedit.py"/>
+        <source>No app called {id} is installed.</source>
+        <translation>Aucune application nommée {id} n’est installée.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/appedit.py"/>
+        <source>{id} isn&apos;t a menu entry.</source>
+        <translation>{id} n’est pas une entrée de menu.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/appedit.py"/>
+        <source>Names and icons can&apos;t contain line breaks.</source>
+        <translation>Les noms et les icônes ne peuvent pas contenir de retours à la ligne.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/appedit.py"/>
+        <source>The name can&apos;t be empty.</source>
+        <translation>Le nom ne peut pas être vide.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/appedit.py"/>
+        <source>The app&apos;s desktop file is gone.</source>
+        <translation>Le fichier desktop de l’application a disparu.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/appedit.py"/>
+        <source>{id} has no changes to undo: it&apos;s your own app, not a copy of a system one.</source>
+        <translation>{id} n’a aucune modification à annuler : c’est votre propre application, pas une copie d’une application du système.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/appedit.py"/>
+        <source>{id} has no changes to undo.</source>
+        <translation>{id} n’a aucune modification à annuler.</translation>
+    </message>
+</context>
+<context>
+    <name>grimoire.spells.launchl.editor</name>
+    <message>
+        <location filename="../../grimoire/spells/launchl/editor.py"/>
+        <source>[link]</source>
+        <translation>[lien]</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/editor.py"/>
+        <source>[links]</source>
+        <translation>[liens]</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/editor.py"/>
+        <source>[file]</source>
+        <translation>[fichier]</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/editor.py"/>
+        <source>[files]</source>
+        <translation>[fichiers]</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/editor.py"/>
+        <source>Edit app</source>
+        <translation>Modifier l’application</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/editor.py"/>
+        <source>Loading…</source>
+        <translation>Chargement…</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/editor.py"/>
+        <source>An icon name from your theme, or an image file</source>
+        <translation>Un nom d’icône de votre thème, ou un fichier image</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/editor.py"/>
+        <source>Choose…</source>
+        <translation>Choisir…</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/editor.py"/>
+        <source>Name</source>
+        <translation>Nom</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/editor.py"/>
+        <source>Icon</source>
+        <translation>Icône</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/editor.py"/>
+        <source>Command</source>
+        <translation>Commande</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/editor.py"/>
+        <source>WILL RUN</source>
+        <translation>LANCERA</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/editor.py"/>
+        <source>Hide from the menu</source>
+        <translation>Masquer du menu</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/editor.py"/>
+        <source>It stays installed and still opens files; only the menus leave it out.</source>
+        <translation>Elle reste installée et ouvre toujours les fichiers ; seuls les menus la laissent de côté.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/editor.py"/>
+        <source>Reset to default</source>
+        <translation>Rétablir par défaut</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/editor.py"/>
+        <source>Cancel</source>
+        <translation>Annuler</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/editor.py"/>
+        <source>Save</source>
+        <translation>Enregistrer</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/editor.py"/>
+        <source>Edit {app}</source>
+        <translation>Modifier {app}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/editor.py"/>
+        <source>This app&apos;s menu entry is your own file: {path}</source>
+        <translation>L’entrée de menu de cette application est votre propre fichier : {path}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/editor.py"/>
+        <source>Your changes are in {path}. The system file ({system}) is never changed; Reset to default moves your copy to the Trash.</source>
+        <translation>Vos modifications sont dans {path}. Le fichier système ({system}) n’est jamais modifié ; Rétablir par défaut met votre copie à la corbeille.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/editor.py"/>
+        <source>Saving makes your own copy in {path}. The system file ({system}) isn&apos;t changed.</source>
+        <translation>Enregistrer crée votre propre copie dans {path}. Le fichier système ({system}) n’est pas modifié.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/editor.py"/>
+        <source>This app normally starts through D-Bus. Saving a new command switches that off, so your command is what runs.</source>
+        <translation>Cette application démarre normalement via D-Bus. Enregistrer une nouvelle commande désactive cela, pour que ce soit votre commande qui s’exécute.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/editor.py"/>
+        <source>Your icon theme has no icon called {icon}.</source>
+        <translation>Votre thème d’icônes n’a pas d’icône nommée {icon}.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/editor.py"/>
+        <source>Choose an icon</source>
+        <translation>Choisir une icône</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/editor.py"/>
+        <source>Images (*.png *.svg *.svgz *.xpm)</source>
+        <translation>Images (*.png *.svg *.svgz *.xpm)</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/editor.py"/>
+        <source>Saving…</source>
+        <translation>Enregistrement…</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/editor.py"/>
+        <source>Resetting…</source>
+        <translation>Rétablissement…</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/editor.py"/>
+        <source>Put {app} back the way it was installed? Your copy of its menu entry goes to the Trash.</source>
+        <translation>Remettre {app} tel qu’il a été installé ? Votre copie de son entrée de menu ira à la corbeille.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/editor.py"/>
+        <source>Can&apos;t edit this app</source>
+        <translation>Impossible de modifier cette application</translation>
+    </message>
+</context>
+<context>
     <name>grimoire.spells.launchl.page</name>
     <message>
         <location filename="../../grimoire/spells/launchl/page.py"/>
@@ -37,6 +263,16 @@
         <location filename="../../grimoire/spells/launchl/page.py"/>
         <source>Restore Kickoff</source>
         <translation>Restaurer Kickoff</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/page.py"/>
+        <source>APPS YOU CHANGED</source>
+        <translation>APPLICATIONS MODIFIÉES</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/page.py"/>
+        <source>Right-click an app in LaunchL to edit its name, icon or command, or to hide it. Changes are your own copies; system files are never touched.</source>
+        <translation>Faites un clic droit sur une application dans LaunchL pour modifier son nom, son icône ou sa commande, ou pour la masquer. Les modifications sont vos propres copies ; les fichiers système ne sont jamais touchés.</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/launchl/page.py"/>
@@ -110,6 +346,41 @@
     </message>
     <message>
         <location filename="../../grimoire/spells/launchl/page.py"/>
+        <source>No changed apps.</source>
+        <translation>Aucune application modifiée.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/page.py"/>
+        <source>hidden</source>
+        <translation>masquée</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/page.py"/>
+        <source>edited</source>
+        <translation>modifiée</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/page.py"/>
+        <source>Edit…</source>
+        <translation>Modifier…</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/page.py"/>
+        <source>Show in menu</source>
+        <translation>Afficher dans le menu</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/page.py"/>
+        <source>Reset</source>
+        <translation>Rétablir</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/page.py"/>
+        <source>Back to the default; your copy goes to the Trash</source>
+        <translation>Revenir à la valeur par défaut ; votre copie va à la corbeille</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/page.py"/>
         <source>Working…</source>
         <translation>En cours…</translation>
     </message>
@@ -142,6 +413,16 @@ Restaurer Kickoff le remet exactement comme avant.</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/launchl/page.py"/>
+        <source>Couldn&apos;t show the app again: {error}</source>
+        <translation>Impossible de réafficher l’application : {error}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/page.py"/>
+        <source>Couldn&apos;t reset the app: {error}</source>
+        <translation>Impossible de rétablir l’application : {error}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/page.py"/>
         <source>Couldn&apos;t replace the launcher: {error}</source>
         <translation>Impossible de remplacer le lanceur : {error}</translation>
     </message>
@@ -164,6 +445,16 @@ Restaurer Kickoff le remet exactement comme avant.</translation>
         <location filename="../../grimoire/spells/launchl/page.py"/>
         <source>Press Meta to open it.</source>
         <translation>Appuyez sur Meta pour l’ouvrir.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/page.py"/>
+        <source>The app is back in the menu.</source>
+        <translation>L’application est de retour dans le menu.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/launchl/page.py"/>
+        <source>The app is back to its default. Your copy is in the Trash.</source>
+        <translation>L’application est revenue à sa valeur par défaut. Votre copie est dans la corbeille.</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/launchl/page.py"/>

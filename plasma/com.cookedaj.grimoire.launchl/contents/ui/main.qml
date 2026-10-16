@@ -102,7 +102,7 @@ PlasmoidItem {
     // plasmashell's PATH may lack ~/.local/bin (where Grimoire links its commands)
     readonly property string pathPrefix: 'PATH="$HOME/.local/bin:$PATH"; '
     readonly property string probe: pathPrefix
-        + 'for c in grimoire grimoire-sightc grimoire-vaultl grimoire-shotl grimoire-terminall konsole; do '
+        + 'for c in grimoire grimoire-sightc grimoire-vaultl grimoire-shotl grimoire-terminall grimoire-launchl konsole; do '
         + 'command -v "$c" >/dev/null 2>&1 && echo "have $c"; done; '
         + 'cat "${XDG_DATA_HOME:-$HOME/.local/share}/grimoire/launchl-spells.json" 2>/dev/null; true'
 

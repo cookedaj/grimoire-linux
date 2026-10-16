@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+# SPDX-License-Identifier: GPL-3.0-or-later
+# LaunchL in its own window:          grimoire-launchl
+# the widget and apps from a terminal: grimoire-launchl status|install|replace|restore|uninstall
+#                                      grimoire-launchl edit|hide|unhide|reset DESKTOP-ID, grimoire-launchl edited
+DIR="$(cd "$(dirname "$(readlink -f "$0")")/.." && pwd)"
+export PYTHONPATH="$DIR${PYTHONPATH:+:$PYTHONPATH}"
+export PYTHONSAFEPATH=1       # never import a grimoire/ folder from the current directory instead
+if [ $# -gt 0 ]; then
+    exec python3 -m grimoire.spells.launchl "$@"
+fi
+exec python3 -m grimoire.standalone launchl
