@@ -3550,27 +3550,60 @@
     <message>
         <location filename="../../grimoire/spells/__init__.py"/>
         <source>Emoji, symbols and every Unicode character on a hotkey: search in your language, skin tones, favorites and a full Unicode block browser</source>
-        <translation>Emoji, símbolos y todos los caracteres Unicode con un atajo: búsqueda en tu idioma, tonos de piel, favoritos y un explorador completo de bloques Unicode</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/__init__.py"/>
         <source>Google Drive, OneDrive and Dropbox as folders on your PC through rclone: sign in from your browser, mount, see the space left and what is still uploading, and open them in VaultL</source>
-        <translation>Google Drive, OneDrive y Dropbox como carpetas en tu PC con rclone: inicia sesión desde el navegador, móntalos, mira el espacio libre y lo que aún se está subiendo, y ábrelos en VaultL</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/__init__.py"/>
         <source>Your pictures: a fast thumbnail grid, a full view with zoom, turns, slideshow and EXIF info, plus rename, Trash and set as wallpaper</source>
-        <translation>Tus imágenes: una cuadrícula de miniaturas rápida, una vista completa con zoom, giros, presentación e información EXIF, además de renombrar, papelera y poner como fondo de pantalla</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/__init__.py"/>
         <source>Install and remove apps from Flathub, Ubuntu&apos;s archive and the Snap Store: search, screenshots, a preview of every change, and each Flatpak&apos;s permissions</source>
-        <translation>Instala y elimina apps de Flathub, el archivo de Ubuntu y la Snap Store: búsqueda, capturas, vista previa de cada cambio y los permisos de cada Flatpak</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/__init__.py"/>
         <source>A quiet reader for PDFs, EPUB books, Markdown and text: covers, contents, search, bookmarks, night and paper pages, and it remembers where you stopped</source>
-        <translation>Un lector tranquilo para PDF, libros EPUB, Markdown y texto: portadas, índice, búsqueda, marcadores, páginas de noche y de papel, y recuerda dónde lo dejaste</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/__init__.py"/>
+        <source>Your phone on this PC through KDE Connect: send files, ring it, share the clipboard, browse its files, read and dismiss its notifications, text messages, media and commands</source>
+        <translation>Tu teléfono en este PC a través de KDE Connect: envía archivos, hazlo sonar, comparte el portapapeles, explora sus archivos, lee y descarta sus notificaciones, mensajes de texto, multimedia y comandos</translation>
+    </message>
+</context>
+<context>
+    <name>grimoire.standalone</name>
+    <message>
+        <location filename="../../grimoire/standalone.py"/>
+        <source>{id} has no standalone command yet</source>
+        <translation>{id} aún no tiene un comando independiente</translation>
+    </message>
+    <message>
+        <source>Emoji, symbols and every Unicode character on a hotkey: search in your language, skin tones, favorites and a full Unicode block browser</source>
+        <translation type="vanished">Emoji, símbolos y todos los caracteres Unicode con un atajo: búsqueda en tu idioma, tonos de piel, favoritos y un explorador completo de bloques Unicode</translation>
+    </message>
+    <message>
+        <source>Google Drive, OneDrive and Dropbox as folders on your PC through rclone: sign in from your browser, mount, see the space left and what is still uploading, and open them in VaultL</source>
+        <translation type="vanished">Google Drive, OneDrive y Dropbox como carpetas en tu PC con rclone: inicia sesión desde el navegador, móntalos, mira el espacio libre y lo que aún se está subiendo, y ábrelos en VaultL</translation>
+    </message>
+    <message>
+        <source>Your pictures: a fast thumbnail grid, a full view with zoom, turns, slideshow and EXIF info, plus rename, Trash and set as wallpaper</source>
+        <translation type="vanished">Tus imágenes: una cuadrícula de miniaturas rápida, una vista completa con zoom, giros, presentación e información EXIF, además de renombrar, papelera y poner como fondo de pantalla</translation>
+    </message>
+    <message>
+        <source>Install and remove apps from Flathub, Ubuntu&apos;s archive and the Snap Store: search, screenshots, a preview of every change, and each Flatpak&apos;s permissions</source>
+        <translation type="vanished">Instala y elimina apps de Flathub, el archivo de Ubuntu y la Snap Store: búsqueda, capturas, vista previa de cada cambio y los permisos de cada Flatpak</translation>
+    </message>
+    <message>
+        <source>A quiet reader for PDFs, EPUB books, Markdown and text: covers, contents, search, bookmarks, night and paper pages, and it remembers where you stopped</source>
+        <translation type="vanished">Un lector tranquilo para PDF, libros EPUB, Markdown y texto: portadas, índice, búsqueda, marcadores, páginas de noche y de papel, y recuerda dónde lo dejaste</translation>
     </message>
 </context>
 <context>
@@ -3990,13 +4023,6 @@
         <location filename="../../grimoire/updateview.py"/>
         <source>Nothing new on GitHub since your version.</source>
         <translation>No hay nada nuevo en GitHub desde tu versión.</translation>
-    </message>
-</context>
-<context>
-    <name>grimoire.standalone</name>
-    <message>
-        <source>{id} has no standalone command yet</source>
-        <translation type="vanished">{id} aún no tiene un comando independiente</translation>
     </message>
 </context>
 </TS>

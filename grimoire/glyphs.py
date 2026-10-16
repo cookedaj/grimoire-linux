@@ -458,6 +458,45 @@ def _draw(name: str, p: QPainter):
     elif name == "fullscreen":                             # four corners pointing out
         for x, y, dx, dy in ((4, 4, 1, 1), (20, 4, -1, 1), (4, 20, 1, -1), (20, 20, -1, -1)):
             p.drawLine(QPointF(x, y), QPointF(x + 5 * dx, y)); p.drawLine(QPointF(x, y), QPointF(x, y + 5 * dy))
+    elif name == "phone":                                  # a smartphone: PhoneL
+        p.drawRoundedRect(r(6.5, 2.5, 11, 19), 2.5, 2.5)
+        p.drawLine(QPointF(10.5, 5.3), QPointF(13.5, 5.3))
+        p.drawEllipse(QPointF(12, 18.3), 0.8, 0.8)
+    elif name == "tablet":
+        p.drawRoundedRect(r(3.5, 3.5, 17, 17), 2.5, 2.5)
+        p.drawEllipse(QPointF(12, 17.6), 0.8, 0.8)
+    elif name == "message":                                # a speech bubble: text messages
+        path = QPainterPath(QPointF(6, 4.5)); path.lineTo(18, 4.5); path.quadTo(20.5, 4.5, 20.5, 7)
+        path.lineTo(20.5, 14); path.quadTo(20.5, 16.5, 18, 16.5); path.lineTo(10, 16.5); path.lineTo(5.5, 20)
+        path.lineTo(5.5, 16.4); path.quadTo(3.5, 16, 3.5, 14); path.lineTo(3.5, 7); path.quadTo(3.5, 4.5, 6, 4.5)
+        p.drawPath(path)
+    elif name == "send":                                   # an arrow rising out of a tray: send files
+        p.drawLine(QPointF(12, 15), QPointF(12, 3.5))
+        path = QPainterPath(QPointF(7.5, 8)); path.lineTo(12, 3.5); path.lineTo(16.5, 8); p.drawPath(path)
+        path = QPainterPath(QPointF(4, 13)); path.lineTo(4, 20); path.lineTo(20, 20); path.lineTo(20, 13)
+        p.drawPath(path)
+    elif name == "clipboard":
+        p.drawRoundedRect(r(5, 5, 14, 16), 2, 2)
+        p.drawRoundedRect(r(9, 3, 6, 4), 1, 1)
+        for y in (11, 14.5):
+            p.drawLine(QPointF(8.5, y), QPointF(15.5, y))
+    elif name == "ping":                                   # a dot sending out rings
+        p.drawEllipse(QPointF(12, 12), 1.6, 1.6)
+        for rad in (5, 8.5):
+            for start in (-45, 135):
+                path = QPainterPath(); path.arcMoveTo(r(12 - rad, 12 - rad, rad * 2, rad * 2), start)
+                path.arcTo(r(12 - rad, 12 - rad, rad * 2, rad * 2), start, 90); p.drawPath(path)
+    elif name == "play":                                   # media controls keep their direction in every language
+        path = QPainterPath(QPointF(8, 5)); path.lineTo(19, 12); path.lineTo(8, 19); path.closeSubpath()
+        p.drawPath(path)
+    elif name == "pause":
+        p.drawRoundedRect(r(7, 5, 3.5, 14), 1, 1); p.drawRoundedRect(r(13.5, 5, 3.5, 14), 1, 1)
+    elif name in ("prevtrack", "nexttrack"):
+        if name == "prevtrack":
+            p.translate(S, 0); p.scale(-1, 1)
+        path = QPainterPath(QPointF(6, 6)); path.lineTo(15, 12); path.lineTo(6, 18); path.closeSubpath()
+        p.drawPath(path)
+        p.drawLine(QPointF(18, 6), QPointF(18, 18))
 
 
 def _pixmap(name: str, color: str, size: int) -> QPixmap:

@@ -50,6 +50,7 @@ optdepends=(
     'print-manager: adding printers from Settings'
     'rclone: CloudL cloud drives'
     'fuse3: CloudL mounts (fusermount3)'
+    'kdeconnect: PhoneL'
 )
 makedepends=('git')
 provides=("$_pkgname")

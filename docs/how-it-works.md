@@ -112,6 +112,13 @@ what goes over the network, see [security.md](security.md).
   (`flatpak --user`, data in `~/.var/app` stays); APT, system Flatpaks and snaps go through its root helper, one
   password prompt per batch, after an `apt-get -s` preview. Removals never purge or autoremove. Permissions are your
   own `flatpak override --user` entries (`~/.local/share/flatpak/overrides/<app>`); Reset drops them.
+- **PhoneL** is a face on KDE Connect's own daemon (`kdeconnectd`), which keeps doing the pairing, the encryption and
+  the link to the phone. It talks to `org.kde.kdeconnect` on the session bus through GLib's GDBus (python3-gi), with
+  every call marked "don't start the service", so opening the page never starts KDE Connect; **Start KDE Connect**
+  does, on a click. Devices, battery and signal are read every 3 s while the page is on screen, and at once when the
+  daemon signals a change; text messages only arrive as signals after PhoneL asks the phone for them. Browse files
+  is KDE Connect's sftp mount, opened in VaultL. Pairing, unpairing and every text message ask you first. Contact
+  names come read-only from the vCards KDE Connect's contacts plugin keeps in `~/.local/share/kpeoplevcard/`.
 
 ## Installs
 
@@ -146,12 +153,13 @@ plasma/              the MuraL wallpaper plugin and the LaunchL panel widget
   spells/widgetl/    WidgetL install / add / remove, face previews, page, CLI
   spells/cloudl/     CloudL rclone remotes, mount services, space and upload state, page
   spells/storel/     StoreL catalog (AppStream), installed apps, plans, queue, Flatpak permissions, root helper, page
+  spells/phonel/     PhoneL KDE Connect client (D-Bus), signal listener, page, device tabs, text messages
 plasma/              the MuraL wallpaper plugin, the LaunchL panel widget and WidgetL's desktop widgets
 bin/                 launchers
 install.sh           copies the app into ~/.local/share/grimoire/app and links it in
 uninstall.sh         removes it again (--purge also clears settings)
 packaging/           .deb (debian/, build-deb.sh), AUR (aur/), the shared system layout (stage.sh), AppStream
-scripts/             release.sh (version bump + tag), screenshots.py (README images)
+scripts/             release.sh (version bump + tag), screenshots.py (README images), fake_kdeconnect.py (PhoneL tests)
 ```
 
 Personal project; artwork you add (wallpapers, community themes) belongs to its creators and isn't part of this repo.

@@ -3670,27 +3670,60 @@
     <message>
         <location filename="../../grimoire/spells/__init__.py"/>
         <source>Emoji, symbols and every Unicode character on a hotkey: search in your language, skin tones, favorites and a full Unicode block browser</source>
-        <translation>الإيموجي والرموز وكل حروف Unicode باختصار واحد: بحث بلغتك وألوان البشرة والمفضلة ومتصفح كامل لكتل Unicode</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/__init__.py"/>
         <source>Google Drive, OneDrive and Dropbox as folders on your PC through rclone: sign in from your browser, mount, see the space left and what is still uploading, and open them in VaultL</source>
-        <translation>‏Google Drive وOneDrive وDropbox كمجلدات على حاسوبك عبر rclone: سجّل الدخول من متصفحك، ثم ركّبها، وشاهد المساحة المتبقية وما زال يُرفع، وافتحها في VaultL</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/__init__.py"/>
         <source>Your pictures: a fast thumbnail grid, a full view with zoom, turns, slideshow and EXIF info, plus rename, Trash and set as wallpaper</source>
-        <translation>صورك: شبكة مصغّرات سريعة، وعرض كامل مع التكبير والتدوير وعرض الشرائح ومعلومات EXIF، إضافةً إلى إعادة التسمية والسلة والتعيين كخلفية</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/__init__.py"/>
         <source>Install and remove apps from Flathub, Ubuntu&apos;s archive and the Snap Store: search, screenshots, a preview of every change, and each Flatpak&apos;s permissions</source>
-        <translation>ثبّت التطبيقات وأزلها من Flathub وأرشيف Ubuntu ومتجر Snap: بحث ولقطات شاشة ومعاينة لكل تغيير وأذونات كل تطبيق Flatpak</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/__init__.py"/>
         <source>A quiet reader for PDFs, EPUB books, Markdown and text: covers, contents, search, bookmarks, night and paper pages, and it remembers where you stopped</source>
-        <translation>قارئ هادئ لملفات PDF وكتب EPUB وMarkdown والنصوص: أغلفة، ومحتويات، وبحث، وعلامات، وصفحات ليلية وورقية، ويتذكر أين توقفت</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/__init__.py"/>
+        <source>Your phone on this PC through KDE Connect: send files, ring it, share the clipboard, browse its files, read and dismiss its notifications, text messages, media and commands</source>
+        <translation>هاتفك على هذا الحاسوب عبر KDE Connect: أرسل الملفات، اجعله يرنّ، شارك الحافظة، تصفح ملفاته، اقرأ إشعاراته وأخفها، الرسائل النصية والوسائط والأوامر</translation>
+    </message>
+</context>
+<context>
+    <name>grimoire.standalone</name>
+    <message>
+        <location filename="../../grimoire/standalone.py"/>
+        <source>{id} has no standalone command yet</source>
+        <translation>لا يملك {id} أمرًا مستقلًا بعد</translation>
+    </message>
+    <message>
+        <source>Emoji, symbols and every Unicode character on a hotkey: search in your language, skin tones, favorites and a full Unicode block browser</source>
+        <translation type="vanished">الإيموجي والرموز وكل حروف Unicode باختصار واحد: بحث بلغتك وألوان البشرة والمفضلة ومتصفح كامل لكتل Unicode</translation>
+    </message>
+    <message>
+        <source>Google Drive, OneDrive and Dropbox as folders on your PC through rclone: sign in from your browser, mount, see the space left and what is still uploading, and open them in VaultL</source>
+        <translation type="vanished">‏Google Drive وOneDrive وDropbox كمجلدات على حاسوبك عبر rclone: سجّل الدخول من متصفحك، ثم ركّبها، وشاهد المساحة المتبقية وما زال يُرفع، وافتحها في VaultL</translation>
+    </message>
+    <message>
+        <source>Your pictures: a fast thumbnail grid, a full view with zoom, turns, slideshow and EXIF info, plus rename, Trash and set as wallpaper</source>
+        <translation type="vanished">صورك: شبكة مصغّرات سريعة، وعرض كامل مع التكبير والتدوير وعرض الشرائح ومعلومات EXIF، إضافةً إلى إعادة التسمية والسلة والتعيين كخلفية</translation>
+    </message>
+    <message>
+        <source>Install and remove apps from Flathub, Ubuntu&apos;s archive and the Snap Store: search, screenshots, a preview of every change, and each Flatpak&apos;s permissions</source>
+        <translation type="vanished">ثبّت التطبيقات وأزلها من Flathub وأرشيف Ubuntu ومتجر Snap: بحث ولقطات شاشة ومعاينة لكل تغيير وأذونات كل تطبيق Flatpak</translation>
+    </message>
+    <message>
+        <source>A quiet reader for PDFs, EPUB books, Markdown and text: covers, contents, search, bookmarks, night and paper pages, and it remembers where you stopped</source>
+        <translation type="vanished">قارئ هادئ لملفات PDF وكتب EPUB وMarkdown والنصوص: أغلفة، ومحتويات، وبحث، وعلامات، وصفحات ليلية وورقية، ويتذكر أين توقفت</translation>
     </message>
 </context>
 <context>
@@ -4130,13 +4163,6 @@
         <location filename="../../grimoire/updateview.py"/>
         <source>Nothing new on GitHub since your version.</source>
         <translation>لا جديد على GitHub منذ إصدارك.</translation>
-    </message>
-</context>
-<context>
-    <name>grimoire.standalone</name>
-    <message>
-        <source>{id} has no standalone command yet</source>
-        <translation type="vanished">لا يملك {id} أمرًا مستقلًا بعد</translation>
     </message>
 </context>
 </TS>

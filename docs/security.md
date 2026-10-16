@@ -64,6 +64,9 @@ the forecast at that place's coordinates every 30 minutes; its city search (geoc
 typed, only when you press Search. Your location is never looked up from your IP address.
 CloudL's mounts talk to the cloud services you signed in to (through rclone) while they're mounted; signing in opens
 the service's own page in your browser.
+PhoneL opens no connection of its own: everything goes through KDE Connect's daemon, which talks to your paired
+devices on the local network, end-to-end encrypted. PhoneL never pairs, accepts a pairing or sends a text message
+without asking you first.
 
 ## Sign-in and backups: threat model
 

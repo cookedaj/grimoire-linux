@@ -105,6 +105,7 @@ def render(names: list[str]):
     offline_stubs()
     demo_audio()
     demo_pc()
+    demo_phone()
     OUT.mkdir(parents=True, exist_ok=True)
     win = Window()
     win.resize(W, H)
@@ -554,6 +555,21 @@ def _readl(page, wait):
 PREPARE["readl"] = _readl
 PAGES.append("readl")
 WAIT["readl"] = 3000
+
+
+def demo_phone():
+    """PhoneL talks to KDE Connect's daemon: start the made-up one (scripts/fake_kdeconnect.py) on a private bus."""
+    import atexit
+    sys.path.insert(0, str(REPO / "scripts"))
+    from fake_kdeconnect import FakeKdeConnect
+    from grimoire.spells.phonel import kdc
+    fake = FakeKdeConnect(BOX / "kdeconnect")
+    fake.start()
+    atexit.register(fake.stop)
+    kdc.ADDRESS = fake.address
+
+
+PAGES.append("phonel")
 
 
 def main():

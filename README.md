@@ -218,6 +218,18 @@ Ctrl+B, F9, Ctrl+1/2/3, Ctrl+I). It shows up in "Open with" for PDFs, EPUBs and 
 from Okular; pick it as the default in Dolphin's Properties → File Type Options if you like it. EPUBs are read
 defensively: nothing in a book can run, reach the network or read other files. PDFs need QtPdf
 (`sudo apt install python3-pyside6.qtpdf`); without it ReadL shows that command and still reads everything else.
+### PhoneL: your phone on this PC
+
+![PhoneL](docs/screenshots/phonel.png)
+
+A black & white face on KDE Connect, in place of its own app: your paired phones and tablets with their battery and
+signal, **Send files** (or drop them on the page), **Send clipboard**, **Ping**, **Ring my phone**, and **Browse
+files**, which opens the phone's storage in VaultL. Per device: its notifications (reply where the app allows it,
+dismiss one or all), text messages (conversations, replies and new messages, each confirmed before it goes out),
+the music or video playing on it, commands set up on it, typing and a touchpad for its pointer, and which plugins are
+on. **Add a device** lists phones asking to pair or nearby, with the key to compare, and how to get the app. Needs
+KDE Connect (`sudo apt install kdeconnect`) and its phone app (Google Play, F-Droid or the App Store), on the same
+network.
 
 ### Tray, Settings and updates
 
@@ -329,6 +341,9 @@ Press **Install** on a spell's card on the home page (or `./install.sh --all`), 
 `grimoire-sightc`, `grimoire-vaultl`, `grimoire-optimizel`, `grimoire-systeml`, `grimoire-terminall`,
 `grimoire-shotl`, `grimoire-focusl`, `grimoire-netl`, `grimoire-gamel` or `grimoire-audiol` directly. Command-line helpers:
 `grimoire-shotl`, `grimoire-focusl`, `grimoire-netl`, `grimoire-widgetl` or `grimoire-cloudl` directly. Command-line helpers:
+`grimoire-shotl`, `grimoire-focusl`, `grimoire-netl`, `grimoire-gamel`, `grimoire-audiol` or `grimoire-phonel`
+directly. Command-line helpers:
+`grimoire-shotl`, `grimoire-focusl`, `grimoire-netl` or `grimoire-widgetl` directly. Command-line helpers:
 `grimoire-sightc on|off|toggle|next`, `grimoire-vaultl [folder]`, `grimoire-vaultl tidy run|undo|enable|disable|status`,
 `grimoire-systeml alerts check|enable|disable|status`, `grimoire-focusl start|stop|status`,
 `grimoire-gamel list|status|play <launcher:id>`, `grimoire-updatel check|enable|disable|status`, `grimoire update`.

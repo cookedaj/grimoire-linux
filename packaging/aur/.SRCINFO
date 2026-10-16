@@ -35,6 +35,7 @@ pkgbase = grimoire-linux-git
 	optdepends = noto-fonts-cjk: Chinese text
 	optdepends = python-pycups: printers in Settings
 	optdepends = print-manager: adding printers from Settings
+	optdepends = kdeconnect: PhoneL
 	provides = grimoire-linux
 	conflicts = grimoire-linux
 	source = grimoire-linux::git+https://github.com/cookedaj/grimoire-linux.git
