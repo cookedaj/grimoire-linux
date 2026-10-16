@@ -183,10 +183,18 @@ since Meta+. is Plasma's emoji selector).
   refuses to save anything personal (your home path, user name, computer name, emails) and never includes accounts,
   tidy rules, history or terminal commands. Opening one shows what would change, spell by spell, keeps a safety
   backup, saves the look under MuraL → Looks and only changes your desktop when you press **Apply the look now**.
+- **Printers** (Settings → Printers): your CUPS printers with their state (paper, toner, paused), the print queue
+  with Cancel, set the default, pause/resume, print a test page and remove a printer (with a confirmation). **Add
+  printer…** opens KDE's printer settings, which find drivers. Needs `python3-cups` (the panel shows the command).
+- **About this PC** (on the home page, under the spells): CPU, graphics, memory, storage, system, kernel, Plasma,
+  display, uptime and Grimoire's version, fastfetch-style, with **Copy** for a plain-text summary. Host and user
+  names stay out unless you tick the box.
 - **Self-update**: Grimoire checks GitHub every few hours. When there's something new, **What's new** lists the
   changes, **Update now** installs them and **Restart now** reloads. Or run `grimoire update`.
 
 ![Settings](docs/screenshots/settings.png)
+
+![Printers](docs/screenshots/printers.png)
 
 ### Accounts, guest mode and first-run setup
 

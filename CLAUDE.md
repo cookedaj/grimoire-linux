@@ -191,3 +191,13 @@ Wrapping strings (every user-visible string; phase 2 = one area per spell, each 
 - Test a language offscreen: `GRIMOIRE_LANG=ar QT_QPA_PLATFORM=offscreen` with a sandbox HOME/XDG dirs, build the
   widget after `style_app(app)`, `grab()` and look: no tofu boxes, no clipped text, RTL mirrored, graphs not. Check
   en, zh_CN, hi, ar, ur, bn, ru at least.
+
+## Printers + About this PC
+Settings → Printers: `grimoire/printers.py` (no Qt; python3-cups, one `CONNECT()` per call on worker threads,
+`setPasswordCB` aborts instead of prompting, IPP errors → `PrinterError`; default via `setDefault`, falling back to
+the per-user `lpoptions -d` through swappable `RUN`) + `printersview.py` (polls every 4 s while visible, rebuilds only
+on change; Add printer… opens `kcmshell6 kcm_printer_manager`, per printer `configure-printer`, `LAUNCH` swappable).
+Never change real printers in tests: stub `printers.CONNECT`/`RUN` and `printersview.LAUNCH`. Home → About this PC:
+`sysinfo.py` (no Qt; /proc, /sys/class/dmi, os-release, nvidia-smi, lspci, lsblk, dpkg-query; cached by `info()`,
+`GRIMOIRE_SYSINFO_ROOT` for a fake root; never `plasmashell --version`: it crashes without a display) +
+`aboutview.py` (card + Copy; host/user only when ticked).

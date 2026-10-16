@@ -2,6 +2,146 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="hi" sourcelanguage="en">
 <context>
+    <name>grimoire.aboutview</name>
+    <message numerus="yes">
+        <location filename="../../grimoire/aboutview.py"/>
+        <source>%n day(s)</source>
+        <translation>
+            <numerusform>%n दिन</numerusform>
+            <numerusform>%n दिन</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../../grimoire/aboutview.py"/>
+        <source>%n hour(s)</source>
+        <translation>
+            <numerusform>%n घंटा</numerusform>
+            <numerusform>%n घंटे</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../../grimoire/aboutview.py"/>
+        <source>%n minute(s)</source>
+        <translation>
+            <numerusform>%n मिनट</numerusform>
+            <numerusform>%n मिनट</numerusform>
+        </translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/aboutview.py"/>
+        <source>User</source>
+        <translation>उपयोगकर्ता</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/aboutview.py"/>
+        <source>Host</source>
+        <translation>होस्ट</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/aboutview.py"/>
+        <source>Machine</source>
+        <translation>मशीन</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/aboutview.py"/>
+        <source>System</source>
+        <translation>सिस्टम</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/aboutview.py"/>
+        <source>Kernel</source>
+        <translation>कर्नेल</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/aboutview.py"/>
+        <source>Desktop</source>
+        <translation>डेस्कटॉप</translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../../grimoire/aboutview.py"/>
+        <source>%n thread(s)</source>
+        <translation>
+            <numerusform>%n थ्रेड</numerusform>
+            <numerusform>%n थ्रेड</numerusform>
+        </translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/aboutview.py"/>
+        <source>Processor</source>
+        <translation>प्रोसेसर</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/aboutview.py"/>
+        <source>Graphics</source>
+        <translation>ग्राफ़िक्स</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/aboutview.py"/>
+        <source>Memory</source>
+        <translation>मेमोरी</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/aboutview.py"/>
+        <source>{size}, {free} free</source>
+        <translation>{size}, {free} खाली</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/aboutview.py"/>
+        <source>Storage</source>
+        <translation>स्टोरेज</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/aboutview.py"/>
+        <source>Display</source>
+        <translation>डिस्प्ले</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/aboutview.py"/>
+        <source>Uptime</source>
+        <translation>चालू समय</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/aboutview.py"/>
+        <source>Reading this PC…</source>
+        <translation>इस पीसी की जानकारी पढ़ी जा रही है…</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/aboutview.py"/>
+        <source>Copy</source>
+        <translation>कॉपी करें</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/aboutview.py"/>
+        <source>Copy these specs as plain text to share</source>
+        <translation>साझा करने के लिए ये स्पेसिफ़िकेशन सादे टेक्स्ट में कॉपी करें</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/aboutview.py"/>
+        <source>Show host and user name</source>
+        <translation>होस्ट और उपयोगकर्ता नाम दिखाएँ</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/aboutview.py"/>
+        <source>Off by default, so the copied text has nothing personal in it</source>
+        <translation>डिफ़ॉल्ट रूप से बंद, ताकि कॉपी किए गए टेक्स्ट में कुछ भी निजी न हो</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/aboutview.py"/>
+        <source>Couldn&apos;t read this PC: {err}</source>
+        <translation>इस पीसी की जानकारी नहीं पढ़ी जा सकी: {err}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/aboutview.py"/>
+        <source>Copied</source>
+        <translation>कॉपी हो गया</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/aboutview.py"/>
+        <source>THIS PC</source>
+        <translation>यह पीसी</translation>
+    </message>
+</context>
+<context>
     <name>grimoire.accounts</name>
     <message>
         <location filename="../../grimoire/accounts.py"/>
@@ -1273,6 +1413,302 @@
     </message>
 </context>
 <context>
+    <name>grimoire.printers</name>
+    <message>
+        <location filename="../../grimoire/printers.py"/>
+        <source>Waiting</source>
+        <translation>प्रतीक्षा में</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printers.py"/>
+        <source>Held</source>
+        <translation>रोका गया</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printers.py"/>
+        <source>Printing</source>
+        <translation>प्रिंट हो रहा है</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printers.py"/>
+        <source>Stopped</source>
+        <translation>रुका हुआ</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printers.py"/>
+        <source>Out of paper</source>
+        <translation>कागज़ ख़त्म</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printers.py"/>
+        <source>Paper jam</source>
+        <translation>कागज़ फँसा</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printers.py"/>
+        <source>Toner low</source>
+        <translation>टोनर कम</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printers.py"/>
+        <source>Out of toner</source>
+        <translation>टोनर ख़त्म</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printers.py"/>
+        <source>Ink low</source>
+        <translation>स्याही कम</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printers.py"/>
+        <source>Out of ink</source>
+        <translation>स्याही ख़त्म</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printers.py"/>
+        <source>Cover open</source>
+        <translation>ढक्कन खुला</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printers.py"/>
+        <source>Offline</source>
+        <translation>ऑफ़लाइन</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printers.py"/>
+        <source>Connecting…</source>
+        <translation>कनेक्ट हो रहा है…</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printers.py"/>
+        <source>Driver problem</source>
+        <translation>ड्राइवर में समस्या</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printers.py"/>
+        <source>CUPS needs printer admin rights for this. Use KDE&apos;s printer settings, which can ask for your password, or join the lpadmin group.</source>
+        <translation>इसके लिए CUPS को प्रिंटर एडमिन अधिकार चाहिए। KDE की प्रिंटर सेटिंग्स इस्तेमाल करें, जो आपका पासवर्ड पूछ सकती हैं, या lpadmin समूह में शामिल हों।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printers.py"/>
+        <source>That printer or job is gone.</source>
+        <translation>वह प्रिंटर या जॉब अब नहीं है।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printers.py"/>
+        <source>CUPS said: {err}</source>
+        <translation>CUPS ने कहा: {err}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printers.py"/>
+        <source>Couldn&apos;t talk to CUPS (HTTP {code}).</source>
+        <translation>CUPS से बात नहीं हो सकी (HTTP {code})।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printers.py"/>
+        <source>The printing service (CUPS) isn&apos;t running.</source>
+        <translation>प्रिंटिंग सेवा (CUPS) नहीं चल रही है।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printers.py"/>
+        <source>Printing needs python3-cups: {cmd}</source>
+        <translation>प्रिंटिंग के लिए python3-cups चाहिए: {cmd}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printers.py"/>
+        <source>Couldn&apos;t set the default printer: {err}</source>
+        <translation>डिफ़ॉल्ट प्रिंटर सेट नहीं हो सका: {err}</translation>
+    </message>
+</context>
+<context>
+    <name>grimoire.printersview</name>
+    <message>
+        <location filename="../../grimoire/printersview.py"/>
+        <source>Paused</source>
+        <translation>रुका हुआ</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printersview.py"/>
+        <source>Printing</source>
+        <translation>प्रिंट हो रहा है</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printersview.py"/>
+        <source>Ready</source>
+        <translation>तैयार</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printersview.py"/>
+        <source>Set as default</source>
+        <translation>डिफ़ॉल्ट बनाएँ</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printersview.py"/>
+        <source>Apps pick this printer first</source>
+        <translation>ऐप्स पहले यही प्रिंटर चुनते हैं</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printersview.py"/>
+        <source>Resume</source>
+        <translation>फिर शुरू करें</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printersview.py"/>
+        <source>Pause</source>
+        <translation>रोकें</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printersview.py"/>
+        <source>A paused printer keeps its jobs waiting</source>
+        <translation>रुका हुआ प्रिंटर अपने जॉब प्रतीक्षा में रखता है</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printersview.py"/>
+        <source>Test page</source>
+        <translation>टेस्ट पेज</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printersview.py"/>
+        <source>More</source>
+        <translation>और</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printersview.py"/>
+        <source>Options in KDE…</source>
+        <translation>KDE में विकल्प…</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printersview.py"/>
+        <source>Remove printer…</source>
+        <translation>प्रिंटर हटाएँ…</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printersview.py"/>
+        <source>DEFAULT</source>
+        <translation>डिफ़ॉल्ट</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printersview.py"/>
+        <source>{name} is now the default printer.</source>
+        <translation>{name} अब डिफ़ॉल्ट प्रिंटर है।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printersview.py"/>
+        <source>{name} is now your default printer (just for you: CUPS keeps another one for everyone).</source>
+        <translation>{name} अब आपका डिफ़ॉल्ट प्रिंटर है (सिर्फ़ आपके लिए: CUPS सबके लिए कोई दूसरा रखता है)।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printersview.py"/>
+        <source>{name} is printing again.</source>
+        <translation>{name} फिर से प्रिंट कर रहा है।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printersview.py"/>
+        <source>{name} is paused.</source>
+        <translation>{name} रोक दिया गया है।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printersview.py"/>
+        <source>Test page sent to {name}.</source>
+        <translation>टेस्ट पेज {name} को भेजा गया।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printersview.py"/>
+        <source>KDE&apos;s printer settings aren&apos;t installed (package print-manager).</source>
+        <translation>KDE की प्रिंटर सेटिंग्स इंस्टॉल नहीं हैं (पैकेज print-manager)।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printersview.py"/>
+        <source>Remove {name}? Its waiting jobs are cancelled.</source>
+        <translation>{name} हटाएँ? इसके प्रतीक्षारत जॉब रद्द हो जाएँगे।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printersview.py"/>
+        <source>It was found on the network, so it may come back by itself while it&apos;s switched on.</source>
+        <translation>यह नेटवर्क पर मिला था, इसलिए चालू रहने तक यह अपने आप वापस आ सकता है।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printersview.py"/>
+        <source>Remove</source>
+        <translation>हटाएँ</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printersview.py"/>
+        <source>{name} removed.</source>
+        <translation>{name} हटा दिया गया।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printersview.py"/>
+        <source>Cancel</source>
+        <translation>रद्द करें</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printersview.py"/>
+        <source>Stop this job and drop it from the queue</source>
+        <translation>यह जॉब रोकें और कतार से हटाएँ</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printersview.py"/>
+        <source>Untitled job</source>
+        <translation>बिना नाम का जॉब</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printersview.py"/>
+        <source>Job cancelled.</source>
+        <translation>जॉब रद्द किया गया।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printersview.py"/>
+        <source>Printers on this PC and what&apos;s waiting to print. Adding a printer opens KDE&apos;s printer settings, which find drivers for you.</source>
+        <translation>इस पीसी के प्रिंटर और जो प्रिंट होने की प्रतीक्षा में है। प्रिंटर जोड़ने पर KDE की प्रिंटर सेटिंग्स खुलती हैं, जो आपके लिए ड्राइवर ढूँढती हैं।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printersview.py"/>
+        <source>Add printer…</source>
+        <translation>प्रिंटर जोड़ें…</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printersview.py"/>
+        <source>Refresh</source>
+        <translation>रीफ़्रेश करें</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printersview.py"/>
+        <source>Printing needs python3-cups. Install it with:</source>
+        <translation>प्रिंटिंग के लिए python3-cups चाहिए। इसे ऐसे इंस्टॉल करें:</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printersview.py"/>
+        <source>PRINTERS</source>
+        <translation>प्रिंटर</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printersview.py"/>
+        <source>Reading printers…</source>
+        <translation>प्रिंटर पढ़े जा रहे हैं…</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printersview.py"/>
+        <source>QUEUE</source>
+        <translation>कतार</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printersview.py"/>
+        <source>Nothing waiting to print.</source>
+        <translation>प्रिंट के लिए कुछ भी प्रतीक्षा में नहीं है।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printersview.py"/>
+        <source>No printing support yet.</source>
+        <translation>अभी प्रिंटिंग सपोर्ट नहीं है।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printersview.py"/>
+        <source>No printers yet. Add one, or switch on a network printer: most show up by themselves.</source>
+        <translation>अभी कोई प्रिंटर नहीं। एक जोड़ें, या नेटवर्क प्रिंटर चालू करें: ज़्यादातर अपने आप दिख जाते हैं।</translation>
+    </message>
+</context>
+<context>
     <name>grimoire.roothelper</name>
     <message>
         <location filename="../../grimoire/roothelper.py"/>
@@ -1374,6 +1810,11 @@
         <location filename="../../grimoire/settingsview.py"/>
         <source>Account</source>
         <translation>खाता</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/settingsview.py"/>
+        <source>Printers</source>
+        <translation>प्रिंटर</translation>
     </message>
     <message>
         <location filename="../../grimoire/settingsview.py"/>

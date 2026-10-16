@@ -2,6 +2,146 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="pt_BR" sourcelanguage="en">
 <context>
+    <name>grimoire.aboutview</name>
+    <message numerus="yes">
+        <location filename="../../grimoire/aboutview.py"/>
+        <source>%n day(s)</source>
+        <translation>
+            <numerusform>%n dia</numerusform>
+            <numerusform>%n dias</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../../grimoire/aboutview.py"/>
+        <source>%n hour(s)</source>
+        <translation>
+            <numerusform>%n hora</numerusform>
+            <numerusform>%n horas</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../../grimoire/aboutview.py"/>
+        <source>%n minute(s)</source>
+        <translation>
+            <numerusform>%n minuto</numerusform>
+            <numerusform>%n minutos</numerusform>
+        </translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/aboutview.py"/>
+        <source>User</source>
+        <translation>Usuário</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/aboutview.py"/>
+        <source>Host</source>
+        <translation>Host</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/aboutview.py"/>
+        <source>Machine</source>
+        <translation>Máquina</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/aboutview.py"/>
+        <source>System</source>
+        <translation>Sistema</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/aboutview.py"/>
+        <source>Kernel</source>
+        <translation>Kernel</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/aboutview.py"/>
+        <source>Desktop</source>
+        <translation>Desktop</translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../../grimoire/aboutview.py"/>
+        <source>%n thread(s)</source>
+        <translation>
+            <numerusform>%n thread</numerusform>
+            <numerusform>%n threads</numerusform>
+        </translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/aboutview.py"/>
+        <source>Processor</source>
+        <translation>Processador</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/aboutview.py"/>
+        <source>Graphics</source>
+        <translation>Gráficos</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/aboutview.py"/>
+        <source>Memory</source>
+        <translation>Memória</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/aboutview.py"/>
+        <source>{size}, {free} free</source>
+        <translation>{size}, {free} livres</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/aboutview.py"/>
+        <source>Storage</source>
+        <translation>Armazenamento</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/aboutview.py"/>
+        <source>Display</source>
+        <translation>Tela</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/aboutview.py"/>
+        <source>Uptime</source>
+        <translation>Tempo ligado</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/aboutview.py"/>
+        <source>Reading this PC…</source>
+        <translation>Lendo este PC…</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/aboutview.py"/>
+        <source>Copy</source>
+        <translation>Copiar</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/aboutview.py"/>
+        <source>Copy these specs as plain text to share</source>
+        <translation>Copiar estas especificações como texto simples para compartilhar</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/aboutview.py"/>
+        <source>Show host and user name</source>
+        <translation>Mostrar nome do host e do usuário</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/aboutview.py"/>
+        <source>Off by default, so the copied text has nothing personal in it</source>
+        <translation>Desligado por padrão, para que o texto copiado não tenha nada pessoal</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/aboutview.py"/>
+        <source>Couldn&apos;t read this PC: {err}</source>
+        <translation>Não foi possível ler este PC: {err}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/aboutview.py"/>
+        <source>Copied</source>
+        <translation>Copiado</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/aboutview.py"/>
+        <source>THIS PC</source>
+        <translation>ESTE PC</translation>
+    </message>
+</context>
+<context>
     <name>grimoire.accounts</name>
     <message>
         <location filename="../../grimoire/accounts.py"/>
@@ -1273,6 +1413,302 @@
     </message>
 </context>
 <context>
+    <name>grimoire.printers</name>
+    <message>
+        <location filename="../../grimoire/printers.py"/>
+        <source>Waiting</source>
+        <translation>Aguardando</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printers.py"/>
+        <source>Held</source>
+        <translation>Retido</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printers.py"/>
+        <source>Printing</source>
+        <translation>Imprimindo</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printers.py"/>
+        <source>Stopped</source>
+        <translation>Parado</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printers.py"/>
+        <source>Out of paper</source>
+        <translation>Sem papel</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printers.py"/>
+        <source>Paper jam</source>
+        <translation>Papel atolado</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printers.py"/>
+        <source>Toner low</source>
+        <translation>Toner baixo</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printers.py"/>
+        <source>Out of toner</source>
+        <translation>Sem toner</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printers.py"/>
+        <source>Ink low</source>
+        <translation>Tinta baixa</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printers.py"/>
+        <source>Out of ink</source>
+        <translation>Sem tinta</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printers.py"/>
+        <source>Cover open</source>
+        <translation>Tampa aberta</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printers.py"/>
+        <source>Offline</source>
+        <translation>Offline</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printers.py"/>
+        <source>Connecting…</source>
+        <translation>Conectando…</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printers.py"/>
+        <source>Driver problem</source>
+        <translation>Problema de driver</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printers.py"/>
+        <source>CUPS needs printer admin rights for this. Use KDE&apos;s printer settings, which can ask for your password, or join the lpadmin group.</source>
+        <translation>O CUPS precisa de permissão de administrador de impressoras para isso. Use as configurações de impressora do KDE, que podem pedir sua senha, ou entre no grupo lpadmin.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printers.py"/>
+        <source>That printer or job is gone.</source>
+        <translation>Essa impressora ou trabalho não existe mais.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printers.py"/>
+        <source>CUPS said: {err}</source>
+        <translation>O CUPS disse: {err}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printers.py"/>
+        <source>Couldn&apos;t talk to CUPS (HTTP {code}).</source>
+        <translation>Não foi possível falar com o CUPS (HTTP {code}).</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printers.py"/>
+        <source>The printing service (CUPS) isn&apos;t running.</source>
+        <translation>O serviço de impressão (CUPS) não está rodando.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printers.py"/>
+        <source>Printing needs python3-cups: {cmd}</source>
+        <translation>Imprimir precisa do python3-cups: {cmd}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printers.py"/>
+        <source>Couldn&apos;t set the default printer: {err}</source>
+        <translation>Não foi possível definir a impressora padrão: {err}</translation>
+    </message>
+</context>
+<context>
+    <name>grimoire.printersview</name>
+    <message>
+        <location filename="../../grimoire/printersview.py"/>
+        <source>Paused</source>
+        <translation>Pausada</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printersview.py"/>
+        <source>Printing</source>
+        <translation>Imprimindo</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printersview.py"/>
+        <source>Ready</source>
+        <translation>Pronta</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printersview.py"/>
+        <source>Set as default</source>
+        <translation>Definir como padrão</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printersview.py"/>
+        <source>Apps pick this printer first</source>
+        <translation>Os apps escolhem esta impressora primeiro</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printersview.py"/>
+        <source>Resume</source>
+        <translation>Retomar</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printersview.py"/>
+        <source>Pause</source>
+        <translation>Pausar</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printersview.py"/>
+        <source>A paused printer keeps its jobs waiting</source>
+        <translation>Uma impressora pausada mantém seus trabalhos aguardando</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printersview.py"/>
+        <source>Test page</source>
+        <translation>Página de teste</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printersview.py"/>
+        <source>More</source>
+        <translation>Mais</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printersview.py"/>
+        <source>Options in KDE…</source>
+        <translation>Opções no KDE…</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printersview.py"/>
+        <source>Remove printer…</source>
+        <translation>Remover impressora…</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printersview.py"/>
+        <source>DEFAULT</source>
+        <translation>PADRÃO</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printersview.py"/>
+        <source>{name} is now the default printer.</source>
+        <translation>{name} agora é a impressora padrão.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printersview.py"/>
+        <source>{name} is now your default printer (just for you: CUPS keeps another one for everyone).</source>
+        <translation>{name} agora é a sua impressora padrão (só para você: o CUPS mantém outra para todos).</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printersview.py"/>
+        <source>{name} is printing again.</source>
+        <translation>{name} voltou a imprimir.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printersview.py"/>
+        <source>{name} is paused.</source>
+        <translation>{name} está pausada.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printersview.py"/>
+        <source>Test page sent to {name}.</source>
+        <translation>Página de teste enviada para {name}.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printersview.py"/>
+        <source>KDE&apos;s printer settings aren&apos;t installed (package print-manager).</source>
+        <translation>As configurações de impressora do KDE não estão instaladas (pacote print-manager).</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printersview.py"/>
+        <source>Remove {name}? Its waiting jobs are cancelled.</source>
+        <translation>Remover {name}? Os trabalhos aguardando são cancelados.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printersview.py"/>
+        <source>It was found on the network, so it may come back by itself while it&apos;s switched on.</source>
+        <translation>Ela foi encontrada na rede, então pode voltar sozinha enquanto estiver ligada.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printersview.py"/>
+        <source>Remove</source>
+        <translation>Remover</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printersview.py"/>
+        <source>{name} removed.</source>
+        <translation>{name} removida.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printersview.py"/>
+        <source>Cancel</source>
+        <translation>Cancelar</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printersview.py"/>
+        <source>Stop this job and drop it from the queue</source>
+        <translation>Parar este trabalho e tirá-lo da fila</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printersview.py"/>
+        <source>Untitled job</source>
+        <translation>Trabalho sem título</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printersview.py"/>
+        <source>Job cancelled.</source>
+        <translation>Trabalho cancelado.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printersview.py"/>
+        <source>Printers on this PC and what&apos;s waiting to print. Adding a printer opens KDE&apos;s printer settings, which find drivers for you.</source>
+        <translation>As impressoras deste PC e o que está esperando para imprimir. Adicionar uma impressora abre as configurações de impressora do KDE, que encontram os drivers para você.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printersview.py"/>
+        <source>Add printer…</source>
+        <translation>Adicionar impressora…</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printersview.py"/>
+        <source>Refresh</source>
+        <translation>Atualizar</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printersview.py"/>
+        <source>Printing needs python3-cups. Install it with:</source>
+        <translation>Imprimir precisa do python3-cups. Instale com:</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printersview.py"/>
+        <source>PRINTERS</source>
+        <translation>IMPRESSORAS</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printersview.py"/>
+        <source>Reading printers…</source>
+        <translation>Lendo impressoras…</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printersview.py"/>
+        <source>QUEUE</source>
+        <translation>FILA</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printersview.py"/>
+        <source>Nothing waiting to print.</source>
+        <translation>Nada esperando para imprimir.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printersview.py"/>
+        <source>No printing support yet.</source>
+        <translation>Ainda sem suporte a impressão.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printersview.py"/>
+        <source>No printers yet. Add one, or switch on a network printer: most show up by themselves.</source>
+        <translation>Nenhuma impressora ainda. Adicione uma ou ligue uma impressora de rede: a maioria aparece sozinha.</translation>
+    </message>
+</context>
+<context>
     <name>grimoire.roothelper</name>
     <message>
         <location filename="../../grimoire/roothelper.py"/>
@@ -1374,6 +1810,11 @@
         <location filename="../../grimoire/settingsview.py"/>
         <source>Account</source>
         <translation>Conta</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/settingsview.py"/>
+        <source>Printers</source>
+        <translation>Impressoras</translation>
     </message>
     <message>
         <location filename="../../grimoire/settingsview.py"/>

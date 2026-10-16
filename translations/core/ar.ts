@@ -2,6 +2,162 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="ar" sourcelanguage="en">
 <context>
+    <name>grimoire.aboutview</name>
+    <message numerus="yes">
+        <location filename="../../grimoire/aboutview.py"/>
+        <source>%n day(s)</source>
+        <translation>
+            <numerusform>‏%n يوم</numerusform>
+            <numerusform>يوم واحد</numerusform>
+            <numerusform>يومان</numerusform>
+            <numerusform>‏%n أيام</numerusform>
+            <numerusform>‏%n يومًا</numerusform>
+            <numerusform>‏%n يوم</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../../grimoire/aboutview.py"/>
+        <source>%n hour(s)</source>
+        <translation>
+            <numerusform>‏%n ساعة</numerusform>
+            <numerusform>ساعة واحدة</numerusform>
+            <numerusform>ساعتان</numerusform>
+            <numerusform>‏%n ساعات</numerusform>
+            <numerusform>‏%n ساعة</numerusform>
+            <numerusform>‏%n ساعة</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../../grimoire/aboutview.py"/>
+        <source>%n minute(s)</source>
+        <translation>
+            <numerusform>‏%n دقيقة</numerusform>
+            <numerusform>دقيقة واحدة</numerusform>
+            <numerusform>دقيقتان</numerusform>
+            <numerusform>‏%n دقائق</numerusform>
+            <numerusform>‏%n دقيقة</numerusform>
+            <numerusform>‏%n دقيقة</numerusform>
+        </translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/aboutview.py"/>
+        <source>User</source>
+        <translation>المستخدم</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/aboutview.py"/>
+        <source>Host</source>
+        <translation>المضيف</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/aboutview.py"/>
+        <source>Machine</source>
+        <translation>الجهاز</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/aboutview.py"/>
+        <source>System</source>
+        <translation>النظام</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/aboutview.py"/>
+        <source>Kernel</source>
+        <translation>النواة</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/aboutview.py"/>
+        <source>Desktop</source>
+        <translation>سطح المكتب</translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../../grimoire/aboutview.py"/>
+        <source>%n thread(s)</source>
+        <translation>
+            <numerusform>‏%n خيط</numerusform>
+            <numerusform>خيط واحد</numerusform>
+            <numerusform>خيطان</numerusform>
+            <numerusform>‏%n خيوط</numerusform>
+            <numerusform>‏%n خيطًا</numerusform>
+            <numerusform>‏%n خيط</numerusform>
+        </translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/aboutview.py"/>
+        <source>Processor</source>
+        <translation>المعالج</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/aboutview.py"/>
+        <source>Graphics</source>
+        <translation>الرسوميات</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/aboutview.py"/>
+        <source>Memory</source>
+        <translation>الذاكرة</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/aboutview.py"/>
+        <source>{size}, {free} free</source>
+        <translation>‏{size}، المتاح {free}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/aboutview.py"/>
+        <source>Storage</source>
+        <translation>التخزين</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/aboutview.py"/>
+        <source>Display</source>
+        <translation>الشاشة</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/aboutview.py"/>
+        <source>Uptime</source>
+        <translation>مدة التشغيل</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/aboutview.py"/>
+        <source>Reading this PC…</source>
+        <translation>جارٍ قراءة معلومات هذا الحاسوب…</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/aboutview.py"/>
+        <source>Copy</source>
+        <translation>نسخ</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/aboutview.py"/>
+        <source>Copy these specs as plain text to share</source>
+        <translation>انسخ هذه المواصفات كنص عادي لمشاركتها</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/aboutview.py"/>
+        <source>Show host and user name</source>
+        <translation>إظهار اسم المضيف واسم المستخدم</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/aboutview.py"/>
+        <source>Off by default, so the copied text has nothing personal in it</source>
+        <translation>معطّل افتراضيًا، كي لا يحتوي النص المنسوخ على أي شيء شخصي</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/aboutview.py"/>
+        <source>Couldn&apos;t read this PC: {err}</source>
+        <translation>تعذّرت قراءة معلومات هذا الحاسوب: {err}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/aboutview.py"/>
+        <source>Copied</source>
+        <translation>تم النسخ</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/aboutview.py"/>
+        <source>THIS PC</source>
+        <translation>هذا الحاسوب</translation>
+    </message>
+</context>
+<context>
     <name>grimoire.accounts</name>
     <message>
         <location filename="../../grimoire/accounts.py"/>
@@ -1285,6 +1441,302 @@
     </message>
 </context>
 <context>
+    <name>grimoire.printers</name>
+    <message>
+        <location filename="../../grimoire/printers.py"/>
+        <source>Waiting</source>
+        <translation>في الانتظار</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printers.py"/>
+        <source>Held</source>
+        <translation>معلّقة</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printers.py"/>
+        <source>Printing</source>
+        <translation>جارٍ الطباعة</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printers.py"/>
+        <source>Stopped</source>
+        <translation>متوقفة</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printers.py"/>
+        <source>Out of paper</source>
+        <translation>نفد الورق</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printers.py"/>
+        <source>Paper jam</source>
+        <translation>انحشار الورق</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printers.py"/>
+        <source>Toner low</source>
+        <translation>الحبر المسحوق منخفض</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printers.py"/>
+        <source>Out of toner</source>
+        <translation>نفد الحبر المسحوق</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printers.py"/>
+        <source>Ink low</source>
+        <translation>الحبر منخفض</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printers.py"/>
+        <source>Out of ink</source>
+        <translation>نفد الحبر</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printers.py"/>
+        <source>Cover open</source>
+        <translation>الغطاء مفتوح</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printers.py"/>
+        <source>Offline</source>
+        <translation>غير متصلة</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printers.py"/>
+        <source>Connecting…</source>
+        <translation>جارٍ الاتصال…</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printers.py"/>
+        <source>Driver problem</source>
+        <translation>مشكلة في التعريف</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printers.py"/>
+        <source>CUPS needs printer admin rights for this. Use KDE&apos;s printer settings, which can ask for your password, or join the lpadmin group.</source>
+        <translation>يحتاج CUPS إلى صلاحيات إدارة الطابعات لهذا. استخدم إعدادات الطابعات في KDE، التي يمكنها طلب كلمة المرور، أو انضم إلى مجموعة lpadmin.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printers.py"/>
+        <source>That printer or job is gone.</source>
+        <translation>تلك الطابعة أو المهمة لم تعد موجودة.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printers.py"/>
+        <source>CUPS said: {err}</source>
+        <translation>قال CUPS: {err}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printers.py"/>
+        <source>Couldn&apos;t talk to CUPS (HTTP {code}).</source>
+        <translation>تعذّر التواصل مع CUPS (HTTP {code}).</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printers.py"/>
+        <source>The printing service (CUPS) isn&apos;t running.</source>
+        <translation>خدمة الطباعة (CUPS) لا تعمل.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printers.py"/>
+        <source>Printing needs python3-cups: {cmd}</source>
+        <translation>تحتاج الطباعة إلى python3-cups: {cmd}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printers.py"/>
+        <source>Couldn&apos;t set the default printer: {err}</source>
+        <translation>تعذّر تعيين الطابعة الافتراضية: {err}</translation>
+    </message>
+</context>
+<context>
+    <name>grimoire.printersview</name>
+    <message>
+        <location filename="../../grimoire/printersview.py"/>
+        <source>Paused</source>
+        <translation>متوقفة مؤقتًا</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printersview.py"/>
+        <source>Printing</source>
+        <translation>جارٍ الطباعة</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printersview.py"/>
+        <source>Ready</source>
+        <translation>جاهزة</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printersview.py"/>
+        <source>Set as default</source>
+        <translation>تعيين كافتراضية</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printersview.py"/>
+        <source>Apps pick this printer first</source>
+        <translation>تختار التطبيقات هذه الطابعة أولًا</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printersview.py"/>
+        <source>Resume</source>
+        <translation>استئناف</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printersview.py"/>
+        <source>Pause</source>
+        <translation>إيقاف مؤقت</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printersview.py"/>
+        <source>A paused printer keeps its jobs waiting</source>
+        <translation>الطابعة المتوقفة مؤقتًا تُبقي مهامها في الانتظار</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printersview.py"/>
+        <source>Test page</source>
+        <translation>صفحة اختبار</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printersview.py"/>
+        <source>More</source>
+        <translation>المزيد</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printersview.py"/>
+        <source>Options in KDE…</source>
+        <translation>الخيارات في KDE…</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printersview.py"/>
+        <source>Remove printer…</source>
+        <translation>إزالة الطابعة…</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printersview.py"/>
+        <source>DEFAULT</source>
+        <translation>افتراضية</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printersview.py"/>
+        <source>{name} is now the default printer.</source>
+        <translation>أصبحت {name} الطابعة الافتراضية.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printersview.py"/>
+        <source>{name} is now your default printer (just for you: CUPS keeps another one for everyone).</source>
+        <translation>أصبحت {name} طابعتك الافتراضية (لك وحدك: يحتفظ CUPS بطابعة أخرى للجميع).</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printersview.py"/>
+        <source>{name} is printing again.</source>
+        <translation>عادت {name} إلى الطباعة.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printersview.py"/>
+        <source>{name} is paused.</source>
+        <translation>‏{name} متوقفة مؤقتًا.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printersview.py"/>
+        <source>Test page sent to {name}.</source>
+        <translation>أُرسلت صفحة اختبار إلى {name}.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printersview.py"/>
+        <source>KDE&apos;s printer settings aren&apos;t installed (package print-manager).</source>
+        <translation>إعدادات الطابعات في KDE غير مثبّتة (الحزمة print-manager).</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printersview.py"/>
+        <source>Remove {name}? Its waiting jobs are cancelled.</source>
+        <translation>إزالة {name}؟ ستُلغى مهامها المنتظرة.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printersview.py"/>
+        <source>It was found on the network, so it may come back by itself while it&apos;s switched on.</source>
+        <translation>عُثر عليها في الشبكة، لذا قد تعود من تلقاء نفسها ما دامت قيد التشغيل.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printersview.py"/>
+        <source>Remove</source>
+        <translation>إزالة</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printersview.py"/>
+        <source>{name} removed.</source>
+        <translation>أُزيلت {name}.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printersview.py"/>
+        <source>Cancel</source>
+        <translation>إلغاء</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printersview.py"/>
+        <source>Stop this job and drop it from the queue</source>
+        <translation>أوقف هذه المهمة وأخرجها من قائمة الانتظار</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printersview.py"/>
+        <source>Untitled job</source>
+        <translation>مهمة بلا عنوان</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printersview.py"/>
+        <source>Job cancelled.</source>
+        <translation>أُلغيت المهمة.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printersview.py"/>
+        <source>Printers on this PC and what&apos;s waiting to print. Adding a printer opens KDE&apos;s printer settings, which find drivers for you.</source>
+        <translation>طابعات هذا الحاسوب وما ينتظر الطباعة. تفتح إضافة طابعة إعدادات الطابعات في KDE، التي تجد التعريفات لك.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printersview.py"/>
+        <source>Add printer…</source>
+        <translation>إضافة طابعة…</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printersview.py"/>
+        <source>Refresh</source>
+        <translation>تحديث</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printersview.py"/>
+        <source>Printing needs python3-cups. Install it with:</source>
+        <translation>تحتاج الطباعة إلى python3-cups. ثبّته بالأمر:</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printersview.py"/>
+        <source>PRINTERS</source>
+        <translation>الطابعات</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printersview.py"/>
+        <source>Reading printers…</source>
+        <translation>جارٍ قراءة الطابعات…</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printersview.py"/>
+        <source>QUEUE</source>
+        <translation>قائمة الانتظار</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printersview.py"/>
+        <source>Nothing waiting to print.</source>
+        <translation>لا شيء ينتظر الطباعة.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printersview.py"/>
+        <source>No printing support yet.</source>
+        <translation>لا يوجد دعم للطباعة بعد.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/printersview.py"/>
+        <source>No printers yet. Add one, or switch on a network printer: most show up by themselves.</source>
+        <translation>لا توجد طابعات بعد. أضف واحدة، أو شغّل طابعة شبكية: معظمها يظهر من تلقاء نفسه.</translation>
+    </message>
+</context>
+<context>
     <name>grimoire.roothelper</name>
     <message>
         <location filename="../../grimoire/roothelper.py"/>
@@ -1386,6 +1838,11 @@
         <location filename="../../grimoire/settingsview.py"/>
         <source>Account</source>
         <translation>الحساب</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/settingsview.py"/>
+        <source>Printers</source>
+        <translation>الطابعات</translation>
     </message>
     <message>
         <location filename="../../grimoire/settingsview.py"/>

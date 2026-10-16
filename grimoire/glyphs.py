@@ -324,6 +324,13 @@ def _draw(name: str, p: QPainter):
             pt = QPointF(12 + rad * math.cos(ang), 12.8 + rad * math.sin(ang))
             path.moveTo(pt) if i == 0 else path.lineTo(pt)
         path.closeSubpath(); p.drawPath(path)
+    elif name == "printer":                                # a printer: paper in at the top, a page out at the front
+        p.drawPolyline([QPointF(7, 9), QPointF(7, 3.5), QPointF(17, 3.5), QPointF(17, 9)])
+        body = QPainterPath(QPointF(7, 17)); body.lineTo(4.5, 17); body.quadTo(3.5, 17, 3.5, 16); body.lineTo(3.5, 10)
+        body.quadTo(3.5, 9, 4.5, 9); body.lineTo(19.5, 9); body.quadTo(20.5, 9, 20.5, 10); body.lineTo(20.5, 16)
+        body.quadTo(20.5, 17, 19.5, 17); body.lineTo(17, 17); p.drawPath(body)
+        p.drawRect(r(7, 13.5, 10, 7))
+        p.drawPoint(QPointF(17.5, 11.5))
 
 
 def _pixmap(name: str, color: str, size: int) -> QPixmap:
