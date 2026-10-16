@@ -104,6 +104,7 @@ def render(names: list[str]):
     private_addresses()
     offline_stubs()
     demo_audio()
+    demo_phone()
     OUT.mkdir(parents=True, exist_ok=True)
     win = Window()
     win.resize(W, H)
@@ -370,6 +371,21 @@ PREPARE["updatel"] = _updatel
 PAGES.insert(PAGES.index("settings"), "updatel")
 PREPARE["audiol"] = _audiol
 WAIT = {"widgetl": 5000, "mural": 6000, "systeml": 30000, "netl": 30000, "optimizel": 5000, "terminall": 3500, "vaultl": 3000}
+
+
+def demo_phone():
+    """PhoneL talks to KDE Connect's daemon: start the made-up one (scripts/fake_kdeconnect.py) on a private bus."""
+    import atexit
+    sys.path.insert(0, str(REPO / "scripts"))
+    from fake_kdeconnect import FakeKdeConnect
+    from grimoire.spells.phonel import kdc
+    fake = FakeKdeConnect(BOX / "kdeconnect")
+    fake.start()
+    atexit.register(fake.stop)
+    kdc.ADDRESS = fake.address
+
+
+PAGES.append("phonel")
 
 
 def main():

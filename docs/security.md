@@ -56,6 +56,9 @@ when you use one; guests never go online for it. There is no telemetry and no an
 Once you put WidgetL's Weather widget on the desktop and pick a place, it asks Open-Meteo (api.open-meteo.com) for
 the forecast at that place's coordinates every 30 minutes; its city search (geocoding-api.open-meteo.com) sends what you
 typed, only when you press Search. Your location is never looked up from your IP address.
+PhoneL opens no connection of its own: everything goes through KDE Connect's daemon, which talks to your paired
+devices on the local network, end-to-end encrypted. PhoneL never pairs, accepts a pairing or sends a text message
+without asking you first.
 
 ## Sign-in and backups: threat model
 

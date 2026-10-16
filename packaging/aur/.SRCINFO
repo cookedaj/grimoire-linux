@@ -33,6 +33,7 @@ pkgbase = grimoire-linux-git
 	optdepends = qt6-translations: Qt dialogs in your language
 	optdepends = noto-fonts: Arabic, Urdu, Hindi and Bengali text
 	optdepends = noto-fonts-cjk: Chinese text
+	optdepends = kdeconnect: PhoneL
 	provides = grimoire-linux
 	conflicts = grimoire-linux
 	source = grimoire-linux::git+https://github.com/cookedaj/grimoire-linux.git

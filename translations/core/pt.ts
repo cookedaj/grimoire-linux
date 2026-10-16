@@ -3101,6 +3101,11 @@
         <source>Desktop widgets in black and white: a clock, your system&apos;s readings, the weather and what&apos;s playing</source>
         <translation>Widgets de área de trabalho em preto e branco: um relógio, as leituras do seu sistema, o clima e o que está tocando</translation>
     </message>
+    <message>
+        <location filename="../../grimoire/spells/__init__.py"/>
+        <source>Your phone on this PC through KDE Connect: send files, ring it, share the clipboard, browse its files, read and dismiss its notifications, text messages, media and commands</source>
+        <translation>Seu celular neste PC pelo KDE Connect: envie arquivos, faça-o tocar, compartilhe a área de transferência, navegue pelos arquivos, leia e dispense as notificações, mensagens de texto, mídia e comandos</translation>
+    </message>
 </context>
 <context>
     <name>grimoire.standalone</name>

@@ -257,3 +257,20 @@ SPELLS.append(Spell("widgetl", "WidgetL",
                     tr_noop("grimoire.spells", "Desktop widgets in black and white: a clock, your system's readings, "
                                                "the weather and what's playing"),
                     _widgetl, "widgets", _widgetl_status))
+
+
+def _phonel():
+    from grimoire.spells.phonel.page import PhoneLPage
+    return PhoneLPage()
+
+
+def _phonel_status() -> str:
+    from grimoire.spells.phonel.kdc import status_line
+    return status_line()
+
+
+SPELLS.append(Spell("phonel", "PhoneL",
+                    tr_noop("grimoire.spells", "Your phone on this PC through KDE Connect: send files, ring it, "
+                                               "share the clipboard, browse its files, read and dismiss its "
+                                               "notifications, text messages, media and commands"),
+                    _phonel, "phone", _phonel_status))
