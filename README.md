@@ -177,6 +177,19 @@ up with `rclone config`, and shows up too); rclone keeps the key in its own conf
 changes upload in the background. Each drive shows its space used and free and what is still uploading, **Open**
 takes you there in VaultL (where mounted drives are listed under Drives), and **Activity** shows the mount's log and
 errors. Plasma's own kio-gdrive (`gdrive:/` in Dolphin) is an alternative for Google Drive alone.
+### ViewL: an image viewer and organizer
+
+![ViewL](docs/screenshots/viewl.png)
+
+Gwenview's job in black and white: a folder of pictures as a fast thumbnail grid (made on worker threads and kept in
+the same thumbnail cache Dolphin and Gwenview use), then each picture full size with a strip of its neighbours. Fit,
+100% and zoom at the pointer with the wheel or a touchpad pinch, pan, turn and flip (a JPEG is saved losslessly: only
+its orientation tag changes; replacing a file asks first and sends the original to the Trash, and **Save as** never
+overwrites), next/previous with the arrow keys, a slideshow, full screen, EXIF details, copy, rename, copy/move to a
+folder, Trash, **Set as wallpaper** (through MuraL), **Mark up in ShotL** and **Show in VaultL**. It reads every
+format Qt does, including AVIF, HEIF, JPEG XL, WebP and camera RAW with `kimageformat6-plugins`, and plays animated
+GIF/WebP. `grimoire-viewl [picture|folder]` opens it there; once installed from its card it shows up under
+**Open with** for pictures, without becoming the default.
 
 ### Tray, Settings and updates
 
@@ -294,6 +307,8 @@ Press **Install** on a spell's card on the home page (or `./install.sh --all`), 
 
 To make VaultL the default file manager: `xdg-mime default grimoire-vaultl.desktop inode/directory` (switch back in
 System Settings → Default Applications).
+To make ViewL the default image viewer, pick it in System Settings → Default Applications (or
+`xdg-mime default grimoire-viewl.desktop image/jpeg image/png image/webp image/gif`).
 
 ## Uninstall
 

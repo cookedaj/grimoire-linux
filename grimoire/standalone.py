@@ -30,7 +30,18 @@ SYSTEM_APPS = Path("/usr/share/applications")      # a distro package's menu ent
 # extra desktop-entry lines; VaultL is also the default folder handler
 EXTRA = {"vaultl": {"GenericName": "File Manager", "Categories": "Utility;System;FileTools;FileManager;",
                     "MimeType": "inode/directory;"},
-         "terminall": {"GenericName": "Terminal", "Categories": "System;TerminalEmulator;"}}
+         "terminall": {"GenericName": "Terminal", "Categories": "System;TerminalEmulator;"},
+         # listed under "Open with" for pictures; no InitialPreference, so it never takes over as the default viewer
+         "viewl": {"GenericName": "Image Viewer", "Categories": "Graphics;Viewer;2DGraphics;RasterGraphics;",
+                   "MimeType": "image/jpeg;image/png;image/gif;image/webp;image/avif;image/heif;image/heic;image/jxl;"
+                               "image/bmp;image/tiff;image/svg+xml;image/svg+xml-compressed;image/x-icon;"
+                               "image/vnd.microsoft.icon;image/x-portable-pixmap;image/x-portable-graymap;"
+                               "image/x-portable-bitmap;image/x-xbitmap;image/x-xpixmap;image/x-tga;image/x-psd;"
+                               "image/vnd.adobe.photoshop;image/x-xcf;image/openraster;application/x-krita;"
+                               "image/x-exr;image/vnd.radiance;image/qoi;image/jp2;image/x-dds;image/x-icns;"
+                               "image/x-adobe-dng;image/x-canon-cr2;image/x-canon-cr3;image/x-nikon-nef;"
+                               "image/x-sony-arw;image/x-fuji-raf;image/x-olympus-orf;image/x-panasonic-rw2;"
+                               "image/x-pentax-pef;image/x-samsung-srw;"}}
 # spells merged into another: their menu entries stay (hidden), since the system's default-app setting may name them
 MERGED = {"filel": "vaultl", "tidyl": "vaultl"}
 

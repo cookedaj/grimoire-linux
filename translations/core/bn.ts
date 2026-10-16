@@ -3553,6 +3553,8 @@
         <translation>এক হটকিতে ইমোজি, প্রতীক আর সব Unicode অক্ষর: নিজের ভাষায় খোঁজা, ত্বকের রঙ, প্রিয় আর পূর্ণ Unicode ব্লক ব্রাউজার</translation>
         <source>Google Drive, OneDrive and Dropbox as folders on your PC through rclone: sign in from your browser, mount, see the space left and what is still uploading, and open them in VaultL</source>
         <translation>rclone দিয়ে Google Drive, OneDrive আর Dropbox আপনার PC-তে ফোল্ডার হিসেবে: ব্রাউজার থেকে সাইন ইন, মাউন্ট, বাকি জায়গা আর এখনও কী আপলোড হচ্ছে দেখা, এবং VaultL-এ খোলা</translation>
+        <source>Your pictures: a fast thumbnail grid, a full view with zoom, turns, slideshow and EXIF info, plus rename, Trash and set as wallpaper</source>
+        <translation>আপনার ছবি: দ্রুত থাম্বনেইল গ্রিড, জুম, ঘোরানো, স্লাইডশো ও EXIF তথ্যসহ পূর্ণ দৃশ্য, সাথে নাম বদল, ট্র্যাশ আর ওয়ালপেপার করা</translation>
     </message>
 </context>
 <context>

@@ -3553,6 +3553,8 @@
         <translation>Emoji, símbolos y todos los caracteres Unicode con un atajo: búsqueda en tu idioma, tonos de piel, favoritos y un explorador completo de bloques Unicode</translation>
         <source>Google Drive, OneDrive and Dropbox as folders on your PC through rclone: sign in from your browser, mount, see the space left and what is still uploading, and open them in VaultL</source>
         <translation>Google Drive, OneDrive y Dropbox como carpetas en tu PC con rclone: inicia sesión desde el navegador, móntalos, mira el espacio libre y lo que aún se está subiendo, y ábrelos en VaultL</translation>
+        <source>Your pictures: a fast thumbnail grid, a full view with zoom, turns, slideshow and EXIF info, plus rename, Trash and set as wallpaper</source>
+        <translation>Tus imágenes: una cuadrícula de miniaturas rápida, una vista completa con zoom, giros, presentación e información EXIF, además de renombrar, papelera y poner como fondo de pantalla</translation>
     </message>
 </context>
 <context>

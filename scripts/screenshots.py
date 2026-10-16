@@ -386,6 +386,29 @@ def _glyphl(page, wait):
 
 PREPARE["glyphl"] = _glyphl
 PAGES.append("glyphl")
+
+
+def _viewl(page, wait):
+    """A folder of abstract sample pictures (one with made-up camera EXIF), opened full size with the info panel."""
+    from PIL import Image
+    pics = Path.home() / "Pictures" / "Samples"
+    pics.mkdir(parents=True, exist_ok=True)
+    for i in range(12):
+        _image(pics / f"sample-{i + 1:02d}.png", i + 3, (1600, 1000))
+    img = Image.open(pics / "sample-03.png").convert("RGB")
+    exif = img.getexif()
+    exif[0x010F], exif[0x0110] = "Camera", "Model 1"
+    exif[0x8769] = {0x829A: 1 / 250, 0x829D: 4.0, 0x8827: 200, 0x9003: "2026:06:14 19:42:00", 0x920A: 35.0}
+    img.save(pics / "sample-03.jpg", quality=92, exif=exif)
+    (pics / "sample-03.png").unlink()
+    page.s["info"] = True
+    page.info.setVisible(True)
+    page.info_btn.setChecked(True)
+    page.open_path(pics / "sample-03.jpg")
+
+
+PREPARE["viewl"] = _viewl
+PAGES.insert(PAGES.index("settings"), "viewl")
 WAIT = {"widgetl": 5000, "mural": 6000, "systeml": 30000, "netl": 30000, "optimizel": 5000, "terminall": 3500, "vaultl": 3000}
 
 

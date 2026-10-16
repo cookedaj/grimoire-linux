@@ -290,3 +290,19 @@ SPELLS.append(Spell("cloudl", "CloudL",
                                                "rclone: sign in from your browser, mount, see the space left and "
                                                "what is still uploading, and open them in VaultL"),
                     _cloudl, "cloud", _cloudl_status))
+
+
+def _viewl():
+    from grimoire.spells.viewl.page import ViewLPage
+    return ViewLPage()
+
+
+def _viewl_status() -> str:
+    from grimoire.spells.viewl.images import status_line
+    return status_line()
+
+
+SPELLS.append(Spell("viewl", "ViewL",
+                    tr_noop("grimoire.spells", "Your pictures: a fast thumbnail grid, a full view with zoom, turns, "
+                                               "slideshow and EXIF info, plus rename, Trash and set as wallpaper"),
+                    _viewl, "viewl", _viewl_status))

@@ -3583,6 +3583,8 @@
         <translation>Эмодзи, символы и все знаки Unicode по горячей клавише: поиск на вашем языке, оттенки кожи, избранное и полный обзор блоков Unicode</translation>
         <source>Google Drive, OneDrive and Dropbox as folders on your PC through rclone: sign in from your browser, mount, see the space left and what is still uploading, and open them in VaultL</source>
         <translation>Google Drive, OneDrive и Dropbox как папки на вашем ПК через rclone: вход через браузер, подключение, свободное место и то, что ещё загружается, и открытие в VaultL</translation>
+        <source>Your pictures: a fast thumbnail grid, a full view with zoom, turns, slideshow and EXIF info, plus rename, Trash and set as wallpaper</source>
+        <translation>Ваши изображения: быстрая сетка миниатюр, полный просмотр с масштабом, поворотами, слайд-шоу и данными EXIF, а ещё переименование, корзина и установка обоев</translation>
     </message>
 </context>
 <context>

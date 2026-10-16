@@ -3523,6 +3523,8 @@
         <translation>一个快捷键即可使用表情、符号和所有 Unicode 字符：用你的语言搜索、肤色、收藏，以及完整的 Unicode 区块浏览器</translation>
         <source>Google Drive, OneDrive and Dropbox as folders on your PC through rclone: sign in from your browser, mount, see the space left and what is still uploading, and open them in VaultL</source>
         <translation>通过 rclone 把 Google Drive、OneDrive 和 Dropbox 变成电脑上的文件夹：在浏览器中登录、挂载、查看剩余空间和仍在上传的内容，并在 VaultL 中打开</translation>
+        <source>Your pictures: a fast thumbnail grid, a full view with zoom, turns, slideshow and EXIF info, plus rename, Trash and set as wallpaper</source>
+        <translation>你的图片：快速的缩略图网格，可缩放、旋转、幻灯片放映和查看 EXIF 信息的完整视图，还能重命名、移到回收站和设为壁纸</translation>
     </message>
 </context>
 <context>

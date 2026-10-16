@@ -3553,6 +3553,8 @@
         <translation>एक हॉटकी पर इमोजी, चिह्न और हर Unicode वर्ण: अपनी भाषा में खोज, त्वचा रंग, पसंदीदा और पूरा Unicode ब्लॉक ब्राउज़र</translation>
         <source>Google Drive, OneDrive and Dropbox as folders on your PC through rclone: sign in from your browser, mount, see the space left and what is still uploading, and open them in VaultL</source>
         <translation>rclone के ज़रिए Google Drive, OneDrive और Dropbox आपके PC पर फ़ोल्डर के रूप में: ब्राउज़र से साइन इन करें, माउंट करें, बची जगह और अभी अपलोड हो रही चीज़ें देखें, और उन्हें VaultL में खोलें</translation>
+        <source>Your pictures: a fast thumbnail grid, a full view with zoom, turns, slideshow and EXIF info, plus rename, Trash and set as wallpaper</source>
+        <translation>आपकी तस्वीरें: तेज़ थंबनेल ग्रिड, ज़ूम, घुमाव, स्लाइड शो और EXIF जानकारी के साथ पूरा दृश्य, साथ में नाम बदलना, रद्दी और वॉलपेपर बनाना</translation>
     </message>
 </context>
 <context>
