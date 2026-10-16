@@ -432,6 +432,31 @@ PREPARE["printers"] = lambda page, wait: page.show_section("printers")
 PAGES.insert(PAGES.index("settings") + 1, "printers")
 
 
+def _cloudl(page, wait):
+    """Three made-up cloud drives (no rclone config, no mounts, nothing online): two mounted, one uploading."""
+    from grimoire.spells.cloudl import rclone
+    wait(800)                                        # let the first (empty, sandboxed) reading finish
+    names = {"gdrive": "drive", "onedrive": "onedrive", "dropbox": "dropbox"}
+    up = {"gdrive", "onedrive"}
+    rclone.available = lambda: True
+    rclone.remotes = lambda: [{"name": n, "type": t} for n, t in names.items()]
+    rclone.mounts = lambda: {str(rclone.mountpoint(n)): f"{n}:" for n in up}
+    rclone.service_state = lambda n: {"written": n in up, "enabled": n == "gdrive",
+                                      "active": "active" if n in up else "inactive"}
+    rclone.vfs_stats = lambda n: ({"uploading": 1, "queued": 2, "errored": 0, "cached": 1_310_000_000} if n == "gdrive"
+                                  else {"uploading": 0, "queued": 0, "errored": 0, "cached": 86_000_000})
+    rclone.about = lambda n: {"gdrive": {"total": 2 * 2**40, "used": 731 * 2**30, "free": 2 * 2**40 - 731 * 2**30},
+                              "onedrive": {"total": 1 * 2**40, "used": 214 * 2**30, "free": 810 * 2**30},
+                              "dropbox": {"total": 2 * 2**30 * 1000, "used": 1_640 * 2**30,
+                                          "free": 360 * 2**30}}[n]
+    page._busy = False
+    page._refresh_all()
+
+
+PAGES.append("cloudl")
+PREPARE["cloudl"] = _cloudl
+
+
 def main():
     names = [a for a in sys.argv[1:] if a in PAGES] or PAGES
     if os.environ.get("GRIMOIRE_SCREENSHOTS") == "1":

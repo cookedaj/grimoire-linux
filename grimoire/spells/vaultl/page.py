@@ -290,17 +290,18 @@ class VaultLPage(QWidget):
         for vol in sorted(QStorageInfo.mountedVolumes(), key=lambda v: len(v.rootPath())):
             dev = bytes(vol.device()).decode(errors="ignore")
             root = vol.rootPath()
-            if not vol.isValid() or not vol.isReady() or not dev.startswith("/dev/") or "/snap" in root \
+            cloud = bytes(vol.fileSystemType()) == b"fuse.rclone"      # CloudL's mounts (and any rclone mount)
+            if not vol.isValid() or not vol.isReady() or not (dev.startswith("/dev/") or cloud) or "/snap" in root \
                     or root.startswith("/boot"):
                 continue
             if dev in seen:                                  # same disk mounted twice (e.g. / and a subvolume)
                 continue
             seen.add(dev)
-            name = vol.displayName() or Path(root).name
+            name = Path(root).name if cloud else vol.displayName() or Path(root).name
             if root == "/":
                 name = tr("grimoire.spells.vaultl.page", "System")
             free = tr("grimoire.spells.vaultl.page", "{size} free").format(size=ltr(human(vol.bytesAvailable())))
-            it = QListWidgetItem(glyph("drive", 18), f"{name}\n{free}")
+            it = QListWidgetItem(glyph("cloud" if cloud else "drive", 18), f"{name}\n{free}")
             it.setData(Qt.ItemDataRole.UserRole, root)
             it.setToolTip(tr("grimoire.spells.vaultl.page", "{path}  ·  {free} free of {total}").format(
                 path=ltr(root), free=ltr(human(vol.bytesAvailable())), total=ltr(human(vol.bytesTotal()))))

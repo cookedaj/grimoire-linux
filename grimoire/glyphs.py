@@ -331,6 +331,12 @@ def _draw(name: str, p: QPainter):
         body.quadTo(20.5, 17, 19.5, 17); body.lineTo(17, 17); p.drawPath(body)
         p.drawRect(r(7, 13.5, 10, 7))
         p.drawPoint(QPointF(17.5, 11.5))
+    elif name == "cloud":                                  # a cloud: two puffs on a flat base
+        path = QPainterPath(QPointF(7, 18.5))
+        path.cubicTo(4.2, 18.5, 2.8, 16.6, 2.8, 14.6); path.cubicTo(2.8, 12.4, 4.6, 10.8, 6.8, 10.9)
+        path.cubicTo(7.4, 7.7, 9.9, 5.5, 13, 5.5); path.cubicTo(16.4, 5.5, 18.9, 8.1, 19, 11.2)
+        path.cubicTo(20.6, 11.6, 21.4, 13.1, 21.4, 14.8); path.cubicTo(21.4, 16.9, 19.9, 18.5, 17.6, 18.5)
+        path.closeSubpath(); p.drawPath(path)
 
 
 def _pixmap(name: str, color: str, size: int) -> QPixmap:

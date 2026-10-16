@@ -3551,6 +3551,8 @@
         <location filename="../../grimoire/spells/__init__.py"/>
         <source>Emoji, symbols and every Unicode character on a hotkey: search in your language, skin tones, favorites and a full Unicode block browser</source>
         <translation>এক হটকিতে ইমোজি, প্রতীক আর সব Unicode অক্ষর: নিজের ভাষায় খোঁজা, ত্বকের রঙ, প্রিয় আর পূর্ণ Unicode ব্লক ব্রাউজার</translation>
+        <source>Google Drive, OneDrive and Dropbox as folders on your PC through rclone: sign in from your browser, mount, see the space left and what is still uploading, and open them in VaultL</source>
+        <translation>rclone দিয়ে Google Drive, OneDrive আর Dropbox আপনার PC-তে ফোল্ডার হিসেবে: ব্রাউজার থেকে সাইন ইন, মাউন্ট, বাকি জায়গা আর এখনও কী আপলোড হচ্ছে দেখা, এবং VaultL-এ খোলা</translation>
     </message>
 </context>
 <context>

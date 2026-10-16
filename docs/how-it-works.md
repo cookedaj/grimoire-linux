@@ -88,6 +88,17 @@ what goes over the network, see [security.md](security.md).
   long as the app that copied it); later presses only send "toggle" over `$XDG_RUNTIME_DIR/grimoire-glyphl.sock`.
   It quits after 30 minutes hidden. Recent, favorites and the skin tone are in `~/.config/grimoire/glyphl.json`.
   It never types into other apps: KDE's Wayland session doesn't allow that, so it copies and closes.
+- **CloudL** is a front for rclone. It lists your remotes with `rclone listremotes --json` (names and types only;
+  `rclone.conf` holds the accounts' keys and Grimoire never opens it). **Sign in** runs `rclone config create <name>
+  drive|onedrive|dropbox`: rclone opens the service's page in your browser and waits on `127.0.0.1:53682` for the
+  answer; its output stays in memory, scrubbed of anything key-like, and a sign-in you cancel has its half-made
+  remote removed again. **Mount** writes `~/.config/systemd/user/grimoire-cloudl-<name>.service` (`Type=notify`,
+  `rclone mount <name>: ~/Cloud/<name> --vfs-cache-mode full`, logging to the journal, stopped with
+  `fusermount3 -uz`), enables it for later logins (a switch in its menu) and starts it; it refuses a `~/Cloud/<name>`
+  that already has files in it. Unmount runs `fusermount3 -u` first, which refuses while a program has a file open
+  there. Upload state comes from the mount's own remote-control socket in `$XDG_RUNTIME_DIR` (read-only `vfs/stats`;
+  without an rc password rclone refuses its config and command calls), space from `rclone about`, and Activity from
+  `journalctl --user -u` the service. VaultL lists `fuse.rclone` mounts under Drives with a cloud icon.
 
 ## Installs
 
@@ -120,6 +131,7 @@ grimoire/            the app (PySide6)
   spells/updatel/    UpdateL sources (APT, Flatpak, Snap, fwupd), runs, daily check/timer, root helper, page
 plasma/              the MuraL wallpaper plugin and the LaunchL panel widget
   spells/widgetl/    WidgetL install / add / remove, face previews, page, CLI
+  spells/cloudl/     CloudL rclone remotes, mount services, space and upload state, page
 plasma/              the MuraL wallpaper plugin, the LaunchL panel widget and WidgetL's desktop widgets
 bin/                 launchers
 install.sh           copies the app into ~/.local/share/grimoire/app and links it in

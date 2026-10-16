@@ -17,6 +17,9 @@ only ever removes what Grimoire put there. Your own files are never deleted: the
 Some spells change per-user services without a password: AudioL's equalizer writes one PipeWire drop-in
 (`~/.config/pipewire/filter-chain.conf.d/grimoire-eq.conf`, marked as Grimoire's) and restarts your
 `filter-chain.service` only when you press Apply.
+CloudL writes one user service per cloud drive you mount (`~/.config/systemd/user/grimoire-cloudl-<name>.service`,
+marked as Grimoire's) and starts it only when you press Mount. The accounts' keys live in rclone's own
+`rclone.conf`, written by rclone's sign-in; Grimoire never reads that file, and the sign-in's output is never saved.
 
 ### Where the helpers live
 
@@ -56,6 +59,8 @@ when you use one; guests never go online for it. There is no telemetry and no an
 Once you put WidgetL's Weather widget on the desktop and pick a place, it asks Open-Meteo (api.open-meteo.com) for
 the forecast at that place's coordinates every 30 minutes; its city search (geocoding-api.open-meteo.com) sends what you
 typed, only when you press Search. Your location is never looked up from your IP address.
+CloudL's mounts talk to the cloud services you signed in to (through rclone) while they're mounted; signing in opens
+the service's own page in your browser.
 
 ## Sign-in and backups: threat model
 

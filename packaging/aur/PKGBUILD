@@ -48,6 +48,8 @@ optdepends=(
     'noto-fonts-cjk: Chinese text'
     'python-pycups: printers in Settings'
     'print-manager: adding printers from Settings'
+    'rclone: CloudL cloud drives'
+    'fuse3: CloudL mounts (fusermount3)'
 )
 makedepends=('git')
 provides=("$_pkgname")
