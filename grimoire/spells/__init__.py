@@ -257,3 +257,20 @@ SPELLS.append(Spell("widgetl", "WidgetL",
                     tr_noop("grimoire.spells", "Desktop widgets in black and white: a clock, your system's readings, "
                                                "the weather and what's playing"),
                     _widgetl, "widgets", _widgetl_status))
+
+
+def _notel():
+    from grimoire.spells.notel.page import NoteLPage
+    return NoteLPage()
+
+
+def _notel_status() -> str:
+    from grimoire.spells.notel.store import status_line
+    return status_line()
+
+
+SPELLS.append(Spell("notel", "NoteL",
+                    tr_noop("grimoire.spells", "Markdown notes and a text editor in one: a notes folder with search, "
+                                               "tags, [[links]] and backlinks, a live preview, tabs, and syntax "
+                                               "colors for code"),
+                    _notel, "notel", _notel_status))

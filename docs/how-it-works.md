@@ -80,6 +80,15 @@ what goes over the network, see [security.md](security.md).
   `kpackagetool6` and adds one to the desktop with a desktop script; `uninstall.sh` takes them off every desktop and
   panel before removing them.
 
+- **NoteL** reads the notes folder on a worker thread (hidden folders like `.obsidian`, `.git` and `.trash` are
+  skipped; tags, `[[links]]` and backlinks are parsed from plain Markdown) and keeps it in memory for search. Saving
+  writes a temp file next to the note and renames it over the old one; before that it checks the file on disk still
+  has what NoteL last read, and if not it stops and asks (reload theirs, keep mine, keep both as `name (2).md`).
+  Notes autosave; other files save with Ctrl+S unless you turn autosave on for them. Moving to the Trash uses
+  `gio trash`. The preview is Qt's own Markdown reader: images load only from local files, remote ones show a
+  placeholder, and links open only on click. A second `grimoire-notel file` hands the file to the open window through
+  a socket in `$XDG_RUNTIME_DIR`. Its menu entry lists `text/plain` and `text/markdown` for **Open with** without
+  becoming the default. Settings: `~/.config/grimoire/notel.json`.
 ## Installs
 
 - **Per user** (`./install.sh`, no sudo): the app is copied to `~/.local/share/grimoire/app`, commands are linked
@@ -111,6 +120,7 @@ grimoire/            the app (PySide6)
   spells/updatel/    UpdateL sources (APT, Flatpak, Snap, fwupd), runs, daily check/timer, root helper, page
 plasma/              the MuraL wallpaper plugin and the LaunchL panel widget
   spells/widgetl/    WidgetL install / add / remove, face previews, page, CLI
+  spells/notel/      NoteL notes folder (store), index and search, editor, highlighting, preview/export, page
 plasma/              the MuraL wallpaper plugin, the LaunchL panel widget and WidgetL's desktop widgets
 bin/                 launchers
 install.sh           copies the app into ~/.local/share/grimoire/app and links it in

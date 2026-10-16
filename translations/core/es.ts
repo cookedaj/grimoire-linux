@@ -3101,6 +3101,11 @@
         <source>Desktop widgets in black and white: a clock, your system&apos;s readings, the weather and what&apos;s playing</source>
         <translation>Widgets de escritorio en blanco y negro: un reloj, las lecturas de tu sistema, el tiempo y lo que está sonando</translation>
     </message>
+    <message>
+        <location filename="../../grimoire/spells/__init__.py"/>
+        <source>Markdown notes and a text editor in one: a notes folder with search, tags, [[links]] and backlinks, a live preview, tabs, and syntax colors for code</source>
+        <translation>Notas Markdown y un editor de texto en uno: una carpeta de notas con búsqueda, etiquetas, [[enlaces]] y enlaces entrantes, vista previa en vivo, pestañas y colores de sintaxis para el código</translation>
+    </message>
 </context>
 <context>
     <name>grimoire.standalone</name>

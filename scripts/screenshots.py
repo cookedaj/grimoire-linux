@@ -369,6 +369,37 @@ def _updatel(page, wait):
 PREPARE["updatel"] = _updatel
 PAGES.insert(PAGES.index("settings"), "updatel")
 PREPARE["audiol"] = _audiol
+def _notel(page, wait):
+    """A small made-up notes folder: a project note with a link, a tag and a checklist, open beside its preview."""
+    notes = Path.home() / "Documents/Notes"
+    (notes / "Projects").mkdir(parents=True, exist_ok=True)
+    (notes / "Daily").mkdir(exist_ok=True)
+    (notes / "Projects/Garden plan.md").write_text(
+        "# Garden plan\n\nSpring beds for the back yard, see [[Seed list]] and [[Daily/2026-10-15|today's notes]]. "
+        "#garden #spring\n\n## To do\n\n- [x] Measure the beds\n- [x] Order compost\n- [ ] Build the trellis\n"
+        "- [ ] Plant the **tomatoes** after the last frost\n\n> Water early in the morning, never at noon.\n\n"
+        "| Bed | Plants | Sun |\n|-----|--------|-----|\n| North | Herbs, lettuce | Half |\n"
+        "| South | Tomatoes, beans | Full |\n\n```python\nwatering = {\"tomatoes\": 2, \"herbs\": 1}  # liters a day\n"
+        "print(sum(watering.values()))\n```\n")
+    (notes / "Seed list.md").write_text("# Seed list\n\n- Tomatoes\n- Beans\n\nFor the [[Garden plan]]. #garden\n")
+    (notes / "Daily/2026-10-15.md").write_text("# 2026-10-15\n\nOrdered compost for the [[Garden plan]].\n")
+    (notes / "Reading list.md").write_text("# Reading list\n\n1. The Overstory\n2. Braiding Sweetgrass\n#books\n")
+    (notes / "Ideas.md").write_text("# Ideas\n\n- A rain barrel by the shed #garden\n")
+    page.set_view("split")
+    page.toggle_pin(notes / "Projects/Garden plan.md")
+    page.scan()
+    wait(800)
+    page.open_path(notes / "Projects/Garden plan.md")
+    wait(1200)
+    page.links_btn.setChecked(True)
+    item = page.tree.topLevelItem(0)
+    if item:
+        page.tree.setCurrentItem(item.child(0))
+
+
+PREPARE["notel"] = _notel
+PAGES.append("notel")
+
 WAIT = {"widgetl": 5000, "mural": 6000, "systeml": 30000, "netl": 30000, "optimizel": 5000, "terminall": 3500, "vaultl": 3000}
 
 
