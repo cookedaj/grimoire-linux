@@ -21,6 +21,7 @@ from grimoire.glyphs import glyph
 from grimoire.i18n import tr
 from grimoire.paths import CACHE, HOME
 from grimoire.spells.terminall import config
+from grimoire.widgets import segments
 
 APT = "sudo apt install python3-pyte"
 CTRL = Qt.KeyboardModifier.ControlModifier
@@ -410,9 +411,9 @@ class ProfileDialog(QDialog):
             b = QPushButton(names.get(shape, shape))
             b.setObjectName("Segment")
             b.setCheckable(True)
-            b.setProperty("pos", "first" if i == 0 else "last" if i == len(config.CURSORS) - 1 else "mid")
             self.cursor_group.addButton(b, i)
             sl.addWidget(b)
+        segments(self.cursor_group.buttons())
         sl.addStretch(1)
         field(tr("grimoire.spells.terminall.page", "CURSOR"), seg)
         self.scrollback = field(tr("grimoire.spells.terminall.page", "SCROLLBACK LINES"), QSpinBox())

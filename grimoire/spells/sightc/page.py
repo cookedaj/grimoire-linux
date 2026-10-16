@@ -13,7 +13,7 @@ from grimoire.paths import CONFIG, HOME, command
 from grimoire.spells.mural import library as mural_library
 from grimoire.spells.sightc import draw, overlay
 from grimoire.spells.sightc.config import (COLORS, LIMITS, PRESETS, STYLES, Crosshair, load_profiles, save_profiles)
-from grimoire.widgets import Slider
+from grimoire.widgets import Slider, segments
 
 AUTOSTART = HOME / ".config/autostart/grimoire-sightc.desktop"
 ZOOM_BOX = 192        # px; the zoom picks the biggest whole factor (2..8) that still shows the whole crosshair
@@ -27,16 +27,15 @@ def _segments(items, on_click) -> tuple[QHBoxLayout, dict[str, QPushButton]]:
     on_click gets the id and the buttons are keyed by it."""
     row, group, buttons = QHBoxLayout(), QButtonGroup(), {}
     row.setSpacing(0)
-    names = [name for name, _ in items]
-    for i, (name, label) in enumerate(items):
+    for name, label in items:
         b = QPushButton(label)
         b.setObjectName("Segment")
         b.setCheckable(True)
-        b.setProperty("pos", "first" if i == 0 else "last" if i == len(names) - 1 else "mid")
         b.clicked.connect(lambda _=False, n=name: on_click(n))
         group.addButton(b)
         row.addWidget(b)
         buttons[name] = b
+    segments(list(buttons.values()))
     row.group = group                     # keep the exclusive group alive with the layout
     return row, buttons
 
