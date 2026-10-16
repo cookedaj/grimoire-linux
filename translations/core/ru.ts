@@ -3127,6 +3127,11 @@
         <source>Desktop widgets in black and white: a clock, your system&apos;s readings, the weather and what&apos;s playing</source>
         <translation>Чёрно-белые виджеты рабочего стола: часы, показатели системы, погода и то, что сейчас играет</translation>
     </message>
+    <message>
+        <location filename="../../grimoire/spells/__init__.py"/>
+        <source>Your pictures: a fast thumbnail grid, a full view with zoom, turns, slideshow and EXIF info, plus rename, Trash and set as wallpaper</source>
+        <translation>Ваши изображения: быстрая сетка миниатюр, полный просмотр с масштабом, поворотами, слайд-шоу и данными EXIF, а ещё переименование, корзина и установка обоев</translation>
+    </message>
 </context>
 <context>
     <name>grimoire.standalone</name>

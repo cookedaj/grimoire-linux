@@ -150,6 +150,20 @@ looks up where you are) with line icons and the next five days, and **Now Playin
 video, with the cover in grayscale and the play controls. The page previews each one, installs them and adds them
 to your desktop; `grimoire-widgetl add clock|system|weather|nowplaying` does the same from a terminal.
 
+### ViewL: an image viewer and organizer
+
+![ViewL](docs/screenshots/viewl.png)
+
+Gwenview's job in black and white: a folder of pictures as a fast thumbnail grid (made on worker threads and kept in
+the same thumbnail cache Dolphin and Gwenview use), then each picture full size with a strip of its neighbours. Fit,
+100% and zoom at the pointer with the wheel or a touchpad pinch, pan, turn and flip (a JPEG is saved losslessly: only
+its orientation tag changes; replacing a file asks first and sends the original to the Trash, and **Save as** never
+overwrites), next/previous with the arrow keys, a slideshow, full screen, EXIF details, copy, rename, copy/move to a
+folder, Trash, **Set as wallpaper** (through MuraL), **Mark up in ShotL** and **Show in VaultL**. It reads every
+format Qt does, including AVIF, HEIF, JPEG XL, WebP and camera RAW with `kimageformat6-plugins`, and plays animated
+GIF/WebP. `grimoire-viewl [picture|folder]` opens it there; once installed from its card it shows up under
+**Open with** for pictures, without becoming the default.
+
 ### Tray, Settings and updates
 
 ![Tray icon and menu](docs/screenshots/tray.png)
@@ -258,6 +272,8 @@ Press **Install** on a spell's card on the home page (or `./install.sh --all`), 
 
 To make VaultL the default file manager: `xdg-mime default grimoire-vaultl.desktop inode/directory` (switch back in
 System Settings → Default Applications).
+To make ViewL the default image viewer, pick it in System Settings → Default Applications (or
+`xdg-mime default grimoire-viewl.desktop image/jpeg image/png image/webp image/gif`).
 
 ## Uninstall
 

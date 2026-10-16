@@ -307,6 +307,66 @@ def _draw(name: str, p: QPainter):
         p.drawLine(QPointF(16.75, 7.25), QPointF(16.75, 5.3)); p.drawLine(QPointF(16.75, 7.25), QPointF(18.3, 7.25))
         p.drawRoundedRect(r(3.5, 13, 7.5, 7.5), 1.8, 1.8)
         p.drawRoundedRect(r(13, 13, 7.5, 7.5), 1.8, 1.8)
+    elif name == "viewl":                                  # a picture under a magnifying glass
+        path = QPainterPath(QPointF(12, 17)); path.lineTo(5.5, 17); path.quadTo(3.5, 17, 3.5, 15); path.lineTo(3.5, 6.5)
+        path.quadTo(3.5, 4.5, 5.5, 4.5); path.lineTo(16, 4.5); path.quadTo(18, 4.5, 18, 6.5); path.lineTo(18, 10)
+        p.drawPath(path)
+        path = QPainterPath(QPointF(5.5, 14.5)); path.lineTo(9, 10.5); path.lineTo(11.5, 13); p.drawPath(path)
+        p.drawEllipse(QPointF(13.5, 8.2), 1.2, 1.2)
+        p.drawEllipse(QPointF(16, 15.5), 3.5, 3.5); p.drawLine(QPointF(18.6, 18.1), QPointF(21, 20.5))
+    elif name in ("rotl", "rotr"):                         # a turning arrow, counter-clockwise / clockwise
+        d = 1 if name == "rotr" else -1
+        p.save()
+        if d < 0:
+            p.translate(S, 0); p.scale(-1, 1)
+        path = QPainterPath(); path.arcMoveTo(r(5, 6, 14, 14), 45); path.arcTo(r(5, 6, 14, 14), 45, -315)
+        p.drawPath(path)                                   # ends at the top, heading clockwise
+        tip = path.currentPosition() + QPointF(1.6, 0)
+        path = QPainterPath(tip + QPointF(-3, -3)); path.lineTo(tip); path.lineTo(tip + QPointF(-3, 3)); p.drawPath(path)
+        p.restore()
+    elif name in ("fliph", "flipv"):                       # two halves mirrored across a dashed line
+        p.save()
+        if name == "flipv":
+            p.translate(S, 0); p.rotate(90)
+        p.drawLine(QPointF(12, 3.5), QPointF(12, 5.5)); p.drawLine(QPointF(12, 8), QPointF(12, 10))
+        p.drawLine(QPointF(12, 12.5), QPointF(12, 14.5)); p.drawLine(QPointF(12, 17), QPointF(12, 20.5))
+        path = QPainterPath(QPointF(9.5, 6.5)); path.lineTo(9.5, 17.5); path.lineTo(3.5, 17.5); path.closeSubpath()
+        p.drawPath(path)
+        path = QPainterPath(QPointF(14.5, 6.5)); path.lineTo(14.5, 17.5); path.lineTo(20.5, 17.5); path.closeSubpath()
+        p.drawPath(path)
+        p.restore()
+    elif name in ("zoomin", "zoomout"):
+        p.drawEllipse(QPointF(10.5, 10.5), 6.5, 6.5); p.drawLine(QPointF(15.3, 15.3), QPointF(20, 20))
+        p.drawLine(QPointF(7.5, 10.5), QPointF(13.5, 10.5))
+        if name == "zoomin":
+            p.drawLine(QPointF(10.5, 7.5), QPointF(10.5, 13.5))
+    elif name == "fit":                                    # four corners pointing in to a frame
+        for sx, sy in ((1, 1), (-1, 1), (1, -1), (-1, -1)):
+            cx, cy = 12 - 8 * sx, 12 - 8 * sy
+            path = QPainterPath(QPointF(cx, cy + 4.5 * sy)); path.lineTo(cx, cy); path.lineTo(cx + 4.5 * sx, cy)
+            p.drawPath(path)
+        p.drawRoundedRect(r(8, 9, 8, 6), 1, 1)
+    elif name == "actual":                                 # 1:1
+        p.drawLine(QPointF(6, 8), QPointF(8, 6.5)); p.drawLine(QPointF(8, 6.5), QPointF(8, 17.5))
+        p.drawLine(QPointF(16, 8), QPointF(18, 6.5)); p.drawLine(QPointF(18, 6.5), QPointF(18, 17.5))
+        p.drawPoint(QPointF(12.5, 10)); p.drawPoint(QPointF(12.5, 14.5))
+    elif name == "play":
+        path = QPainterPath(QPointF(8, 5.5)); path.lineTo(18.5, 12); path.lineTo(8, 18.5); path.closeSubpath()
+        p.drawPath(path)
+    elif name == "pause":
+        p.drawLine(QPointF(9, 6), QPointF(9, 18)); p.drawLine(QPointF(15, 6), QPointF(15, 18))
+    elif name == "fullscreen":                             # four corners pointing out
+        for sx, sy in ((1, 1), (-1, 1), (1, -1), (-1, -1)):
+            cx, cy = 12 - 8 * sx, 12 - 8 * sy
+            path = QPainterPath(QPointF(cx, cy + 5 * sy)); path.lineTo(cx, cy); path.lineTo(cx + 5 * sx, cy)
+            p.drawPath(path)
+    elif name == "pencil":                                 # mark up: a pencil at an angle
+        path = QPainterPath(QPointF(4.5, 19.5)); path.lineTo(5.5, 15); path.lineTo(15.5, 5); path.lineTo(19, 8.5)
+        path.lineTo(9, 18.5); path.closeSubpath(); p.drawPath(path)
+        p.drawLine(QPointF(13.5, 7), QPointF(17, 10.5))
+    elif name == "more":                                   # three dots
+        for x in (6, 12, 18):
+            p.drawEllipse(QPointF(x, 12), 0.9, 0.9)
 
 
 def _pixmap(name: str, color: str, size: int) -> QPixmap:

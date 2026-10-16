@@ -3075,6 +3075,11 @@
         <source>Desktop widgets in black and white: a clock, your system&apos;s readings, the weather and what&apos;s playing</source>
         <translation>黑白桌面小部件：时钟、系统读数、天气和正在播放的内容</translation>
     </message>
+    <message>
+        <location filename="../../grimoire/spells/__init__.py"/>
+        <source>Your pictures: a fast thumbnail grid, a full view with zoom, turns, slideshow and EXIF info, plus rename, Trash and set as wallpaper</source>
+        <translation>你的图片：快速的缩略图网格，可缩放、旋转、幻灯片放映和查看 EXIF 信息的完整视图，还能重命名、移到回收站和设为壁纸</translation>
+    </message>
 </context>
 <context>
     <name>grimoire.standalone</name>
