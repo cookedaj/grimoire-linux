@@ -257,3 +257,19 @@ SPELLS.append(Spell("widgetl", "WidgetL",
                     tr_noop("grimoire.spells", "Desktop widgets in black and white: a clock, your system's readings, "
                                                "the weather and what's playing"),
                     _widgetl, "widgets", _widgetl_status))
+
+
+def _glyphl():
+    from grimoire.spells.glyphl.page import GlyphLPage
+    return GlyphLPage()
+
+
+def _glyphl_status() -> str:
+    from grimoire.spells.glyphl import store
+    return store.status_line()
+
+
+SPELLS.append(Spell("glyphl", "GlyphL",
+                    tr_noop("grimoire.spells", "Emoji, symbols and every Unicode character on a hotkey: search in your "
+                                               "language, skin tones, favorites and a full Unicode block browser"),
+                    _glyphl, "glyphl", _glyphl_status))

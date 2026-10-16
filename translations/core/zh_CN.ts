@@ -905,6 +905,11 @@
     </message>
     <message>
         <location filename="../../grimoire/hotkeys.py"/>
+        <source>Open GlyphL (emoji and symbols)</source>
+        <translation>打开 GlyphL（表情和符号）</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/hotkeys.py"/>
         <source>Couldn&apos;t reach KDE&apos;s shortcut service: {err}</source>
         <translation>无法连接 KDE 的快捷键服务：{err}</translation>
     </message>
@@ -3074,6 +3079,11 @@
         <location filename="../../grimoire/spells/__init__.py"/>
         <source>Desktop widgets in black and white: a clock, your system&apos;s readings, the weather and what&apos;s playing</source>
         <translation>黑白桌面小部件：时钟、系统读数、天气和正在播放的内容</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/__init__.py"/>
+        <source>Emoji, symbols and every Unicode character on a hotkey: search in your language, skin tones, favorites and a full Unicode block browser</source>
+        <translation>一个快捷键即可使用表情、符号和所有 Unicode 字符：用你的语言搜索、肤色、收藏，以及完整的 Unicode 区块浏览器</translation>
     </message>
 </context>
 <context>

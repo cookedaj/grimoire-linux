@@ -150,6 +150,19 @@ looks up where you are) with line icons and the next five days, and **Now Playin
 video, with the cover in grayscale and the play controls. The page previews each one, installs them and adds them
 to your desktop; `grimoire-widgetl add clock|system|weather|nowplaying` does the same from a terminal.
 
+### GlyphL: emoji and symbol picker
+
+![GlyphL](docs/screenshots/glyphl.png)
+
+Emoji, symbols and every Unicode character on a hotkey, in place of KCharSelect and Plasma's emoji picker. Search
+by name or keyword in your language (Plasma's own CLDR emoji dictionaries) or in English, by Unicode name, or type a
+code point (`U+2192`, `&rarr;`); browse emoji groups, arrows, math, currency, box drawing, Latin, Greek and Cyrillic,
+Grimoire's black & white picks, or any Unicode block. A skin tone for people and hands, recent and starred
+characters, and an info pane with the code point, UTF-8 bytes and HTML entity. Click or Enter copies it and closes the
+popup, so Ctrl+V pastes it: KDE on Wayland doesn't let an app type into another app's window, so GlyphL can't paste
+for you. `grimoire-glyphl` shows or hides the popup; bind it in **Settings → Hotkeys** (Meta+Alt+. is suggested,
+since Meta+. is Plasma's emoji selector).
+
 ### Tray, Settings and updates
 
 ![Tray icon and menu](docs/screenshots/tray.png)

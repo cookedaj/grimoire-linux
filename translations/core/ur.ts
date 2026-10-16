@@ -906,6 +906,11 @@
     </message>
     <message>
         <location filename="../../grimoire/hotkeys.py"/>
+        <source>Open GlyphL (emoji and symbols)</source>
+        <translation>‏GlyphL کھولیں (ایموجی اور علامات)</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/hotkeys.py"/>
         <source>Couldn&apos;t reach KDE&apos;s shortcut service: {err}</source>
         <translation>‏KDE کی شارٹ کٹ سروس تک رسائی نہیں ہو سکی: {err}</translation>
     </message>
@@ -3100,6 +3105,11 @@
         <location filename="../../grimoire/spells/__init__.py"/>
         <source>Desktop widgets in black and white: a clock, your system&apos;s readings, the weather and what&apos;s playing</source>
         <translation>سیاہ و سفید ڈیسک ٹاپ ویجٹس: گھڑی، آپ کے سسٹم کی ریڈنگز، موسم اور جو چل رہا ہے</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/__init__.py"/>
+        <source>Emoji, symbols and every Unicode character on a hotkey: search in your language, skin tones, favorites and a full Unicode block browser</source>
+        <translation>ایک ہاٹ کی پر ایموجی، علامات اور ہر Unicode حرف: اپنی زبان میں تلاش، جلد کی رنگتیں، پسندیدہ اور مکمل Unicode بلاک براؤزر</translation>
     </message>
 </context>
 <context>

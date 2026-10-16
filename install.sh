@@ -131,6 +131,8 @@ if [ -n "$ALL" ]; then standalone install all; fi
 PYTHONPATH="$APP" QT_QPA_PLATFORM=offscreen python3 -P -c "from grimoire.spells.launchl import panel; panel.write_spells()" \
     2>/dev/null || true
 update-desktop-database "$DATA/applications" 2>/dev/null || true
+# GlyphL's popup stays resident between hotkey presses: stop it so the next press runs the new code
+pkill -f '^(/usr/bin/)?python3 -m grimoire\.spells\.glyphl( |$)' 2>/dev/null || true
 
 # 5. the root helpers, system-wide and root-owned (grimoire/roothelper.py; one pkexec prompt when they changed).
 #    Never fails the install: without them only the features that need root are unavailable.
