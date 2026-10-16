@@ -3101,6 +3101,11 @@
         <source>Desktop widgets in black and white: a clock, your system&apos;s readings, the weather and what&apos;s playing</source>
         <translation>Widgets de escritorio en blanco y negro: un reloj, las lecturas de tu sistema, el tiempo y lo que está sonando</translation>
     </message>
+    <message>
+        <location filename="../../grimoire/spells/__init__.py"/>
+        <source>Videos and music: a queue you can drag around, subtitles and audio tracks, resume where you stopped, your music library with covers, and Plasma&apos;s media controls</source>
+        <translation>Vídeos y música: una cola que puedes reordenar arrastrando, subtítulos y pistas de audio, continuar donde lo dejaste, tu biblioteca de música con portadas y los controles multimedia de Plasma</translation>
+    </message>
 </context>
 <context>
     <name>grimoire.standalone</name>

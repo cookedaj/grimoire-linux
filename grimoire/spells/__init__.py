@@ -257,3 +257,20 @@ SPELLS.append(Spell("widgetl", "WidgetL",
                     tr_noop("grimoire.spells", "Desktop widgets in black and white: a clock, your system's readings, "
                                                "the weather and what's playing"),
                     _widgetl, "widgets", _widgetl_status))
+
+
+def _playl():
+    from grimoire.spells.playl.page import PlayLPage
+    return PlayLPage()
+
+
+def _playl_status() -> str:
+    from grimoire.spells.playl.media import status_line
+    return status_line()
+
+
+SPELLS.append(Spell("playl", "PlayL",
+                    tr_noop("grimoire.spells", "Videos and music: a queue you can drag around, subtitles and audio "
+                                               "tracks, resume where you stopped, your music library with covers, "
+                                               "and Plasma's media controls"),
+                    _playl, "playl", _playl_status))

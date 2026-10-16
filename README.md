@@ -150,6 +150,18 @@ looks up where you are) with line icons and the next five days, and **Now Playin
 video, with the cover in grayscale and the play controls. The page previews each one, installs them and adds them
 to your desktop; `grimoire-widgetl add clock|system|weather|nowplaying` does the same from a terminal.
 
+### PlayL: a video and music player
+
+![PlayL](docs/screenshots/playl.png)
+
+Plays videos, music, folders, playlists and web streams on libmpv (the engine behind mpv and Haruna), with hardware
+decoding. Controls float over the video and hide while it plays; there's fullscreen, a seek bar that previews the
+time (and the frame, with ffmpeg) under the pointer, speed, audio and subtitle tracks (plus .srt/.ass files), a
+queue you reorder by dragging, and resume where you stopped. The music library reads ~/Music (tags via mutagen when
+installed) into albums with grayscale covers, artists and songs. Plasma's media controls and media keys see it
+(MPRIS), the screen stays on while a video plays, and its volume is its own PipeWire stream, the one AudioL shows.
+Once its launcher is installed it's in **Open With** for videos and music; it never makes itself the default.
+
 ### Tray, Settings and updates
 
 ![Tray icon and menu](docs/screenshots/tray.png)
@@ -233,7 +245,7 @@ update with your system; the in-app updater is off there.
 KDE Plasma 6 (Wayland is best; made on Kubuntu 26.04) and Python 3.12+ with PySide6, Pillow and psutil, plus
 layer-shell-qt (SightsL), Qt Multimedia (video wallpapers), pyte (TerminalL) and dbus-python (GitHub sign-in).
 Optional: ffmpeg (video thumbnails, recordings), Spectacle (ShotL), NetworkManager (NetL controls), PipeWire's
-`pw-dump`/`wpctl` (AudioL; on every Plasma 6 system), rsync.
+`pw-dump`/`wpctl` (AudioL; on every Plasma 6 system), libmpv2 + python3-mutagen (PlayL), rsync.
 
 ```bash
 # Ubuntu / Kubuntu / Debian
@@ -254,7 +266,8 @@ Press **Install** on a spell's card on the home page (or `./install.sh --all`), 
 `grimoire-shotl`, `grimoire-focusl`, `grimoire-netl` or `grimoire-widgetl` directly. Command-line helpers:
 `grimoire-sightc on|off|toggle|next`, `grimoire-vaultl [folder]`, `grimoire-vaultl tidy run|undo|enable|disable|status`,
 `grimoire-systeml alerts check|enable|disable|status`, `grimoire-focusl start|stop|status`,
-`grimoire-gamel list|status|play <launcher:id>`, `grimoire-updatel check|enable|disable|status`, `grimoire update`.
+`grimoire-gamel list|status|play <launcher:id>`, `grimoire-updatel check|enable|disable|status`,
+`grimoire-playl [--enqueue] [file|folder|URL…]`, `grimoire update`.
 
 To make VaultL the default file manager: `xdg-mime default grimoire-vaultl.desktop inode/directory` (switch back in
 System Settings → Default Applications).

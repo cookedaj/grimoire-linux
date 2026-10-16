@@ -3075,6 +3075,11 @@
         <source>Desktop widgets in black and white: a clock, your system&apos;s readings, the weather and what&apos;s playing</source>
         <translation>黑白桌面小部件：时钟、系统读数、天气和正在播放的内容</translation>
     </message>
+    <message>
+        <location filename="../../grimoire/spells/__init__.py"/>
+        <source>Videos and music: a queue you can drag around, subtitles and audio tracks, resume where you stopped, your music library with covers, and Plasma&apos;s media controls</source>
+        <translation>视频和音乐：可拖动排序的队列、字幕和音轨、从上次停下处继续、带封面的音乐库，以及 Plasma 的媒体控制</translation>
+    </message>
 </context>
 <context>
     <name>grimoire.standalone</name>

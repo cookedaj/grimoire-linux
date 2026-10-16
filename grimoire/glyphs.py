@@ -307,6 +307,56 @@ def _draw(name: str, p: QPainter):
         p.drawLine(QPointF(16.75, 7.25), QPointF(16.75, 5.3)); p.drawLine(QPointF(16.75, 7.25), QPointF(18.3, 7.25))
         p.drawRoundedRect(r(3.5, 13, 7.5, 7.5), 1.8, 1.8)
         p.drawRoundedRect(r(13, 13, 7.5, 7.5), 1.8, 1.8)
+    elif name == "playl":                                  # a play triangle in a rounded screen: PlayL
+        p.drawRoundedRect(r(3, 4.5, 18, 15), 3.5, 3.5)
+        tri = QPainterPath(QPointF(10, 8.8)); tri.lineTo(15.5, 12); tri.lineTo(10, 15.2); tri.closeSubpath()
+        p.drawPath(tri)
+    elif name in ("play", "pause"):                        # transport buttons, filled so they read at a glance
+        p.setBrush(p.pen().color())
+        if name == "play":
+            tri = QPainterPath(QPointF(8, 5.5)); tri.lineTo(18.5, 12); tri.lineTo(8, 18.5); tri.closeSubpath()
+            p.drawPath(tri)
+        else:
+            p.drawRoundedRect(r(7, 5.5, 3, 13), 1, 1); p.drawRoundedRect(r(14, 5.5, 3, 13), 1, 1)
+    elif name in ("next", "prev"):                         # skip: a triangle against a bar
+        if name == "prev":
+            p.translate(24, 0); p.scale(-1, 1)
+        p.setBrush(p.pen().color())
+        tri = QPainterPath(QPointF(6, 6.5)); tri.lineTo(14.5, 12); tri.lineTo(6, 17.5); tri.closeSubpath()
+        p.drawPath(tri)
+        p.drawLine(QPointF(17.5, 6.5), QPointF(17.5, 17.5))
+    elif name in ("fullscreen", "unfullscreen"):           # four corners out, or in
+        k = 1 if name == "fullscreen" else -1
+        for cx, cy, dx, dy in ((4.5, 4.5, 1, 1), (19.5, 4.5, -1, 1), (4.5, 19.5, 1, -1), (19.5, 19.5, -1, -1)):
+            if k < 0:
+                cx, cy = cx + dx * 5, cy + dy * 5
+                dx, dy = -dx, -dy
+            path = QPainterPath(QPointF(cx, cy + dy * 4.5)); path.lineTo(cx, cy); path.lineTo(cx + dx * 4.5, cy)
+            p.drawPath(path)
+    elif name == "subtitles":                              # a screen with two caption lines
+        p.drawRoundedRect(r(3, 5, 18, 14), 2.5, 2.5)
+        p.drawLine(QPointF(6.5, 12.5), QPointF(12, 12.5)); p.drawLine(QPointF(14, 12.5), QPointF(17.5, 12.5))
+        p.drawLine(QPointF(6.5, 15.5), QPointF(9, 15.5)); p.drawLine(QPointF(11, 15.5), QPointF(17.5, 15.5))
+    elif name == "queue":                                  # a list with a play mark on the first line
+        tri = QPainterPath(QPointF(4, 4.5)); tri.lineTo(8.5, 7); tri.lineTo(4, 9.5); tri.closeSubpath(); p.drawPath(tri)
+        p.drawLine(QPointF(11, 7), QPointF(20, 7))
+        p.drawLine(QPointF(4, 12), QPointF(20, 12)); p.drawLine(QPointF(4, 17), QPointF(20, 17))
+    elif name in ("repeat", "repeatone"):                  # two arrows chasing round a loop
+        top = QPainterPath(QPointF(5, 12)); top.lineTo(5, 9.5); top.quadTo(5, 7, 7.5, 7); top.lineTo(19, 7)
+        p.drawPath(top)
+        head = QPainterPath(QPointF(16.5, 4.5)); head.lineTo(19, 7); head.lineTo(16.5, 9.5); p.drawPath(head)
+        bot = QPainterPath(QPointF(19, 12)); bot.lineTo(19, 14.5); bot.quadTo(19, 17, 16.5, 17); bot.lineTo(5, 17)
+        p.drawPath(bot)
+        head = QPainterPath(QPointF(7.5, 14.5)); head.lineTo(5, 17); head.lineTo(7.5, 19.5); p.drawPath(head)
+        if name == "repeatone":
+            p.drawLine(QPointF(12, 10), QPointF(12, 14)); p.drawLine(QPointF(10.8, 11), QPointF(12, 10))
+    elif name == "shuffle":                                # two crossing paths with arrowheads
+        a = QPainterPath(QPointF(4, 7)); a.lineTo(7.5, 7); a.cubicTo(12, 7, 12, 17, 16.5, 17); a.lineTo(20, 17)
+        b = QPainterPath(QPointF(4, 17)); b.lineTo(7.5, 17); b.cubicTo(12, 17, 12, 7, 16.5, 7); b.lineTo(20, 7)
+        p.drawPath(a); p.drawPath(b)
+        for y in (7, 17):
+            head = QPainterPath(QPointF(17.5, y - 2.5)); head.lineTo(20, y); head.lineTo(17.5, y + 2.5)
+            p.drawPath(head)
 
 
 def _pixmap(name: str, color: str, size: int) -> QPixmap:

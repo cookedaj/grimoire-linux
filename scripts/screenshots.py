@@ -372,6 +372,47 @@ PREPARE["audiol"] = _audiol
 WAIT = {"widgetl": 5000, "mural": 6000, "systeml": 30000, "netl": 30000, "optimizel": 5000, "terminall": 3500, "vaultl": 3000}
 
 
+# PlayL: a few songs made here with ffmpeg (sine tones, B&W art from _image), the second one paused mid-way
+PLAYL_SONGS = [("Ashen Tide", "Glass Harbor", "Night Ferry", 1, 0), ("Paper Moons", "Glass Harbor", "Night Ferry", 2, 0),
+               ("Low Tide Diner", "Glass Harbor", "Night Ferry", 3, 0), ("Quiet Signal", "Orbital Drift", "Static Bloom", 1, 2),
+               ("Hollow Lanterns", "Orbital Drift", "Static Bloom", 2, 2)]
+if os.environ.get("GRIMOIRE_SCREENSHOTS") == "1":
+    os.environ["PLAYL_AO"] = "null"                       # silent: mpv decodes but plays nowhere
+
+
+def _playl(page, wait):
+    if not page.player or not shutil.which("ffmpeg"):
+        return
+    music = Path.home() / "Music"
+    paths = []
+    for k, (title, artist, album, track, art) in enumerate(PLAYL_SONGS):
+        folder = music / artist / album
+        folder.mkdir(parents=True, exist_ok=True)
+        cover = folder / "cover.png"
+        if not cover.exists():
+            _image(cover, art, (600, 600))
+        out = folder / f"{track:02d} {title}.mp3"
+        subprocess.run(["ffmpeg", "-loglevel", "error", "-y", "-f", "lavfi", "-i", f"sine=frequency={220 + 40 * k}",
+                        "-t", str(150 + 20 * k), "-metadata", f"title={title}", "-metadata", f"artist={artist}",
+                        "-metadata", f"album={album}", "-metadata", f"track={track}", str(out)], check=True)
+        paths.append(str(out))
+    from grimoire.spells.playl import library, media
+    tracks = library.scan(media.library_roots())
+    page.player.titles = {t["path"]: t for t in tracks}
+    page.play_entries(paths, 1)
+    wait(2500)
+    page.player.seek(64)
+    page.player.pause()
+    wait(1200)
+    page.queue.refresh()
+    page.stage.activity()
+
+
+PREPARE["playl"] = _playl
+PAGES.insert(PAGES.index("settings"), "playl")
+WAIT["playl"] = 1500
+
+
 def main():
     names = [a for a in sys.argv[1:] if a in PAGES] or PAGES
     if os.environ.get("GRIMOIRE_SCREENSHOTS") == "1":
