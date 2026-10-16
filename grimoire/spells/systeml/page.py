@@ -28,7 +28,7 @@ from grimoire.spells.systeml.alertview import AlertsPanel
 from grimoire.spells.systeml.bidi import lead, ltr
 from grimoire.spells.systeml.graph import Bar, CoreGrid, Graph, Spark
 from grimoire.spells.systeml.history import History, per_app
-from grimoire.widgets import Switch
+from grimoire.widgets import Switch, segments
 
 REPO = Path(__file__).resolve().parents[3]
 ME = getpass.getuser()
@@ -493,14 +493,14 @@ class AppsPanel(QWidget):
         bar = QHBoxLayout()
         bar.setSpacing(0)
         self.segs = []
-        for i, (name, mins) in enumerate(WINDOWS):
+        for name, mins in WINDOWS:
             b = QPushButton(tr("grimoire.spells.systeml.page", name))
             b.setObjectName("Segment")
             b.setCheckable(True)
-            b.setProperty("pos", "first" if i == 0 else "last" if i == len(WINDOWS) - 1 else "mid")
             b.clicked.connect(lambda _=False, m=mins: self.set_window(m))
             bar.addWidget(b)
             self.segs.append((b, mins))
+        segments([b for b, _ in self.segs])
         bar.addSpacing(16)
         self.note = _label("", "Muted", wrap=True)
         bar.addWidget(self.note, 1)
@@ -605,15 +605,15 @@ class ServicesPanel(QWidget):
         bar = QHBoxLayout()
         bar.setSpacing(0)
         self.segs = []
-        for i, (name, user) in enumerate(((tr("grimoire.spells.systeml.page", "System"), False),
-                                          (tr("grimoire.spells.systeml.page", "Yours"), True))):
+        for name, user in ((tr("grimoire.spells.systeml.page", "System"), False),
+                           (tr("grimoire.spells.systeml.page", "Yours"), True)):
             b = QPushButton(name)
             b.setObjectName("Segment")
             b.setCheckable(True)
-            b.setProperty("pos", "first" if i == 0 else "last")
             b.clicked.connect(lambda _=False, u=user: self.set_user(u))
             bar.addWidget(b)
             self.segs.append((b, user))
+        segments([b for b, _ in self.segs])
         bar.addSpacing(12)
         self.search = QLineEdit()
         self.search.setPlaceholderText(tr("grimoire.spells.systeml.page", "Search services"))

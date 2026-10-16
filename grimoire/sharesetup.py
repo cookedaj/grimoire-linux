@@ -146,8 +146,8 @@ class Tab:
 @lru_cache(maxsize=1)
 def schema() -> dict:
     """Every MuraL tab a setup may carry, built from the tabs' own lists so it never drifts from them."""
-    from grimoire.spells.mural import (boot, colors, cursor, fonts, lock, login, motion, splash, style, taskbar,
-                                       terminal, windows)
+    from grimoire.spells.mural import (boot, colors, cursor, fonts, icons, lock, login, motion, splash, style,
+                                       taskbar, terminal, windows)
     ids = lambda m: [d.id for d in m.DESIGNS]
     D = lambda m, k: m.DEFAULTS[k]
     return {
@@ -173,13 +173,14 @@ def schema() -> dict:
             "borderless_max": B(D(windows, "borderless_max"))}),
         "motion": Tab(ids(motion), options={
             "blur": I(1, 15, D(motion, "blur")), "noise": I(0, 14, D(motion, "noise")),
-            "wobbly": B(D(motion, "wobbly"))}),
+            "wobbly": B(D(motion, "wobbly")), "pace": C(list(motion.PACE), D(motion, "pace"))}),
         "colors": Tab(ids(colors), ("colors",), options={
-            "titlebar": C(["Match", "Black"], D(colors, "titlebar")), "accent": C(colors.ACCENTS, D(colors, "accent"))}),
-        "icons": Tab([], themes="icons"),
+            "titlebar": C(colors.TITLEBARS, D(colors, "titlebar")), "accent": C(colors.ACCENTS, D(colors, "accent"))}),
+        "icons": Tab(ids(icons), themes="icons", options={
+            "base": C([k for k, _ in icons.BASES], D(icons, "base")), "apps": B(D(icons, "apps"))}),
         "fonts": Tab(ids(fonts), options={
-            "size": I(8, 14, D(fonts, "size")), "title_weight": C(["Bold", "Regular"], D(fonts, "title_weight")),
-            "hinting": C(fonts.HINTING, D(fonts, "hinting")), "subpixel": C(["On", "Off"], D(fonts, "subpixel"))}),
+            "size": I(8, 14, D(fonts, "size")), "title_weight": C(fonts.WEIGHTS, D(fonts, "title_weight")),
+            "hinting": C(fonts.HINTING, D(fonts, "hinting")), "subpixel": C(fonts.SUBPIXEL, D(fonts, "subpixel"))}),
         "cursor": Tab(ids(cursor), themes="cursor", options={"size": C(cursor.SIZES, D(cursor, "size"))}),
         "terminal": Tab(ids(terminal), ("konsole",), options={
             "font": C(terminal.FONTS, D(terminal, "font")), "size": I(8, 20, D(terminal, "size")),

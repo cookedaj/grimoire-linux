@@ -6,14 +6,14 @@ to hold every spell's background work (previews, Apply) for tens of seconds. Lis
 cache (6 h) and stay in memory for the session; thumbnails are fetched, decoded and letterboxed into card images
 off the UI thread, only for the cards on screen (plus one screen ahead), and kept in memory and on disk (store
 .thumbnail, 14 days). prefetch() warms the default listings and their first cards when MuraL opens; it never
-downloads an item.
+downloads an item. When the app quits, shutdown() drops queued store work and waits briefly for running requests,
+so no worker is still starting work while Python shuts down.
 """
 import threading
 import webbrowser
 from collections import OrderedDict
-from concurrent.futures import ThreadPoolExecutor
 
-from PySide6.QtCore import QObject, QRect, QSize, Qt, QThreadPool, QTimer, Signal
+from PySide6.QtCore import QCoreApplication, QObject, QRect, QSize, Qt, QThreadPool, QTimer, Signal
 from PySide6.QtGui import QColor, QIcon, QImage, QImageReader, QPainter, QPixmap
 from PySide6.QtWidgets import (QAbstractItemView, QCheckBox, QComboBox, QFrame, QHBoxLayout, QLabel, QLineEdit,
                                QListWidget, QListWidgetItem, QPushButton, QVBoxLayout, QWidget)
@@ -33,6 +33,9 @@ _CARDS_MAX = 800
 _cards_lock = threading.Lock()
 _url_locks: dict[str, threading.Lock] = {}
 _prefetched = False
+_stopping = threading.Event()             # set by shutdown(): workers start nothing new
+_hooked = False
+QUIT_WAIT_MS = 2000                       # how long quitting waits for running store requests
 SORTS = {"down": tr_noop("grimoire.spells.mural.storeview", "Most downloaded"),          # store sort id → label
          "high": tr_noop("grimoire.spells.mural.storeview", "Best rated"),
          "new": tr_noop("grimoire.spells.mural.storeview", "Newest")}
@@ -121,9 +124,27 @@ def _listing(cat: store.Category, sort: str, search: str, fresh: bool = False) -
     return items
 
 
+def shutdown(wait_ms: int = QUIT_WAIT_MS):
+    """App quit: nothing new starts, queued store work is dropped, running requests get wait_ms to finish."""
+    _stopping.set()
+    NET.clear()
+    NET.waitForDone(wait_ms)
+
+
+def _start(job: Job, priority: int):
+    """NET.start, unless the app is quitting; hooks shutdown() to the app's quit the first time."""
+    global _hooked
+    if _stopping.is_set():
+        return
+    if not _hooked and (app := QCoreApplication.instance()) is not None:
+        _hooked = True
+        app.aboutToQuit.connect(shutdown)
+    NET.start(job, priority)
+
+
 def prefetch(keys=None):
     """Warm the default listing of each category and its first cards, in the background, once per run. Only
-    listings and thumbnails: never an item's files."""
+    listings and thumbnails: never an item's files. Cards go on NET at low priority, behind what a view asks for."""
     global _prefetched
     if _prefetched:
         return
@@ -131,15 +152,17 @@ def prefetch(keys=None):
     cats = [store.CATEGORIES[k] for k in (keys or store.CATEGORIES)]
 
     def work():
-        with ThreadPoolExecutor(4) as ex:
-            for cat in cats:
-                try:
-                    items = _listing(cat, "down", "")
-                except Exception:               # offline: the view will say so when it's opened
-                    continue
-                list(ex.map(card_image, [it.preview for it in items[:FIRST_CARDS]]))
+        for cat in cats:
+            if _stopping.is_set():
+                return
+            try:
+                items = _listing(cat, "down", "")
+            except Exception:                   # offline: the view will say so when it's opened
+                continue
+            for it in items[:FIRST_CARDS]:
+                _start(Job(lambda url=it.preview: None if _stopping.is_set() else _safe_card(url), lambda _: None), -1)
 
-    NET.start(Job(work, lambda _: None), -1)
+    _start(Job(work, lambda _: None), -1)
 
 
 class StoreView(QWidget):
@@ -272,7 +295,7 @@ class StoreView(QWidget):
             except Exception as e:      # network errors are shown, not raised
                 return e
 
-        NET.start(Job(work, lambda r: sig.listed.emit(gen, r)), 1)
+        _start(Job(work, lambda r: sig.listed.emit(gen, r)), 1)
 
     def _on_listed(self, gen, result):
         if gen != self._gen:
@@ -317,7 +340,7 @@ class StoreView(QWidget):
             self._pending.remove(r)
             self._inflight += 1
             url = self.items[r].preview
-            NET.start(Job(lambda url=url: _safe_card(url), lambda img, r=r: sig.thumb.emit(gen, r, img)), 1)
+            _start(Job(lambda url=url: _safe_card(url), lambda img, r=r: sig.thumb.emit(gen, r, img)), 1)
 
     def _on_thumb(self, gen, row, img):
         self._inflight = max(0, self._inflight - 1)
@@ -379,7 +402,7 @@ class StoreView(QWidget):
                 return False, tr("grimoire.spells.mural.storeview", "Couldn't install {name}: {error}")\
                     .format(name=it.name, error=e)
 
-        NET.start(Job(work, lambda r: sig.installed.emit(*r)), 2)
+        _start(Job(work, lambda r: sig.installed.emit(*r)), 2)
 
     def _on_installed(self, ok, msg):
         self._busy = False

@@ -40,6 +40,86 @@
     </message>
     <message>
         <location filename="../../grimoire/spells/mural/boot.py"/>
+        <source>Arc</source>
+        <translation>चाप</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/boot.py"/>
+        <source>A hairline ring with one bright arc sweeping round it.</source>
+        <translation>एक बारीक छल्ला, जिस पर एक चमकीला चाप घूमता है।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/boot.py"/>
+        <source>Orbit</source>
+        <translation>कक्षा</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/boot.py"/>
+        <source>The clover standing still while a small dot circles it.</source>
+        <translation>क्लोवर स्थिर रहता है और एक छोटा बिंदु उसके चारों ओर घूमता है।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/boot.py"/>
+        <source>Dots</source>
+        <translation>बिंदु</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/boot.py"/>
+        <source>Three dots swelling and fading one after another.</source>
+        <translation>तीन बिंदु एक के बाद एक फूलते और धुंधले होते हैं।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/boot.py"/>
+        <source>Scanner</source>
+        <translation>स्कैनर</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/boot.py"/>
+        <source>A short bright segment gliding back and forth along a hairline.</source>
+        <translation>एक छोटा चमकीला टुकड़ा बारीक रेखा पर आगे-पीछे सरकता है।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/boot.py"/>
+        <source>Ripple</source>
+        <translation>लहर</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/boot.py"/>
+        <source>Rings spreading out from the middle and fading away.</source>
+        <translation>छल्ले बीच से फैलते हैं और ओझल हो जाते हैं।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/boot.py"/>
+        <source>Spin</source>
+        <translation>घुमाव</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/boot.py"/>
+        <source>The four-leaf clover turning slowly on its stem.</source>
+        <translation>चार पत्तियों वाला क्लोवर अपने डंठल पर धीरे-धीरे घूमता है।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/boot.py"/>
+        <source>Ticks</source>
+        <translation>निशान</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/boot.py"/>
+        <source>Twelve short ticks in a circle, the bright one leaving a fading trail.</source>
+        <translation>गोले में बारह छोटे निशान; सबसे चमकीला एक धुंधली होती लकीर छोड़ता है।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/boot.py"/>
+        <source>Eclipse</source>
+        <translation>ग्रहण</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/boot.py"/>
+        <source>A white moon crossed again and again by a black shadow.</source>
+        <translation>एक सफ़ेद चाँद, जिसे काली छाया बार-बार पार करती है।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/boot.py"/>
         <source>What you see while Linux starts and shuts down (Plymouth). Installing rebuilds the boot image, so it asks for your password and takes about a minute.</source>
         <translation>Linux के शुरू और बंद होते समय दिखने वाली स्क्रीन (Plymouth)। इंस्टॉल करने पर बूट इमेज दोबारा बनती है, इसलिए यह आपका पासवर्ड माँगता है और लगभग एक मिनट लेता है।</translation>
     </message>
@@ -118,8 +198,18 @@
     </message>
     <message>
         <location filename="../../grimoire/spells/mural/colors.py"/>
+        <source>Light gray</source>
+        <translation>हल्का ग्रे</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/colors.py"/>
         <source>Mid gray</source>
         <translation>मध्यम ग्रे</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/colors.py"/>
+        <source>Dark gray</source>
+        <translation>गहरा ग्रे</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/mural/colors.py"/>
@@ -180,6 +270,76 @@
         <location filename="../../grimoire/spells/mural/colors.py"/>
         <source>White paper and black ink. Crisp light theme.</source>
         <translation>सफ़ेद काग़ज़ और काली स्याही। साफ़ हल्की थीम।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/colors.py"/>
+        <source>Ink</source>
+        <translation>स्याही</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/colors.py"/>
+        <source>Pure black surfaces and pure white text. Highest contrast, made for OLED screens.</source>
+        <translation>शुद्ध काली सतहें और शुद्ध सफ़ेद टेक्स्ट। सबसे ज़्यादा कंट्रास्ट, OLED स्क्रीन के लिए बना।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/colors.py"/>
+        <source>Fog</source>
+        <translation>धुंध</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/colors.py"/>
+        <source>Mid-gray surfaces with black text. Light, but never glaring.</source>
+        <translation>मध्यम ग्रे सतहें और काला टेक्स्ट। हल्का, पर कभी चुभता नहीं।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/colors.py"/>
+        <source>Newsprint</source>
+        <translation>अख़बार</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/colors.py"/>
+        <source>White pages under solid black title bars, like a printed front page.</source>
+        <translation>ठोस काले टाइटल बार के नीचे सफ़ेद पन्ने, छपे अख़बार के पहले पन्ने जैसे।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/colors.py"/>
+        <source>Steel</source>
+        <translation>इस्पात</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/colors.py"/>
+        <source>Muted tone: charcoal with a cool blue-gray cast.</source>
+        <translation>मद्धम रंग: ठंडी नीली-ग्रे झलक वाला चारकोल।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/colors.py"/>
+        <source>Moss</source>
+        <translation>काई</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/colors.py"/>
+        <source>Muted tone: dark grays with a faint green cast.</source>
+        <translation>मद्धम रंग: हल्की हरी झलक वाले गहरे ग्रे।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/colors.py"/>
+        <source>Clay</source>
+        <translation>मिट्टी</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/colors.py"/>
+        <source>Muted tone: warm dark grays, like unglazed clay.</source>
+        <translation>मद्धम रंग: गर्म गहरे ग्रे, बिना ग्लेज़ की मिट्टी जैसे।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/colors.py"/>
+        <source>Sepia</source>
+        <translation>सीपिया</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/colors.py"/>
+        <source>Muted tone: aged paper and brown-black ink. A warm light theme.</source>
+        <translation>मद्धम रंग: पुराना कागज़ और भूरी-काली स्याही। एक गर्म हल्की थीम।</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/mural/colors.py"/>
@@ -301,6 +461,61 @@
     </message>
     <message>
         <location filename="../../grimoire/spells/mural/cursor.py"/>
+        <source>Solid black with a crisp white edge and a soft shadow. Clear on any background.</source>
+        <translation>ठोस काला, साफ़ सफ़ेद किनारा और हल्की छाया। किसी भी पृष्ठभूमि पर साफ़।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/cursor.py"/>
+        <source>The same shapes in white with a black edge: easy to spot on dark windows.</source>
+        <translation>वही आकार सफ़ेद में, काले किनारे के साथ: गहरी विंडो पर आसानी से दिखते हैं।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/cursor.py"/>
+        <source>A narrow black arrow with a hairline white edge and no shadow. Precise and quiet.</source>
+        <translation>एक पतला काला तीर, बारीक सफ़ेद किनारा और कोई छाया नहीं। सटीक और शांत।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/cursor.py"/>
+        <source>A tail-less arrowhead in near-black. Modern and minimal.</source>
+        <translation>बिना पूँछ का लगभग काला तीर का सिरा। आधुनिक और सादा।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/cursor.py"/>
+        <source>Hollow outlines: a white line with a black edge, so what&apos;s underneath shows through.</source>
+        <translation>खोखली रूपरेखा: काले किनारे वाली सफ़ेद रेखा, ताकि नीचे का दिखता रहे।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/cursor.py"/>
+        <source>Dark gray with a light gray edge and rounded corners. Softer than pure black.</source>
+        <translation>हल्के ग्रे किनारे और गोल कोनों वाला गहरा ग्रे। शुद्ध काले से नरम।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/cursor.py"/>
+        <source>White with a heavy black ring and a white halo: the easiest to find on any screen.</source>
+        <translation>मोटे काले घेरे और सफ़ेद आभा वाला सफ़ेद: किसी भी स्क्रीन पर ढूँढने में सबसे आसान।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/cursor.py"/>
+        <source>Retro pixel art, snapped to pure black and white with no smoothing.</source>
+        <translation>रेट्रो पिक्सेल आर्ट, बिना स्मूदिंग के शुद्ध काले-सफ़ेद में।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/cursor.py"/>
+        <source>Oxygen&apos;s glossy cursors in white.</source>
+        <translation>Oxygen के चमकदार कर्सर, सफ़ेद में।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/cursor.py"/>
+        <source>The plain black and white cursors of older KDE releases.</source>
+        <translation>पुराने KDE संस्करणों के सादे काले-सफ़ेद कर्सर।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/cursor.py"/>
+        <source>KDE&apos;s default cursors, with a few colored accents. Pick it to go back to how Plasma looked.</source>
+        <translation>KDE के डिफ़ॉल्ट कर्सर, कुछ रंगीन छुअनों के साथ। Plasma के पुराने रूप पर लौटने के लिए इसे चुनें।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/cursor.py"/>
         <source>on dark</source>
         <translation>गहरे पर</translation>
     </message>
@@ -311,18 +526,23 @@
     </message>
     <message>
         <location filename="../../grimoire/spells/mural/cursor.py"/>
-        <source>{size} px  ·  shown at 2×</source>
-        <translation>{size} px  ·  2× पर दिखाया गया</translation>
+        <source>{size} px  ·  shown at {zoom}×</source>
+        <translation>{size} px  ·  {zoom}× पर दिखाया गया</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/mural/cursor.py"/>
-        <source>Your mouse pointer. Previews come from the real cursor files, shown on dark and light.</source>
-        <translation>आपका माउस पॉइंटर। प्रीव्यू असली कर्सर फ़ाइलों से बनते हैं, गहरे और हल्के दोनों पर।</translation>
+        <source>Your mouse pointer. Previews come from the real cursor files, shown on dark and light. Grimoire&apos;s own themes are made on your PC when you apply them.</source>
+        <translation>आपका माउस पॉइंटर। पूर्वावलोकन असली कर्सर फ़ाइलों से आते हैं, गहरे और हल्के पर दिखाए गए। Grimoire की अपनी थीम लागू करते समय आपके PC पर बनती हैं।</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/mural/cursor.py"/>
         <source>Apply cursor</source>
         <translation>कर्सर लागू करें</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/cursor.py"/>
+        <source>{size} px</source>
+        <translation>{size} px</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/mural/cursor.py"/>
@@ -334,6 +554,14 @@
         <source>Applied ✓</source>
         <translation>लागू हो गया ✓</translation>
     </message>
+    <message>
+        <source>{size} px  ·  shown at 2×</source>
+        <translation type="vanished">{size} px  ·  2× पर दिखाया गया</translation>
+    </message>
+    <message>
+        <source>Your mouse pointer. Previews come from the real cursor files, shown on dark and light.</source>
+        <translation type="vanished">आपका माउस पॉइंटर। प्रीव्यू असली कर्सर फ़ाइलों से बनते हैं, गहरे और हल्के दोनों पर।</translation>
+    </message>
 </context>
 <context>
     <name>grimoire.spells.mural.desktop</name>
@@ -341,6 +569,11 @@
         <location filename="../../grimoire/spells/mural/desktop.py"/>
         <source>Library</source>
         <translation>लाइब्रेरी</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/desktop.py"/>
+        <source>Generate</source>
+        <translation>बनाएँ</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/mural/desktop.py"/>
@@ -457,6 +690,261 @@ fullscreen or maximized</source>
         <source>Applied to your desktop ✓</source>
         <translation>आपके डेस्कटॉप पर लागू हो गया ✓</translation>
     </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/desktop.py"/>
+        <source>Wallpapers drawn for your screen, in black &amp; white. Each one is saved to your library.</source>
+        <translation>आपकी स्क्रीन के लिए काले-सफ़ेद में बने वॉलपेपर। हर एक आपकी लाइब्रेरी में सहेजा जाता है।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/desktop.py"/>
+        <source>Set as wallpaper</source>
+        <translation>वॉलपेपर बनाएँ</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/desktop.py"/>
+        <source>Drawing…</source>
+        <translation>बना रहे हैं…</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/desktop.py"/>
+        <source>Another variation of this design</source>
+        <translation>इस डिज़ाइन का एक और रूप</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/desktop.py"/>
+        <source>Your screen ({size})</source>
+        <translation>आपकी स्क्रीन ({size})</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/desktop.py"/>
+        <source>Tone</source>
+        <translation>टोन</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/desktop.py"/>
+        <source>Density</source>
+        <translation>घनत्व</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/desktop.py"/>
+        <source>Grain</source>
+        <translation>दाना</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/desktop.py"/>
+        <source>Variation</source>
+        <translation>रूप</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/desktop.py"/>
+        <source>Words</source>
+        <translation>शब्द</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/desktop.py"/>
+        <source>Size</source>
+        <translation>आकार</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/desktop.py"/>
+        <source>Add to library only</source>
+        <translation>सिर्फ़ लाइब्रेरी में जोड़ें</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/desktop.py"/>
+        <source>Set as your wallpaper ✓  (saved in your library)</source>
+        <translation>वॉलपेपर बना दिया ✓  (आपकी लाइब्रेरी में सहेजा गया)</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/desktop.py"/>
+        <source>Couldn&apos;t save it: {error}</source>
+        <translation>सहेज नहीं सके: {error}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/desktop.py"/>
+        <source>Added to your library: {name}</source>
+        <translation>आपकी लाइब्रेरी में जोड़ा गया: {name}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/wallgen.py"/>
+        <source>Grimoire</source>
+        <translation>Grimoire</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/wallgen.py"/>
+        <source>The clover emblem in a soft pool of light on black.</source>
+        <translation>काले पर रोशनी के नरम घेरे में क्लोवर का प्रतीक।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/wallgen.py"/>
+        <source>Film grain</source>
+        <translation>फ़िल्म ग्रेन</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/wallgen.py"/>
+        <source>A dark gradient under heavy film grain, like a darkroom print.</source>
+        <translation>भारी फ़िल्म ग्रेन के नीचे एक गहरा ग्रेडिएंट, डार्करूम प्रिंट जैसा।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/wallgen.py"/>
+        <source>Hairlines</source>
+        <translation>बारीक रेखाएँ</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/wallgen.py"/>
+        <source>Fine parallel lines that fade in and out across the screen.</source>
+        <translation>बारीक समानांतर रेखाएँ जो स्क्रीन पर उभरती और ओझल होती हैं।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/wallgen.py"/>
+        <source>Topographic</source>
+        <translation>स्थलाकृति</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/wallgen.py"/>
+        <source>Contour lines of an imaginary landscape, with bold index lines.</source>
+        <translation>एक काल्पनिक भूदृश्य की समोच्च रेखाएँ, मोटी मुख्य रेखाओं के साथ।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/wallgen.py"/>
+        <source>Halftone</source>
+        <translation>हाफ़टोन</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/wallgen.py"/>
+        <source>A newspaper dot screen: dots swell and shrink with the light.</source>
+        <translation>अख़बार की बिंदु-स्क्रीन: रोशनी के साथ बिंदु बड़े-छोटे होते हैं।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/wallgen.py"/>
+        <source>Bauhaus</source>
+        <translation>बाउहाउस</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/wallgen.py"/>
+        <source>A grid of tiles: quarter circles, halves, triangles and bars.</source>
+        <translation>टाइलों की ग्रिड: चौथाई वृत्त, आधे, त्रिभुज और पट्टियाँ।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/wallgen.py"/>
+        <source>Fog</source>
+        <translation>धुंध</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/wallgen.py"/>
+        <source>Soft gray clouds drifting into each other, out of focus.</source>
+        <translation>नरम ग्रे बादल एक-दूसरे में घुलते हुए, धुँधले।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/wallgen.py"/>
+        <source>Clover field</source>
+        <translation>क्लोवर का खेत</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/wallgen.py"/>
+        <source>Rows of Grimoire clovers, a few of them lit up.</source>
+        <translation>Grimoire क्लोवरों की कतारें, उनमें से कुछ जगमगाते हुए।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/wallgen.py"/>
+        <source>Typography</source>
+        <translation>टाइपोग्राफ़ी</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/wallgen.py"/>
+        <source>Your words, huge, repeated in solid and outlined rows.</source>
+        <translation>आपके शब्द, विशाल, भरी और रूपरेखा वाली कतारों में दोहराए गए।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/wallgen.py"/>
+        <source>Ridges</source>
+        <translation>चोटियाँ</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/wallgen.py"/>
+        <source>Stacked signal lines rising into peaks in the middle.</source>
+        <translation>परत-दर-परत सिग्नल रेखाएँ जो बीच में चोटियों में उठती हैं।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/wallgen.py"/>
+        <source>Rings</source>
+        <translation>छल्ले</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/wallgen.py"/>
+        <source>Two sets of rings crossing into a quiet moiré.</source>
+        <translation>छल्लों के दो समूह जो एक-दूसरे को काटकर शांत मॉआरे बनाते हैं।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/wallgen.py"/>
+        <source>Maze</source>
+        <translation>भूलभुलैया</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/wallgen.py"/>
+        <source>Quarter-circle tiles that join into an endless winding path.</source>
+        <translation>चौथाई-वृत्त टाइलें जो जुड़कर एक अंतहीन घुमावदार रास्ता बनाती हैं।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/wallgen.py"/>
+        <source>Night sky</source>
+        <translation>रात का आकाश</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/wallgen.py"/>
+        <source>A field of stars, a faint Milky Way, a few that glow.</source>
+        <translation>तारों का मैदान, एक धुँधली आकाशगंगा, कुछ चमकते तारे।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/wallgen.py"/>
+        <source>Graph paper</source>
+        <translation>ग्राफ़ पेपर</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/wallgen.py"/>
+        <source>Fine and bold grid lines with crosses where they meet.</source>
+        <translation>बारीक और मोटी ग्रिड रेखाएँ, जहाँ मिलती हैं वहाँ क्रॉस।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/wallgen.py"/>
+        <source>Spotlight</source>
+        <translation>स्पॉटलाइट</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/wallgen.py"/>
+        <source>One smooth beam of light falling across the screen.</source>
+        <translation>स्क्रीन पर पड़ती रोशनी की एक कोमल किरण।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/wallgen.py"/>
+        <source>1-bit</source>
+        <translation>1-बिट</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/wallgen.py"/>
+        <source>A gradient dithered down to pure black and white pixels.</source>
+        <translation>शुद्ध काले और सफ़ेद पिक्सेल तक डिदर किया गया एक ग्रेडिएंट।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/wallgen.py"/>
+        <source>Dark</source>
+        <translation>गहरा</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/wallgen.py"/>
+        <source>Light</source>
+        <translation>हल्का</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/wallgen.py"/>
+        <source>Gray</source>
+        <translation>ग्रे</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/wallgen.py"/>
+        <source>Pure black</source>
+        <translation>शुद्ध काला</translation>
+    </message>
 </context>
 <context>
     <name>grimoire.spells.mural.screens</name>
@@ -480,6 +968,11 @@ fullscreen or maximized</source>
     </message>
     <message>
         <location filename="../../grimoire/spells/mural/screens.py"/>
+        <source>Imported by you</source>
+        <translation>आपके द्वारा आयात किया गया</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/screens.py"/>
         <source>Community · by {author}</source>
         <translation>समुदाय · {author} द्वारा</translation>
     </message>
@@ -487,6 +980,11 @@ fullscreen or maximized</source>
         <location filename="../../grimoire/spells/mural/screens.py"/>
         <source>Community · unknown author</source>
         <translation>समुदाय · अज्ञात लेखक</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/screens.py"/>
+        <source>{name}   ·   imported</source>
+        <translation>{name}   ·   आयात किया गया</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/mural/screens.py"/>
@@ -502,6 +1000,16 @@ fullscreen or maximized</source>
         <location filename="../../grimoire/spells/mural/screens.py"/>
         <source>Designs</source>
         <translation>डिज़ाइन</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/screens.py"/>
+        <source>Reset</source>
+        <translation>रीसेट</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/screens.py"/>
+        <source>Put back what you had before your last Apply</source>
+        <translation>पिछली बार लागू करने से पहले जो था, उसे वापस लाएँ</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/mural/screens.py"/>
@@ -525,8 +1033,98 @@ fullscreen or maximized</source>
     </message>
     <message>
         <location filename="../../grimoire/spells/mural/screens.py"/>
+        <source>Restored ✓  Back to {name}.</source>
+        <translation>वापस लाया गया ✓  फिर से {name}।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/screens.py"/>
+        <source>Cancel</source>
+        <translation>रद्द करें</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/screens.py"/>
+        <source>Put this panel back to what&apos;s in use now? Changes you haven&apos;t applied are lost.</source>
+        <translation>इस पैनल को अभी उपयोग में चल रही सेटिंग पर लौटाएँ? जो बदलाव लागू नहीं किए, वे खो जाएँगे।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/screens.py"/>
+        <source>Panel reset to what&apos;s in use.</source>
+        <translation>पैनल उपयोग में चल रही सेटिंग पर लौटा दिया गया।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/screens.py"/>
+        <source>Panel reset. Nothing was applied yet, so nothing else changed.</source>
+        <translation>पैनल रीसेट हुआ। अभी तक कुछ लागू नहीं हुआ था, इसलिए और कुछ नहीं बदला।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/screens.py"/>
+        <source>Before your last Apply this was the system&apos;s own setting, and this tab can&apos;t put that back by itself. Reset the panel to what&apos;s in use instead?</source>
+        <translation>पिछली बार लागू करने से पहले यह सिस्टम की अपनी सेटिंग थी, और यह टैब उसे खुद वापस नहीं ला सकता। इसके बजाय पैनल को उपयोग में चल रही सेटिंग पर लौटाएँ?</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/screens.py"/>
+        <source>Panel reset. What&apos;s applied didn&apos;t change.</source>
+        <translation>पैनल रीसेट हुआ। जो लागू है वह नहीं बदला।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/screens.py"/>
+        <source>Put back what you had before MuraL changed this?</source>
+        <translation>MuraL के बदलने से पहले जो था, उसे वापस लाएँ?</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/screens.py"/>
+        <source>Can&apos;t reset: what you had before ({design}) isn&apos;t available any more.</source>
+        <translation>रीसेट नहीं कर सकते: पहले वाला ({design}) अब उपलब्ध नहीं है।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/screens.py"/>
+        <source>Go back to {name} as it was before your last Apply?</source>
+        <translation>{name} पर लौटें, जैसा वह पिछली बार लागू करने से पहले था?</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/screens.py"/>
         <source>Couldn&apos;t restore: {error}</source>
         <translation>वापस नहीं ला सके: {error}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/screens.py"/>
+        <source>Import…</source>
+        <translation>आयात करें…</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/screens.py"/>
+        <source>Add your own: {what}</source>
+        <translation>अपना जोड़ें: {what}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/screens.py"/>
+        <source>From a file…</source>
+        <translation>फ़ाइल से…</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/screens.py"/>
+        <source>From a folder…</source>
+        <translation>फ़ोल्डर से…</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/screens.py"/>
+        <source>Import</source>
+        <translation>आयात करें</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/screens.py"/>
+        <source>Import a folder</source>
+        <translation>फ़ोल्डर आयात करें</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/screens.py"/>
+        <source>Importing…</source>
+        <translation>आयात हो रहा है…</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/screens.py"/>
+        <source>Imported {names}. Press Apply to use it.</source>
+        <translation>{names} आयात हुआ। इस्तेमाल के लिए लागू करें दबाएँ।</translation>
     </message>
 </context>
 <context>
@@ -538,8 +1136,118 @@ fullscreen or maximized</source>
     </message>
     <message>
         <location filename="../../grimoire/spells/mural/fonts.py"/>
-        <source>Nimbus Sans (a Helvetica design) + DM Mono. Classic poster typography.</source>
-        <translation>Nimbus Sans (Helvetica जैसा डिज़ाइन) + DM Mono। क्लासिक पोस्टर टाइपोग्राफ़ी।</translation>
+        <source>Nimbus Sans (a Helvetica design) + DM Mono, or IBM Plex Mono without it. Classic poster typography.</source>
+        <translation>Nimbus Sans (Helvetica जैसा डिज़ाइन) + DM Mono, या उसके बिना IBM Plex Mono। क्लासिक पोस्टर टाइपोग्राफ़ी।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/fonts.py"/>
+        <source>Grimoire</source>
+        <translation>Grimoire</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/fonts.py"/>
+        <source>IBM Plex Sans + IBM Plex Mono: the typeface Grimoire itself is set in. Crisp and engineered.</source>
+        <translation>IBM Plex Sans + IBM Plex Mono: वही टाइपफ़ेस जिसमें Grimoire खुद लिखा है। साफ़ और सधा हुआ।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/fonts.py"/>
+        <source>Editorial</source>
+        <translation>संपादकीय</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/fonts.py"/>
+        <source>IBM Plex Sans, with IBM Plex Serif on title bars like a magazine headline.</source>
+        <translation>IBM Plex Sans, और टाइटल बार पर IBM Plex Serif, पत्रिका की सुर्ख़ी जैसा।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/fonts.py"/>
+        <source>Condensed</source>
+        <translation>सँकरा</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/fonts.py"/>
+        <source>IBM Plex Sans Condensed: narrow letters fit more into menus, tabs and file names.</source>
+        <translation>IBM Plex Sans Condensed: सँकरे अक्षर मेनू, टैब और फ़ाइल नामों में ज़्यादा समा जाते हैं।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/fonts.py"/>
+        <source>Ubuntu</source>
+        <translation>Ubuntu</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/fonts.py"/>
+        <source>Ubuntu Sans + Ubuntu Sans Mono. Friendly, rounded and very readable.</source>
+        <translation>Ubuntu Sans + Ubuntu Sans Mono। दोस्ताना, गोल और बहुत पठनीय।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/fonts.py"/>
+        <source>Noto</source>
+        <translation>Noto</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/fonts.py"/>
+        <source>Noto Sans + Noto Sans Mono: one calm design for every language and script.</source>
+        <translation>Noto Sans + Noto Sans Mono: हर भाषा और लिपि के लिए एक शांत डिज़ाइन।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/fonts.py"/>
+        <source>Workshop</source>
+        <translation>कार्यशाला</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/fonts.py"/>
+        <source>DejaVu Sans + Hack. Wide, sturdy letters that stay clear at small sizes.</source>
+        <translation>DejaVu Sans + Hack। चौड़े, मज़बूत अक्षर जो छोटे आकार में भी साफ़ रहते हैं।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/fonts.py"/>
+        <source>Office</source>
+        <translation>ऑफ़िस</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/fonts.py"/>
+        <source>Liberation Sans + Liberation Mono: the same widths as Arial and Courier New, so documents line up.</source>
+        <translation>Liberation Sans + Liberation Mono: Arial और Courier New जितनी ही चौड़ाई, ताकि दस्तावेज़ सही बैठें।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/fonts.py"/>
+        <source>Bauhaus</source>
+        <translation>बाउहाउस</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/fonts.py"/>
+        <source>URW Gothic (an Avant Garde design) + Nimbus Mono PS. Geometric circles and straight lines.</source>
+        <translation>URW Gothic (Avant Garde जैसा डिज़ाइन) + Nimbus Mono PS। ज्यामितीय वृत्त और सीधी रेखाएँ।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/fonts.py"/>
+        <source>Typewriter</source>
+        <translation>टाइपराइटर</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/fonts.py"/>
+        <source>IBM Plex Mono everywhere, menus included. Every letter the same width.</source>
+        <translation>हर जगह IBM Plex Mono, मेनू समेत। हर अक्षर एक जितना चौड़ा।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/fonts.py"/>
+        <source>Modern</source>
+        <translation>आधुनिक</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/fonts.py"/>
+        <source>Inter + JetBrains Mono, the clean pair many apps and code editors use.</source>
+        <translation>Inter + JetBrains Mono, वह साफ़-सुथरी जोड़ी जिसे कई ऐप और कोड एडिटर इस्तेमाल करते हैं।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/fonts.py"/>
+        <source>Studio</source>
+        <translation>स्टूडियो</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/fonts.py"/>
+        <source>Cantarell + Fira Code: soft humanist letters with a coding font that joins =&gt; and !=.</source>
+        <translation>Cantarell + Fira Code: नरम मानवीय अक्षर, साथ में कोडिंग फ़ॉन्ट जो =&gt; और != को जोड़ता है।</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/mural/fonts.py"/>
@@ -583,8 +1291,23 @@ fullscreen or maximized</source>
     </message>
     <message>
         <location filename="../../grimoire/spells/mural/fonts.py"/>
+        <source>Interface font  ·  {size} pt  ·  titles: {title}  ·  monospace: {mono}</source>
+        <translation>इंटरफ़ेस फ़ॉन्ट  ·  {size} pt  ·  शीर्षक: {title}  ·  मोनोस्पेस: {mono}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/fonts.py"/>
         <source>SMALL TEXT · MENUS · TOOLBARS</source>
         <translation>छोटा टेक्स्ट · मेनू · टूलबार</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/fonts.py"/>
+        <source>Not installed, shown with stand-in fonts. Get them with: {command}</source>
+        <translation>इंस्टॉल नहीं हैं, स्थानापन्न फ़ॉन्ट से दिखाए गए। इस कमांड से पाएँ: {command}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/fonts.py"/>
+        <source>Not installed</source>
+        <translation>इंस्टॉल नहीं</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/mural/fonts.py"/>
@@ -618,8 +1341,27 @@ fullscreen or maximized</source>
     </message>
     <message>
         <location filename="../../grimoire/spells/mural/fonts.py"/>
+        <source>Copy install command</source>
+        <translation>इंस्टॉल कमांड कॉपी करें</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/fonts.py"/>
+        <source>Copied. Paste it into a terminal, then reopen this tab.</source>
+        <translation>कॉपी हो गया। इसे टर्मिनल में पेस्ट करें, फिर यह टैब दोबारा खोलें।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/fonts.py"/>
+        <source>these fonts aren&apos;t installed. Get them with: {command}</source>
+        <translation>ये फ़ॉन्ट इंस्टॉल नहीं हैं। इस कमांड से पाएँ: {command}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/fonts.py"/>
         <source>Applied ✓  Some apps pick up new fonts when reopened.</source>
         <translation>लागू हो गया ✓  कुछ ऐप दोबारा खोलने पर नए फ़ॉन्ट लेते हैं।</translation>
+    </message>
+    <message>
+        <source>Nimbus Sans (a Helvetica design) + DM Mono. Classic poster typography.</source>
+        <translation type="vanished">Nimbus Sans (Helvetica जैसा डिज़ाइन) + DM Mono। क्लासिक पोस्टर टाइपोग्राफ़ी।</translation>
     </message>
 </context>
 <context>
@@ -691,8 +1433,48 @@ fullscreen or maximized</source>
     </message>
     <message>
         <location filename="../../grimoire/spells/mural/icons.py"/>
-        <source>Your icon theme. Previews draw real icons from each theme&apos;s files. Applies instantly.</source>
-        <translation>आपकी आइकन थीम। प्रीव्यू हर थीम की फ़ाइलों से असली आइकन दिखाते हैं। तुरंत लागू होती है।</translation>
+        <source>Breeze&apos;s icons in true grays: every color becomes its own shade, so nothing loses its shape.</source>
+        <translation>Breeze के आइकन असली ग्रे में: हर रंग अपना अलग शेड बन जाता है, इसलिए कोई आकार नहीं खोता।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/icons.py"/>
+        <source>High contrast: five bold steps from black to white, like a print.</source>
+        <translation>हाई कंट्रास्ट: काले से सफ़ेद तक पाँच गाढ़े चरण, छपाई जैसे।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/icons.py"/>
+        <source>Light, soft grays that glow on a black panel.</source>
+        <translation>हल्के, नरम ग्रे जो काले पैनल पर चमकते हैं।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/icons.py"/>
+        <source>Deep charcoal grays that sit quietly on light backgrounds.</source>
+        <translation>गहरे चारकोल ग्रे जो हल्की पृष्ठभूमि पर चुपचाप बैठते हैं।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/icons.py"/>
+        <source>Grays turned inside out like a photo negative: white paper becomes black.</source>
+        <translation>फ़ोटो नेगेटिव की तरह उलटे ग्रे: सफ़ेद कागज़ काला हो जाता है।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/icons.py"/>
+        <source>Pure black and white only, cut like a stencil. Striking and graphic.</source>
+        <translation>सिर्फ़ शुद्ध काला और सफ़ेद, स्टेंसिल की तरह कटा। असरदार और ग्राफ़िक।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/icons.py"/>
+        <source>Dark panels</source>
+        <translation>गहरे पैनल</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/icons.py"/>
+        <source>Light panels</source>
+        <translation>हल्के पैनल</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/icons.py"/>
+        <source>Your icon theme. Previews draw real icons from each theme&apos;s files. Grimoire&apos;s monochrome themes are made on your PC when you apply them.</source>
+        <translation>आपकी आइकन थीम। पूर्वावलोकन हर थीम की फ़ाइलों से असली आइकन बनाते हैं। Grimoire की मोनोक्रोम थीम लागू करते समय आपके PC पर बनती हैं।</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/mural/icons.py"/>
@@ -701,13 +1483,150 @@ fullscreen or maximized</source>
     </message>
     <message>
         <location filename="../../grimoire/spells/mural/icons.py"/>
+        <source>Applying… making a theme takes a few seconds.</source>
+        <translation>लागू कर रहे हैं… थीम बनने में कुछ सेकंड लगते हैं।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/icons.py"/>
         <source>The icon theme you&apos;re using now.</source>
         <translation>वह आइकन थीम जो आप अभी उपयोग कर रहे हैं।</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/mural/icons.py"/>
+        <source>Installed on this PC.</source>
+        <translation>इस PC पर इंस्टॉल है।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/icons.py"/>
+        <source>Made for</source>
+        <translation>किसके लिए बना</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/icons.py"/>
+        <source>Gray app icons from other themes too</source>
+        <translation>दूसरी थीम के ऐप आइकन भी ग्रे करें</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/icons.py"/>
         <source>Applied ✓</source>
         <translation>लागू हो गया ✓</translation>
+    </message>
+    <message>
+        <source>Your icon theme. Previews draw real icons from each theme&apos;s files. Applies instantly.</source>
+        <translation type="vanished">आपकी आइकन थीम। प्रीव्यू हर थीम की फ़ाइलों से असली आइकन दिखाते हैं। तुरंत लागू होती है।</translation>
+    </message>
+</context>
+<context>
+    <name>grimoire.spells.mural.imports</name>
+    <message>
+        <location filename="../../grimoire/spells/mural/imports.py"/>
+        <source>a picture (PNG, JPEG or WebP)</source>
+        <translation>एक चित्र (PNG, JPEG या WebP)</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/imports.py"/>
+        <source>an SDDM login theme or a background picture</source>
+        <translation>एक SDDM लॉगिन थीम या पृष्ठभूमि चित्र</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/imports.py"/>
+        <source>a Plasma splash screen (look-and-feel package)</source>
+        <translation>एक Plasma स्प्लैश स्क्रीन (लुक-एंड-फ़ील पैकेज)</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/imports.py"/>
+        <source>a Plymouth boot theme</source>
+        <translation>एक Plymouth बूट थीम</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/imports.py"/>
+        <source>a Plasma style</source>
+        <translation>एक Plasma स्टाइल</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/imports.py"/>
+        <source>an Aurorae window decoration</source>
+        <translation>एक Aurorae विंडो सजावट</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/imports.py"/>
+        <source>a color scheme (.colors)</source>
+        <translation>एक रंग योजना (.colors)</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/imports.py"/>
+        <source>a Konsole color scheme (.colorscheme)</source>
+        <translation>एक Konsole रंग योजना (.colorscheme)</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/imports.py"/>
+        <source>a cursor theme</source>
+        <translation>एक कर्सर थीम</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/imports.py"/>
+        <source>an icon theme</source>
+        <translation>एक आइकन थीम</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/imports.py"/>
+        <source>Importable files ({patterns})</source>
+        <translation>आयात योग्य फ़ाइलें ({patterns})</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/imports.py"/>
+        <source>{file} isn&apos;t a PNG, JPEG or WebP picture.</source>
+        <translation>{file} PNG, JPEG या WebP चित्र नहीं है।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/imports.py"/>
+        <source>{file} is too big (the limit is {limit}).</source>
+        <translation>{file} बहुत बड़ी है (सीमा {limit} है)।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/imports.py"/>
+        <source>{file} is too large a picture ({size}).</source>
+        <translation>{file} बहुत बड़ा चित्र है ({size})।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/imports.py"/>
+        <source>{file} isn&apos;t a picture Grimoire can read.</source>
+        <translation>{file} ऐसा चित्र नहीं है जिसे Grimoire पढ़ सके।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/imports.py"/>
+        <source>Couldn&apos;t add {file} to the library.</source>
+        <translation>{file} को लाइब्रेरी में नहीं जोड़ सके।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/imports.py"/>
+        <source>{file} isn&apos;t {what}. Pick an archive (.zip, .tar.gz, .tar.xz…) or a folder.</source>
+        <translation>{file} {what} नहीं है। कोई आर्काइव (.zip, .tar.gz, .tar.xz…) या फ़ोल्डर चुनें।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/imports.py"/>
+        <source>{file} isn&apos;t a valid archive (it may be damaged).</source>
+        <translation>{file} मान्य आर्काइव नहीं है (शायद ख़राब हो गया है)।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/imports.py"/>
+        <source>Didn&apos;t find {what} in {file}.</source>
+        <translation>{file} में यह नहीं मिला: {what}।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/imports.py"/>
+        <source>Couldn&apos;t import {file}: {error}</source>
+        <translation>{file} आयात नहीं कर सके: {error}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/imports.py"/>
+        <source>{file} doesn&apos;t exist any more.</source>
+        <translation>{file} अब मौजूद नहीं है।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/imports.py"/>
+        <source>{file} isn&apos;t {what}.</source>
+        <translation>{file} {what} नहीं है।</translation>
     </message>
 </context>
 <context>
@@ -739,6 +1658,96 @@ fullscreen or maximized</source>
         <location filename="../../grimoire/spells/mural/lock.py"/>
         <source>Anti-Magic inverted: white Asta and wings on pure black. Striking but calm.</source>
         <translation>उलटा एंटी-मैजिक: शुद्ध काले पर सफ़ेद Asta और पंख। आकर्षक पर शांत।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/lock.py"/>
+        <source>Eclipse</source>
+        <translation>ग्रहण</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/lock.py"/>
+        <source>A black sun with a soft white corona; the clock sits inside it.</source>
+        <translation>नरम सफ़ेद कोरोना वाला एक काला सूरज; घड़ी उसके भीतर है।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/lock.py"/>
+        <source>Contour</source>
+        <translation>समोच्च</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/lock.py"/>
+        <source>Hairline topographic lines drifting across the dark.</source>
+        <translation>अँधेरे में बहती बारीक स्थलाकृतिक रेखाएँ।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/lock.py"/>
+        <source>Halftone</source>
+        <translation>हाफ़टोन</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/lock.py"/>
+        <source>A grid of dots swelling from one corner, like newsprint.</source>
+        <translation>एक कोने से बढ़ते बिंदुओं की ग्रिड, अख़बारी कागज़ जैसी।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/lock.py"/>
+        <source>Ripple</source>
+        <translation>लहर</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/lock.py"/>
+        <source>Thin rings spreading out from below the screen and fading.</source>
+        <translation>स्क्रीन के नीचे से फैलते और ओझल होते पतले छल्ले।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/lock.py"/>
+        <source>Pinstripe</source>
+        <translation>पिनस्ट्राइप</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/lock.py"/>
+        <source>Fine scanlines lit from the bottom, dark at the top.</source>
+        <translation>नीचे से रोशन बारीक स्कैनलाइनें, ऊपर अँधेरा।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/lock.py"/>
+        <source>Spotlight</source>
+        <translation>स्पॉटलाइट</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/lock.py"/>
+        <source>One soft pool of light from above, with film grain.</source>
+        <translation>ऊपर से रोशनी का एक नरम घेरा, फ़िल्म ग्रेन के साथ।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/lock.py"/>
+        <source>Clover</source>
+        <translation>क्लोवर</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/lock.py"/>
+        <source>A huge faint four-leaf clover watermark in the corner.</source>
+        <translation>कोने में चार पत्तियों वाले क्लोवर का एक विशाल धुँधला वॉटरमार्क।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/lock.py"/>
+        <source>Void</source>
+        <translation>शून्य</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/lock.py"/>
+        <source>Nearly pure black with the faintest glow. Nothing else.</source>
+        <translation>लगभग शुद्ध काला, सबसे हल्की चमक के साथ। और कुछ नहीं।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/lock.py"/>
+        <source>Fog</source>
+        <translation>धुंध</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/lock.py"/>
+        <source>Lighter: gray mist fading to black, grainy like film.</source>
+        <translation>हल्का: काले में घुलती ग्रे धुंध, फ़िल्म जैसी दानेदार।</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/mural/lock.py"/>
@@ -802,6 +1811,86 @@ fullscreen or maximized</source>
         <location filename="../../grimoire/spells/mural/login.py"/>
         <source>A dark floating card with the clover over the art; small clock top-left.</source>
         <translation>चित्र के ऊपर क्लोवर वाला एक गहरा तैरता कार्ड; ऊपर-बाएँ छोटी घड़ी।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/login.py"/>
+        <source>Minimal</source>
+        <translation>न्यूनतम</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/login.py"/>
+        <source>Just a big clock and the password line, centered over the art.</source>
+        <translation>बस एक बड़ी घड़ी और पासवर्ड की पंक्ति, चित्र के ऊपर बीच में।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/login.py"/>
+        <source>Sidebar</source>
+        <translation>साइडबार</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/login.py"/>
+        <source>A solid black column on the left holds the clock and login; the art fills the rest.</source>
+        <translation>बाईं ओर एक ठोस काला स्तंभ घड़ी और लॉगिन रखता है; बाक़ी में चित्र।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/login.py"/>
+        <source>Paper</source>
+        <translation>कागज़</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/login.py"/>
+        <source>The same column in white with black ink. Bright and editorial.</source>
+        <translation>वही स्तंभ सफ़ेद में, काली स्याही के साथ। उजला और संपादकीय।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/login.py"/>
+        <source>Console</source>
+        <translation>कंसोल</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/login.py"/>
+        <source>A text-mode login in monospace, top-left, over a nearly black screen.</source>
+        <translation>लगभग काली स्क्रीन पर ऊपर-बाएँ मोनोस्पेस में टेक्स्ट-मोड लॉगिन।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/login.py"/>
+        <source>Corner</source>
+        <translation>कोना</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/login.py"/>
+        <source>An oversized thin clock bottom-left, the login bottom-right.</source>
+        <translation>नीचे-बाएँ एक बड़ी पतली घड़ी, नीचे-दाएँ लॉगिन।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/login.py"/>
+        <source>Frame</source>
+        <translation>फ़्रेम</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/login.py"/>
+        <source>A double hairline border around the screen, everything centered inside it.</source>
+        <translation>स्क्रीन के चारों ओर दोहरी बारीक किनारी, सब कुछ उसके भीतर बीच में।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/login.py"/>
+        <source>Display</source>
+        <translation>डिस्प्ले</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/login.py"/>
+        <source>One enormous thin clock across the screen; the login waits small underneath.</source>
+        <translation>स्क्रीन भर में एक विशाल पतली घड़ी; लॉगिन नीचे छोटा-सा इंतज़ार करता है।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/login.py"/>
+        <source>Daylight</source>
+        <translation>दिन का उजाला</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/login.py"/>
+        <source>A white card with black ink and an outlined password box.</source>
+        <translation>काली स्याही वाला एक सफ़ेद कार्ड और रूपरेखा वाला पासवर्ड बॉक्स।</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/mural/login.py"/>
@@ -1172,6 +2261,76 @@ This only removes the saved snapshot; your wallpapers and themes stay.</source>
     </message>
     <message>
         <location filename="../../grimoire/spells/mural/motion.py"/>
+        <source>Snap</source>
+        <translation>झटपट</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/motion.py"/>
+        <source>Four times as fast: a flicker of motion, then it&apos;s done. Menus just appear.</source>
+        <translation>चार गुना तेज़: गति की एक झलक, और काम ख़त्म। मेनू बस दिख जाते हैं।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/motion.py"/>
+        <source>Genie</source>
+        <translation>जिन्न</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/motion.py"/>
+        <source>Normal speed, but minimized windows bend and pour into the taskbar like a magic lamp.</source>
+        <translation>सामान्य गति, पर छोटी की गई विंडो जादुई चिराग़ की तरह मुड़कर टास्कबार में समा जाती हैं।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/motion.py"/>
+        <source>Quiet</source>
+        <translation>शांत</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/motion.py"/>
+        <source>Nothing moves, things only fade. Minimize is instant. Easy on the eyes.</source>
+        <translation>कुछ हिलता नहीं, चीज़ें बस धुँधली होती हैं। छोटा करना तुरंत होता है। आँखों के लिए आरामदेह।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/motion.py"/>
+        <source>Paper</source>
+        <translation>कागज़</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/motion.py"/>
+        <source>Windows glide in like sheets of paper, and dialogs drop down from their window.</source>
+        <translation>विंडो कागज़ के पन्नों की तरह सरककर आती हैं, और डायलॉग अपनी विंडो से नीचे उतरते हैं।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/motion.py"/>
+        <source>Focus</source>
+        <translation>फ़ोकस</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/motion.py"/>
+        <source>Calm fades, and every window but the one you&apos;re using dims a little.</source>
+        <translation>शांत फ़ेड, और जिस विंडो पर आप हैं उसके सिवा हर विंडो थोड़ी मद्धम हो जाती है।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/motion.py"/>
+        <source>Shatter</source>
+        <translation>चकनाचूर</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/motion.py"/>
+        <source>Plasma&apos;s timing, but closed windows break apart into pieces.</source>
+        <translation>Plasma की गति, पर बंद की गई विंडो टुकड़ों में बिखर जाती हैं।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/motion.py"/>
+        <source>Cinema</source>
+        <translation>सिनेमा</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/motion.py"/>
+        <source>Slow and deliberate: long glides, a magic lamp, desktops that dissolve into each other.</source>
+        <translation>धीमा और सधा हुआ: लंबे सरकाव, जादुई चिराग़, एक-दूसरे में घुलते डेस्कटॉप।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/motion.py"/>
         <source>Scale</source>
         <translation>स्केल</translation>
     </message>
@@ -1207,8 +2366,18 @@ This only removes the saved snapshot; your wallpapers and themes stay.</source>
     </message>
     <message>
         <location filename="../../grimoire/spells/mural/motion.py"/>
-        <source>time →</source>
-        <translation>समय →</translation>
+        <source>As designed</source>
+        <translation>जैसा डिज़ाइन किया</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/motion.py"/>
+        <source>A bit faster</source>
+        <translation>थोड़ा तेज़</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/motion.py"/>
+        <source>A bit slower</source>
+        <translation>थोड़ा धीमा</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/mural/motion.py"/>
@@ -1224,6 +2393,21 @@ This only removes the saved snapshot; your wallpapers and themes stay.</source>
         <location filename="../../grimoire/spells/mural/motion.py"/>
         <source>{factor}× speed</source>
         <translation>{factor}× गति</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/motion.py"/>
+        <source>time →</source>
+        <translation>समय →</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/motion.py"/>
+        <source>Opening a window</source>
+        <translation>विंडो खोलना</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/motion.py"/>
+        <source>Minimizing</source>
+        <translation>छोटा करना</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/mural/motion.py"/>
@@ -1257,6 +2441,26 @@ This only removes the saved snapshot; your wallpapers and themes stay.</source>
     </message>
     <message>
         <location filename="../../grimoire/spells/mural/motion.py"/>
+        <source>Closing breaks apart</source>
+        <translation>बंद करने पर बिखरना</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/motion.py"/>
+        <source>Dialogs drop from their window</source>
+        <translation>डायलॉग अपनी विंडो से उतरते हैं</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/motion.py"/>
+        <source>Dim inactive windows</source>
+        <translation>निष्क्रिय विंडो मद्धम करें</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/motion.py"/>
+        <source>Menus slide in</source>
+        <translation>मेनू सरककर आते हैं</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/motion.py"/>
         <source>Wobbly windows</source>
         <translation>हिलती विंडो</translation>
     </message>
@@ -1279,6 +2483,11 @@ This only removes the saved snapshot; your wallpapers and themes stay.</source>
         <location filename="../../grimoire/spells/mural/motion.py"/>
         <source>Apply motion</source>
         <translation>गति लागू करें</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/motion.py"/>
+        <source>Pace</source>
+        <translation>गति</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/mural/motion.py"/>
@@ -1443,6 +2652,96 @@ This only removes the saved snapshot; your wallpapers and themes stay.</source>
         <location filename="../../grimoire/spells/mural/splash.py"/>
         <source>The five-leaf clover breathing slowly above a hairline progress bar.</source>
         <translation>एक पतली प्रगति पट्टी के ऊपर धीरे-धीरे साँस लेता पाँच पत्तियों वाला क्लोवर।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/splash.py"/>
+        <source>Orbit</source>
+        <translation>कक्षा</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/splash.py"/>
+        <source>A single white dot circling the clover on a hairline track.</source>
+        <translation>एक सफ़ेद बिंदु बारीक पथ पर क्लोवर के चारों ओर घूमता है।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/splash.py"/>
+        <source>Steps</source>
+        <translation>चरण</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/splash.py"/>
+        <source>Six dots under the clover, one filling in for each step of Plasma&apos;s startup.</source>
+        <translation>क्लोवर के नीचे छह बिंदु, Plasma के शुरू होने के हर चरण पर एक भरता है।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/splash.py"/>
+        <source>Ripple</source>
+        <translation>लहर</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/splash.py"/>
+        <source>Thin rings spreading out from the clover like drops on still water.</source>
+        <translation>क्लोवर से फैलते पतले छल्ले, शांत पानी पर बूँदों जैसे।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/splash.py"/>
+        <source>Spinner</source>
+        <translation>स्पिनर</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/splash.py"/>
+        <source>A hairline arc sweeping round the clover, with the percentage below.</source>
+        <translation>क्लोवर के चारों ओर घूमता एक बारीक चाप, नीचे प्रतिशत।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/splash.py"/>
+        <source>Bloom</source>
+        <translation>खिलना</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/splash.py"/>
+        <source>The four-leaf clover slowly turning and opening up as Plasma loads.</source>
+        <translation>Plasma लोड होते समय चार पत्तियों वाला क्लोवर धीरे-धीरे घूमता और खिलता है।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/splash.py"/>
+        <source>Wordmark</source>
+        <translation>वर्डमार्क</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/splash.py"/>
+        <source>GRIMOIRE in thin capitals, lit letter by letter as Plasma loads.</source>
+        <translation>पतले बड़े अक्षरों में GRIMOIRE, Plasma लोड होते समय अक्षर-दर-अक्षर रोशन।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/splash.py"/>
+        <source>Typewriter</source>
+        <translation>टाइपराइटर</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/splash.py"/>
+        <source>Your tagline typed out in monospace with a blinking block cursor and a text bar.</source>
+        <translation>आपकी टैगलाइन मोनोस्पेस में टाइप होती है, टिमटिमाते ब्लॉक कर्सर और टेक्स्ट पट्टी के साथ।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/splash.py"/>
+        <source>Hairline</source>
+        <translation>बारीक रेखा</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/splash.py"/>
+        <source>Almost nothing: a wordmark and one line across the bottom of the screen.</source>
+        <translation>लगभग कुछ नहीं: एक वर्डमार्क और स्क्रीन के निचले हिस्से में एक रेखा।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/splash.py"/>
+        <source>Daylight</source>
+        <translation>दिन का उजाला</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/splash.py"/>
+        <source>Inverted: a black clover and bar on soft white. For bright setups.</source>
+        <translation>उलटा: नरम सफ़ेद पर काला क्लोवर और पट्टी। उजले सेटअप के लिए।</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/mural/splash.py"/>
@@ -1622,6 +2921,16 @@ This only removes the saved snapshot; your wallpapers and themes stay.</source>
     </message>
     <message>
         <location filename="../../grimoire/spells/mural/storeview.py"/>
+        <source>Refresh</source>
+        <translation>रीफ़्रेश</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/storeview.py"/>
+        <source>Ask the store again (lists are kept for 6 hours)</source>
+        <translation>स्टोर से फिर पूछें (सूचियाँ 6 घंटे रखी जाती हैं)</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/storeview.py"/>
         <source>Pick something to see details</source>
         <translation>विवरण देखने के लिए कुछ चुनें</translation>
     </message>
@@ -1716,6 +3025,146 @@ This only removes the saved snapshot; your wallpapers and themes stay.</source>
     </message>
     <message>
         <location filename="../../grimoire/spells/mural/style.py"/>
+        <source>Smoke</source>
+        <translation>धुआँ</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/style.py"/>
+        <source>Smoked glass: see-through black with a gray blur behind it and a faint edge.</source>
+        <translation>धुएँ जैसा काँच: पारदर्शी काला, पीछे ग्रे धुँधलापन और हल्का किनारा।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/style.py"/>
+        <source>Hairline</source>
+        <translation>बारीक रेखा</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/style.py"/>
+        <source>Pure black outlined by a thin gray line. Crisp on any wallpaper.</source>
+        <translation>पतली ग्रे रेखा से घिरा शुद्ध काला। किसी भी वॉलपेपर पर साफ़।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/style.py"/>
+        <source>Block</source>
+        <translation>ब्लॉक</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/style.py"/>
+        <source>Pure black with square corners everywhere. No softness at all.</source>
+        <translation>हर जगह चौकोर कोनों वाला शुद्ध काला। बिल्कुल भी नरमी नहीं।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/style.py"/>
+        <source>Capsule</source>
+        <translation>कैप्सूल</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/style.py"/>
+        <source>Black with big round corners: a pill-shaped floating panel and soft popups.</source>
+        <translation>बड़े गोल कोनों वाला काला: गोली के आकार का तैरता पैनल और नरम पॉपअप।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/style.py"/>
+        <source>Wire</source>
+        <translation>तार</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/style.py"/>
+        <source>Black boxes drawn with a bright white outline. Technical and sharp.</source>
+        <translation>चमकीली सफ़ेद रूपरेखा से बने काले बक्से। तकनीकी और तीखा।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/style.py"/>
+        <source>Graphite</source>
+        <translation>ग्रेफ़ाइट</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/style.py"/>
+        <source>Charcoal gray instead of black, with a barely-there edge. Softer contrast.</source>
+        <translation>काले की जगह चारकोल ग्रे, लगभग अदृश्य किनारे के साथ। नरम कंट्रास्ट।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/style.py"/>
+        <source>Paper</source>
+        <translation>कागज़</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/style.py"/>
+        <source>Light: white panel and popups with black text and a fine gray edge.</source>
+        <translation>हल्का: सफ़ेद पैनल और पॉपअप, काला टेक्स्ट और बारीक ग्रे किनारा।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/style.py"/>
+        <source>Frost</source>
+        <translation>पाला</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/style.py"/>
+        <source>Light frosted glass: see-through white over a gray blur.</source>
+        <translation>हल्का धुँधला काँच: ग्रे धुँधलेपन पर पारदर्शी सफ़ेद।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/style.py"/>
+        <source>Mist</source>
+        <translation>कुहासा</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/style.py"/>
+        <source>Light gray with black text. Light without the glare of white.</source>
+        <translation>काले टेक्स्ट के साथ हल्का ग्रे। सफ़ेद की चकाचौंध के बिना हल्का।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/style.py"/>
+        <source>Type to search</source>
+        <translation>खोजने के लिए टाइप करें</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/style.py"/>
+        <source>Files</source>
+        <translation>फ़ाइलें</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/style.py"/>
+        <source>Terminal</source>
+        <translation>टर्मिनल</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/style.py"/>
+        <source>Web Browser</source>
+        <translation>वेब ब्राउज़र</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/style.py"/>
+        <source>Settings</source>
+        <translation>सेटिंग्स</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/style.py"/>
+        <source>Text Editor</source>
+        <translation>टेक्स्ट एडिटर</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/style.py"/>
+        <source>Music</source>
+        <translation>संगीत</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/style.py"/>
+        <source>Grimoire Linux</source>
+        <translation>Grimoire Linux</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/style.py"/>
+        <source>Sleep · Restart · Shut Down</source>
+        <translation>स्लीप · रीस्टार्ट · बंद करें</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/style.py"/>
+        <source>Terminal — ~/Projects</source>
+        <translation>टर्मिनल — ~/Projects</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/style.py"/>
         <source>The look of your taskbar, menus, popups and tooltips (Plasma Style). Applies instantly.</source>
         <translation>आपके टास्कबार, मेनू, पॉपअप और टूलटिप का रूप (Plasma स्टाइल)। तुरंत लागू होता है।</translation>
     </message>
@@ -1761,6 +3210,86 @@ This only removes the saved snapshot; your wallpapers and themes stay.</source>
         <location filename="../../grimoire/spells/mural/taskbar.py"/>
         <source>Only as wide as its contents, centered at the bottom. The modern look.</source>
         <translation>सामग्री जितना ही चौड़ा, नीचे बीच में। आधुनिक रूप।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/taskbar.py"/>
+        <source>Classic bar</source>
+        <translation>क्लासिक बार</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/taskbar.py"/>
+        <source>Edge to edge along the bottom, the familiar desktop taskbar.</source>
+        <translation>नीचे एक किनारे से दूसरे किनारे तक, जाना-पहचाना टास्कबार।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/taskbar.py"/>
+        <source>Corner</source>
+        <translation>कोना</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/taskbar.py"/>
+        <source>Fits its contents and sits in the bottom-left corner, out of the way.</source>
+        <translation>अपनी सामग्री जितना, नीचे-बाएँ कोने में, रास्ते से हटकर।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/taskbar.py"/>
+        <source>Top bar</source>
+        <translation>ऊपरी बार</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/taskbar.py"/>
+        <source>Edge to edge along the top of the screen.</source>
+        <translation>स्क्रीन के ऊपर एक किनारे से दूसरे किनारे तक।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/taskbar.py"/>
+        <source>Top dock</source>
+        <translation>ऊपरी डॉक</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/taskbar.py"/>
+        <source>Only as wide as its contents, centered at the top.</source>
+        <translation>सिर्फ़ सामग्री जितना चौड़ा, ऊपर बीच में।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/taskbar.py"/>
+        <source>Sidebar</source>
+        <translation>साइडबार</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/taskbar.py"/>
+        <source>Full height down the left edge. Leaves wide screens more room to read.</source>
+        <translation>बाएँ किनारे पर पूरी ऊँचाई। चौड़ी स्क्रीन पर पढ़ने को ज़्यादा जगह छोड़ता है।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/taskbar.py"/>
+        <source>Side dock</source>
+        <translation>साइड डॉक</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/taskbar.py"/>
+        <source>Only as tall as its contents, centered on the left edge.</source>
+        <translation>सिर्फ़ सामग्री जितना ऊँचा, बाएँ किनारे पर बीच में।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/taskbar.py"/>
+        <source>Right sidebar</source>
+        <translation>दायाँ साइडबार</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/taskbar.py"/>
+        <source>Full height down the right edge.</source>
+        <translation>दाएँ किनारे पर पूरी ऊँचाई।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/taskbar.py"/>
+        <source>Right dock</source>
+        <translation>दायाँ डॉक</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/taskbar.py"/>
+        <source>Only as tall as its contents, centered on the right edge.</source>
+        <translation>सिर्फ़ सामग्री जितना ऊँचा, दाएँ किनारे पर बीच में।</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/mural/taskbar.py"/>
@@ -1882,6 +3411,26 @@ This only removes the saved snapshot; your wallpapers and themes stay.</source>
     </message>
     <message>
         <location filename="../../grimoire/spells/mural/terminal.py"/>
+        <source>Lambda</source>
+        <translation>लैम्ब्डा</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/terminal.py"/>
+        <source>Arrow</source>
+        <translation>तीर</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/terminal.py"/>
+        <source>Frame</source>
+        <translation>फ़्रेम</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/terminal.py"/>
+        <source>Clock</source>
+        <translation>घड़ी</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/terminal.py"/>
         <source>Ink</source>
         <translation>स्याही</translation>
     </message>
@@ -1892,8 +3441,98 @@ This only removes the saved snapshot; your wallpapers and themes stay.</source>
     </message>
     <message>
         <location filename="../../grimoire/spells/mural/terminal.py"/>
-        <source>Konsole, your terminal. Every color becomes its own shade of gray so output stays readable. Applies to new Konsole windows.</source>
-        <translation>Konsole, आपका टर्मिनल। हर रंग ग्रे का अपना शेड बन जाता है ताकि आउटपुट पढ़ने लायक रहे। नई Konsole विंडो पर लागू होता है।</translation>
+        <source>Graphite</source>
+        <translation>ग्रेफ़ाइट</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/terminal.py"/>
+        <source>Charcoal background with gentle gray text. Easy on the eyes at night.</source>
+        <translation>चारकोल पृष्ठभूमि पर नरम ग्रे टेक्स्ट। रात में आँखों के लिए आरामदेह।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/terminal.py"/>
+        <source>Slate</source>
+        <translation>स्लेट</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/terminal.py"/>
+        <source>A dark gray slate with bright chalk-white text.</source>
+        <translation>गहरे ग्रे स्लेट पर चमकीला चॉक-सफ़ेद टेक्स्ट।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/terminal.py"/>
+        <source>Fog</source>
+        <translation>धुंध</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/terminal.py"/>
+        <source>Mid gray and low contrast: calm and soft for long sessions.</source>
+        <translation>मध्यम ग्रे और कम कंट्रास्ट: लंबे सत्रों के लिए शांत और नरम।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/terminal.py"/>
+        <source>Stark</source>
+        <translation>तीखा</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/terminal.py"/>
+        <source>Black and pure white at full contrast, for the sharpest possible text.</source>
+        <translation>पूरे कंट्रास्ट पर काला और शुद्ध सफ़ेद, सबसे साफ़ टेक्स्ट के लिए।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/terminal.py"/>
+        <source>Paper</source>
+        <translation>कागज़</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/terminal.py"/>
+        <source>White page, near-black ink. Grays in reverse for daylight.</source>
+        <translation>सफ़ेद पन्ना, लगभग काली स्याही। दिन के उजाले के लिए उलटे ग्रे।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/terminal.py"/>
+        <source>Newsprint</source>
+        <translation>अख़बार</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/terminal.py"/>
+        <source>Light gray paper with charcoal text: bright but never glaring.</source>
+        <translation>हल्के ग्रे कागज़ पर चारकोल टेक्स्ट: उजला पर कभी चुभता नहीं।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/terminal.py"/>
+        <source>Phosphor</source>
+        <translation>फ़ॉस्फ़र</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/terminal.py"/>
+        <source>An old green-screen monitor, muted: every color is a shade of soft green.</source>
+        <translation>पुराना हरी स्क्रीन वाला मॉनिटर, मद्धम: हर रंग नरम हरे का एक शेड।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/terminal.py"/>
+        <source>Amber</source>
+        <translation>अंबर</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/terminal.py"/>
+        <source>A muted amber monochrome screen, warm and quiet.</source>
+        <translation>मद्धम अंबर मोनोक्रोम स्क्रीन, गर्म और शांत।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/terminal.py"/>
+        <source>Ink Muted</source>
+        <translation>मद्धम स्याही</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/terminal.py"/>
+        <source>Ink with faded real colors, for when you need red and green told apart.</source>
+        <translation>फीके असली रंगों वाली स्याही, जब लाल और हरे में फ़र्क़ करना हो।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/terminal.py"/>
+        <source>Konsole, your terminal. Grayscale palettes turn every color into its own shade so output stays readable; a few muted ones add a soft tint. Applies to new Konsole windows.</source>
+        <translation>Konsole, आपका टर्मिनल। ग्रेस्केल पैलेट हर रंग को उसका अपना शेड बना देते हैं ताकि आउटपुट पढ़ने लायक रहे; कुछ मद्धम पैलेट हल्का रंग जोड़ते हैं। नई Konsole विंडो पर लागू होता है।</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/mural/terminal.py"/>
@@ -1950,6 +3589,10 @@ This only removes the saved snapshot; your wallpapers and themes stay.</source>
         <source>Applied ✓  New Konsole windows use it. Prompt takes effect in new terminals.</source>
         <translation>लागू हो गया ✓  नई Konsole विंडो इसका उपयोग करती हैं। प्रॉम्प्ट नए टर्मिनलों में लागू होगा।</translation>
     </message>
+    <message>
+        <source>Konsole, your terminal. Every color becomes its own shade of gray so output stays readable. Applies to new Konsole windows.</source>
+        <translation type="vanished">Konsole, आपका टर्मिनल। हर रंग ग्रे का अपना शेड बन जाता है ताकि आउटपुट पढ़ने लायक रहे। नई Konsole विंडो पर लागू होता है।</translation>
+    </message>
 </context>
 <context>
     <name>grimoire.spells.mural.windows</name>
@@ -2002,6 +3645,76 @@ This only removes the saved snapshot; your wallpapers and themes stay.</source>
         <location filename="../../grimoire/spells/mural/windows.py"/>
         <source>Menu + all-desktops on the left; help, minimize, maximize, close on the right.</source>
         <translation>बाईं ओर मेनू + सभी डेस्कटॉप; दाईं ओर सहायता, मिनिमाइज़, मैक्सिमाइज़, बंद।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/windows.py"/>
+        <source>Monolith</source>
+        <translation>मोनोलिथ</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/windows.py"/>
+        <source>Grimoire&apos;s own title bar: solid black, thin white line buttons that turn into white discs under the pointer.</source>
+        <translation>Grimoire का अपना टाइटल बार: ठोस काला, पतली सफ़ेद रेखा वाले बटन जो पॉइंटर के नीचे सफ़ेद गोले बन जाते हैं।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/windows.py"/>
+        <source>Dots</source>
+        <translation>बिंदु</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/windows.py"/>
+        <source>Three gray dots on the left, white to close. Their symbols appear when you point at them.</source>
+        <translation>बाईं ओर तीन ग्रे बिंदु, बंद करने के लिए सफ़ेद। उन पर पॉइंटर ले जाने पर चिह्न दिखते हैं।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/windows.py"/>
+        <source>Boxed</source>
+        <translation>बक्से</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/windows.py"/>
+        <source>Square corners, every button drawn in a thin white box that fills in under the pointer.</source>
+        <translation>चौकोर कोने, हर बटन एक पतले सफ़ेद बक्से में, जो पॉइंटर के नीचे भर जाता है।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/windows.py"/>
+        <source>Paper</source>
+        <translation>कागज़</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/windows.py"/>
+        <source>A white title bar with black text and buttons, and a fine line under it.</source>
+        <translation>काले टेक्स्ट और बटनों वाला सफ़ेद टाइटल बार, और उसके नीचे एक बारीक रेखा।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/windows.py"/>
+        <source>Slim</source>
+        <translation>पतला</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/windows.py"/>
+        <source>A thin black strip with small buttons. The most room for your windows.</source>
+        <translation>छोटे बटनों वाली एक पतली काली पट्टी। आपकी विंडो के लिए सबसे ज़्यादा जगह।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/windows.py"/>
+        <source>Stencil</source>
+        <translation>स्टेंसिल</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/windows.py"/>
+        <source>Charcoal bar with bold symbols and a solid white close button.</source>
+        <translation>मोटे चिह्नों और ठोस सफ़ेद बंद बटन वाला चारकोल बार।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/windows.py"/>
+        <source>Tiles</source>
+        <translation>टाइलें</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/windows.py"/>
+        <source>Wide full-height buttons in a square black bar; close lights up white under the pointer.</source>
+        <translation>चौकोर काले बार में चौड़े, पूरी ऊँचाई के बटन; पॉइंटर के नीचे बंद बटन सफ़ेद जलता है।</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/mural/windows.py"/>
@@ -2087,6 +3800,11 @@ This only removes the saved snapshot; your wallpapers and themes stay.</source>
         <location filename="../../grimoire/spells/mural/windows.py"/>
         <source>Apply to windows</source>
         <translation>विंडो पर लागू करें</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/windows.py"/>
+        <source>A light line around Breeze windows (the first five designs). MuraL&apos;s own designs draw their own edges.</source>
+        <translation>Breeze विंडो के चारों ओर एक हल्की रेखा (पहले पाँच डिज़ाइन)। MuraL के अपने डिज़ाइन अपने किनारे खुद बनाते हैं।</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/mural/windows.py"/>

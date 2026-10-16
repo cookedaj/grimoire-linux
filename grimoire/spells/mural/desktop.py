@@ -347,17 +347,17 @@ class GenerateTab(ScreenTab):
         return wallgen.DESIGNS
 
     def build_options(self, lay):
-        c = "grimoire.spells.mural.desktop"
         grid = QGridLayout()
         grid.setVerticalSpacing(8)
-        self.tone = Choice([(k, tr(c, v[0])) for k, v in wallgen.TONES.items()], self.changed)
+        tones = [(k, tr("grimoire.spells.mural.desktop", v[0])) for k, v in wallgen.TONES.items()]
+        self.tone = Choice(tones, self.changed)
         self.density = Slider(1, 10, "", self.changed)
         self.grain = Slider(0, 10, "", self.changed)
         self.seed = QSpinBox()
         self.seed.setRange(1, 9999)
         self.seed.valueChanged.connect(self.changed)
-        shuffle = QPushButton(tr(c, "Shuffle"))
-        shuffle.setToolTip(tr(c, "Another variation of this design"))
+        shuffle = QPushButton(tr("grimoire.spells.mural.desktop", "Shuffle"))
+        shuffle.setToolTip(tr("grimoire.spells.mural.desktop", "Another variation of this design"))
         shuffle.clicked.connect(self._shuffle)
         seed_row = QHBoxLayout()
         seed_row.setSpacing(6)
@@ -368,11 +368,16 @@ class GenerateTab(ScreenTab):
         self.text.setPlaceholderText("GRIMOIRE")
         self.text.textEdited.connect(self.changed)
         sw, sh = self._screen
-        sizes = [("screen", tr(c, "Your screen ({size})").format(size=ltr(f"{sw} × {sh}")))]
+        sizes = [("screen", tr("grimoire.spells.mural.desktop", "Your screen ({size})")
+                   .format(size=ltr(f"{sw} × {sh}")))]
         sizes += [(k, ltr(k.replace("x", " × "))) for k in wallgen.SIZES[1:]]
         self.size = Choice(sizes, self.changed)
-        rows = [(tr(c, "Tone"), self.tone), (tr(c, "Density"), self.density), (tr(c, "Grain"), self.grain),
-                (tr(c, "Variation"), seed_row), (tr(c, "Words"), self.text), (tr(c, "Size"), self.size)]
+        rows = [(tr("grimoire.spells.mural.desktop", "Tone"), self.tone),
+                (tr("grimoire.spells.mural.desktop", "Density"), self.density),
+                (tr("grimoire.spells.mural.desktop", "Grain"), self.grain),
+                (tr("grimoire.spells.mural.desktop", "Variation"), seed_row),
+                (tr("grimoire.spells.mural.desktop", "Words"), self.text),
+                (tr("grimoire.spells.mural.desktop", "Size"), self.size)]
         for r, (label, w) in enumerate(rows):
             grid.addWidget(QLabel(label), r, 0)
             if isinstance(w, QHBoxLayout):
@@ -382,7 +387,7 @@ class GenerateTab(ScreenTab):
         grid.setColumnStretch(1, 1)
         lay.addLayout(grid)
         lay.addSpacing(6)
-        self.add_btn = WrapButton(tr(c, "Add to library only"))
+        self.add_btn = WrapButton(tr("grimoire.spells.mural.desktop", "Add to library only"))
         self.add_btn.clicked.connect(self._add_only)
         lay.addWidget(self.add_btn)
 

@@ -586,27 +586,30 @@ class ScreenTab(QWidget):
     def reset(self):
         """Undo the last Apply (see the module docstring)."""
         hist = load_history(self.key)
-        ctx = "grimoire.spells.mural.screens"
         if not hist:
             saved = load_state().get(self.key) or {}
-            if not self.confirm(tr(ctx, "Put this panel back to what's in use now? Changes you haven't applied are "
-                                        "lost.")):
+            if not self.confirm(tr("grimoire.spells.mural.screens",
+                                   "Put this panel back to what's in use now? Changes you haven't applied are lost.")):
                 return
             self._select(saved.get("design") or "", saved.get("options") or {})
-            self.status.setText(tr(ctx, "Panel reset to what's in use.") if saved.get("design") else
-                                tr(ctx, "Panel reset. Nothing was applied yet, so nothing else changed."))
+            self.status.setText(
+                tr("grimoire.spells.mural.screens", "Panel reset to what's in use.") if saved.get("design") else
+                tr("grimoire.spells.mural.screens", "Panel reset. Nothing was applied yet, so nothing else changed."))
             return
         prev = hist[-1]
         if not prev.get("design"):                     # before the last Apply, MuraL had applied nothing here
             restore = self._original_restore()
             if restore is None:
-                if self.confirm(tr(ctx, "Before your last Apply this was the system's own setting, and this tab "
-                                        "can't put that back by itself. Reset the panel to what's in use instead?")):
+                if self.confirm(tr("grimoire.spells.mural.screens", "Before your last Apply this was the system's own "
+                                        "setting, and this tab can't put that back by itself. Reset "
+                                        "the panel to what's in use instead?")):
                     saved = load_state().get(self.key) or {}
                     self._select(saved.get("design") or "", saved.get("options") or {})
-                    self.status.setText(tr(ctx, "Panel reset. What's applied didn't change."))
+                    self.status.setText(tr("grimoire.spells.mural.screens",
+                                           "Panel reset. What's applied didn't change."))
                 return
-            if not self.confirm(tr(ctx, "Put back what you had before MuraL changed this?")):
+            if not self.confirm(tr("grimoire.spells.mural.screens",
+                                   "Put back what you had before MuraL changed this?")):
                 return
             self._after_background = self._reset_to_original
             restore()
@@ -615,10 +618,11 @@ class ScreenTab(QWidget):
             return
         design = self._design(prev["design"])
         if design is None:
-            self.status.setText(tr(ctx, "Can't reset: what you had before ({design}) isn't available any more.")
+            self.status.setText(tr("grimoire.spells.mural.screens", "Can't reset: what you had before ({design}) "
+                                   "isn't available any more.")
                                 .format(design=isolate(prev["design"])))
             return
-        if not self.confirm(tr(ctx, "Go back to {name} as it was before your last Apply?")
+        if not self.confirm(tr("grimoire.spells.mural.screens", "Go back to {name} as it was before your last Apply?")
                             .format(name=isolate(self.shown(design.name)))):
             return
         self._select(design.id, prev.get("options") or {})
@@ -707,7 +711,6 @@ class ScreenTab(QWidget):
 
     def _on_imported(self, result: dict):
         self.import_btn.setEnabled(True)
-        ctx = "grimoire.spells.mural.screens"
         names = [e["name"] for e in result["entries"]] + [n.rsplit(".", 1)[0] for n in result["images"]]
         select = [i for e in result["entries"] for i in (f"store:{e['key']}", e["ident"])]
         select += [f"img:{n}" for n in result["images"]]
@@ -721,7 +724,7 @@ class ScreenTab(QWidget):
                 bg.set_value(result["images"][-1])
         msgs = []
         if names:
-            msgs.append(tr(ctx, "Imported {names}. Press Apply to use it.")
+            msgs.append(tr("grimoire.spells.mural.screens", "Imported {names}. Press Apply to use it.")
                         .format(names=", ".join(isolate(n) for n in names)))
         msgs += result["errors"]
         self.import_msg.setText("\n".join(msgs))

@@ -13,7 +13,7 @@ from grimoire.i18n import tr, tr_noop
 from grimoire.jobs import POOL, Job
 from grimoire.spells.optimizel import profiles, tweaks
 from grimoire.spells.optimizel.benchview import BenchView
-from grimoire.widgets import Switch
+from grimoire.widgets import Switch, segments
 
 # only OptimizeL's own looks (the shared theme stays untouched)
 QSS = """
@@ -414,14 +414,14 @@ class OptimizeLPage(QWidget):
         frow.addWidget(self.search, 1)
         frow.addSpacing(14)
         self.seg = {}
-        for i, (name, label) in enumerate(FILTERS.items()):
+        for name, label in FILTERS.items():
             b = QPushButton(tr("grimoire.spells.optimizel.page", label))
             b.setObjectName("Segment")
             b.setCheckable(True)
-            b.setProperty("pos", "first" if i == 0 else "last" if i == len(FILTERS) - 1 else "mid")
             b.clicked.connect(lambda _=False, n=name: self._set_filter(n))
             frow.addWidget(b)
             self.seg[name] = b
+        segments(list(self.seg.values()))
         self.seg["All"].setChecked(True)
         col0.addLayout(frow)
 

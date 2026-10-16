@@ -40,6 +40,86 @@
     </message>
     <message>
         <location filename="../../grimoire/spells/mural/boot.py"/>
+        <source>Arc</source>
+        <translation>Дуга</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/boot.py"/>
+        <source>A hairline ring with one bright arc sweeping round it.</source>
+        <translation>Тонкое кольцо, по которому бежит одна яркая дуга.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/boot.py"/>
+        <source>Orbit</source>
+        <translation>Орбита</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/boot.py"/>
+        <source>The clover standing still while a small dot circles it.</source>
+        <translation>Клевер неподвижен, а вокруг него кружит маленькая точка.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/boot.py"/>
+        <source>Dots</source>
+        <translation>Точки</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/boot.py"/>
+        <source>Three dots swelling and fading one after another.</source>
+        <translation>Три точки по очереди набухают и гаснут.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/boot.py"/>
+        <source>Scanner</source>
+        <translation>Сканер</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/boot.py"/>
+        <source>A short bright segment gliding back and forth along a hairline.</source>
+        <translation>Короткий яркий отрезок скользит туда-обратно по тонкой линии.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/boot.py"/>
+        <source>Ripple</source>
+        <translation>Рябь</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/boot.py"/>
+        <source>Rings spreading out from the middle and fading away.</source>
+        <translation>Кольца расходятся от центра и тают.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/boot.py"/>
+        <source>Spin</source>
+        <translation>Вращение</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/boot.py"/>
+        <source>The four-leaf clover turning slowly on its stem.</source>
+        <translation>Четырёхлистный клевер медленно поворачивается на стебле.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/boot.py"/>
+        <source>Ticks</source>
+        <translation>Деления</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/boot.py"/>
+        <source>Twelve short ticks in a circle, the bright one leaving a fading trail.</source>
+        <translation>Двенадцать коротких делений по кругу; самое яркое оставляет гаснущий след.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/boot.py"/>
+        <source>Eclipse</source>
+        <translation>Затмение</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/boot.py"/>
+        <source>A white moon crossed again and again by a black shadow.</source>
+        <translation>Белую луну снова и снова пересекает чёрная тень.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/boot.py"/>
         <source>What you see while Linux starts and shuts down (Plymouth). Installing rebuilds the boot image, so it asks for your password and takes about a minute.</source>
         <translation>То, что вы видите при запуске и выключении Linux (Plymouth). Установка пересобирает загрузочный образ, поэтому спрашивает пароль и занимает около минуты.</translation>
     </message>
@@ -118,8 +198,18 @@
     </message>
     <message>
         <location filename="../../grimoire/spells/mural/colors.py"/>
+        <source>Light gray</source>
+        <translation>Светло-серый</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/colors.py"/>
         <source>Mid gray</source>
         <translation>Средне-серый</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/colors.py"/>
+        <source>Dark gray</source>
+        <translation>Тёмно-серый</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/mural/colors.py"/>
@@ -180,6 +270,76 @@
         <location filename="../../grimoire/spells/mural/colors.py"/>
         <source>White paper and black ink. Crisp light theme.</source>
         <translation>Белая бумага и чёрные чернила. Чёткая светлая тема.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/colors.py"/>
+        <source>Ink</source>
+        <translation>Чернила</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/colors.py"/>
+        <source>Pure black surfaces and pure white text. Highest contrast, made for OLED screens.</source>
+        <translation>Чисто чёрные поверхности и чисто белый текст. Максимальный контраст, для OLED-экранов.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/colors.py"/>
+        <source>Fog</source>
+        <translation>Туман</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/colors.py"/>
+        <source>Mid-gray surfaces with black text. Light, but never glaring.</source>
+        <translation>Средне-серые поверхности с чёрным текстом. Светло, но не слепит.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/colors.py"/>
+        <source>Newsprint</source>
+        <translation>Газета</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/colors.py"/>
+        <source>White pages under solid black title bars, like a printed front page.</source>
+        <translation>Белые страницы под чёрными заголовками окон, как первая полоса газеты.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/colors.py"/>
+        <source>Steel</source>
+        <translation>Сталь</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/colors.py"/>
+        <source>Muted tone: charcoal with a cool blue-gray cast.</source>
+        <translation>Приглушённый тон: графит с холодным серо-голубым отливом.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/colors.py"/>
+        <source>Moss</source>
+        <translation>Мох</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/colors.py"/>
+        <source>Muted tone: dark grays with a faint green cast.</source>
+        <translation>Приглушённый тон: тёмно-серые с лёгким зеленоватым отливом.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/colors.py"/>
+        <source>Clay</source>
+        <translation>Глина</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/colors.py"/>
+        <source>Muted tone: warm dark grays, like unglazed clay.</source>
+        <translation>Приглушённый тон: тёплые тёмно-серые, как необожжённая глина.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/colors.py"/>
+        <source>Sepia</source>
+        <translation>Сепия</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/colors.py"/>
+        <source>Muted tone: aged paper and brown-black ink. A warm light theme.</source>
+        <translation>Приглушённый тон: состаренная бумага и буро-чёрные чернила. Тёплая светлая тема.</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/mural/colors.py"/>
@@ -301,6 +461,61 @@
     </message>
     <message>
         <location filename="../../grimoire/spells/mural/cursor.py"/>
+        <source>Solid black with a crisp white edge and a soft shadow. Clear on any background.</source>
+        <translation>Сплошной чёрный с чёткой белой каймой и мягкой тенью. Хорошо виден на любом фоне.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/cursor.py"/>
+        <source>The same shapes in white with a black edge: easy to spot on dark windows.</source>
+        <translation>Те же формы в белом с чёрной каймой: легко заметить на тёмных окнах.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/cursor.py"/>
+        <source>A narrow black arrow with a hairline white edge and no shadow. Precise and quiet.</source>
+        <translation>Узкая чёрная стрелка с тончайшей белой каймой и без тени. Точная и спокойная.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/cursor.py"/>
+        <source>A tail-less arrowhead in near-black. Modern and minimal.</source>
+        <translation>Наконечник стрелки без хвоста, почти чёрный. Современно и минималистично.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/cursor.py"/>
+        <source>Hollow outlines: a white line with a black edge, so what&apos;s underneath shows through.</source>
+        <translation>Полые контуры: белая линия с чёрной каймой, сквозь которые видно, что под ними.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/cursor.py"/>
+        <source>Dark gray with a light gray edge and rounded corners. Softer than pure black.</source>
+        <translation>Тёмно-серый со светло-серой каймой и скруглёнными углами. Мягче чистого чёрного.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/cursor.py"/>
+        <source>White with a heavy black ring and a white halo: the easiest to find on any screen.</source>
+        <translation>Белый с толстым чёрным кольцом и белым ореолом: проще всего найти на любом экране.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/cursor.py"/>
+        <source>Retro pixel art, snapped to pure black and white with no smoothing.</source>
+        <translation>Ретро-пиксель-арт, сведённый к чистому чёрно-белому без сглаживания.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/cursor.py"/>
+        <source>Oxygen&apos;s glossy cursors in white.</source>
+        <translation>Глянцевые курсоры Oxygen в белом.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/cursor.py"/>
+        <source>The plain black and white cursors of older KDE releases.</source>
+        <translation>Простые чёрно-белые курсоры старых версий KDE.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/cursor.py"/>
+        <source>KDE&apos;s default cursors, with a few colored accents. Pick it to go back to how Plasma looked.</source>
+        <translation>Стандартные курсоры KDE с несколькими цветными акцентами. Выберите их, чтобы вернуть прежний вид Plasma.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/cursor.py"/>
         <source>on dark</source>
         <translation>на тёмном</translation>
     </message>
@@ -311,18 +526,23 @@
     </message>
     <message>
         <location filename="../../grimoire/spells/mural/cursor.py"/>
-        <source>{size} px  ·  shown at 2×</source>
-        <translation>{size} px  ·  увеличено в 2×</translation>
+        <source>{size} px  ·  shown at {zoom}×</source>
+        <translation>{size} px  ·  показано в {zoom}×</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/mural/cursor.py"/>
-        <source>Your mouse pointer. Previews come from the real cursor files, shown on dark and light.</source>
-        <translation>Указатель мыши. Предпросмотр берётся из настоящих файлов курсора — на тёмном и светлом фоне.</translation>
+        <source>Your mouse pointer. Previews come from the real cursor files, shown on dark and light. Grimoire&apos;s own themes are made on your PC when you apply them.</source>
+        <translation>Указатель мыши. Превью берутся из настоящих файлов курсоров и показаны на тёмном и светлом фоне. Собственные темы Grimoire создаются на вашем ПК при применении.</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/mural/cursor.py"/>
         <source>Apply cursor</source>
         <translation>Применить курсор</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/cursor.py"/>
+        <source>{size} px</source>
+        <translation>{size} px</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/mural/cursor.py"/>
@@ -334,6 +554,14 @@
         <source>Applied ✓</source>
         <translation>Применено ✓</translation>
     </message>
+    <message>
+        <source>{size} px  ·  shown at 2×</source>
+        <translation type="vanished">{size} px  ·  увеличено в 2×</translation>
+    </message>
+    <message>
+        <source>Your mouse pointer. Previews come from the real cursor files, shown on dark and light.</source>
+        <translation type="vanished">Указатель мыши. Предпросмотр берётся из настоящих файлов курсора — на тёмном и светлом фоне.</translation>
+    </message>
 </context>
 <context>
     <name>grimoire.spells.mural.desktop</name>
@@ -341,6 +569,11 @@
         <location filename="../../grimoire/spells/mural/desktop.py"/>
         <source>Library</source>
         <translation>Библиотека</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/desktop.py"/>
+        <source>Generate</source>
+        <translation>Создать</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/mural/desktop.py"/>
@@ -458,6 +691,261 @@ fullscreen or maximized</source>
         <source>Applied to your desktop ✓</source>
         <translation>Применено к рабочему столу ✓</translation>
     </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/desktop.py"/>
+        <source>Wallpapers drawn for your screen, in black &amp; white. Each one is saved to your library.</source>
+        <translation>Обои, нарисованные для вашего экрана, в чёрно-белом. Каждые сохраняются в вашу библиотеку.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/desktop.py"/>
+        <source>Set as wallpaper</source>
+        <translation>Сделать обоями</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/desktop.py"/>
+        <source>Drawing…</source>
+        <translation>Рисование…</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/desktop.py"/>
+        <source>Another variation of this design</source>
+        <translation>Другой вариант этого дизайна</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/desktop.py"/>
+        <source>Your screen ({size})</source>
+        <translation>Ваш экран ({size})</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/desktop.py"/>
+        <source>Tone</source>
+        <translation>Тон</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/desktop.py"/>
+        <source>Density</source>
+        <translation>Плотность</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/desktop.py"/>
+        <source>Grain</source>
+        <translation>Зерно</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/desktop.py"/>
+        <source>Variation</source>
+        <translation>Вариант</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/desktop.py"/>
+        <source>Words</source>
+        <translation>Слова</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/desktop.py"/>
+        <source>Size</source>
+        <translation>Размер</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/desktop.py"/>
+        <source>Add to library only</source>
+        <translation>Только добавить в библиотеку</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/desktop.py"/>
+        <source>Set as your wallpaper ✓  (saved in your library)</source>
+        <translation>Установлено как обои ✓  (сохранено в библиотеке)</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/desktop.py"/>
+        <source>Couldn&apos;t save it: {error}</source>
+        <translation>Не удалось сохранить: {error}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/desktop.py"/>
+        <source>Added to your library: {name}</source>
+        <translation>Добавлено в библиотеку: {name}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/wallgen.py"/>
+        <source>Grimoire</source>
+        <translation>Grimoire</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/wallgen.py"/>
+        <source>The clover emblem in a soft pool of light on black.</source>
+        <translation>Эмблема клевера в мягком пятне света на чёрном.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/wallgen.py"/>
+        <source>Film grain</source>
+        <translation>Плёночное зерно</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/wallgen.py"/>
+        <source>A dark gradient under heavy film grain, like a darkroom print.</source>
+        <translation>Тёмный градиент под крупным плёночным зерном, как отпечаток из фотолаборатории.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/wallgen.py"/>
+        <source>Hairlines</source>
+        <translation>Тонкие линии</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/wallgen.py"/>
+        <source>Fine parallel lines that fade in and out across the screen.</source>
+        <translation>Тонкие параллельные линии, проступающие и тающие по всему экрану.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/wallgen.py"/>
+        <source>Topographic</source>
+        <translation>Топография</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/wallgen.py"/>
+        <source>Contour lines of an imaginary landscape, with bold index lines.</source>
+        <translation>Горизонтали воображаемой местности с жирными основными линиями.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/wallgen.py"/>
+        <source>Halftone</source>
+        <translation>Растр</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/wallgen.py"/>
+        <source>A newspaper dot screen: dots swell and shrink with the light.</source>
+        <translation>Газетный растр: точки растут и сжимаются вместе со светом.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/wallgen.py"/>
+        <source>Bauhaus</source>
+        <translation>Баухаус</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/wallgen.py"/>
+        <source>A grid of tiles: quarter circles, halves, triangles and bars.</source>
+        <translation>Сетка плиток: четверти кругов, половинки, треугольники и полосы.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/wallgen.py"/>
+        <source>Fog</source>
+        <translation>Туман</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/wallgen.py"/>
+        <source>Soft gray clouds drifting into each other, out of focus.</source>
+        <translation>Мягкие серые облака перетекают друг в друга, не в фокусе.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/wallgen.py"/>
+        <source>Clover field</source>
+        <translation>Поле клевера</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/wallgen.py"/>
+        <source>Rows of Grimoire clovers, a few of them lit up.</source>
+        <translation>Ряды клеверов Grimoire, несколько из них светятся.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/wallgen.py"/>
+        <source>Typography</source>
+        <translation>Типографика</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/wallgen.py"/>
+        <source>Your words, huge, repeated in solid and outlined rows.</source>
+        <translation>Ваши слова, огромные, повторённые сплошными и контурными рядами.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/wallgen.py"/>
+        <source>Ridges</source>
+        <translation>Хребты</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/wallgen.py"/>
+        <source>Stacked signal lines rising into peaks in the middle.</source>
+        <translation>Сложенные линии сигнала поднимаются пиками в середине.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/wallgen.py"/>
+        <source>Rings</source>
+        <translation>Кольца</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/wallgen.py"/>
+        <source>Two sets of rings crossing into a quiet moiré.</source>
+        <translation>Два набора колец пересекаются в спокойный муар.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/wallgen.py"/>
+        <source>Maze</source>
+        <translation>Лабиринт</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/wallgen.py"/>
+        <source>Quarter-circle tiles that join into an endless winding path.</source>
+        <translation>Плитки с четвертями кругов складываются в бесконечную извилистую дорожку.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/wallgen.py"/>
+        <source>Night sky</source>
+        <translation>Ночное небо</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/wallgen.py"/>
+        <source>A field of stars, a faint Milky Way, a few that glow.</source>
+        <translation>Поле звёзд, бледный Млечный Путь и несколько ярких звёзд.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/wallgen.py"/>
+        <source>Graph paper</source>
+        <translation>Миллиметровка</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/wallgen.py"/>
+        <source>Fine and bold grid lines with crosses where they meet.</source>
+        <translation>Тонкие и жирные линии сетки с крестиками на пересечениях.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/wallgen.py"/>
+        <source>Spotlight</source>
+        <translation>Прожектор</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/wallgen.py"/>
+        <source>One smooth beam of light falling across the screen.</source>
+        <translation>Один плавный луч света, падающий через экран.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/wallgen.py"/>
+        <source>1-bit</source>
+        <translation>1 бит</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/wallgen.py"/>
+        <source>A gradient dithered down to pure black and white pixels.</source>
+        <translation>Градиент, сведённый дизерингом к чисто чёрным и белым пикселям.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/wallgen.py"/>
+        <source>Dark</source>
+        <translation>Тёмный</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/wallgen.py"/>
+        <source>Light</source>
+        <translation>Светлый</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/wallgen.py"/>
+        <source>Gray</source>
+        <translation>Серый</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/wallgen.py"/>
+        <source>Pure black</source>
+        <translation>Чисто чёрный</translation>
+    </message>
 </context>
 <context>
     <name>grimoire.spells.mural.screens</name>
@@ -481,6 +969,11 @@ fullscreen or maximized</source>
     </message>
     <message>
         <location filename="../../grimoire/spells/mural/screens.py"/>
+        <source>Imported by you</source>
+        <translation>Импортировано вами</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/screens.py"/>
         <source>Community · by {author}</source>
         <translation>Сообщество · автор {author}</translation>
     </message>
@@ -488,6 +981,11 @@ fullscreen or maximized</source>
         <location filename="../../grimoire/spells/mural/screens.py"/>
         <source>Community · unknown author</source>
         <translation>Сообщество · автор неизвестен</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/screens.py"/>
+        <source>{name}   ·   imported</source>
+        <translation>{name}   ·   импортировано</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/mural/screens.py"/>
@@ -503,6 +1001,16 @@ fullscreen or maximized</source>
         <location filename="../../grimoire/spells/mural/screens.py"/>
         <source>Designs</source>
         <translation>Дизайны</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/screens.py"/>
+        <source>Reset</source>
+        <translation>Сбросить</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/screens.py"/>
+        <source>Put back what you had before your last Apply</source>
+        <translation>Вернуть то, что было до последнего «Применить»</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/mural/screens.py"/>
@@ -526,8 +1034,98 @@ fullscreen or maximized</source>
     </message>
     <message>
         <location filename="../../grimoire/spells/mural/screens.py"/>
+        <source>Restored ✓  Back to {name}.</source>
+        <translation>Восстановлено ✓  Снова {name}.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/screens.py"/>
+        <source>Cancel</source>
+        <translation>Отмена</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/screens.py"/>
+        <source>Put this panel back to what&apos;s in use now? Changes you haven&apos;t applied are lost.</source>
+        <translation>Вернуть эту панель к тому, что используется сейчас? Неприменённые изменения пропадут.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/screens.py"/>
+        <source>Panel reset to what&apos;s in use.</source>
+        <translation>Панель сброшена к тому, что используется.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/screens.py"/>
+        <source>Panel reset. Nothing was applied yet, so nothing else changed.</source>
+        <translation>Панель сброшена. Ничего ещё не применялось, так что больше ничего не изменилось.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/screens.py"/>
+        <source>Before your last Apply this was the system&apos;s own setting, and this tab can&apos;t put that back by itself. Reset the panel to what&apos;s in use instead?</source>
+        <translation>До последнего «Применить» здесь была собственная настройка системы, и эта вкладка не может вернуть её сама. Сбросить панель к тому, что используется сейчас?</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/screens.py"/>
+        <source>Panel reset. What&apos;s applied didn&apos;t change.</source>
+        <translation>Панель сброшена. Применённое не изменилось.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/screens.py"/>
+        <source>Put back what you had before MuraL changed this?</source>
+        <translation>Вернуть то, что было до изменений MuraL?</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/screens.py"/>
+        <source>Can&apos;t reset: what you had before ({design}) isn&apos;t available any more.</source>
+        <translation>Сбросить нельзя: прежний вариант ({design}) больше недоступен.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/screens.py"/>
+        <source>Go back to {name} as it was before your last Apply?</source>
+        <translation>Вернуться к {name} в том виде, что был до последнего «Применить»?</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/screens.py"/>
         <source>Couldn&apos;t restore: {error}</source>
         <translation>Не удалось восстановить: {error}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/screens.py"/>
+        <source>Import…</source>
+        <translation>Импорт…</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/screens.py"/>
+        <source>Add your own: {what}</source>
+        <translation>Добавьте своё: {what}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/screens.py"/>
+        <source>From a file…</source>
+        <translation>Из файла…</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/screens.py"/>
+        <source>From a folder…</source>
+        <translation>Из папки…</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/screens.py"/>
+        <source>Import</source>
+        <translation>Импортировать</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/screens.py"/>
+        <source>Import a folder</source>
+        <translation>Импортировать папку</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/screens.py"/>
+        <source>Importing…</source>
+        <translation>Идёт импорт…</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/screens.py"/>
+        <source>Imported {names}. Press Apply to use it.</source>
+        <translation>Импортировано: {names}. Нажмите «Применить», чтобы использовать.</translation>
     </message>
 </context>
 <context>
@@ -539,8 +1137,118 @@ fullscreen or maximized</source>
     </message>
     <message>
         <location filename="../../grimoire/spells/mural/fonts.py"/>
-        <source>Nimbus Sans (a Helvetica design) + DM Mono. Classic poster typography.</source>
-        <translation>Nimbus Sans (в духе Helvetica) + DM Mono. Классическая плакатная типографика.</translation>
+        <source>Nimbus Sans (a Helvetica design) + DM Mono, or IBM Plex Mono without it. Classic poster typography.</source>
+        <translation>Nimbus Sans (вариант Helvetica) + DM Mono, а без неё IBM Plex Mono. Классическая плакатная типографика.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/fonts.py"/>
+        <source>Grimoire</source>
+        <translation>Grimoire</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/fonts.py"/>
+        <source>IBM Plex Sans + IBM Plex Mono: the typeface Grimoire itself is set in. Crisp and engineered.</source>
+        <translation>IBM Plex Sans + IBM Plex Mono: шрифт, которым набран сам Grimoire. Чёткий и инженерный.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/fonts.py"/>
+        <source>Editorial</source>
+        <translation>Редакционный</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/fonts.py"/>
+        <source>IBM Plex Sans, with IBM Plex Serif on title bars like a magazine headline.</source>
+        <translation>IBM Plex Sans, а в заголовках окон IBM Plex Serif, как журнальный заголовок.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/fonts.py"/>
+        <source>Condensed</source>
+        <translation>Узкий</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/fonts.py"/>
+        <source>IBM Plex Sans Condensed: narrow letters fit more into menus, tabs and file names.</source>
+        <translation>IBM Plex Sans Condensed: узкие буквы вмещают больше в меню, вкладки и имена файлов.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/fonts.py"/>
+        <source>Ubuntu</source>
+        <translation>Ubuntu</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/fonts.py"/>
+        <source>Ubuntu Sans + Ubuntu Sans Mono. Friendly, rounded and very readable.</source>
+        <translation>Ubuntu Sans + Ubuntu Sans Mono. Дружелюбный, округлый и очень читаемый.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/fonts.py"/>
+        <source>Noto</source>
+        <translation>Noto</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/fonts.py"/>
+        <source>Noto Sans + Noto Sans Mono: one calm design for every language and script.</source>
+        <translation>Noto Sans + Noto Sans Mono: один спокойный рисунок для всех языков и письменностей.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/fonts.py"/>
+        <source>Workshop</source>
+        <translation>Мастерская</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/fonts.py"/>
+        <source>DejaVu Sans + Hack. Wide, sturdy letters that stay clear at small sizes.</source>
+        <translation>DejaVu Sans + Hack. Широкие крепкие буквы, чёткие даже в мелком размере.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/fonts.py"/>
+        <source>Office</source>
+        <translation>Офис</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/fonts.py"/>
+        <source>Liberation Sans + Liberation Mono: the same widths as Arial and Courier New, so documents line up.</source>
+        <translation>Liberation Sans + Liberation Mono: те же ширины, что у Arial и Courier New, чтобы документы не съезжали.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/fonts.py"/>
+        <source>Bauhaus</source>
+        <translation>Баухаус</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/fonts.py"/>
+        <source>URW Gothic (an Avant Garde design) + Nimbus Mono PS. Geometric circles and straight lines.</source>
+        <translation>URW Gothic (вариант Avant Garde) + Nimbus Mono PS. Геометрические круги и прямые линии.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/fonts.py"/>
+        <source>Typewriter</source>
+        <translation>Пишущая машинка</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/fonts.py"/>
+        <source>IBM Plex Mono everywhere, menus included. Every letter the same width.</source>
+        <translation>IBM Plex Mono везде, включая меню. Все буквы одной ширины.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/fonts.py"/>
+        <source>Modern</source>
+        <translation>Современный</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/fonts.py"/>
+        <source>Inter + JetBrains Mono, the clean pair many apps and code editors use.</source>
+        <translation>Inter + JetBrains Mono — чистая пара, которую используют многие приложения и редакторы кода.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/fonts.py"/>
+        <source>Studio</source>
+        <translation>Студия</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/fonts.py"/>
+        <source>Cantarell + Fira Code: soft humanist letters with a coding font that joins =&gt; and !=.</source>
+        <translation>Cantarell + Fira Code: мягкие гуманистические буквы и шрифт для кода, связывающий =&gt; и !=.</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/mural/fonts.py"/>
@@ -584,8 +1292,23 @@ fullscreen or maximized</source>
     </message>
     <message>
         <location filename="../../grimoire/spells/mural/fonts.py"/>
+        <source>Interface font  ·  {size} pt  ·  titles: {title}  ·  monospace: {mono}</source>
+        <translation>Шрифт интерфейса  ·  {size} pt  ·  заголовки: {title}  ·  моноширинный: {mono}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/fonts.py"/>
         <source>SMALL TEXT · MENUS · TOOLBARS</source>
         <translation>МЕЛКИЙ ТЕКСТ · МЕНЮ · ПАНЕЛИ ИНСТРУМЕНТОВ</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/fonts.py"/>
+        <source>Not installed, shown with stand-in fonts. Get them with: {command}</source>
+        <translation>Не установлены, показаны заменяющими шрифтами. Установите их командой: {command}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/fonts.py"/>
+        <source>Not installed</source>
+        <translation>Не установлены</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/mural/fonts.py"/>
@@ -619,8 +1342,27 @@ fullscreen or maximized</source>
     </message>
     <message>
         <location filename="../../grimoire/spells/mural/fonts.py"/>
+        <source>Copy install command</source>
+        <translation>Копировать команду установки</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/fonts.py"/>
+        <source>Copied. Paste it into a terminal, then reopen this tab.</source>
+        <translation>Скопировано. Вставьте её в терминал, затем откройте эту вкладку снова.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/fonts.py"/>
+        <source>these fonts aren&apos;t installed. Get them with: {command}</source>
+        <translation>эти шрифты не установлены. Установите их командой: {command}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/fonts.py"/>
         <source>Applied ✓  Some apps pick up new fonts when reopened.</source>
         <translation>Применено ✓  Некоторые приложения подхватят новые шрифты после перезапуска.</translation>
+    </message>
+    <message>
+        <source>Nimbus Sans (a Helvetica design) + DM Mono. Classic poster typography.</source>
+        <translation type="vanished">Nimbus Sans (в духе Helvetica) + DM Mono. Классическая плакатная типографика.</translation>
     </message>
 </context>
 <context>
@@ -692,8 +1434,48 @@ fullscreen or maximized</source>
     </message>
     <message>
         <location filename="../../grimoire/spells/mural/icons.py"/>
-        <source>Your icon theme. Previews draw real icons from each theme&apos;s files. Applies instantly.</source>
-        <translation>Тема значков. Предпросмотр рисует настоящие значки из файлов каждой темы. Применяется сразу.</translation>
+        <source>Breeze&apos;s icons in true grays: every color becomes its own shade, so nothing loses its shape.</source>
+        <translation>Значки Breeze в настоящих оттенках серого: каждый цвет становится своим оттенком, поэтому ни одна форма не теряется.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/icons.py"/>
+        <source>High contrast: five bold steps from black to white, like a print.</source>
+        <translation>Высокий контраст: пять резких ступеней от чёрного к белому, как на гравюре.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/icons.py"/>
+        <source>Light, soft grays that glow on a black panel.</source>
+        <translation>Светлые мягкие серые, которые светятся на чёрной панели.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/icons.py"/>
+        <source>Deep charcoal grays that sit quietly on light backgrounds.</source>
+        <translation>Глубокие графитовые серые, спокойные на светлом фоне.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/icons.py"/>
+        <source>Grays turned inside out like a photo negative: white paper becomes black.</source>
+        <translation>Серые, вывернутые наизнанку, как фотонегатив: белая бумага становится чёрной.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/icons.py"/>
+        <source>Pure black and white only, cut like a stencil. Striking and graphic.</source>
+        <translation>Только чистые чёрный и белый, вырезанные как трафарет. Смело и графично.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/icons.py"/>
+        <source>Dark panels</source>
+        <translation>Тёмные панели</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/icons.py"/>
+        <source>Light panels</source>
+        <translation>Светлые панели</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/icons.py"/>
+        <source>Your icon theme. Previews draw real icons from each theme&apos;s files. Grimoire&apos;s monochrome themes are made on your PC when you apply them.</source>
+        <translation>Ваша тема значков. Превью рисуют настоящие значки из файлов каждой темы. Монохромные темы Grimoire создаются на вашем ПК при применении.</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/mural/icons.py"/>
@@ -702,13 +1484,150 @@ fullscreen or maximized</source>
     </message>
     <message>
         <location filename="../../grimoire/spells/mural/icons.py"/>
+        <source>Applying… making a theme takes a few seconds.</source>
+        <translation>Применение… создание темы занимает несколько секунд.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/icons.py"/>
         <source>The icon theme you&apos;re using now.</source>
         <translation>Тема значков, которой вы пользуетесь сейчас.</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/mural/icons.py"/>
+        <source>Installed on this PC.</source>
+        <translation>Установлено на этом ПК.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/icons.py"/>
+        <source>Made for</source>
+        <translation>Создано для</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/icons.py"/>
+        <source>Gray app icons from other themes too</source>
+        <translation>Серые значки приложений и из других тем</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/icons.py"/>
         <source>Applied ✓</source>
         <translation>Применено ✓</translation>
+    </message>
+    <message>
+        <source>Your icon theme. Previews draw real icons from each theme&apos;s files. Applies instantly.</source>
+        <translation type="vanished">Тема значков. Предпросмотр рисует настоящие значки из файлов каждой темы. Применяется сразу.</translation>
+    </message>
+</context>
+<context>
+    <name>grimoire.spells.mural.imports</name>
+    <message>
+        <location filename="../../grimoire/spells/mural/imports.py"/>
+        <source>a picture (PNG, JPEG or WebP)</source>
+        <translation>изображение (PNG, JPEG или WebP)</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/imports.py"/>
+        <source>an SDDM login theme or a background picture</source>
+        <translation>тема входа SDDM или фоновое изображение</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/imports.py"/>
+        <source>a Plasma splash screen (look-and-feel package)</source>
+        <translation>заставка Plasma (пакет оформления)</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/imports.py"/>
+        <source>a Plymouth boot theme</source>
+        <translation>тема загрузки Plymouth</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/imports.py"/>
+        <source>a Plasma style</source>
+        <translation>стиль Plasma</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/imports.py"/>
+        <source>an Aurorae window decoration</source>
+        <translation>оформление окон Aurorae</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/imports.py"/>
+        <source>a color scheme (.colors)</source>
+        <translation>цветовая схема (.colors)</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/imports.py"/>
+        <source>a Konsole color scheme (.colorscheme)</source>
+        <translation>цветовая схема Konsole (.colorscheme)</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/imports.py"/>
+        <source>a cursor theme</source>
+        <translation>тема курсоров</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/imports.py"/>
+        <source>an icon theme</source>
+        <translation>тема значков</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/imports.py"/>
+        <source>Importable files ({patterns})</source>
+        <translation>Файлы для импорта ({patterns})</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/imports.py"/>
+        <source>{file} isn&apos;t a PNG, JPEG or WebP picture.</source>
+        <translation>{file} — не изображение PNG, JPEG или WebP.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/imports.py"/>
+        <source>{file} is too big (the limit is {limit}).</source>
+        <translation>{file} слишком велик (предел — {limit}).</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/imports.py"/>
+        <source>{file} is too large a picture ({size}).</source>
+        <translation>{file} — слишком большое изображение ({size}).</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/imports.py"/>
+        <source>{file} isn&apos;t a picture Grimoire can read.</source>
+        <translation>{file} — не изображение, которое Grimoire может прочитать.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/imports.py"/>
+        <source>Couldn&apos;t add {file} to the library.</source>
+        <translation>Не удалось добавить {file} в библиотеку.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/imports.py"/>
+        <source>{file} isn&apos;t {what}. Pick an archive (.zip, .tar.gz, .tar.xz…) or a folder.</source>
+        <translation>{file} — не то, что нужно (ожидается: {what}). Выберите архив (.zip, .tar.gz, .tar.xz…) или папку.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/imports.py"/>
+        <source>{file} isn&apos;t a valid archive (it may be damaged).</source>
+        <translation>{file} — не корректный архив (возможно, повреждён).</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/imports.py"/>
+        <source>Didn&apos;t find {what} in {file}.</source>
+        <translation>В {file} не найдено: {what}.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/imports.py"/>
+        <source>Couldn&apos;t import {file}: {error}</source>
+        <translation>Не удалось импортировать {file}: {error}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/imports.py"/>
+        <source>{file} doesn&apos;t exist any more.</source>
+        <translation>{file} больше не существует.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/imports.py"/>
+        <source>{file} isn&apos;t {what}.</source>
+        <translation>{file} — не то, что нужно (ожидается: {what}).</translation>
     </message>
 </context>
 <context>
@@ -740,6 +1659,96 @@ fullscreen or maximized</source>
         <location filename="../../grimoire/spells/mural/lock.py"/>
         <source>Anti-Magic inverted: white Asta and wings on pure black. Striking but calm.</source>
         <translation>Антимагия в негативе: белый Аста и крылья на чисто чёрном. Ярко, но спокойно.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/lock.py"/>
+        <source>Eclipse</source>
+        <translation>Затмение</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/lock.py"/>
+        <source>A black sun with a soft white corona; the clock sits inside it.</source>
+        <translation>Чёрное солнце с мягкой белой короной; часы внутри него.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/lock.py"/>
+        <source>Contour</source>
+        <translation>Рельеф</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/lock.py"/>
+        <source>Hairline topographic lines drifting across the dark.</source>
+        <translation>Тонкие топографические линии плывут в темноте.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/lock.py"/>
+        <source>Halftone</source>
+        <translation>Растр</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/lock.py"/>
+        <source>A grid of dots swelling from one corner, like newsprint.</source>
+        <translation>Сетка точек, растущих из одного угла, как на газетной бумаге.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/lock.py"/>
+        <source>Ripple</source>
+        <translation>Рябь</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/lock.py"/>
+        <source>Thin rings spreading out from below the screen and fading.</source>
+        <translation>Тонкие кольца расходятся из-под нижнего края экрана и тают.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/lock.py"/>
+        <source>Pinstripe</source>
+        <translation>Полоска</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/lock.py"/>
+        <source>Fine scanlines lit from the bottom, dark at the top.</source>
+        <translation>Тонкие строки развёртки, подсвеченные снизу и тёмные вверху.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/lock.py"/>
+        <source>Spotlight</source>
+        <translation>Прожектор</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/lock.py"/>
+        <source>One soft pool of light from above, with film grain.</source>
+        <translation>Одно мягкое пятно света сверху, с плёночным зерном.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/lock.py"/>
+        <source>Clover</source>
+        <translation>Клевер</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/lock.py"/>
+        <source>A huge faint four-leaf clover watermark in the corner.</source>
+        <translation>Огромный бледный водяной знак четырёхлистного клевера в углу.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/lock.py"/>
+        <source>Void</source>
+        <translation>Пустота</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/lock.py"/>
+        <source>Nearly pure black with the faintest glow. Nothing else.</source>
+        <translation>Почти чистый чёрный с едва заметным свечением. Больше ничего.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/lock.py"/>
+        <source>Fog</source>
+        <translation>Туман</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/lock.py"/>
+        <source>Lighter: gray mist fading to black, grainy like film.</source>
+        <translation>Светлее: серая дымка, переходящая в чёрный, зернистая, как плёнка.</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/mural/lock.py"/>
@@ -803,6 +1812,86 @@ fullscreen or maximized</source>
         <location filename="../../grimoire/spells/mural/login.py"/>
         <source>A dark floating card with the clover over the art; small clock top-left.</source>
         <translation>Тёмная парящая карточка с клевером поверх картинки; маленькие часы слева вверху.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/login.py"/>
+        <source>Minimal</source>
+        <translation>Минимум</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/login.py"/>
+        <source>Just a big clock and the password line, centered over the art.</source>
+        <translation>Только большие часы и строка пароля по центру поверх картинки.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/login.py"/>
+        <source>Sidebar</source>
+        <translation>Боковая панель</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/login.py"/>
+        <source>A solid black column on the left holds the clock and login; the art fills the rest.</source>
+        <translation>Сплошная чёрная колонка слева с часами и входом; картинка заполняет остальное.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/login.py"/>
+        <source>Paper</source>
+        <translation>Бумага</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/login.py"/>
+        <source>The same column in white with black ink. Bright and editorial.</source>
+        <translation>Та же колонка в белом с чёрными чернилами. Светло и по-журнальному.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/login.py"/>
+        <source>Console</source>
+        <translation>Консоль</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/login.py"/>
+        <source>A text-mode login in monospace, top-left, over a nearly black screen.</source>
+        <translation>Текстовый вход моноширинным шрифтом слева вверху на почти чёрном экране.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/login.py"/>
+        <source>Corner</source>
+        <translation>Угол</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/login.py"/>
+        <source>An oversized thin clock bottom-left, the login bottom-right.</source>
+        <translation>Крупные тонкие часы слева внизу, вход справа внизу.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/login.py"/>
+        <source>Frame</source>
+        <translation>Рамка</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/login.py"/>
+        <source>A double hairline border around the screen, everything centered inside it.</source>
+        <translation>Двойная тонкая рамка по краю экрана, всё по центру внутри неё.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/login.py"/>
+        <source>Display</source>
+        <translation>Табло</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/login.py"/>
+        <source>One enormous thin clock across the screen; the login waits small underneath.</source>
+        <translation>Огромные тонкие часы во весь экран; вход ждёт внизу, маленький.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/login.py"/>
+        <source>Daylight</source>
+        <translation>День</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/login.py"/>
+        <source>A white card with black ink and an outlined password box.</source>
+        <translation>Белая карточка с чёрными чернилами и контурным полем пароля.</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/mural/login.py"/>
@@ -1177,6 +2266,76 @@ This only removes the saved snapshot; your wallpapers and themes stay.</source>
     </message>
     <message>
         <location filename="../../grimoire/spells/mural/motion.py"/>
+        <source>Snap</source>
+        <translation>Щелчок</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/motion.py"/>
+        <source>Four times as fast: a flicker of motion, then it&apos;s done. Menus just appear.</source>
+        <translation>В четыре раза быстрее: мелькнуло — и готово. Меню просто появляются.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/motion.py"/>
+        <source>Genie</source>
+        <translation>Джинн</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/motion.py"/>
+        <source>Normal speed, but minimized windows bend and pour into the taskbar like a magic lamp.</source>
+        <translation>Обычная скорость, но свёрнутые окна изгибаются и стекают в панель задач, как в волшебную лампу.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/motion.py"/>
+        <source>Quiet</source>
+        <translation>Тишина</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/motion.py"/>
+        <source>Nothing moves, things only fade. Minimize is instant. Easy on the eyes.</source>
+        <translation>Ничего не движется, всё только растворяется. Сворачивание мгновенное. Бережёт глаза.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/motion.py"/>
+        <source>Paper</source>
+        <translation>Бумага</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/motion.py"/>
+        <source>Windows glide in like sheets of paper, and dialogs drop down from their window.</source>
+        <translation>Окна въезжают, как листы бумаги, а диалоги опускаются из своего окна.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/motion.py"/>
+        <source>Focus</source>
+        <translation>Фокус</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/motion.py"/>
+        <source>Calm fades, and every window but the one you&apos;re using dims a little.</source>
+        <translation>Спокойные затухания, и все окна, кроме того, в котором вы работаете, слегка тускнеют.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/motion.py"/>
+        <source>Shatter</source>
+        <translation>Осколки</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/motion.py"/>
+        <source>Plasma&apos;s timing, but closed windows break apart into pieces.</source>
+        <translation>Темп Plasma, но закрытые окна разлетаются на куски.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/motion.py"/>
+        <source>Cinema</source>
+        <translation>Кино</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/motion.py"/>
+        <source>Slow and deliberate: long glides, a magic lamp, desktops that dissolve into each other.</source>
+        <translation>Медленно и размеренно: долгие скольжения, волшебная лампа, рабочие столы перетекают друг в друга.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/motion.py"/>
         <source>Scale</source>
         <translation>Масштаб</translation>
     </message>
@@ -1212,8 +2371,18 @@ This only removes the saved snapshot; your wallpapers and themes stay.</source>
     </message>
     <message>
         <location filename="../../grimoire/spells/mural/motion.py"/>
-        <source>time →</source>
-        <translation>время →</translation>
+        <source>As designed</source>
+        <translation>Как задумано</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/motion.py"/>
+        <source>A bit faster</source>
+        <translation>Чуть быстрее</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/motion.py"/>
+        <source>A bit slower</source>
+        <translation>Чуть медленнее</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/mural/motion.py"/>
@@ -1229,6 +2398,21 @@ This only removes the saved snapshot; your wallpapers and themes stay.</source>
         <location filename="../../grimoire/spells/mural/motion.py"/>
         <source>{factor}× speed</source>
         <translation>скорость {factor}×</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/motion.py"/>
+        <source>time →</source>
+        <translation>время →</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/motion.py"/>
+        <source>Opening a window</source>
+        <translation>Открытие окна</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/motion.py"/>
+        <source>Minimizing</source>
+        <translation>Сворачивание</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/mural/motion.py"/>
@@ -1262,6 +2446,26 @@ This only removes the saved snapshot; your wallpapers and themes stay.</source>
     </message>
     <message>
         <location filename="../../grimoire/spells/mural/motion.py"/>
+        <source>Closing breaks apart</source>
+        <translation>Закрытие разбивает</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/motion.py"/>
+        <source>Dialogs drop from their window</source>
+        <translation>Диалоги опускаются из окна</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/motion.py"/>
+        <source>Dim inactive windows</source>
+        <translation>Затемнять неактивные окна</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/motion.py"/>
+        <source>Menus slide in</source>
+        <translation>Меню выезжают</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/motion.py"/>
         <source>Wobbly windows</source>
         <translation>Желейные окна</translation>
     </message>
@@ -1284,6 +2488,11 @@ This only removes the saved snapshot; your wallpapers and themes stay.</source>
         <location filename="../../grimoire/spells/mural/motion.py"/>
         <source>Apply motion</source>
         <translation>Применить анимацию</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/motion.py"/>
+        <source>Pace</source>
+        <translation>Темп</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/mural/motion.py"/>
@@ -1448,6 +2657,96 @@ This only removes the saved snapshot; your wallpapers and themes stay.</source>
         <location filename="../../grimoire/spells/mural/splash.py"/>
         <source>The five-leaf clover breathing slowly above a hairline progress bar.</source>
         <translation>Пятилистный клевер медленно дышит над тонкой полоской прогресса.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/splash.py"/>
+        <source>Orbit</source>
+        <translation>Орбита</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/splash.py"/>
+        <source>A single white dot circling the clover on a hairline track.</source>
+        <translation>Одна белая точка кружит вокруг клевера по тонкой дорожке.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/splash.py"/>
+        <source>Steps</source>
+        <translation>Шаги</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/splash.py"/>
+        <source>Six dots under the clover, one filling in for each step of Plasma&apos;s startup.</source>
+        <translation>Шесть точек под клевером, по одной заполняется на каждом шаге запуска Plasma.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/splash.py"/>
+        <source>Ripple</source>
+        <translation>Рябь</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/splash.py"/>
+        <source>Thin rings spreading out from the clover like drops on still water.</source>
+        <translation>Тонкие кольца расходятся от клевера, как капли по тихой воде.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/splash.py"/>
+        <source>Spinner</source>
+        <translation>Спиннер</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/splash.py"/>
+        <source>A hairline arc sweeping round the clover, with the percentage below.</source>
+        <translation>Тонкая дуга обегает клевер, под ним проценты.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/splash.py"/>
+        <source>Bloom</source>
+        <translation>Цветение</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/splash.py"/>
+        <source>The four-leaf clover slowly turning and opening up as Plasma loads.</source>
+        <translation>Четырёхлистный клевер медленно поворачивается и раскрывается, пока загружается Plasma.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/splash.py"/>
+        <source>Wordmark</source>
+        <translation>Логотип</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/splash.py"/>
+        <source>GRIMOIRE in thin capitals, lit letter by letter as Plasma loads.</source>
+        <translation>GRIMOIRE тонкими прописными, загорающимися буква за буквой, пока загружается Plasma.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/splash.py"/>
+        <source>Typewriter</source>
+        <translation>Пишущая машинка</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/splash.py"/>
+        <source>Your tagline typed out in monospace with a blinking block cursor and a text bar.</source>
+        <translation>Ваш девиз печатается моноширинным шрифтом с мигающим блочным курсором и текстовой полосой.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/splash.py"/>
+        <source>Hairline</source>
+        <translation>Тонкая линия</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/splash.py"/>
+        <source>Almost nothing: a wordmark and one line across the bottom of the screen.</source>
+        <translation>Почти ничего: логотип и одна линия вдоль нижнего края экрана.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/splash.py"/>
+        <source>Daylight</source>
+        <translation>День</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/splash.py"/>
+        <source>Inverted: a black clover and bar on soft white. For bright setups.</source>
+        <translation>Наоборот: чёрный клевер и полоса на мягком белом. Для светлых настроек.</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/mural/splash.py"/>
@@ -1627,6 +2926,16 @@ This only removes the saved snapshot; your wallpapers and themes stay.</source>
     </message>
     <message>
         <location filename="../../grimoire/spells/mural/storeview.py"/>
+        <source>Refresh</source>
+        <translation>Обновить</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/storeview.py"/>
+        <source>Ask the store again (lists are kept for 6 hours)</source>
+        <translation>Спросить магазин заново (списки хранятся 6 часов)</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/storeview.py"/>
         <source>Pick something to see details</source>
         <translation>Выберите элемент, чтобы увидеть подробности</translation>
     </message>
@@ -1723,6 +3032,146 @@ This only removes the saved snapshot; your wallpapers and themes stay.</source>
     </message>
     <message>
         <location filename="../../grimoire/spells/mural/style.py"/>
+        <source>Smoke</source>
+        <translation>Дым</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/style.py"/>
+        <source>Smoked glass: see-through black with a gray blur behind it and a faint edge.</source>
+        <translation>Дымчатое стекло: прозрачный чёрный с серым размытием позади и едва заметным краем.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/style.py"/>
+        <source>Hairline</source>
+        <translation>Волосок</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/style.py"/>
+        <source>Pure black outlined by a thin gray line. Crisp on any wallpaper.</source>
+        <translation>Чистый чёрный, обведённый тонкой серой линией. Чётко на любых обоях.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/style.py"/>
+        <source>Block</source>
+        <translation>Блок</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/style.py"/>
+        <source>Pure black with square corners everywhere. No softness at all.</source>
+        <translation>Чистый чёрный с прямыми углами повсюду. Никакой мягкости.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/style.py"/>
+        <source>Capsule</source>
+        <translation>Капсула</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/style.py"/>
+        <source>Black with big round corners: a pill-shaped floating panel and soft popups.</source>
+        <translation>Чёрный с крупными скруглениями: парящая панель-таблетка и мягкие всплывающие окна.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/style.py"/>
+        <source>Wire</source>
+        <translation>Каркас</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/style.py"/>
+        <source>Black boxes drawn with a bright white outline. Technical and sharp.</source>
+        <translation>Чёрные блоки с ярким белым контуром. Технично и чётко.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/style.py"/>
+        <source>Graphite</source>
+        <translation>Графит</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/style.py"/>
+        <source>Charcoal gray instead of black, with a barely-there edge. Softer contrast.</source>
+        <translation>Графитовый серый вместо чёрного, с едва заметным краем. Мягче контраст.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/style.py"/>
+        <source>Paper</source>
+        <translation>Бумага</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/style.py"/>
+        <source>Light: white panel and popups with black text and a fine gray edge.</source>
+        <translation>Светлый: белые панель и всплывающие окна, чёрный текст и тонкий серый край.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/style.py"/>
+        <source>Frost</source>
+        <translation>Иней</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/style.py"/>
+        <source>Light frosted glass: see-through white over a gray blur.</source>
+        <translation>Светлое матовое стекло: прозрачный белый поверх серого размытия.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/style.py"/>
+        <source>Mist</source>
+        <translation>Дымка</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/style.py"/>
+        <source>Light gray with black text. Light without the glare of white.</source>
+        <translation>Светло-серый с чёрным текстом. Светло, но без слепящего белого.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/style.py"/>
+        <source>Type to search</source>
+        <translation>Начните вводить для поиска</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/style.py"/>
+        <source>Files</source>
+        <translation>Файлы</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/style.py"/>
+        <source>Terminal</source>
+        <translation>Терминал</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/style.py"/>
+        <source>Web Browser</source>
+        <translation>Браузер</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/style.py"/>
+        <source>Settings</source>
+        <translation>Параметры</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/style.py"/>
+        <source>Text Editor</source>
+        <translation>Текстовый редактор</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/style.py"/>
+        <source>Music</source>
+        <translation>Музыка</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/style.py"/>
+        <source>Grimoire Linux</source>
+        <translation>Grimoire Linux</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/style.py"/>
+        <source>Sleep · Restart · Shut Down</source>
+        <translation>Сон · Перезагрузка · Выключение</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/style.py"/>
+        <source>Terminal — ~/Projects</source>
+        <translation>Терминал — ~/Проекты</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/style.py"/>
         <source>The look of your taskbar, menus, popups and tooltips (Plasma Style). Applies instantly.</source>
         <translation>Вид панели задач, меню, всплывающих окон и подсказок (стиль Plasma). Применяется сразу.</translation>
     </message>
@@ -1768,6 +3217,86 @@ This only removes the saved snapshot; your wallpapers and themes stay.</source>
         <location filename="../../grimoire/spells/mural/taskbar.py"/>
         <source>Only as wide as its contents, centered at the bottom. The modern look.</source>
         <translation>Шириной ровно по содержимому, по центру внизу. Современный вид.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/taskbar.py"/>
+        <source>Classic bar</source>
+        <translation>Классическая панель</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/taskbar.py"/>
+        <source>Edge to edge along the bottom, the familiar desktop taskbar.</source>
+        <translation>От края до края внизу — привычная панель задач.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/taskbar.py"/>
+        <source>Corner</source>
+        <translation>Угол</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/taskbar.py"/>
+        <source>Fits its contents and sits in the bottom-left corner, out of the way.</source>
+        <translation>По размеру содержимого, в левом нижнем углу, чтобы не мешать.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/taskbar.py"/>
+        <source>Top bar</source>
+        <translation>Верхняя панель</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/taskbar.py"/>
+        <source>Edge to edge along the top of the screen.</source>
+        <translation>От края до края вдоль верха экрана.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/taskbar.py"/>
+        <source>Top dock</source>
+        <translation>Док сверху</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/taskbar.py"/>
+        <source>Only as wide as its contents, centered at the top.</source>
+        <translation>Шириной только по содержимому, по центру сверху.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/taskbar.py"/>
+        <source>Sidebar</source>
+        <translation>Боковая панель</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/taskbar.py"/>
+        <source>Full height down the left edge. Leaves wide screens more room to read.</source>
+        <translation>Во всю высоту вдоль левого края. Оставляет широким экранам больше места для чтения.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/taskbar.py"/>
+        <source>Side dock</source>
+        <translation>Боковой док</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/taskbar.py"/>
+        <source>Only as tall as its contents, centered on the left edge.</source>
+        <translation>Высотой только по содержимому, по центру левого края.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/taskbar.py"/>
+        <source>Right sidebar</source>
+        <translation>Правая боковая панель</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/taskbar.py"/>
+        <source>Full height down the right edge.</source>
+        <translation>Во всю высоту вдоль правого края.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/taskbar.py"/>
+        <source>Right dock</source>
+        <translation>Док справа</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/taskbar.py"/>
+        <source>Only as tall as its contents, centered on the right edge.</source>
+        <translation>Высотой только по содержимому, по центру правого края.</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/mural/taskbar.py"/>
@@ -1889,6 +3418,26 @@ This only removes the saved snapshot; your wallpapers and themes stay.</source>
     </message>
     <message>
         <location filename="../../grimoire/spells/mural/terminal.py"/>
+        <source>Lambda</source>
+        <translation>Лямбда</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/terminal.py"/>
+        <source>Arrow</source>
+        <translation>Стрелка</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/terminal.py"/>
+        <source>Frame</source>
+        <translation>Рамка</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/terminal.py"/>
+        <source>Clock</source>
+        <translation>Часы</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/terminal.py"/>
         <source>Ink</source>
         <translation>Чернила</translation>
     </message>
@@ -1899,8 +3448,98 @@ This only removes the saved snapshot; your wallpapers and themes stay.</source>
     </message>
     <message>
         <location filename="../../grimoire/spells/mural/terminal.py"/>
-        <source>Konsole, your terminal. Every color becomes its own shade of gray so output stays readable. Applies to new Konsole windows.</source>
-        <translation>Konsole, ваш терминал. Каждый цвет становится своим оттенком серого, и вывод остаётся читаемым. Применяется к новым окнам Konsole.</translation>
+        <source>Graphite</source>
+        <translation>Графит</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/terminal.py"/>
+        <source>Charcoal background with gentle gray text. Easy on the eyes at night.</source>
+        <translation>Графитовый фон с мягким серым текстом. Бережёт глаза ночью.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/terminal.py"/>
+        <source>Slate</source>
+        <translation>Сланец</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/terminal.py"/>
+        <source>A dark gray slate with bright chalk-white text.</source>
+        <translation>Тёмно-серая грифельная доска с ярким мелово-белым текстом.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/terminal.py"/>
+        <source>Fog</source>
+        <translation>Туман</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/terminal.py"/>
+        <source>Mid gray and low contrast: calm and soft for long sessions.</source>
+        <translation>Средне-серый и низкий контраст: спокойно и мягко для долгих сеансов.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/terminal.py"/>
+        <source>Stark</source>
+        <translation>Строгий</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/terminal.py"/>
+        <source>Black and pure white at full contrast, for the sharpest possible text.</source>
+        <translation>Чёрный и чисто белый на полном контрасте — самый чёткий текст.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/terminal.py"/>
+        <source>Paper</source>
+        <translation>Бумага</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/terminal.py"/>
+        <source>White page, near-black ink. Grays in reverse for daylight.</source>
+        <translation>Белая страница, почти чёрные чернила. Серые наоборот, для дневного света.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/terminal.py"/>
+        <source>Newsprint</source>
+        <translation>Газета</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/terminal.py"/>
+        <source>Light gray paper with charcoal text: bright but never glaring.</source>
+        <translation>Светло-серая бумага с графитовым текстом: светло, но не слепит.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/terminal.py"/>
+        <source>Phosphor</source>
+        <translation>Люминофор</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/terminal.py"/>
+        <source>An old green-screen monitor, muted: every color is a shade of soft green.</source>
+        <translation>Старый монитор с зелёным экраном, приглушённый: каждый цвет — оттенок мягкого зелёного.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/terminal.py"/>
+        <source>Amber</source>
+        <translation>Янтарь</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/terminal.py"/>
+        <source>A muted amber monochrome screen, warm and quiet.</source>
+        <translation>Приглушённый янтарный монохромный экран, тёплый и спокойный.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/terminal.py"/>
+        <source>Ink Muted</source>
+        <translation>Чернила (приглушённые)</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/terminal.py"/>
+        <source>Ink with faded real colors, for when you need red and green told apart.</source>
+        <translation>Чернила с блёклыми настоящими цветами, когда нужно отличать красный от зелёного.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/terminal.py"/>
+        <source>Konsole, your terminal. Grayscale palettes turn every color into its own shade so output stays readable; a few muted ones add a soft tint. Applies to new Konsole windows.</source>
+        <translation>Konsole, ваш терминал. Палитры в оттенках серого превращают каждый цвет в свой оттенок, чтобы вывод оставался читаемым; несколько приглушённых добавляют лёгкий оттенок. Применяется к новым окнам Konsole.</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/mural/terminal.py"/>
@@ -1957,6 +3596,10 @@ This only removes the saved snapshot; your wallpapers and themes stay.</source>
         <source>Applied ✓  New Konsole windows use it. Prompt takes effect in new terminals.</source>
         <translation>Применено ✓  Новые окна Konsole используют это. Приглашение заработает в новых терминалах.</translation>
     </message>
+    <message>
+        <source>Konsole, your terminal. Every color becomes its own shade of gray so output stays readable. Applies to new Konsole windows.</source>
+        <translation type="vanished">Konsole, ваш терминал. Каждый цвет становится своим оттенком серого, и вывод остаётся читаемым. Применяется к новым окнам Konsole.</translation>
+    </message>
 </context>
 <context>
     <name>grimoire.spells.mural.windows</name>
@@ -2009,6 +3652,76 @@ This only removes the saved snapshot; your wallpapers and themes stay.</source>
         <location filename="../../grimoire/spells/mural/windows.py"/>
         <source>Menu + all-desktops on the left; help, minimize, maximize, close on the right.</source>
         <translation>Меню + «на всех столах» слева; справка, свернуть, развернуть, закрыть справа.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/windows.py"/>
+        <source>Monolith</source>
+        <translation>Монолит</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/windows.py"/>
+        <source>Grimoire&apos;s own title bar: solid black, thin white line buttons that turn into white discs under the pointer.</source>
+        <translation>Собственный заголовок окна Grimoire: сплошной чёрный, тонкие белые контурные кнопки, которые под указателем становятся белыми кружками.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/windows.py"/>
+        <source>Dots</source>
+        <translation>Точки</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/windows.py"/>
+        <source>Three gray dots on the left, white to close. Their symbols appear when you point at them.</source>
+        <translation>Три серые точки слева, белая — закрыть. Их значки появляются при наведении.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/windows.py"/>
+        <source>Boxed</source>
+        <translation>Рамки</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/windows.py"/>
+        <source>Square corners, every button drawn in a thin white box that fills in under the pointer.</source>
+        <translation>Прямые углы, каждая кнопка в тонкой белой рамке, которая заливается под указателем.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/windows.py"/>
+        <source>Paper</source>
+        <translation>Бумага</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/windows.py"/>
+        <source>A white title bar with black text and buttons, and a fine line under it.</source>
+        <translation>Белый заголовок окна с чёрным текстом и кнопками и тонкой линией под ним.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/windows.py"/>
+        <source>Slim</source>
+        <translation>Тонкий</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/windows.py"/>
+        <source>A thin black strip with small buttons. The most room for your windows.</source>
+        <translation>Узкая чёрная полоса с маленькими кнопками. Больше всего места для окон.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/windows.py"/>
+        <source>Stencil</source>
+        <translation>Трафарет</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/windows.py"/>
+        <source>Charcoal bar with bold symbols and a solid white close button.</source>
+        <translation>Графитовая полоса с жирными значками и сплошной белой кнопкой закрытия.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/windows.py"/>
+        <source>Tiles</source>
+        <translation>Плитки</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/windows.py"/>
+        <source>Wide full-height buttons in a square black bar; close lights up white under the pointer.</source>
+        <translation>Широкие кнопки во всю высоту в прямоугольной чёрной полосе; «закрыть» загорается белым под указателем.</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/mural/windows.py"/>
@@ -2094,6 +3807,11 @@ This only removes the saved snapshot; your wallpapers and themes stay.</source>
         <location filename="../../grimoire/spells/mural/windows.py"/>
         <source>Apply to windows</source>
         <translation>Применить к окнам</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/mural/windows.py"/>
+        <source>A light line around Breeze windows (the first five designs). MuraL&apos;s own designs draw their own edges.</source>
+        <translation>Светлая линия вокруг окон Breeze (первые пять дизайнов). Собственные дизайны MuraL рисуют свои края сами.</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/mural/windows.py"/>
