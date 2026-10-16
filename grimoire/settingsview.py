@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 """The hub's Settings page (the gear at the foot of the rail): hotkeys, backup & restore, GitHub account, general,
-share setup (shareview.py).
+share setup (shareview.py), printers (printersview.py).
 
 The work lives in Qt-free modules (hotkeys.py, backup.py, github.py, keystore.py, prefs.py); this file only lays it
 out and runs every slow or networked call off the UI thread.
@@ -25,7 +25,8 @@ SECTIONS = [("hotkeys", tr_noop("grimoire.settingsview", "Hotkeys"), "keyboard")
             ("account", tr_noop("grimoire.settingsview", "GitHub backup"), "link"),
             ("general", tr_noop("grimoire.settingsview", "General"), "sliders"),
             ("share", tr_noop("grimoire.settingsview", "Share setup"), "share"),
-            ("profile", tr_noop("grimoire.settingsview", "Account"), "login")]
+            ("profile", tr_noop("grimoire.settingsview", "Account"), "login"),
+            ("printers", tr_noop("grimoire.settingsview", "Printers"), "printer")]
 
 
 def _label(text="", name="", wrap=True):
@@ -981,6 +982,8 @@ class SettingsPage(QWidget):
                        "general": GeneralPanel(updater, whats_new), "profile": ProfilePanel()}
         from grimoire.shareview import SharePanel        # imports this module's helpers
         self.panels["share"] = SharePanel()
+        from grimoire.printersview import PrintersPanel  # imports this module's helpers too
+        self.panels["printers"] = PrintersPanel()
         self.scrolls = {k: _scroll(p) for k, p in self.panels.items()}
         for s in self.scrolls.values():
             self.stack.addWidget(s)

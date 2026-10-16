@@ -178,6 +178,8 @@ class Home(QWidget):
         grid.setColumnStretch(0, 1)
         grid.setColumnStretch(1, 1)
         lay.addLayout(grid)
+        from grimoire.aboutview import AboutSection
+        lay.addWidget(AboutSection())            # About this PC, under the spells
         lay.addStretch(1)
 
     def arrange(self, hidden: set):

@@ -46,6 +46,8 @@ optdepends=(
     'qt6-translations: Qt dialogs in your language'
     'noto-fonts: Arabic, Urdu, Hindi and Bengali text'
     'noto-fonts-cjk: Chinese text'
+    'python-pycups: printers in Settings'
+    'print-manager: adding printers from Settings'
 )
 makedepends=('git')
 provides=("$_pkgname")

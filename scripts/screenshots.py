@@ -104,6 +104,7 @@ def render(names: list[str]):
     private_addresses()
     offline_stubs()
     demo_audio()
+    demo_pc()
     OUT.mkdir(parents=True, exist_ok=True)
     win = Window()
     win.resize(W, H)
@@ -113,7 +114,7 @@ def render(names: list[str]):
         if name == "tray":
             tray_shot(wait)
             continue
-        page = "home" if name == "hub" else name
+        page = {"hub": "home", "printers": "settings"}.get(name, name)
         if name == "shotl":
             seed_shots()
         win.open(page)
@@ -370,6 +371,49 @@ PREPARE["updatel"] = _updatel
 PAGES.insert(PAGES.index("settings"), "updatel")
 PREPARE["audiol"] = _audiol
 WAIT = {"widgetl": 5000, "mural": 6000, "systeml": 30000, "netl": 30000, "optimizel": 5000, "terminall": 3500, "vaultl": 3000}
+
+
+def demo_pc():
+    """The home page's About this PC card and Settings → Printers, with made-up hardware and printers."""
+    import time
+    from grimoire import printers, printersview, sysinfo
+    sysinfo._cache = {"machine": "Framework Laptop 13", "cpu": "AMD Ryzen 7 7840U", "threads": 16,
+                      "gpus": ["AMD Radeon 780M"], "memory": 32 * 1024 ** 3, "system": "Kubuntu 26.04.1 LTS",
+                      "disk": {"model": "WD_BLACK SN850X", "total": 1000 * 1024 ** 3, "free": 640 * 1024 ** 3},
+                      "kernel": "7.0.0-38-generic", "plasma": "6.6.6", "session": "Wayland",
+                      "boot": time.time() - 2 * 3600 - 17 * 60, "version": sysinfo.__version__,
+                      "host": "grimoire", "user": "user"}
+
+    class Dest:
+        is_default = False
+
+    class Conn:
+        def getPrinters(self):
+            return {"Office_Laser": {"printer-info": "Office Laser", "printer-location": "Study",
+                                     "printer-make-and-model": "HP LaserJet Pro M404", "printer-state": 4,
+                                     "printer-state-reasons": ["toner-low-warning"], "device-uri": "usb://HP/M404"},
+                    "Photo_Inkjet": {"printer-info": "Photo Inkjet", "printer-make-and-model": "Epson ET-8550",
+                                     "printer-state": 5, "printer-state-reasons": ["paused"],
+                                     "device-uri": "implicitclass://Photo_Inkjet/"}}
+
+        def getDests(self):
+            return {}
+
+        def getDefault(self):
+            return "Office_Laser"
+
+        def getJobs(self, **kw):
+            now = int(time.time())
+            return {12: {"job-name": "Thesis draft.pdf", "job-printer-uri": "ipp://localhost/printers/Office_Laser",
+                         "job-state": 5, "job-k-octets": 1840, "time-at-creation": now - 120},
+                    13: {"job-name": "Boarding pass", "job-printer-uri": "ipp://localhost/printers/Office_Laser",
+                         "job-state": 3, "job-k-octets": 96, "time-at-creation": now - 30}}
+    printers.CONNECT = Conn
+    printersview.LAUNCH = lambda *a: (False, 0)
+
+
+PREPARE["printers"] = lambda page, wait: page.show_section("printers")
+PAGES.insert(PAGES.index("settings") + 1, "printers")
 
 
 def main():
