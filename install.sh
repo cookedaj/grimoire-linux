@@ -125,6 +125,7 @@ EOF
 #    autostart all run the ~/.local/bin commands linked above.
 standalone() { PYTHONPATH="$APP" QT_QPA_PLATFORM=offscreen python3 -P -m grimoire.standalone "$@"; }
 standalone install vaultl >/dev/null
+standalone install readl >/dev/null      # ReadL in "Open with" for PDF/EPUB/Markdown, never the default
 standalone refresh
 if [ -n "$ALL" ]; then standalone install all; fi
 # Grimoire's spells and their icons for LaunchL's search

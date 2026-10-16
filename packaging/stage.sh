@@ -112,6 +112,20 @@ Categories=Utility;System;FileTools;FileManager;
 MimeType=inode/directory;
 StartupWMClass=grimoire-vaultl
 EOF
+# ReadL is offered in "Open with" for PDFs, EPUBs and Markdown; it never makes itself the default
+cat > "$USR/share/applications/grimoire-readl.desktop" <<EOF
+[Desktop Entry]
+Type=Application
+Name=ReadL
+GenericName=Document Viewer
+Comment=A quiet reader for PDFs, EPUB books, Markdown and text that remembers where you stopped
+Exec=grimoire-readl %u
+Icon=$([ "$VAULT_ICON" = grimoire ] && echo grimoire || echo grimoire-readl)
+Terminal=false
+Categories=Office;Viewer;
+MimeType=application/pdf;application/epub+zip;text/markdown;
+StartupWMClass=grimoire-readl
+EOF
 chmod 644 "$USR"/share/applications/*.desktop
 
 # 5. AppStream

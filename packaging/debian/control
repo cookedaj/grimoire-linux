@@ -47,7 +47,8 @@ Recommends: kpackagetool6,
             fonts-noto-core,
             fonts-noto-cjk,
             wireplumber,
-            pulseaudio-utils
+            pulseaudio-utils,
+            python3-pyside6.qtpdf
 Suggests: rsync, python3-numpy, wl-clipboard, baloo6
 Description: black & white toolkit for KDE Plasma 6
  Grimoire Linux is one app with a set of black & white desktop tools

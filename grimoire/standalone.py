@@ -30,7 +30,10 @@ SYSTEM_APPS = Path("/usr/share/applications")      # a distro package's menu ent
 # extra desktop-entry lines; VaultL is also the default folder handler
 EXTRA = {"vaultl": {"GenericName": "File Manager", "Categories": "Utility;System;FileTools;FileManager;",
                     "MimeType": "inode/directory;"},
-         "terminall": {"GenericName": "Terminal", "Categories": "System;TerminalEmulator;"}}
+         "terminall": {"GenericName": "Terminal", "Categories": "System;TerminalEmulator;"},
+         # ReadL shows up in "Open with" for these; it never makes itself the default
+         "readl": {"GenericName": "Document Viewer", "Categories": "Office;Viewer;",
+                   "MimeType": "application/pdf;application/epub+zip;text/markdown;"}}
 # spells merged into another: their menu entries stay (hidden), since the system's default-app setting may name them
 MERGED = {"filel": "vaultl", "tidyl": "vaultl"}
 

@@ -3075,6 +3075,11 @@
         <source>Desktop widgets in black and white: a clock, your system&apos;s readings, the weather and what&apos;s playing</source>
         <translation>黑白桌面小部件：时钟、系统读数、天气和正在播放的内容</translation>
     </message>
+    <message>
+        <location filename="../../grimoire/spells/__init__.py"/>
+        <source>A quiet reader for PDFs, EPUB books, Markdown and text: covers, contents, search, bookmarks, night and paper pages, and it remembers where you stopped</source>
+        <translation>安静的阅读器，适用于 PDF、EPUB 电子书、Markdown 和文本：封面、目录、搜索、书签、夜间和纸张页面，并记住你读到哪里</translation>
+    </message>
 </context>
 <context>
     <name>grimoire.standalone</name>

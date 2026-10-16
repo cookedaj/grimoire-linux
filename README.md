@@ -150,6 +150,20 @@ looks up where you are) with line icons and the next five days, and **Now Playin
 video, with the cover in grayscale and the play controls. The page previews each one, installs them and adds them
 to your desktop; `grimoire-widgetl add clock|system|weather|nowplaying` does the same from a terminal.
 
+### ReadL: a quiet PDF and ebook reader
+
+![ReadL](docs/screenshots/readl.png)
+
+PDFs, EPUB books, Markdown and plain text in one distraction-free reader. A library of what you read lately with
+covers and how far you got, and every file opens where you left it. Table of contents, page thumbnails, search
+across the whole document, bookmarks, text selection and copy, fit width / fit page / any zoom, one page,
+continuous or two pages side by side, and **Night** (inverted) or **Paper** (soft gray) pages. Books reflow in a
+centered column in a serif or sans font at any size. F11 reads fullscreen; everything has a key (Ctrl+F, Ctrl+G,
+Ctrl+B, F9, Ctrl+1/2/3, Ctrl+I). It shows up in "Open with" for PDFs, EPUBs and Markdown without taking over
+from Okular; pick it as the default in Dolphin's Properties → File Type Options if you like it. EPUBs are read
+defensively: nothing in a book can run, reach the network or read other files. PDFs need QtPdf
+(`sudo apt install python3-pyside6.qtpdf`); without it ReadL shows that command and still reads everything else.
+
 ### Tray, Settings and updates
 
 ![Tray icon and menu](docs/screenshots/tray.png)
@@ -231,13 +245,13 @@ update with your system; the in-app updater is off there.
 ### Requirements
 
 KDE Plasma 6 (Wayland is best; made on Kubuntu 26.04) and Python 3.12+ with PySide6, Pillow and psutil, plus
-layer-shell-qt (SightsL), Qt Multimedia (video wallpapers), pyte (TerminalL) and dbus-python (GitHub sign-in).
+layer-shell-qt (SightsL), Qt Multimedia (video wallpapers), pyte (TerminalL), QtPdf (ReadL) and dbus-python (GitHub sign-in).
 Optional: ffmpeg (video thumbnails, recordings), Spectacle (ShotL), NetworkManager (NetL controls), PipeWire's
 `pw-dump`/`wpctl` (AudioL; on every Plasma 6 system), rsync.
 
 ```bash
 # Ubuntu / Kubuntu / Debian
-sudo apt install python3-pyside6.{qtcore,qtgui,qtwidgets,qtsvg,qtdbus,qtnetwork,qtqml,qtquick} python3-pil \
+sudo apt install python3-pyside6.{qtcore,qtgui,qtwidgets,qtsvg,qtdbus,qtnetwork,qtqml,qtquick,qtpdf} python3-pil \
     python3-psutil python3-pyte python3-dbus qml6-module-org-kde-layershell qml6-module-qtmultimedia ffmpeg rsync
 # Fedora
 sudo dnf install python3-pyside6 python3-pillow python3-psutil python3-pyte python3-dbus layer-shell-qt \

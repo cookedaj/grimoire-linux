@@ -3101,6 +3101,11 @@
         <source>Desktop widgets in black and white: a clock, your system&apos;s readings, the weather and what&apos;s playing</source>
         <translation>Des widgets de bureau en noir et blanc : une horloge, les mesures de votre système, la météo et la lecture en cours</translation>
     </message>
+    <message>
+        <location filename="../../grimoire/spells/__init__.py"/>
+        <source>A quiet reader for PDFs, EPUB books, Markdown and text: covers, contents, search, bookmarks, night and paper pages, and it remembers where you stopped</source>
+        <translation>Une liseuse calme pour les PDF, les livres EPUB, le Markdown et le texte : couvertures, sommaire, recherche, signets, pages nuit et papier, et elle retient où vous vous êtes arrêté</translation>
+    </message>
 </context>
 <context>
     <name>grimoire.standalone</name>
