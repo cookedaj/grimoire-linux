@@ -113,7 +113,7 @@ def render(names: list[str]):
         if name == "tray":
             tray_shot(wait)
             continue
-        page = "home" if name == "hub" else name
+        page = "home" if name == "hub" else PAGE_OF.get(name, name)
         if name == "shotl":
             seed_shots()
         win.open(page)
@@ -370,6 +370,38 @@ PREPARE["updatel"] = _updatel
 PAGES.insert(PAGES.index("settings"), "updatel")
 PREPARE["audiol"] = _audiol
 WAIT = {"widgetl": 5000, "mural": 6000, "systeml": 30000, "netl": 30000, "optimizel": 5000, "terminall": 3500, "vaultl": 3000}
+
+
+def _vaultl_archive(page, wait):
+    """VaultL browsing inside a made-up zip (abstract images and a note), a text file previewed."""
+    import zipfile
+    work = Path.home() / ".cache/archive-src"              # inside the sandbox home
+    work.mkdir(parents=True, exist_ok=True)
+    zpath = Path.home() / "Downloads/design-kit.zip"
+    with zipfile.ZipFile(zpath, "w", zipfile.ZIP_DEFLATED) as z:
+        for i, name in enumerate(("cover.png", "dunes.png", "moon.png", "rain.png")):
+            _image(work / name, i)
+            z.write(work / name, f"design-kit/images/{name}")
+        z.writestr("design-kit/README.md", "# Design kit\n\nBlack & white wallpapers and a palette.\n\n"
+                                          "- images/: four 960x540 PNGs\n- palette.txt: the greys\n")
+        z.writestr("design-kit/palette.txt", "#000000\n#0b0b0b\n#1a1a1a\n#8c8c8c\n#f2f2f2\n#ffffff\n")
+        z.writestr("design-kit/fonts/LICENSE.txt", "SIL Open Font License 1.1\n")
+    page.navigate(zpath.parent)
+    page.open_archive(zpath)
+    wait(1200)
+    panel = page.archive_panel
+    panel.go("design-kit")
+    wait(200)
+    view, model = panel.view, panel.model
+    for r in range(model.rowCount()):
+        if model.rows[r].name.endswith("README.md"):
+            view.selectionModel().select(model.index(r, 0), view.selectionModel().SelectionFlag.ClearAndSelect
+                                         | view.selectionModel().SelectionFlag.Rows)
+
+
+PAGES.append("vaultl-archive")
+PAGE_OF = {"vaultl-archive": "vaultl"}
+PREPARE["vaultl-archive"] = _vaultl_archive
 
 
 def main():

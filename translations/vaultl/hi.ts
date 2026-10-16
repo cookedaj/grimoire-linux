@@ -2,6 +2,474 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="hi" sourcelanguage="en">
 <context>
+    <name>grimoire.spells.vaultl.archive</name>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archive.py"/>
+        <source>Wrong password.</source>
+        <translation>गलत पासवर्ड।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archive.py"/>
+        <source>This archive needs a password.</source>
+        <translation>इस आर्काइव के लिए पासवर्ड चाहिए।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archive.py"/>
+        <source>Cancelled.</source>
+        <translation>रद्द किया गया।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archive.py"/>
+        <source>The archive holds more than it says it does (a zip bomb?). Stopped.</source>
+        <translation>आर्काइव में उससे ज़्यादा है जितना वह बताता है (ज़िप बम?)। रोका गया।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archive.py"/>
+        <source>The archive is damaged: {error}</source>
+        <translation>आर्काइव खराब है: {error}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archive.py"/>
+        <source>Not enough space: needs {need}, {free} free.</source>
+        <translation>पर्याप्त जगह नहीं: {need} चाहिए, {free} खाली है।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archive.py"/>
+        <source>Not a regular file.</source>
+        <translation>यह सामान्य फ़ाइल नहीं है।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archive.py"/>
+        <source>The archive is damaged or not what its name says.</source>
+        <translation>आर्काइव खराब है या वैसा नहीं है जैसा उसका नाम बताता है।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archive.py"/>
+        <source>Not an archive VaultL can open.</source>
+        <translation>यह ऐसा आर्काइव नहीं है जिसे VaultL खोल सके।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archive.py"/>
+        <source>Opening .rar archives needs 7-Zip&apos;s rar codec.</source>
+        <translation>.rar आर्काइव खोलने के लिए 7-Zip का rar कोडेक चाहिए।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archive.py"/>
+        <source>Opening this kind of archive needs 7-Zip.</source>
+        <translation>इस तरह का आर्काइव खोलने के लिए 7-Zip चाहिए।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archive.py"/>
+        <source>The archive has too many entries.</source>
+        <translation>आर्काइव में बहुत ज़्यादा प्रविष्टियाँ हैं।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archive.py"/>
+        <source>7-Zip can&apos;t unpack this (a codec is missing, e.g. 7zip-rar for rar).</source>
+        <translation>7-Zip इसे नहीं खोल सकता (कोई कोडेक नहीं है, जैसे rar के लिए 7zip-rar)।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archive.py"/>
+        <source>Opening .tar.zst needs bsdtar.</source>
+        <translation>.tar.zst खोलने के लिए bsdtar चाहिए।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archive.py"/>
+        <source>Can&apos;t write in {folder}: {error}</source>
+        <translation>{folder} में नहीं लिख सकते: {error}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archive.py"/>
+        <source>This format can&apos;t carry a password.</source>
+        <translation>इस फ़ॉर्मैट में पासवर्ड नहीं लग सकता।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archive.py"/>
+        <source>Passwords can&apos;t contain line breaks.</source>
+        <translation>पासवर्ड में लाइन ब्रेक नहीं हो सकते।</translation>
+    </message>
+</context>
+<context>
+    <name>grimoire.spells.vaultl.archiveview</name>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>Store (no compression)</source>
+        <translation>स्टोर (कंप्रेशन नहीं)</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>Fast</source>
+        <translation>तेज़</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>Normal</source>
+        <translation>सामान्य</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>Maximum</source>
+        <translation>अधिकतम</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>Cancel</source>
+        <translation>रद्द करें</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>Stopping…</source>
+        <translation>रोक रहे हैं…</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>{done} of {total}</source>
+        <translation>{total} में से {done}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>Name</source>
+        <translation>नाम</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>Size</source>
+        <translation>आकार</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>Packed</source>
+        <translation>पैक्ड</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>Modified</source>
+        <translation>बदला गया</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>Encrypted</source>
+        <translation>एन्क्रिप्टेड</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>Link</source>
+        <translation>लिंक</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>Back (Alt+Left)</source>
+        <translation>पीछे (Alt+Left)</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>Up (Alt+Up)</source>
+        <translation>ऊपर (Alt+Up)</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>Search this folder</source>
+        <translation>इस फ़ोल्डर में खोजें</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>Extract here</source>
+        <translation>यहीं निकालें</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>Extract everything (or the selection) next to the archive</source>
+        <translation>सब कुछ (या चुना हुआ) आर्काइव के पास निकालें</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>Extract to…</source>
+        <translation>दूसरी जगह निकालें…</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>Open</source>
+        <translation>खोलें</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>Opens a copy: changes to it don&apos;t go back into the archive</source>
+        <translation>एक कॉपी खुलती है: उसमें बदलाव आर्काइव में वापस नहीं जाते</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>Reading {name}…</source>
+        <translation>{name} पढ़ रहे हैं…</translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>%n entry(s) with unsafe names (absolute paths or &quot;..&quot;) are hidden and won&apos;t be extracted.</source>
+        <translation>
+            <numerusform>असुरक्षित नाम वाली %n प्रविष्टि (पूर्ण पथ या &quot;..&quot;) छिपी है और नहीं निकाली जाएगी।</numerusform>
+            <numerusform>असुरक्षित नाम वाली %n प्रविष्टियाँ (पूर्ण पथ या &quot;..&quot;) छिपी हैं और नहीं निकाली जाएँगी।</numerusform>
+        </translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>Enter password…</source>
+        <translation>पासवर्ड डालें…</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>{problem} Install it with: {command}</source>
+        <translation>{problem} इसे इंस्टॉल करें: {command}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>Copy command</source>
+        <translation>कमांड कॉपी करें</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>Command copied.</source>
+        <translation>कमांड कॉपी हो गई।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>Can&apos;t open {name}: {error}</source>
+        <translation>{name} नहीं खुल सका: {error}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>Password</source>
+        <translation>पासवर्ड</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>Password for {name}:</source>
+        <translation>{name} का पासवर्ड:</translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>%n item(s)</source>
+        <translation>
+            <numerusform>%n आइटम</numerusform>
+            <numerusform>%n आइटम</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>%n selected</source>
+        <translation>
+            <numerusform>%n चुना गया</numerusform>
+            <numerusform>%n चुने गए</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>%n file(s), {size} unpacked</source>
+        <translation>
+            <numerusform>%n फ़ाइल, खुलने पर {size}</numerusform>
+            <numerusform>%n फ़ाइलें, खुलने पर {size}</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>Archive · %n file(s)</source>
+        <translation>
+            <numerusform>आर्काइव · %n फ़ाइल</numerusform>
+            <numerusform>आर्काइव · %n फ़ाइलें</numerusform>
+        </translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>{size} unpacked · {packed} packed</source>
+        <translation>खुलने पर {size} · पैक्ड {packed}</translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>Folder · %n item(s)</source>
+        <translation>
+            <numerusform>फ़ोल्डर · %n आइटम</numerusform>
+            <numerusform>फ़ोल्डर · %n आइटम</numerusform>
+        </translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>{size} packed</source>
+        <translation>पैक्ड {size}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>Modified {when}</source>
+        <translation>{when} को बदला गया</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>Opening {name}…</source>
+        <translation>{name} खोल रहे हैं…</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>Extract to</source>
+        <translation>कहाँ निकालें</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>Names copied.</source>
+        <translation>नाम कॉपी हो गए।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>Too big to drag ({size}): use Extract to… instead.</source>
+        <translation>खींचने के लिए बहुत बड़ा ({size}): इसके बजाय &quot;दूसरी जगह निकालें…&quot; इस्तेमाल करें।</translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>Preparing %n item(s) to drag…</source>
+        <translation>
+            <numerusform>खींचने के लिए %n आइटम तैयार कर रहे हैं…</numerusform>
+            <numerusform>खींचने के लिए %n आइटम तैयार कर रहे हैं…</numerusform>
+        </translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>Copy name</source>
+        <translation>नाम कॉपी करें</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>Extract all here</source>
+        <translation>सब यहीं निकालें</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>Extract all to…</source>
+        <translation>सब दूसरी जगह निकालें…</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>Up</source>
+        <translation>ऊपर</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>Close archive</source>
+        <translation>आर्काइव बंद करें</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>Nothing to extract.</source>
+        <translation>निकालने के लिए कुछ नहीं।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>Extracted to {path}.</source>
+        <translation>{path} में निकाला गया।</translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>Left out %n unsafe or special entry(s) (links leaving the folder, devices, absolute paths).</source>
+        <translation>
+            <numerusform>%n असुरक्षित या विशेष प्रविष्टि छोड़ी गई (फ़ोल्डर से बाहर जाते लिंक, डिवाइस, पूर्ण पथ)।</numerusform>
+            <numerusform>%n असुरक्षित या विशेष प्रविष्टियाँ छोड़ी गईं (फ़ोल्डर से बाहर जाते लिंक, डिवाइस, पूर्ण पथ)।</numerusform>
+        </translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>Extracting {name}</source>
+        <translation>{name} निकाल रहे हैं</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>Can&apos;t extract {name}: {error}</source>
+        <translation>{name} नहीं निकाला जा सका: {error}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>Compress</source>
+        <translation>कंप्रेस करें</translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>Compress %n item(s)</source>
+        <translation>
+            <numerusform>%n आइटम कंप्रेस करें</numerusform>
+            <numerusform>%n आइटम कंप्रेस करें</numerusform>
+        </translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>Saved in {folder}</source>
+        <translation>{folder} में सेव होगा</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>Format</source>
+        <translation>फ़ॉर्मैट</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>Compression</source>
+        <translation>कंप्रेशन</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>Optional</source>
+        <translation>वैकल्पिक</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>Repeat password</source>
+        <translation>पासवर्ड दोबारा डालें</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>A password encrypts the contents with AES-256 (7z also hides the file names).</source>
+        <translation>पासवर्ड सामग्री को AES-256 से एन्क्रिप्ट करता है (7z फ़ाइलों के नाम भी छिपाता है)।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>Passwords need 7-Zip. Install it with: {command}</source>
+        <translation>पासवर्ड के लिए 7-Zip चाहिए। इसे इंस्टॉल करें: {command}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>tar archives keep Linux permissions and links; they can&apos;t carry a password.</source>
+        <translation>tar आर्काइव Linux अनुमतियाँ और लिंक बनाए रखते हैं; इनमें पासवर्ड नहीं लग सकता।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>Pick a file name (no slashes).</source>
+        <translation>फ़ाइल का नाम चुनें (स्लैश नहीं)।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>The passwords don&apos;t match.</source>
+        <translation>पासवर्ड मेल नहीं खाते।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>Passwords can&apos;t contain line breaks.</source>
+        <translation>पासवर्ड में लाइन ब्रेक नहीं हो सकते।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>Pick items from one folder to compress.</source>
+        <translation>कंप्रेस करने के लिए एक ही फ़ोल्डर से आइटम चुनें।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>Made {name} ({size}).</source>
+        <translation>{name} बनाया गया ({size})।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>Couldn&apos;t compress: {error}</source>
+        <translation>कंप्रेस नहीं हो सका: {error}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>Compressing into {name}</source>
+        <translation>{name} में कंप्रेस कर रहे हैं</translation>
+    </message>
+</context>
+<context>
     <name>grimoire.spells.vaultl.ops</name>
     <message>
         <location filename="../../grimoire/spells/vaultl/ops.py"/>
@@ -205,6 +673,11 @@
         <location filename="../../grimoire/spells/vaultl/page.py"/>
         <source>Can&apos;t open {path}</source>
         <translation>{path} नहीं खुल सका</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/page.py"/>
+        <source>Extract to</source>
+        <translation>कहाँ निकालें</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/vaultl/page.py"/>
@@ -483,6 +956,26 @@ This can&apos;t be undone.</source>
         <location filename="../../grimoire/spells/vaultl/page.py"/>
         <source>Copy path</source>
         <translation>पाथ कॉपी करें</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/page.py"/>
+        <source>Browse archive</source>
+        <translation>आर्काइव देखें</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/page.py"/>
+        <source>Extract here</source>
+        <translation>यहीं निकालें</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/page.py"/>
+        <source>Extract to…</source>
+        <translation>दूसरी जगह निकालें…</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/page.py"/>
+        <source>Compress…</source>
+        <translation>कंप्रेस करें…</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/vaultl/page.py"/>

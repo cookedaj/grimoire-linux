@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 """VaultL as its own window (this is what opens when you open a folder anywhere).
 
-    python3 -m grimoire.spells.vaultl [folder or file or file:// URL]
+    python3 -m grimoire.spells.vaultl [folder or file or file:// URL]   (an archive opens inside)
     python3 -m grimoire.spells.vaultl tidy [run|preview|undo|enable|disable|status]
 """
 import sys
@@ -48,7 +48,11 @@ def main(argv: list[str]):
     win.setMinimumSize(820, 520)
     win.show()
     if select:
-        page.reveal(select)
+        from grimoire.spells.vaultl import archive
+        if archive.is_archive(select):                       # grimoire-vaultl notes.zip: browse inside it
+            page.open_archive(select)
+        else:
+            page.reveal(select)
     sys.exit(app.exec())
 
 

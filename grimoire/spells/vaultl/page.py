@@ -16,7 +16,7 @@ from PySide6.QtCore import (QDir, QItemSelectionModel, QMimeData, QMimeDatabase,
                             QObject, QRect, QRectF, QSize, QStorageInfo, Qt, QThreadPool, QTimer, QUrl, Signal)
 from PySide6.QtGui import (QColor, QDesktopServices, QFont, QFontMetrics, QGuiApplication, QIcon, QImage,
                            QImageReader, QKeySequence, QPainter, QPainterPath, QPixmap, QShortcut)
-from PySide6.QtWidgets import (QAbstractItemView, QFileSystemModel, QFrame, QHBoxLayout, QHeaderView,
+from PySide6.QtWidgets import (QAbstractItemView, QFileDialog, QFileSystemModel, QFrame, QHBoxLayout, QHeaderView,
                                QLabel, QLineEdit, QListView, QListWidget, QListWidgetItem, QMenu, QMessageBox,
                                QPushButton, QSplitter, QStackedWidget, QStyle, QStyledItemDelegate, QToolButton,
                                QTreeView, QVBoxLayout, QWidget)
@@ -26,7 +26,7 @@ from grimoire.glyphs import glyph
 from grimoire.i18n import tr, tr_noop
 from grimoire.jobs import Job
 from grimoire.paths import CACHE, HOME
-from grimoire.spells.vaultl import launch, ops, runview
+from grimoire.spells.vaultl import archive, archiveview, launch, ops, runview
 from grimoire.spells.vaultl.tidyview import PANELS, TidyPanel, ltr, when
 
 IMAGE_EXT = {".png", ".jpg", ".jpeg", ".webp", ".bmp", ".gif", ".avif", ".tif", ".tiff", ".svg"}
@@ -89,6 +89,8 @@ class GridDelegate(QStyledItemDelegate):
                          icon_rect.y() + (ICON - scaled.height()) // 2, scaled)
         elif model.isDir(index):
             glyph("folder", ICON).paint(p, icon_rect, mode=QIcon.Mode.Active if selected else QIcon.Mode.Normal)
+        elif archive.is_archive(Path(fpath)):                 # zip, tar, 7z, rar: they open like folders here
+            glyph("archive", ICON).paint(p, icon_rect, mode=QIcon.Mode.Active if selected else QIcon.Mode.Normal)
         else:
             icon = model.fileIcon(index)
             (icon if not icon.isNull() and icon.availableSizes() else glyph("document", ICON)).paint(p, icon_rect)
@@ -221,10 +223,21 @@ class VaultLPage(QWidget):
         self.status = QLabel()
         self.status.setObjectName("Muted")
         ml.addWidget(self.status)
-        self.body = QStackedWidget()                      # 0: files, 1: tidy panels
+        self.body = QStackedWidget()                      # 0: files, 1: tidy panels, 2: inside an archive
         self.body.addWidget(main)
         self.body.addWidget(self.tidy)
-        root.addWidget(self.body, 1)
+        self.jobs = archiveview.Jobs()                    # extract/compress progress, under whichever view shows
+        self.archive_panel = archiveview.ArchivePanel(self.jobs)
+        self.archive_panel.message.connect(self._say)
+        self.archive_panel.leave.connect(self._leave_archive)
+        self.body.addWidget(self.archive_panel)
+        self.body.currentChanged.connect(self._body_changed)
+        column = QVBoxLayout()
+        column.setContentsMargins(0, 0, 0, 0)
+        column.setSpacing(0)
+        column.addWidget(self.body, 1)
+        column.addWidget(self.jobs)
+        root.addLayout(column, 1)
 
         self._sig.thumb.connect(self.grid_delegate.ready)
         self._sig.transferred.connect(self._transfer_done)
@@ -548,6 +561,8 @@ class VaultLPage(QWidget):
     def _update_title(self):
         if self.standalone and self.window() is not self:
             where = self.tidy.title.text() if self.body.currentIndex() == 1 else (self.cwd.name or str(self.cwd))
+            if self.body.currentIndex() == 2 and self.archive_panel.path:
+                where = self.archive_panel.path.name
             self.window().setWindowTitle(f"{where} — VaultL")
 
     def show_tidy(self, i: int):
@@ -557,6 +572,47 @@ class VaultLPage(QWidget):
         self.places.clearSelection()
         self.tools.setCurrentRow(i)
         self._update_title()
+
+    # ================================================================== archives (archiveview.py)
+    def open_archive(self, p: Path):
+        """Browse inside an archive like a folder; Back or Up at its top returns here."""
+        self.body.setCurrentIndex(2)
+        self.places.clearSelection()
+        self.tools.clearSelection()
+        self.archive_panel.open(p)
+        self._update_title()
+
+    def _leave_archive(self):
+        p = self.archive_panel.path
+        self.body.setCurrentIndex(0)
+        self._update_title()
+        if p is not None and p.parent == self.cwd:
+            idx = self.model.index(str(p))
+            if idx.isValid():
+                self.view().setCurrentIndex(idx)
+        self.view().setFocus()
+
+    def _body_changed(self, i: int):
+        if i != 2:
+            self.archive_panel.close_archive()
+
+    def _say(self, msg: str):
+        (self.archive_panel.status if self.body.currentIndex() == 2 else self.status).setText(msg)
+
+    def extract_selected(self, ask=False):
+        archives = [p for p in self.selected() if p.is_file() and archive.is_archive(p)]
+        if not archives:
+            return
+        dest = None
+        if ask:
+            d = QFileDialog.getExistingDirectory(self, tr("grimoire.spells.vaultl.page", "Extract to"), str(self.cwd))
+            if not d:
+                return
+            dest = Path(d)
+        archiveview.extract_files(self, archives, dest)
+
+    def compress_selected(self):
+        archiveview.compress(self, self.selected())
 
     def reveal(self, path: Path):
         """Open path's folder in the file views with path selected."""
@@ -716,6 +772,8 @@ class VaultLPage(QWidget):
                 self.pv_text.setText(head)
                 self.pv_text.show()
                 self.pv_image.setPixmap(self.model.fileIcon(self.model.index(str(p))).pixmap(56, 56))
+            elif archive.is_archive(p):
+                self.pv_image.setPixmap(glyph("archive", 96).pixmap(96, 96, QIcon.Mode.Active))
             else:
                 self.pv_image.setPixmap(self.model.fileIcon(self.model.index(str(p))).pixmap(96, 96))
         if ops.in_trash(p) and p != ops.TRASH_FILES:
@@ -766,7 +824,9 @@ class VaultLPage(QWidget):
         start executables we hand it); everything else opens in its usual app."""
         if runview.open_program(self, p, self.status.setText, self.navigate):
             return
-        if p.is_dir():
+        if p.is_file() and archive.is_archive(p) and not ops.in_trash(p):
+            self.open_archive(p)
+        elif p.is_dir():
             self.navigate(p)
         else:
             QDesktopServices.openUrl(QUrl.fromLocalFile(str(p)))
@@ -939,6 +999,14 @@ class VaultLPage(QWidget):
                     m.addAction(tr("grimoire.spells.vaultl.page", "Rename") + "\tF2", self.rename)
                 m.addAction(tr("grimoire.spells.vaultl.page", "Copy path"), self.copy_path)
                 m.addSeparator()
+                if any(p.is_file() and archive.is_archive(p) for p in sel):
+                    if len(sel) == 1:
+                        m.addAction(glyph("archive", 16), tr("grimoire.spells.vaultl.page", "Browse archive"),
+                                    lambda: self.open_archive(sel[0]))
+                    m.addAction(tr("grimoire.spells.vaultl.page", "Extract here"), self.extract_selected)
+                    m.addAction(tr("grimoire.spells.vaultl.page", "Extract to…"), lambda: self.extract_selected(True))
+                m.addAction(tr("grimoire.spells.vaultl.page", "Compress…"), self.compress_selected)
+                m.addSeparator()
                 m.addAction(glyph("trash", 16), tr("grimoire.spells.vaultl.page", "Move to Trash") + "\tDel",
                             self.trash_selected)
         else:
@@ -994,7 +1062,8 @@ class VaultLPage(QWidget):
         def sc(keys, fn):
             s = QShortcut(QKeySequence(keys), self)
             s.setContext(Qt.ShortcutContext.WidgetWithChildrenShortcut)
-            s.activated.connect(lambda: fn() if self.body.currentIndex() == 0 else None)   # never behind a tidy panel
+            s.activated.connect(lambda: fn() if self.body.currentIndex() == 0         # never behind a tidy panel
+                                else self.archive_panel.key(keys) if self.body.currentIndex() == 2 else None)
 
         sc("Alt+Left", self.back)
         sc("Alt+Right", self.forward)
