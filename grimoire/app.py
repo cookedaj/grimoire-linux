@@ -106,6 +106,7 @@ class SpellCard(QFrame):
         lay.addStretch(1)
         self.status = QLabel()
         self.status.setObjectName("Status")
+        self.status.setTextFormat(Qt.TextFormat.PlainText)   # Wi-Fi, phone, device and game names: never markup
         self.status.setWordWrap(True)
         lay.addWidget(self.status)
         self._reading = False
