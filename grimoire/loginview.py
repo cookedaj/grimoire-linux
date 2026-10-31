@@ -559,6 +559,30 @@ def _apply(result) -> bool:
     return session.begin(result["session"], result["remember"])
 
 
+def _off_thread(fn):
+    """fn() on a worker while a local event loop keeps the window painting: saving the sign-in can wait on the
+    keyring's unlock prompt for up to two minutes, which froze the sign-in screen. Returns fn()'s value or raises
+    what it raised."""
+    loop, box = QEventLoop(), {}
+
+    def work():
+        try:
+            return True, fn()
+        except Exception as e:                   # handed back and raised here, on the UI thread
+            return False, e
+
+    def then(_ok, value):
+        box["r"] = value
+        loop.quit()
+    run(work, then)
+    if "r" not in box:
+        loop.exec()
+    ok, value = box["r"]
+    if not ok:
+        raise value
+    return value
+
+
 def gate(title=NAME, size=(1440, 880), wizard=False) -> bool:
     """Before any spell loads: use the session this process inherited or remembered, else show the sign-in screen
     (and, for the hub, the first-run setup). False when the window was closed without choosing."""
@@ -588,12 +612,18 @@ def gate(title=NAME, size=(1440, 880), wizard=False) -> bool:
             loop.exec()
             if "r" not in box:
                 return False
+            screen.card._set_busy(True)
             try:
-                ok = _apply(box.pop("r"))
-                break
+                ok = _off_thread(lambda r=box.pop("r"): _apply(r))
             except OSError as e:                         # e.g. an unsafe or full runtime dir for the guest profile
+                ok = None
+                screen.card._set_busy(False)
                 screen.card.say(tr("grimoire.loginview", "Couldn't set up your profile: {err}").format(
                     err=e.strerror or e))
+            if not win.isVisible():                      # closed while it was saving
+                return False
+            if ok is not None:
+                break
         if wizard and ok:
             ok = _wizard(win, lay, screen)
         win.hide()
