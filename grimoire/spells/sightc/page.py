@@ -6,7 +6,7 @@ from PySide6.QtCore import QFileSystemWatcher, QPointF, QRectF, Qt, QTimer
 from PySide6.QtGui import QColor, QGuiApplication, QImage, QLinearGradient, QPainter, QPen, QPixmap
 from PySide6.QtWidgets import (QAbstractButton, QButtonGroup, QCheckBox, QColorDialog, QComboBox, QFrame,
                                QGridLayout, QHBoxLayout, QInputDialog, QLabel, QMenu, QMessageBox, QPushButton,
-                               QScrollArea, QVBoxLayout, QWidget)
+                               QScrollArea, QSizePolicy, QVBoxLayout, QWidget)
 
 from grimoire.i18n import tr
 from grimoire.paths import CONFIG, HOME, command
@@ -192,13 +192,15 @@ class SightCPage(QWidget):
         titles.addWidget(sub)
         keys = QHBoxLayout()
         keys.setSpacing(6)
-        keys.setContentsMargins(0, 6, 0, 0)
+        keys.setContentsMargins(0, 0, 0, 0)
         self.key_toggle, self.key_next = QLabel(), QLabel()
         for key, what in ((self.key_toggle, tr("grimoire.spells.sightc.page", "show / hide")),
                           (self.key_next, tr("grimoire.spells.sightc.page", "next crosshair"))):
             key.setObjectName("Key")
+            key.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)    # a cut-off key misleads
             lbl = QLabel(what)
             lbl.setObjectName("Muted")
+            lbl.setWordWrap(True)                   # long languages wrap here instead of cutting the keys
             keys.addWidget(key)
             keys.addWidget(lbl)
             keys.addSpacing(10)
@@ -209,7 +211,6 @@ class SightCPage(QWidget):
                                                         stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL))
         keys.addWidget(change)
         keys.addStretch(1)
-        titles.addLayout(keys)
         head.addLayout(titles, 1)
 
         side = QVBoxLayout()
@@ -226,6 +227,7 @@ class SightCPage(QWidget):
         side.addStretch(1)
         head.addLayout(side)
         lay.addLayout(head)
+        lay.addLayout(keys)             # under the button, on the full width: chips never squeeze at the minimum size
 
         self.preview = Preview(self.cfg)
         frame = QFrame()
