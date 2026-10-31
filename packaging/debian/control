@@ -71,7 +71,13 @@ Description: black & white toolkit for KDE Plasma 6
   * OptimizeL: speed tweaks as on/off switches that turn back off cleanly
   * SystemL: a system monitor with graphs, processes, services and alerts
   * TerminalL, ShotL, FocusL and NetL: a terminal, screenshots and screen
-    recording, a focus timer and a network monitor
+    recording, a focus timer and a network monitor with Bluetooth
+  * UpdateL, StoreL and SettingL: system updates, an app store and the
+    system settings
+  * ViewL, PlayL, ReadL and NoteL: pictures, video and music, PDFs and
+    books, Markdown notes
+  * GameL, AudioL, PhoneL, CloudL, GlyphL, LaunchL and WidgetL: games,
+    sound, your phone, cloud drives, emoji, the launcher and desktop widgets
  .
  Anything that needs root asks through pkexec and a whitelisted helper.
  There is no telemetry.

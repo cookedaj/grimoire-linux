@@ -92,7 +92,12 @@ class Renderer(QObject):
             self._ready.set()
 
     def _make_context(self):
-        if self.gl is not None and self.gl.makeCurrent(self.surface):
+        try:                               # the GL path draws into a QOpenGLFramebufferObject (python3-pyside6.qtopengl)
+            import PySide6.QtOpenGL  # noqa: F401
+            has_fbo = True
+        except ImportError:
+            has_fbo = False
+        if has_fbo and self.gl is not None and self.gl.makeCurrent(self.surface):
             gl = self.gl
 
             def proc(_ctx, name):
