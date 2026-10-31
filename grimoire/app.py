@@ -1,10 +1,11 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 """Grimoire hub window: a slim icon rail on the left, a home page of spells, one page per spell."""
 import sys
+import threading
 from datetime import datetime
 from types import SimpleNamespace
 
-from PySide6.QtCore import QSize, Qt, QTimer
+from PySide6.QtCore import QSize, Qt, QTimer, Signal
 from PySide6.QtGui import QColor, QFont, QIcon, QPalette
 from PySide6.QtWidgets import (QApplication, QButtonGroup, QCheckBox, QFrame, QGridLayout, QHBoxLayout, QLabel,
                                QMainWindow, QMessageBox, QPushButton, QScrollArea, QStackedWidget, QVBoxLayout,
@@ -76,6 +77,8 @@ class InstallButton(QPushButton):
 
 
 class SpellCard(QFrame):
+    status_ready = Signal(str)
+
     def __init__(self, spell, on_open):
         super().__init__()
         self.setObjectName("Card")
@@ -105,13 +108,33 @@ class SpellCard(QFrame):
         self.status.setObjectName("Status")
         self.status.setWordWrap(True)
         lay.addWidget(self.status)
+        self._reading = False
+        self.status_ready.connect(self._show_status)
         self.refresh()
 
     def refresh(self):
-        try:
-            self.status.setText(self.spell.status())
-        except Exception:          # a status line must never break the home page
-            self.status.setText("")
+        """Reads the status line on a daemon thread: some ask Plasma, PipeWire or KDE Connect, and with every card
+        read on the UI thread the hub froze for a second or more at start and on each visit home (a daemon, so a
+        line that never answers can't hold up quitting either)."""
+        if self._reading:
+            return
+        self._reading = True
+        status, emit = self.spell.status, self.status_ready.emit
+
+        def work():
+            try:
+                text = status()
+            except Exception:      # a status line must never break the home page
+                text = ""
+            try:
+                emit(text if isinstance(text, str) else "")
+            except RuntimeError:   # the card is gone
+                pass
+        threading.Thread(target=work, name=f"status-{self.spell.id}", daemon=True).start()
+
+    def _show_status(self, text: str):
+        self._reading = False
+        self.status.setText(text)
 
     def mouseReleaseEvent(self, e):
         if e.button() == Qt.MouseButton.LeftButton:
