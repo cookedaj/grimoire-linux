@@ -4,7 +4,7 @@ light. Screen changes are a draft until Apply; then a countdown puts the old lay
 
 import copy
 
-from PySide6.QtCore import QPointF, QRectF, Qt, QTimer, Signal
+from PySide6.QtCore import QCoreApplication, QPointF, QRectF, Qt, QTimer, Signal
 from PySide6.QtGui import QColor, QFont, QPainter, QPen
 from PySide6.QtWidgets import QFrame, QHBoxLayout, QPushButton, QSizePolicy, QWidget
 
@@ -273,6 +273,7 @@ class DisplaysPanel(Panel):
         self.col.addWidget(self.pending)
         self._countdown = QTimer(self, interval=1000, timeout=self._tick)
         self._left = 0
+        QCoreApplication.instance().aboutToQuit.connect(self._quitting)
 
         self.section(tr("grimoire.spells.settingl.displayview", "Night light"))
         self.night_sw = Switch()
@@ -529,7 +530,17 @@ class DisplaysPanel(Panel):
             lambda: displays.apply(draft, before) or "",
             then=lambda: self._applied(before),
             quiet=True,
-            on_fail=lambda: self.apply_btn.setEnabled(True),
+            on_fail=lambda: self._apply_failed(before),
+        )
+
+    def _apply_failed(self, before):
+        """kscreen-doctor can fail or time out after KWin took part of the change: put the old layout back."""
+        self.apply_btn.setEnabled(True)
+        self.host.act(
+            tr("grimoire.spells.settingl.displayview", "Displays"),
+            lambda: displays.revert(before) or "",
+            then=lambda: self.load(force=True),
+            quiet=True,
         )
 
     def _applied(self, before):
@@ -577,6 +588,16 @@ class DisplaysPanel(Panel):
 
     def hideEvent(self, e):
         super().hideEvent(e)  # the countdown keeps running: going back must still happen
+
+    def _quitting(self):
+        """The app closes while a change waits to be kept: go back now, as the countdown would have."""
+        before, self.before = self.before, None
+        if before is not None:
+            try:
+                self._countdown.stop()
+                displays.revert(before)
+            except Exception:  # quitting: nowhere left to show it
+                pass
 
     # ------------------------------------------------------------ night light
     def _show_night(self, n: dict):

@@ -301,9 +301,22 @@ def mount(block: str) -> str:
     return _call(block, I["Filesystem"], "Mount")
 
 
+def _mount_points(block: str) -> list[str]:
+    """Where block is mounted right now (the list the panel showed may be seconds old)."""
+    dbus = _dbus()
+    bus = _bus()
+    try:
+        props = dbus.Interface(bus.get_object(UDISKS, block), "org.freedesktop.DBus.Properties")
+        return [_text(_py(m)) for m in props.Get(I["Filesystem"], "MountPoints", timeout=10)]
+    except dbus.DBusException as e:
+        raise _err(e) from None
+    finally:
+        bus.close()
+
+
 def unmount(block: str, mounts: list[str]) -> str:
     _check_path(block)
-    if any(is_system_mount(m) for m in mounts):
+    if any(is_system_mount(m) for m in [*mounts, *_mount_points(block)]):
         raise DriveError(tr("grimoire.spells.systeml.drives", "the system runs from it, so it stays mounted"))
     _call(block, I["Filesystem"], "Unmount")
     return tr("grimoire.spells.systeml.drives", "unmounted")
@@ -314,8 +327,14 @@ def power_off(drive: dict) -> str:
     _check_path(drive["object"])
     if drive.get("system"):
         raise DriveError(tr("grimoire.spells.systeml.drives", "the system runs from this drive"))
+    live = {}                                   # mounted now, not when the panel last looked
     for p in drive["parts"]:
-        if p["mounts"] and p["can_mount"]:
+        if p["can_mount"]:
+            live[p["object"]] = _mount_points(p.get("inner") or p["object"])
+    if any(is_system_mount(m) for ms in live.values() for m in ms):
+        raise DriveError(tr("grimoire.spells.systeml.drives", "the system runs from this drive"))
+    for p in drive["parts"]:
+        if live.get(p["object"]):
             _call(p.get("inner") or p["object"], I["Filesystem"], "Unmount")
         if p.get("unlocked"):
             _call(p["object"], I["Encrypted"], "Lock")
@@ -331,7 +350,7 @@ def power_off(drive: dict) -> str:
 def eject(drive: dict) -> str:
     _check_path(drive["object"])
     for p in drive["parts"]:
-        if p["mounts"] and p["can_mount"]:
+        if p["can_mount"] and _mount_points(p.get("inner") or p["object"]):
             _call(p.get("inner") or p["object"], I["Filesystem"], "Unmount")
     _call(drive["object"], I["Drive"], "Eject")
     return tr("grimoire.spells.systeml.drives", "ejected")

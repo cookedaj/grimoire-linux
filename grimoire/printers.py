@@ -93,10 +93,6 @@ def _no_password(prompt):
     return None                   # never prompt on stdin from a worker thread: abort and report instead
 
 
-if cups:
-    cups.setPasswordCB(_no_password)
-
-
 def _error(err: Exception) -> PrinterError:
     if cups and isinstance(err, cups.IPPError):
         status, text = (err.args + (None, ""))[:2]
@@ -116,6 +112,8 @@ def _error(err: Exception) -> PrinterError:
 def _conn():
     if CONNECT is None:
         raise PrinterError(tr("grimoire.printers", "Printing needs python3-cups: {cmd}").format(cmd=INSTALL))
+    if cups:                      # per thread in pycups and libcups: set it on every worker, not once at import
+        cups.setPasswordCB(_no_password)
     try:
         return CONNECT()
     except Exception as e:

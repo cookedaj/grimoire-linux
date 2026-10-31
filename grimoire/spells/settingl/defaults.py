@@ -135,8 +135,9 @@ def set_default(kind: str, app_id: str, everything: dict[str, dict]):
     if app_id not in [a["id"] for a in candidates(kind, everything)]:
         raise ValueError(app_id)
     if kind == "terminal":
-        args = [a for a in everything[app_id]["exec"].split() if not a.startswith("%")]
-        kde.write("kdeglobals", "General", "TerminalApplication", args[0] if args else app_id.removesuffix(".desktop"))
+        # the whole command, as KDE's module writes it ("flatpak run org.wezfurlong.wezterm", not "flatpak")
+        args = [a for a in everything[app_id]["exec"].split() if not re.fullmatch(r"%[a-zA-Z%]", a)]
+        kde.write("kdeglobals", "General", "TerminalApplication", " ".join(args) or app_id.removesuffix(".desktop"))
         kde.write("kdeglobals", "General", "TerminalService", app_id)
         return
     mimes = next(k[2] for k in KINDS if k[0] == kind)
