@@ -7,7 +7,8 @@
 #                             tray autostart (and stops the tray); keep your settings so a later install picks them up
 #                             WidgetL's desktop widgets are taken off the desktops and panels, then removed
 #                             CloudL's mounts are unmounted and their services removed (accounts stay in rclone)
-#   ./uninstall.sh --purge    also move Grimoire's settings, logs and cache to the Trash
+#   ./uninstall.sh --purge    also move Grimoire's settings, logs and cache to the Trash and remove its sign-ins
+#                             from the system keyring
 # The root helpers install.sh put in /usr/local/libexec/grimoire-linux (and their polkit file) are removed with one
 # password prompt; cancel it and the exact command to remove them later is printed. A package's own helpers in
 # /usr/libexec stay (the package manager removes them).
@@ -227,6 +228,20 @@ fi
 # the root helpers in /usr/local/libexec (one pkexec prompt; prints the command for later if cancelled)
 if [ -f "$CODE/grimoire/roothelper.py" ]; then
     python3 -I "$CODE/grimoire/roothelper.py" uninstall ${DRY:+--dry} || true
+fi
+
+# --purge: the sign-ins Grimoire saved in the system keyring (GitHub backup token, account refresh tokens) go too;
+# they live outside the settings folders, so trashing those would leave them behind
+if [ -n "$PURGE" ] && [ -f "$CODE/grimoire/keystore.py" ]; then
+    if [ -n "$DRY" ]; then
+        echo "[dry] remove Grimoire's sign-ins from the system keyring (application=grimoire)" >&3
+    elif n="$(PYTHONPATH="$CODE" python3 -P -c 'from grimoire import keystore
+print(keystore.delete({"application": "grimoire"}))' 2>/dev/null)"; then
+        if [ "$n" != 0 ]; then echo "Removed $n saved sign-in(s) from the system keyring."; fi
+    else
+        warn "Couldn't reach the system keyring: any Grimoire sign-ins saved there stay (KWallet Manager can remove"
+        warn "items labelled \"Grimoire\")."
+    fi
 fi
 
 # commands (only links, never a file someone put there), menu entries and icons Grimoire generated
