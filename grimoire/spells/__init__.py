@@ -374,3 +374,20 @@ SPELLS.append(Spell("notel", "NoteL",
                                                "tags, [[links]] and backlinks, a live preview, tabs, and syntax "
                                                "colors for code"),
                     _notel, "notel", _notel_status))
+
+
+def _playl():
+    from grimoire.spells.playl.page import PlayLPage
+    return PlayLPage()
+
+
+def _playl_status() -> str:
+    from grimoire.spells.playl.media import status_line
+    return status_line()
+
+
+SPELLS.append(Spell("playl", "PlayL",
+                    tr_noop("grimoire.spells", "Videos and music: a queue you can drag around, subtitles and audio "
+                                               "tracks, resume where you stopped, your music library with covers, "
+                                               "and Plasma's media controls"),
+                    _playl, "playl", _playl_status))

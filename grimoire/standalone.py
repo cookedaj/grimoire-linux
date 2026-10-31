@@ -49,6 +49,10 @@ EXTRA["readl"] = {"GenericName": "Document Viewer", "Categories": "Office;Viewer
 # in "Open with" for text files, never made the default (Kate's InitialPreference is higher)
 EXTRA["notel"] = {"GenericName": "Text Editor", "Categories": "Utility;TextEditor;",
                   "MimeType": "text/plain;text/markdown;text/x-markdown;", "InitialPreference": "1"}
+# PlayL: in "Open with" for videos and music (%U: several files); a low InitialPreference so it never
+# becomes the default player by being installed
+EXTRA["playl"] = {"GenericName": "Media Player", "Categories": "AudioVideo;Audio;Video;Player;",
+                  "InitialPreference": "0"}
 # spells merged into another: their menu entries stay (hidden), since the system's default-app setting may name them
 MERGED = {"filel": "vaultl", "tidyl": "vaultl"}
 
@@ -110,6 +114,9 @@ def install(sid: str, refresh: bool = True):
     fields = {"Type": "Application", "Name": spell.name, "GenericName": "Grimoire Linux spell", "Comment": spell.tagline,
               "Exec": f"{cmd} %u" if sid in EXTRA else str(cmd), "Icon": f"grimoire-{sid}", "Terminal": "false",
               "Categories": "Utility;", "StartupWMClass": f"grimoire-{sid}"} | EXTRA.get(sid, {})
+    if sid == "playl":                                  # several files at once; its long type list lives in media.py
+        from grimoire.spells.playl.media import MIME_TYPES
+        fields |= {"Exec": f"{cmd} %U", "MimeType": ";".join(MIME_TYPES) + ";"}
     entry.write_text("[Desktop Entry]\n" + "".join(f"{k}={v}\n" for k, v in fields.items()))
     for old, new in MERGED.items():
         if new == sid:

@@ -3545,12 +3545,17 @@
     <message>
         <location filename="../../grimoire/spells/__init__.py"/>
         <source>Your phone on this PC through KDE Connect: send files, ring it, share the clipboard, browse its files, read and dismiss its notifications, text messages, media and commands</source>
-        <translation>通过 KDE Connect 在这台电脑上使用你的手机：发送文件、让它响铃、共享剪贴板、浏览其文件、查看和清除其通知、短信、媒体和命令</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/__init__.py"/>
         <source>Markdown notes and a text editor in one: a notes folder with search, tags, [[links]] and backlinks, a live preview, tabs, and syntax colors for code</source>
-        <translation>Markdown 笔记与文本编辑器合二为一：带搜索、标签、[[链接]] 和反向链接的笔记文件夹，实时预览、标签页和代码语法着色</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/__init__.py"/>
+        <source>Videos and music: a queue you can drag around, subtitles and audio tracks, resume where you stopped, your music library with covers, and Plasma&apos;s media controls</source>
+        <translation>视频和音乐：可拖动排序的队列、字幕和音轨、从上次停下处继续、带封面的音乐库，以及 Plasma 的媒体控制</translation>
     </message>
 </context>
 <context>
@@ -3970,10 +3975,6 @@
 <context>
     <name>grimoire.standalone</name>
     <message>
-        <source>{id} has no standalone command yet</source>
-        <translation type="vanished">{id} 还没有独立命令</translation>
-    </message>
-    <message>
         <source>Emoji, symbols and every Unicode character on a hotkey: search in your language, skin tones, favorites and a full Unicode block browser</source>
         <translation type="vanished">一个快捷键即可使用表情、符号和所有 Unicode 字符：用你的语言搜索、肤色、收藏，以及完整的 Unicode 区块浏览器</translation>
     </message>
@@ -3992,6 +3993,18 @@
     <message>
         <source>A quiet reader for PDFs, EPUB books, Markdown and text: covers, contents, search, bookmarks, night and paper pages, and it remembers where you stopped</source>
         <translation type="vanished">安静的阅读器，适用于 PDF、EPUB 电子书、Markdown 和文本：封面、目录、搜索、书签、夜间和纸张页面，并记住你读到哪里</translation>
+    </message>
+    <message>
+        <source>Your phone on this PC through KDE Connect: send files, ring it, share the clipboard, browse its files, read and dismiss its notifications, text messages, media and commands</source>
+        <translation type="vanished">通过 KDE Connect 在这台电脑上使用你的手机：发送文件、让它响铃、共享剪贴板、浏览其文件、查看和清除其通知、短信、媒体和命令</translation>
+    </message>
+    <message>
+        <source>Markdown notes and a text editor in one: a notes folder with search, tags, [[links]] and backlinks, a live preview, tabs, and syntax colors for code</source>
+        <translation type="vanished">Markdown 笔记与文本编辑器合二为一：带搜索、标签、[[链接]] 和反向链接的笔记文件夹，实时预览、标签页和代码语法着色</translation>
+    </message>
+    <message>
+        <source>{id} has no standalone command yet</source>
+        <translation type="vanished">{id} 还没有独立命令</translation>
     </message>
 </context>
 </TS>

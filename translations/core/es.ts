@@ -3575,12 +3575,17 @@
     <message>
         <location filename="../../grimoire/spells/__init__.py"/>
         <source>Your phone on this PC through KDE Connect: send files, ring it, share the clipboard, browse its files, read and dismiss its notifications, text messages, media and commands</source>
-        <translation>Tu teléfono en este PC a través de KDE Connect: envía archivos, hazlo sonar, comparte el portapapeles, explora sus archivos, lee y descarta sus notificaciones, mensajes de texto, multimedia y comandos</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/__init__.py"/>
         <source>Markdown notes and a text editor in one: a notes folder with search, tags, [[links]] and backlinks, a live preview, tabs, and syntax colors for code</source>
-        <translation>Notas Markdown y un editor de texto en uno: una carpeta de notas con búsqueda, etiquetas, [[enlaces]] y enlaces entrantes, vista previa en vivo, pestañas y colores de sintaxis para el código</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/__init__.py"/>
+        <source>Videos and music: a queue you can drag around, subtitles and audio tracks, resume where you stopped, your music library with covers, and Plasma&apos;s media controls</source>
+        <translation>Vídeos y música: una cola que puedes reordenar arrastrando, subtítulos y pistas de audio, continuar donde lo dejaste, tu biblioteca de música con portadas y los controles multimedia de Plasma</translation>
     </message>
 </context>
 <context>
@@ -4005,10 +4010,6 @@
 <context>
     <name>grimoire.standalone</name>
     <message>
-        <source>{id} has no standalone command yet</source>
-        <translation type="vanished">{id} aún no tiene un comando independiente</translation>
-    </message>
-    <message>
         <source>Emoji, symbols and every Unicode character on a hotkey: search in your language, skin tones, favorites and a full Unicode block browser</source>
         <translation type="vanished">Emoji, símbolos y todos los caracteres Unicode con un atajo: búsqueda en tu idioma, tonos de piel, favoritos y un explorador completo de bloques Unicode</translation>
     </message>
@@ -4027,6 +4028,18 @@
     <message>
         <source>A quiet reader for PDFs, EPUB books, Markdown and text: covers, contents, search, bookmarks, night and paper pages, and it remembers where you stopped</source>
         <translation type="vanished">Un lector tranquilo para PDF, libros EPUB, Markdown y texto: portadas, índice, búsqueda, marcadores, páginas de noche y de papel, y recuerda dónde lo dejaste</translation>
+    </message>
+    <message>
+        <source>Your phone on this PC through KDE Connect: send files, ring it, share the clipboard, browse its files, read and dismiss its notifications, text messages, media and commands</source>
+        <translation type="vanished">Tu teléfono en este PC a través de KDE Connect: envía archivos, hazlo sonar, comparte el portapapeles, explora sus archivos, lee y descarta sus notificaciones, mensajes de texto, multimedia y comandos</translation>
+    </message>
+    <message>
+        <source>Markdown notes and a text editor in one: a notes folder with search, tags, [[links]] and backlinks, a live preview, tabs, and syntax colors for code</source>
+        <translation type="vanished">Notas Markdown y un editor de texto en uno: una carpeta de notas con búsqueda, etiquetas, [[enlaces]] y enlaces entrantes, vista previa en vivo, pestañas y colores de sintaxis para el código</translation>
+    </message>
+    <message>
+        <source>{id} has no standalone command yet</source>
+        <translation type="vanished">{id} aún no tiene un comando independiente</translation>
     </message>
 </context>
 </TS>

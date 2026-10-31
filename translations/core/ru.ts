@@ -3605,12 +3605,17 @@
     <message>
         <location filename="../../grimoire/spells/__init__.py"/>
         <source>Your phone on this PC through KDE Connect: send files, ring it, share the clipboard, browse its files, read and dismiss its notifications, text messages, media and commands</source>
-        <translation>Ваш телефон на этом ПК через KDE Connect: отправка файлов, звонок на телефон, общий буфер обмена, его файлы, чтение и закрытие уведомлений, SMS, медиа и команды</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/__init__.py"/>
         <source>Markdown notes and a text editor in one: a notes folder with search, tags, [[links]] and backlinks, a live preview, tabs, and syntax colors for code</source>
-        <translation>Заметки Markdown и текстовый редактор в одном: папка заметок с поиском, тегами, [[ссылками]] и обратными ссылками, живой просмотр, вкладки и подсветка кода</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/__init__.py"/>
+        <source>Videos and music: a queue you can drag around, subtitles and audio tracks, resume where you stopped, your music library with covers, and Plasma&apos;s media controls</source>
+        <translation>Видео и музыка: очередь, которую можно перетаскивать, субтитры и звуковые дорожки, продолжение с того же места, фонотека с обложками и медиаклавиши Plasma</translation>
     </message>
 </context>
 <context>
@@ -4040,10 +4045,6 @@
 <context>
     <name>grimoire.standalone</name>
     <message>
-        <source>{id} has no standalone command yet</source>
-        <translation type="vanished">У {id} пока нет отдельной команды</translation>
-    </message>
-    <message>
         <source>Emoji, symbols and every Unicode character on a hotkey: search in your language, skin tones, favorites and a full Unicode block browser</source>
         <translation type="vanished">Эмодзи, символы и все знаки Unicode по горячей клавише: поиск на вашем языке, оттенки кожи, избранное и полный обзор блоков Unicode</translation>
     </message>
@@ -4062,6 +4063,18 @@
     <message>
         <source>A quiet reader for PDFs, EPUB books, Markdown and text: covers, contents, search, bookmarks, night and paper pages, and it remembers where you stopped</source>
         <translation type="vanished">Спокойная читалка для PDF, книг EPUB, Markdown и текста: обложки, оглавление, поиск, закладки, ночные и бумажные страницы, и она помнит, где вы остановились</translation>
+    </message>
+    <message>
+        <source>Your phone on this PC through KDE Connect: send files, ring it, share the clipboard, browse its files, read and dismiss its notifications, text messages, media and commands</source>
+        <translation type="vanished">Ваш телефон на этом ПК через KDE Connect: отправка файлов, звонок на телефон, общий буфер обмена, его файлы, чтение и закрытие уведомлений, SMS, медиа и команды</translation>
+    </message>
+    <message>
+        <source>Markdown notes and a text editor in one: a notes folder with search, tags, [[links]] and backlinks, a live preview, tabs, and syntax colors for code</source>
+        <translation type="vanished">Заметки Markdown и текстовый редактор в одном: папка заметок с поиском, тегами, [[ссылками]] и обратными ссылками, живой просмотр, вкладки и подсветка кода</translation>
+    </message>
+    <message>
+        <source>{id} has no standalone command yet</source>
+        <translation type="vanished">У {id} пока нет отдельной команды</translation>
     </message>
 </context>
 </TS>
