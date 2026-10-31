@@ -35,6 +35,12 @@ def bus():
     return _bus or None
 
 
+def _text(s) -> str:
+    """D-Bus strings must be valid UTF-8: a file name that isn't (undecodable bytes kept as surrogates) would make
+    every Metadata read and change signal fail, and Plasma's media controls lose PlayL."""
+    return str(s).encode("utf-8", "surrogateescape").decode("utf-8", "replace")
+
+
 def _us(seconds) -> int:
     return int((seconds or 0) * 1_000_000)
 
@@ -92,15 +98,18 @@ def _service_class():
             if not cur:
                 return dbus.Dictionary({"mpris:trackid": dbus.ObjectPath(NO_TRACK)}, signature="sv")
             m = {"mpris:trackid": dbus.ObjectPath(TRACK_PATH.format(n=max(0, p.index))),
-                 "xesam:title": cur.get("title") or media.display_name(cur["entry"])}
+                 "xesam:title": _text(cur.get("title") or media.display_name(cur["entry"]))}
             if p.length:
                 m["mpris:length"] = dbus.Int64(_us(p.length))
             if cur.get("artist"):
-                m["xesam:artist"] = dbus.Array([cur["artist"]], signature="s")
+                m["xesam:artist"] = dbus.Array([_text(cur["artist"])], signature="s")
             if cur.get("album"):
-                m["xesam:album"] = cur["album"]
+                m["xesam:album"] = _text(cur["album"])
             entry = cur["entry"]
-            m["xesam:url"] = entry if media.is_url(entry) else Path(entry).as_uri()
+            try:
+                m["xesam:url"] = _text(entry) if media.is_url(entry) else Path(entry).absolute().as_uri()
+            except ValueError:
+                pass
             if self.art and not cur.get("video"):
                 m["mpris:artUrl"] = self.art
             return dbus.Dictionary(m, signature="sv")

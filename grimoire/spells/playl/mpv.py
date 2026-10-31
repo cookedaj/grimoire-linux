@@ -154,7 +154,7 @@ def _node_value(n: _Node):
 
 def _args(args) -> ctypes.Array:
     arr = (ctypes.c_char_p * (len(args) + 1))()
-    arr[:-1] = [str(a).encode() for a in args]
+    arr[:-1] = [str(a).encode("utf-8", "surrogateescape") for a in args]   # file names that aren't UTF-8 too
     arr[-1] = None
     return arr
 

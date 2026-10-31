@@ -322,7 +322,7 @@ class Player(QObject):
             self.resumed.emit(start)
 
     def _advance(self, step: int, auto=False) -> bool:
-        if not self.queue:
+        if not self.queue or not self.core.h:     # a skip queued just before close()
             return False
         if self.index not in self.order:
             self._rebuild_order()
@@ -515,8 +515,8 @@ class Player(QObject):
 
     def close(self):
         """Remember where we were, then free the render context and the core."""
-        self._save_timer.stop()
-        self._vol_timer.stop()
+        for t in (self._save_timer, self._vol_timer, self._pos_timer):
+            t.stop()                           # a pending position tick would reach widgets already gone
         if 0 <= self.index < len(self.queue) and self.settings["resume"]:
             if self.positions.put(self.queue[self.index], self.pos, self.length):
                 self.positions.save()
