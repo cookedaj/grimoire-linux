@@ -391,6 +391,11 @@
     </message>
     <message>
         <location filename="../../grimoire/accountview.py"/>
+        <source>Couldn&apos;t sign out: {err}</source>
+        <translation>সাইন আউট করা যায়নি: {err}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/accountview.py"/>
         <source>GUEST</source>
         <translation>অতিথি</translation>
     </message>

@@ -386,6 +386,11 @@
     </message>
     <message>
         <location filename="../../grimoire/accountview.py"/>
+        <source>Couldn&apos;t sign out: {err}</source>
+        <translation>无法退出登录：{err}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/accountview.py"/>
         <source>GUEST</source>
         <translation>访客</translation>
     </message>

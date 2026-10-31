@@ -48,8 +48,7 @@ def sign_out(parent):
         import os
         if not ok:                                 # e.g. session.json couldn't be written: still signed in
             parent.setEnabled(True)
-            QMessageBox.warning(parent, NAME, tr("grimoire.settingsview", "Couldn't change it: {err}").format(
-                err=value))
+            QMessageBox.warning(parent, NAME, tr("grimoire.accountview", "Couldn't sign out: {err}").format(err=value))
             return
         os.environ.pop("GRIMOIRE_PROFILE", None)
         if not restart():

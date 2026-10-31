@@ -411,6 +411,11 @@
     </message>
     <message>
         <location filename="../../grimoire/accountview.py"/>
+        <source>Couldn&apos;t sign out: {err}</source>
+        <translation>تعذّر تسجيل الخروج: {err}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/accountview.py"/>
         <source>GUEST</source>
         <translation>ضيف</translation>
     </message>
