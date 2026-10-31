@@ -697,6 +697,7 @@ class AboutPanel(Panel):
 
         self.os.setText(d["os"])
         self.sub.setText(" · ".join(x for x in (d["host"], f"KDE Plasma {d['plasma']}" if d["plasma"] else "") if x))
+        host = (tr("grimoire.spells.settingl.systemview", "Computer name"), d["host"])
         rows = [
             (tr("grimoire.spells.settingl.systemview", "SOFTWARE"), None),
             ("KDE Plasma", d["plasma"]),
@@ -721,7 +722,7 @@ class AboutPanel(Panel):
             (tr("grimoire.spells.settingl.systemview", "Memory"), human(d["memory"]) if d["memory"] else ""),
             (tr("grimoire.spells.settingl.systemview", "Graphics"), ", ".join(d["gpus"])),
             (tr("grimoire.spells.settingl.systemview", "System disk"), human(d["disk"]) if d["disk"] else ""),
-            (tr("grimoire.spells.settingl.systemview", "Computer name"), d["host"]),
+            host,
         ]
         _clear(self.grid)
         self.grid.setContentsMargins(20, 16, 20, 16)
@@ -741,7 +742,8 @@ class AboutPanel(Panel):
             v.setTextInteractionFlags(Qt.TextInteractionFlag.TextSelectableByMouse)
             self.grid.addWidget(t, r, 0)
             self.grid.addWidget(v, r, 1)
-            self.lines.append((title, value))
+            if title is not host[0]:  # the copied details get shared: the computer's name stays out of them
+                self.lines.append((title, value))
             r += 1
         self.grid.setColumnStretch(1, 1)
         self.data = d

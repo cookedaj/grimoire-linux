@@ -512,8 +512,11 @@ class BluetoothPanel(QScrollArea):
             return
         ask = tr("grimoire.spells.netl.btview", "Remove {device}? To use it again, put it in pairing mode and pair it "
                                                 "from here.").format(device=isolate(device_name(d)))
-        if QMessageBox.question(self, tr("grimoire.spells.netl.btview", "Remove device"), ask) \
-                != QMessageBox.StandardButton.Yes:
+        box = QMessageBox(QMessageBox.Icon.NoIcon, tr("grimoire.spells.netl.btview", "Remove device"), ask,
+                          QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No, self)
+        box.setTextFormat(Qt.TextFormat.PlainText)      # the name is the device's own: never rich text
+        box.exec()
+        if box.clickedButton() is not box.button(QMessageBox.StandardButton.Yes):
             return
         client = self.client
         self.run(device_name(d), lambda: client.remove(a["path"], d["path"]), d["path"])

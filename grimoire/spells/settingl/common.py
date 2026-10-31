@@ -89,10 +89,10 @@ class Row(QFrame):
             lay.addWidget(ic, 0, Qt.AlignmentFlag.AlignVCenter)
         text = QVBoxLayout()
         text.setSpacing(3)
-        self.title = label(title, "RowTitle")
+        self.title = label(title, "RowTitle", plain=True)  # titles and lines carry device, screen and app names
         self.title.setSizePolicy(QSizePolicy.Policy.Ignored, QSizePolicy.Policy.Preferred)
         text.addWidget(self.title)
-        self.sub = label(sub, "Muted", wrap=True)
+        self.sub = label(sub, "Muted", wrap=True, plain=True)
         self.sub.setVisible(bool(sub))
         text.addWidget(self.sub)
         lay.addLayout(text, 1)

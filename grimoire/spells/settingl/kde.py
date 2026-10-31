@@ -147,18 +147,24 @@ def write(name: str, group, key: str, value, bool_=False, notify=True):
         args += ["--group", g]
     args += ["--key", key]
     if value is None:
-        args += ["--delete", ""]
+        args += ["--delete", "--", ""]
     else:
         if bool_ or isinstance(value, bool):
             args += ["--type", "bool"]
             value = "true" if value else "false"
-        args.append(str(value))
+        args += ["--", str(value)]  # "--": a value starting with "-" is the value, not an option
     check(args)
 
 
 # ---------------------------------------------------------------- D-Bus (busctl)
 def _bus(system: bool) -> list[str]:
     return ["busctl", "--system" if system else "--user", "--json=short"]
+
+
+def _end_options(cmd: list[str], verb: str) -> list[str]:
+    """busctl reads "-0.5" as an option: everything after the verb is arguments ("--" before the verb)."""
+    i = cmd.index(verb)
+    return cmd[:i] + ["--"] + cmd[i:]
 
 
 def _plain(v):
@@ -203,7 +209,7 @@ def bus_call(
         + ["call", dest, path, iface, method]
         + ([sig, *map(str, args)] if sig else [])
     )
-    r = RUN(cmd, timeout)
+    r = RUN(_end_options(cmd, "call"), timeout)
     if r.returncode:
         if quiet:
             return None
@@ -222,7 +228,7 @@ def bus_set(dest: str, path: str, iface: str, prop: str, sig: str, value, system
     if isinstance(value, bool):
         value = "true" if value else "false"
     cmd = ["busctl", "--system" if system else "--user", "set-property", dest, path, iface, prop, sig, str(value)]
-    r = RUN(cmd, 15)
+    r = RUN(_end_options(cmd, "set-property"), 15)
     if r.returncode:
         msg = (r.stderr or r.stdout).strip().splitlines()
         raise RuntimeError(
