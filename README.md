@@ -260,6 +260,20 @@ queue you reorder by dragging, and resume where you stopped. The music library r
 installed) into albums with grayscale covers, artists and songs. Plasma's media controls and media keys see it
 (MPRIS), the screen stays on while a video plays, and its volume is its own PipeWire stream, the one AudioL shows.
 Once its launcher is installed it's in **Open With** for videos and music; it never makes itself the default.
+### SettingL: KDE's settings in black and white
+
+![SettingL](docs/screenshots/settingl.png)
+
+The everyday System Settings pages, redone: **Displays** (arrange screens by dragging, resolution, refresh rate,
+scale, orientation, the primary screen, with KDE's 15-second "keep these settings?" safety net, and night light),
+**Sound** and **Network** (AudioL's and NetL's panels), **Bluetooth** (power, your paired devices, connect and
+disconnect; pairing opens KDE's wizard), **Mouse & touchpad**, **Keyboard** (layouts and key repeat), **Power**
+(profiles, screen dim/off and sleep timers, batteries), **Date & time**, **Language & region**, **Users**, **Default
+apps**, **Notifications** (Do Not Disturb and each app's popups and history) and **About this PC**. Every change
+goes through KDE's own tools (kwriteconfig6, KWin and BlueZ over D-Bus, kscreen-doctor, powerprofilesctl, systemd's
+timedated with its usual password prompt), so Plasma picks it up at once. Everything else is one search away: the
+search box (Ctrl+F) and **All KDE settings** list every installed KDE module and open it in KDE's own window.
+SettingL doesn't replace System Settings as the default; both keep working side by side.
 
 ### Tray, Settings and updates
 

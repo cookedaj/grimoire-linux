@@ -468,6 +468,29 @@ def _notel(page, wait):
 PREPARE["notel"] = _notel
 PAGES.append("notel")
 
+
+def _settingl(page, wait):
+    """SettingL reads KWin and kscreen over the session bus, which the sandbox doesn't have: two made-up screens
+    and night light on."""
+    from grimoire.spells.settingl import displays
+
+    def out(i, name, label, w, h, rates, x, primary):
+        modes = [{"id": f"{i}{n}", "w": w, "h": h, "rate": r} for n, r in enumerate(rates)] + \
+            [{"id": f"{i}9", "w": 1920, "h": 1080, "rate": 60.0}]
+        return {"id": i, "name": name, "label": label, "enabled": True, "priority": 1 if primary else 2,
+                "primary": primary, "x": x, "y": 0, "mode": f"{i}0", "modes": modes, "preferred": [f"{i}0"],
+                "scale": 1.25 if w > 3000 else 1.0, "rotation": "none", "type": 14, "mm": (597, 336)}
+    screens = [out(1, "DP-1", "Studio 27", 3840, 2160, [144.0, 120.0, 60.0], 0, True),
+               out(2, "HDMI-A-1", "Office 24", 1920, 1080, [75.0, 60.0], 3072, False)]
+    displays.read = lambda: {"outputs": [dict(o) for o in screens], "error": ""}
+    displays.night = lambda: {"active": True, "mode": "daynight", "temperature": 3800, "available": True,
+                              "running": False, "current": 6500, "daylight": True, "inhibited": False, "live": True}
+    wait(1500)
+    page.built["displays"].load(force=True)
+
+
+PREPARE["settingl"] = _settingl
+PAGES.insert(PAGES.index("settings"), "settingl")
 WAIT = {"widgetl": 5000, "mural": 6000, "systeml": 30000, "netl": 30000, "optimizel": 5000, "terminall": 3500, "vaultl": 3000}
 
 

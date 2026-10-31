@@ -121,6 +121,17 @@ what goes over the network, see [security.md](security.md).
   daemon signals a change; text messages only arrive as signals after PhoneL asks the phone for them. Browse files
   is KDE Connect's sftp mount, opened in VaultL. Pairing, unpairing and every text message ask you first. Contact
   names come read-only from the vCards KDE Connect's contacts plugin keeps in `~/.local/share/kpeoplevcard/`.
+- **SettingL** changes KDE's settings with KDE's own tools, as you: `kscreen-doctor` for screens (one call per
+  Apply; the old layout is put back after 15 seconds unless you press Keep), `kwriteconfig6 --notify` for the files
+  Plasma watches (night light in `kwinrc`, timers in `powerdevilrc` then PowerDevil's `reparseConfiguration`,
+  layouts in `kxkbrc` then the `org.kde.keyboard reloadConfig` signal KWin listens for, key repeat in `kcminputrc`,
+  Do Not Disturb and per-app notifications in `plasmanotifyrc`, the desktop language and formats in
+  `plasma-localerc`, the browser and terminal in `kdeglobals`), KWin's `org.kde.KWin.InputDevice` properties for
+  mice and touchpads (KWin saves them), BlueZ over D-Bus for Bluetooth power and connect/disconnect,
+  `powerprofilesctl` for the power profile, `xdg-mime default` for default apps (only when you press Set), and
+  systemd's `timedate1` with interactive polkit for the time zone and clock (the usual password prompt). Every other
+  KDE module is found from its plugin metadata and opened with `kcmshell6`. Nothing here needs Grimoire's root
+  helpers, and SettingL never makes itself the default settings app.
 
 - **NoteL** reads the notes folder on a worker thread (hidden folders like `.obsidian`, `.git` and `.trash` are
   skipped; tags, `[[links]]` and backlinks are parsed from plain Markdown) and keeps it in memory for search. Saving
@@ -166,6 +177,7 @@ plasma/              the MuraL wallpaper plugin and the LaunchL panel widget
   spells/storel/     StoreL catalog (AppStream), installed apps, plans, queue, Flatpak permissions, root helper, page
   spells/phonel/     PhoneL KDE Connect client (D-Bus), signal listener, page, device tabs, text messages
   spells/notel/      NoteL notes folder (store), index and search, editor, highlighting, preview/export, page
+  spells/settingl/   SettingL KDE settings pages (screens, input, power, Bluetooth, time, region…), KDE module list
 plasma/              the MuraL wallpaper plugin, the LaunchL panel widget and WidgetL's desktop widgets
 bin/                 launchers
 install.sh           copies the app into ~/.local/share/grimoire/app and links it in

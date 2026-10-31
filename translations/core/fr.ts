@@ -3585,7 +3585,52 @@
     <message>
         <location filename="../../grimoire/spells/__init__.py"/>
         <source>Videos and music: a queue you can drag around, subtitles and audio tracks, resume where you stopped, your music library with covers, and Plasma&apos;s media controls</source>
-        <translation>Vidéos et musique : une file à réorganiser par glisser-déposer, sous-titres et pistes audio, reprise là où vous vous étiez arrêté, votre bibliothèque musicale avec pochettes, et les contrôles multimédia de Plasma</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/__init__.py"/>
+        <source>KDE&apos;s settings in black and white: displays, sound, network, Bluetooth, mouse, keyboard, power, date, language, default apps and more, with every other KDE module one search away</source>
+        <translation>Les paramètres de KDE en noir et blanc : écrans, son, réseau, Bluetooth, souris, clavier, énergie, date, langue, apps par défaut et plus, avec tous les autres modules KDE à portée de recherche</translation>
+    </message>
+</context>
+<context>
+    <name>grimoire.standalone</name>
+    <message>
+        <location filename="../../grimoire/standalone.py"/>
+        <source>{id} has no standalone command yet</source>
+        <translation>{id} n’a pas encore de commande autonome</translation>
+    </message>
+    <message>
+        <source>Emoji, symbols and every Unicode character on a hotkey: search in your language, skin tones, favorites and a full Unicode block browser</source>
+        <translation type="vanished">Les emoji, les symboles et tous les caractères Unicode sur un raccourci : recherche dans votre langue, teintes de peau, favoris et un navigateur complet des blocs Unicode</translation>
+    </message>
+    <message>
+        <source>Google Drive, OneDrive and Dropbox as folders on your PC through rclone: sign in from your browser, mount, see the space left and what is still uploading, and open them in VaultL</source>
+        <translation type="vanished">Google Drive, OneDrive et Dropbox comme dossiers sur votre PC grâce à rclone : connexion depuis votre navigateur, montage, espace restant, ce qui est encore en cours d&apos;envoi, et ouverture dans VaultL</translation>
+    </message>
+    <message>
+        <source>Your pictures: a fast thumbnail grid, a full view with zoom, turns, slideshow and EXIF info, plus rename, Trash and set as wallpaper</source>
+        <translation type="vanished">Vos images : une grille de miniatures rapide, une vue plein écran avec zoom, rotations, diaporama et infos EXIF, plus renommer, corbeille et définir comme fond d&apos;écran</translation>
+    </message>
+    <message>
+        <source>Install and remove apps from Flathub, Ubuntu&apos;s archive and the Snap Store: search, screenshots, a preview of every change, and each Flatpak&apos;s permissions</source>
+        <translation type="vanished">Installer et supprimer des applications depuis Flathub, l&apos;archive d&apos;Ubuntu et le Snap Store : recherche, captures, aperçu de chaque changement et autorisations de chaque Flatpak</translation>
+    </message>
+    <message>
+        <source>A quiet reader for PDFs, EPUB books, Markdown and text: covers, contents, search, bookmarks, night and paper pages, and it remembers where you stopped</source>
+        <translation type="vanished">Une liseuse calme pour les PDF, les livres EPUB, le Markdown et le texte : couvertures, sommaire, recherche, signets, pages nuit et papier, et elle retient où vous vous êtes arrêté</translation>
+    </message>
+    <message>
+        <source>Your phone on this PC through KDE Connect: send files, ring it, share the clipboard, browse its files, read and dismiss its notifications, text messages, media and commands</source>
+        <translation type="vanished">Votre téléphone sur ce PC via KDE Connect : envoyer des fichiers, le faire sonner, partager le presse-papiers, parcourir ses fichiers, lire et effacer ses notifications, SMS, médias et commandes</translation>
+    </message>
+    <message>
+        <source>Markdown notes and a text editor in one: a notes folder with search, tags, [[links]] and backlinks, a live preview, tabs, and syntax colors for code</source>
+        <translation type="vanished">Notes Markdown et éditeur de texte en un : un dossier de notes avec recherche, étiquettes, [[liens]] et liens entrants, un aperçu en direct, des onglets et la coloration du code</translation>
+    </message>
+    <message>
+        <source>Videos and music: a queue you can drag around, subtitles and audio tracks, resume where you stopped, your music library with covers, and Plasma&apos;s media controls</source>
+        <translation type="vanished">Vidéos et musique : une file à réorganiser par glisser-déposer, sous-titres et pistes audio, reprise là où vous vous étiez arrêté, votre bibliothèque musicale avec pochettes, et les contrôles multimédia de Plasma</translation>
     </message>
 </context>
 <context>
@@ -4005,41 +4050,6 @@
         <location filename="../../grimoire/updateview.py"/>
         <source>Nothing new on GitHub since your version.</source>
         <translation>Rien de nouveau sur GitHub depuis votre version.</translation>
-    </message>
-</context>
-<context>
-    <name>grimoire.standalone</name>
-    <message>
-        <source>Emoji, symbols and every Unicode character on a hotkey: search in your language, skin tones, favorites and a full Unicode block browser</source>
-        <translation type="vanished">Les emoji, les symboles et tous les caractères Unicode sur un raccourci : recherche dans votre langue, teintes de peau, favoris et un navigateur complet des blocs Unicode</translation>
-    </message>
-    <message>
-        <source>Google Drive, OneDrive and Dropbox as folders on your PC through rclone: sign in from your browser, mount, see the space left and what is still uploading, and open them in VaultL</source>
-        <translation type="vanished">Google Drive, OneDrive et Dropbox comme dossiers sur votre PC grâce à rclone : connexion depuis votre navigateur, montage, espace restant, ce qui est encore en cours d&apos;envoi, et ouverture dans VaultL</translation>
-    </message>
-    <message>
-        <source>Your pictures: a fast thumbnail grid, a full view with zoom, turns, slideshow and EXIF info, plus rename, Trash and set as wallpaper</source>
-        <translation type="vanished">Vos images : une grille de miniatures rapide, une vue plein écran avec zoom, rotations, diaporama et infos EXIF, plus renommer, corbeille et définir comme fond d&apos;écran</translation>
-    </message>
-    <message>
-        <source>Install and remove apps from Flathub, Ubuntu&apos;s archive and the Snap Store: search, screenshots, a preview of every change, and each Flatpak&apos;s permissions</source>
-        <translation type="vanished">Installer et supprimer des applications depuis Flathub, l&apos;archive d&apos;Ubuntu et le Snap Store : recherche, captures, aperçu de chaque changement et autorisations de chaque Flatpak</translation>
-    </message>
-    <message>
-        <source>A quiet reader for PDFs, EPUB books, Markdown and text: covers, contents, search, bookmarks, night and paper pages, and it remembers where you stopped</source>
-        <translation type="vanished">Une liseuse calme pour les PDF, les livres EPUB, le Markdown et le texte : couvertures, sommaire, recherche, signets, pages nuit et papier, et elle retient où vous vous êtes arrêté</translation>
-    </message>
-    <message>
-        <source>Your phone on this PC through KDE Connect: send files, ring it, share the clipboard, browse its files, read and dismiss its notifications, text messages, media and commands</source>
-        <translation type="vanished">Votre téléphone sur ce PC via KDE Connect : envoyer des fichiers, le faire sonner, partager le presse-papiers, parcourir ses fichiers, lire et effacer ses notifications, SMS, médias et commandes</translation>
-    </message>
-    <message>
-        <source>Markdown notes and a text editor in one: a notes folder with search, tags, [[links]] and backlinks, a live preview, tabs, and syntax colors for code</source>
-        <translation type="vanished">Notes Markdown et éditeur de texte en un : un dossier de notes avec recherche, étiquettes, [[liens]] et liens entrants, un aperçu en direct, des onglets et la coloration du code</translation>
-    </message>
-    <message>
-        <source>{id} has no standalone command yet</source>
-        <translation type="vanished">{id} n’a pas encore de commande autonome</translation>
     </message>
 </context>
 </TS>

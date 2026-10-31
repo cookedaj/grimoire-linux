@@ -3585,7 +3585,52 @@
     <message>
         <location filename="../../grimoire/spells/__init__.py"/>
         <source>Videos and music: a queue you can drag around, subtitles and audio tracks, resume where you stopped, your music library with covers, and Plasma&apos;s media controls</source>
-        <translation>ভিডিও ও গান: টেনে সাজানো যায় এমন সারি, সাবটাইটেল ও অডিও ট্র্যাক, যেখানে থেমেছিলেন সেখান থেকে চালানো, কভারসহ আপনার গানের লাইব্রেরি, আর Plasma-র মিডিয়া নিয়ন্ত্রণ</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/__init__.py"/>
+        <source>KDE&apos;s settings in black and white: displays, sound, network, Bluetooth, mouse, keyboard, power, date, language, default apps and more, with every other KDE module one search away</source>
+        <translation>সাদা-কালোয় KDE-র সেটিংস: ডিসপ্লে, সাউন্ড, নেটওয়ার্ক, ব্লুটুথ, মাউস, কিবোর্ড, পাওয়ার, তারিখ, ভাষা, ডিফল্ট অ্যাপ ও আরও অনেক কিছু, আর KDE-র বাকি সব মডিউল এক খোঁজেই</translation>
+    </message>
+</context>
+<context>
+    <name>grimoire.standalone</name>
+    <message>
+        <location filename="../../grimoire/standalone.py"/>
+        <source>{id} has no standalone command yet</source>
+        <translation>{id}-এর এখনও আলাদা কোনো কমান্ড নেই</translation>
+    </message>
+    <message>
+        <source>Emoji, symbols and every Unicode character on a hotkey: search in your language, skin tones, favorites and a full Unicode block browser</source>
+        <translation type="vanished">এক হটকিতে ইমোজি, প্রতীক আর সব Unicode অক্ষর: নিজের ভাষায় খোঁজা, ত্বকের রঙ, প্রিয় আর পূর্ণ Unicode ব্লক ব্রাউজার</translation>
+    </message>
+    <message>
+        <source>Google Drive, OneDrive and Dropbox as folders on your PC through rclone: sign in from your browser, mount, see the space left and what is still uploading, and open them in VaultL</source>
+        <translation type="vanished">rclone দিয়ে Google Drive, OneDrive আর Dropbox আপনার PC-তে ফোল্ডার হিসেবে: ব্রাউজার থেকে সাইন ইন, মাউন্ট, বাকি জায়গা আর এখনও কী আপলোড হচ্ছে দেখা, এবং VaultL-এ খোলা</translation>
+    </message>
+    <message>
+        <source>Your pictures: a fast thumbnail grid, a full view with zoom, turns, slideshow and EXIF info, plus rename, Trash and set as wallpaper</source>
+        <translation type="vanished">আপনার ছবি: দ্রুত থাম্বনেইল গ্রিড, জুম, ঘোরানো, স্লাইডশো ও EXIF তথ্যসহ পূর্ণ দৃশ্য, সাথে নাম বদল, ট্র্যাশ আর ওয়ালপেপার করা</translation>
+    </message>
+    <message>
+        <source>Install and remove apps from Flathub, Ubuntu&apos;s archive and the Snap Store: search, screenshots, a preview of every change, and each Flatpak&apos;s permissions</source>
+        <translation type="vanished">Flathub, Ubuntu-র আর্কাইভ ও Snap Store থেকে অ্যাপ ইনস্টল করুন ও সরান: খোঁজ, স্ক্রিনশট, প্রতিটি পরিবর্তনের প্রিভিউ এবং প্রতিটি Flatpak-এর অনুমতি</translation>
+    </message>
+    <message>
+        <source>A quiet reader for PDFs, EPUB books, Markdown and text: covers, contents, search, bookmarks, night and paper pages, and it remembers where you stopped</source>
+        <translation type="vanished">PDF, EPUB বই, Markdown ও টেক্সটের জন্য একটি শান্ত রিডার: প্রচ্ছদ, সূচিপত্র, খোঁজ, বুকমার্ক, রাতের ও কাগজের পৃষ্ঠা, আর এটি মনে রাখে আপনি কোথায় থেমেছিলেন</translation>
+    </message>
+    <message>
+        <source>Your phone on this PC through KDE Connect: send files, ring it, share the clipboard, browse its files, read and dismiss its notifications, text messages, media and commands</source>
+        <translation type="vanished">KDE Connect-এর মাধ্যমে এই পিসিতে আপনার ফোন: ফাইল পাঠান, ফোন বাজান, ক্লিপবোর্ড শেয়ার করুন, এর ফাইল দেখুন, এর নোটিফিকেশন পড়ুন ও সরান, টেক্সট মেসেজ, মিডিয়া ও কমান্ড</translation>
+    </message>
+    <message>
+        <source>Markdown notes and a text editor in one: a notes folder with search, tags, [[links]] and backlinks, a live preview, tabs, and syntax colors for code</source>
+        <translation type="vanished">Markdown নোট আর টেক্সট এডিটর একসঙ্গে: খোঁজ, ট্যাগ, [[লিংক]] ও ব্যাকলিংকসহ নোট ফোল্ডার, লাইভ প্রিভিউ, ট্যাব আর কোডের সিনট্যাক্স রং</translation>
+    </message>
+    <message>
+        <source>Videos and music: a queue you can drag around, subtitles and audio tracks, resume where you stopped, your music library with covers, and Plasma&apos;s media controls</source>
+        <translation type="vanished">ভিডিও ও গান: টেনে সাজানো যায় এমন সারি, সাবটাইটেল ও অডিও ট্র্যাক, যেখানে থেমেছিলেন সেখান থেকে চালানো, কভারসহ আপনার গানের লাইব্রেরি, আর Plasma-র মিডিয়া নিয়ন্ত্রণ</translation>
     </message>
 </context>
 <context>
@@ -4005,41 +4050,6 @@
         <location filename="../../grimoire/updateview.py"/>
         <source>Nothing new on GitHub since your version.</source>
         <translation>আপনার সংস্করণের পর GitHub-এ নতুন কিছু নেই।</translation>
-    </message>
-</context>
-<context>
-    <name>grimoire.standalone</name>
-    <message>
-        <source>Emoji, symbols and every Unicode character on a hotkey: search in your language, skin tones, favorites and a full Unicode block browser</source>
-        <translation type="vanished">এক হটকিতে ইমোজি, প্রতীক আর সব Unicode অক্ষর: নিজের ভাষায় খোঁজা, ত্বকের রঙ, প্রিয় আর পূর্ণ Unicode ব্লক ব্রাউজার</translation>
-    </message>
-    <message>
-        <source>Google Drive, OneDrive and Dropbox as folders on your PC through rclone: sign in from your browser, mount, see the space left and what is still uploading, and open them in VaultL</source>
-        <translation type="vanished">rclone দিয়ে Google Drive, OneDrive আর Dropbox আপনার PC-তে ফোল্ডার হিসেবে: ব্রাউজার থেকে সাইন ইন, মাউন্ট, বাকি জায়গা আর এখনও কী আপলোড হচ্ছে দেখা, এবং VaultL-এ খোলা</translation>
-    </message>
-    <message>
-        <source>Your pictures: a fast thumbnail grid, a full view with zoom, turns, slideshow and EXIF info, plus rename, Trash and set as wallpaper</source>
-        <translation type="vanished">আপনার ছবি: দ্রুত থাম্বনেইল গ্রিড, জুম, ঘোরানো, স্লাইডশো ও EXIF তথ্যসহ পূর্ণ দৃশ্য, সাথে নাম বদল, ট্র্যাশ আর ওয়ালপেপার করা</translation>
-    </message>
-    <message>
-        <source>Install and remove apps from Flathub, Ubuntu&apos;s archive and the Snap Store: search, screenshots, a preview of every change, and each Flatpak&apos;s permissions</source>
-        <translation type="vanished">Flathub, Ubuntu-র আর্কাইভ ও Snap Store থেকে অ্যাপ ইনস্টল করুন ও সরান: খোঁজ, স্ক্রিনশট, প্রতিটি পরিবর্তনের প্রিভিউ এবং প্রতিটি Flatpak-এর অনুমতি</translation>
-    </message>
-    <message>
-        <source>A quiet reader for PDFs, EPUB books, Markdown and text: covers, contents, search, bookmarks, night and paper pages, and it remembers where you stopped</source>
-        <translation type="vanished">PDF, EPUB বই, Markdown ও টেক্সটের জন্য একটি শান্ত রিডার: প্রচ্ছদ, সূচিপত্র, খোঁজ, বুকমার্ক, রাতের ও কাগজের পৃষ্ঠা, আর এটি মনে রাখে আপনি কোথায় থেমেছিলেন</translation>
-    </message>
-    <message>
-        <source>Your phone on this PC through KDE Connect: send files, ring it, share the clipboard, browse its files, read and dismiss its notifications, text messages, media and commands</source>
-        <translation type="vanished">KDE Connect-এর মাধ্যমে এই পিসিতে আপনার ফোন: ফাইল পাঠান, ফোন বাজান, ক্লিপবোর্ড শেয়ার করুন, এর ফাইল দেখুন, এর নোটিফিকেশন পড়ুন ও সরান, টেক্সট মেসেজ, মিডিয়া ও কমান্ড</translation>
-    </message>
-    <message>
-        <source>Markdown notes and a text editor in one: a notes folder with search, tags, [[links]] and backlinks, a live preview, tabs, and syntax colors for code</source>
-        <translation type="vanished">Markdown নোট আর টেক্সট এডিটর একসঙ্গে: খোঁজ, ট্যাগ, [[লিংক]] ও ব্যাকলিংকসহ নোট ফোল্ডার, লাইভ প্রিভিউ, ট্যাব আর কোডের সিনট্যাক্স রং</translation>
-    </message>
-    <message>
-        <source>{id} has no standalone command yet</source>
-        <translation type="vanished">{id}-এর এখনও আলাদা কোনো কমান্ড নেই</translation>
     </message>
 </context>
 </TS>

@@ -3585,7 +3585,52 @@
     <message>
         <location filename="../../grimoire/spells/__init__.py"/>
         <source>Videos and music: a queue you can drag around, subtitles and audio tracks, resume where you stopped, your music library with covers, and Plasma&apos;s media controls</source>
-        <translation>ویڈیو اور موسیقی: کھینچ کر ترتیب دی جانے والی قطار، سب ٹائٹل اور آڈیو ٹریک، جہاں رکے تھے وہیں سے جاری، کوروں کے ساتھ آپ کی موسیقی لائبریری، اور Plasma کے میڈیا کنٹرول</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/__init__.py"/>
+        <source>KDE&apos;s settings in black and white: displays, sound, network, Bluetooth, mouse, keyboard, power, date, language, default apps and more, with every other KDE module one search away</source>
+        <translation>سیاہ و سفید میں KDE کی سیٹنگز: ڈسپلے، آواز، نیٹ ورک، بلوٹوتھ، ماؤس، کی بورڈ، پاور، تاریخ، زبان، ڈیفالٹ ایپس اور مزید، اور KDE کا ہر دوسرا ماڈیول بس ایک تلاش دور</translation>
+    </message>
+</context>
+<context>
+    <name>grimoire.standalone</name>
+    <message>
+        <location filename="../../grimoire/standalone.py"/>
+        <source>{id} has no standalone command yet</source>
+        <translation>‏{id} کی ابھی کوئی الگ کمانڈ نہیں</translation>
+    </message>
+    <message>
+        <source>Emoji, symbols and every Unicode character on a hotkey: search in your language, skin tones, favorites and a full Unicode block browser</source>
+        <translation type="vanished">ایک ہاٹ کی پر ایموجی، علامات اور ہر Unicode حرف: اپنی زبان میں تلاش، جلد کی رنگتیں، پسندیدہ اور مکمل Unicode بلاک براؤزر</translation>
+    </message>
+    <message>
+        <source>Google Drive, OneDrive and Dropbox as folders on your PC through rclone: sign in from your browser, mount, see the space left and what is still uploading, and open them in VaultL</source>
+        <translation type="vanished">‏rclone کے ذریعے Google Drive، OneDrive اور Dropbox آپ کے PC پر فولڈرز کی صورت میں: براؤزر سے سائن ان کریں، ماؤنٹ کریں، باقی جگہ اور ابھی اپ لوڈ ہونے والی چیزیں دیکھیں، اور انہیں VaultL میں کھولیں</translation>
+    </message>
+    <message>
+        <source>Your pictures: a fast thumbnail grid, a full view with zoom, turns, slideshow and EXIF info, plus rename, Trash and set as wallpaper</source>
+        <translation type="vanished">آپ کی تصویریں: تیز تھمب نیل گرڈ، زوم، گھماؤ، سلائیڈ شو اور EXIF معلومات کے ساتھ پورا منظر، نیز نام بدلنا، ردی اور وال پیپر بنانا</translation>
+    </message>
+    <message>
+        <source>Install and remove apps from Flathub, Ubuntu&apos;s archive and the Snap Store: search, screenshots, a preview of every change, and each Flatpak&apos;s permissions</source>
+        <translation type="vanished">‏Flathub، Ubuntu کے آرکائیو اور Snap Store سے ایپس انسٹال کریں اور ہٹائیں: تلاش، اسکرین شاٹس، ہر تبدیلی کا پیش منظر اور ہر Flatpak کی اجازتیں</translation>
+    </message>
+    <message>
+        <source>A quiet reader for PDFs, EPUB books, Markdown and text: covers, contents, search, bookmarks, night and paper pages, and it remembers where you stopped</source>
+        <translation type="vanished">‏PDF، EPUB کتابوں، Markdown اور ٹیکسٹ کے لیے ایک پرسکون ریڈر: سرورق، فہرستِ مضامین، تلاش، بک مارکس، رات اور کاغذ والے صفحات، اور یہ یاد رکھتا ہے کہ آپ کہاں رکے تھے</translation>
+    </message>
+    <message>
+        <source>Your phone on this PC through KDE Connect: send files, ring it, share the clipboard, browse its files, read and dismiss its notifications, text messages, media and commands</source>
+        <translation type="vanished">‏KDE Connect کے ذریعے اس پی سی پر آپ کا فون: فائلیں بھیجیں، اسے بجائیں، کلپ بورڈ شیئر کریں، اس کی فائلیں دیکھیں، اس کی اطلاعات پڑھیں اور ہٹائیں، ٹیکسٹ پیغامات، میڈیا اور کمانڈز</translation>
+    </message>
+    <message>
+        <source>Markdown notes and a text editor in one: a notes folder with search, tags, [[links]] and backlinks, a live preview, tabs, and syntax colors for code</source>
+        <translation type="vanished">‏Markdown نوٹس اور ٹیکسٹ ایڈیٹر ایک ساتھ: تلاش، ٹیگ، [[لنکس]] اور بیک لنکس والا نوٹس فولڈر، براہ راست پیش منظر، ٹیبز اور کوڈ کے لیے سنٹیکس رنگ</translation>
+    </message>
+    <message>
+        <source>Videos and music: a queue you can drag around, subtitles and audio tracks, resume where you stopped, your music library with covers, and Plasma&apos;s media controls</source>
+        <translation type="vanished">ویڈیو اور موسیقی: کھینچ کر ترتیب دی جانے والی قطار، سب ٹائٹل اور آڈیو ٹریک، جہاں رکے تھے وہیں سے جاری، کوروں کے ساتھ آپ کی موسیقی لائبریری، اور Plasma کے میڈیا کنٹرول</translation>
     </message>
 </context>
 <context>
@@ -4005,41 +4050,6 @@
         <location filename="../../grimoire/updateview.py"/>
         <source>Nothing new on GitHub since your version.</source>
         <translation>آپ کے ورژن کے بعد GitHub پر کچھ نیا نہیں۔</translation>
-    </message>
-</context>
-<context>
-    <name>grimoire.standalone</name>
-    <message>
-        <source>Emoji, symbols and every Unicode character on a hotkey: search in your language, skin tones, favorites and a full Unicode block browser</source>
-        <translation type="vanished">ایک ہاٹ کی پر ایموجی، علامات اور ہر Unicode حرف: اپنی زبان میں تلاش، جلد کی رنگتیں، پسندیدہ اور مکمل Unicode بلاک براؤزر</translation>
-    </message>
-    <message>
-        <source>Google Drive, OneDrive and Dropbox as folders on your PC through rclone: sign in from your browser, mount, see the space left and what is still uploading, and open them in VaultL</source>
-        <translation type="vanished">‏rclone کے ذریعے Google Drive، OneDrive اور Dropbox آپ کے PC پر فولڈرز کی صورت میں: براؤزر سے سائن ان کریں، ماؤنٹ کریں، باقی جگہ اور ابھی اپ لوڈ ہونے والی چیزیں دیکھیں، اور انہیں VaultL میں کھولیں</translation>
-    </message>
-    <message>
-        <source>Your pictures: a fast thumbnail grid, a full view with zoom, turns, slideshow and EXIF info, plus rename, Trash and set as wallpaper</source>
-        <translation type="vanished">آپ کی تصویریں: تیز تھمب نیل گرڈ، زوم، گھماؤ، سلائیڈ شو اور EXIF معلومات کے ساتھ پورا منظر، نیز نام بدلنا، ردی اور وال پیپر بنانا</translation>
-    </message>
-    <message>
-        <source>Install and remove apps from Flathub, Ubuntu&apos;s archive and the Snap Store: search, screenshots, a preview of every change, and each Flatpak&apos;s permissions</source>
-        <translation type="vanished">‏Flathub، Ubuntu کے آرکائیو اور Snap Store سے ایپس انسٹال کریں اور ہٹائیں: تلاش، اسکرین شاٹس، ہر تبدیلی کا پیش منظر اور ہر Flatpak کی اجازتیں</translation>
-    </message>
-    <message>
-        <source>A quiet reader for PDFs, EPUB books, Markdown and text: covers, contents, search, bookmarks, night and paper pages, and it remembers where you stopped</source>
-        <translation type="vanished">‏PDF، EPUB کتابوں، Markdown اور ٹیکسٹ کے لیے ایک پرسکون ریڈر: سرورق، فہرستِ مضامین، تلاش، بک مارکس، رات اور کاغذ والے صفحات، اور یہ یاد رکھتا ہے کہ آپ کہاں رکے تھے</translation>
-    </message>
-    <message>
-        <source>Your phone on this PC through KDE Connect: send files, ring it, share the clipboard, browse its files, read and dismiss its notifications, text messages, media and commands</source>
-        <translation type="vanished">‏KDE Connect کے ذریعے اس پی سی پر آپ کا فون: فائلیں بھیجیں، اسے بجائیں، کلپ بورڈ شیئر کریں، اس کی فائلیں دیکھیں، اس کی اطلاعات پڑھیں اور ہٹائیں، ٹیکسٹ پیغامات، میڈیا اور کمانڈز</translation>
-    </message>
-    <message>
-        <source>Markdown notes and a text editor in one: a notes folder with search, tags, [[links]] and backlinks, a live preview, tabs, and syntax colors for code</source>
-        <translation type="vanished">‏Markdown نوٹس اور ٹیکسٹ ایڈیٹر ایک ساتھ: تلاش، ٹیگ، [[لنکس]] اور بیک لنکس والا نوٹس فولڈر، براہ راست پیش منظر، ٹیبز اور کوڈ کے لیے سنٹیکس رنگ</translation>
-    </message>
-    <message>
-        <source>{id} has no standalone command yet</source>
-        <translation type="vanished">‏{id} کی ابھی کوئی الگ کمانڈ نہیں</translation>
     </message>
 </context>
 </TS>
