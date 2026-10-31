@@ -95,7 +95,13 @@ class Updater(QObject):
 
 
 def restart():
-    """Start the installed copy afresh and quit this one (the new code can't load into a running Python)."""
+    """Start the installed copy afresh and quit this one (the new code can't load into a running Python). The
+    windows close first: one that refuses (NoteL's unsaved files → Cancel) used to cancel the quit after the new
+    copy had already started, leaving two hubs."""
+    app = QApplication.instance()
+    app.closeAllWindows()
+    if any(w.isVisible() for w in app.topLevelWidgets() if w.isWindow()):
+        return
     cmd = update.APP / "bin" / "grimoire"
     if cmd.is_file():
         QProcess.startDetached(str(cmd), [])
