@@ -520,7 +520,9 @@ class Player(QObject):
         if 0 <= self.index < len(self.queue) and self.settings["resume"]:
             if self.positions.put(self.queue[self.index], self.pos, self.length):
                 self.positions.save()
-        if self.renderer:
-            self.renderer.stop()
+        freed = self.renderer.stop() if self.renderer else True
         media.NOW.clear()
-        self.core.close()
+        if freed:
+            self.core.close()
+        else:                                  # destroying the core under a live render context aborts in mpv:
+            self.core.h = None                 # leave it to the process's end instead

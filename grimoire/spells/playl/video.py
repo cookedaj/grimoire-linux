@@ -70,17 +70,19 @@ class Renderer(QObject):
             self._pending = False
             return self._latest
 
-    def stop(self):
-        """Free the render context (before the core is destroyed) and end the thread."""
+    def stop(self) -> bool:
+        """Free the render context (before the core is destroyed) and end the thread. False when the render thread
+        didn't answer in time: the context may still be alive, so the core must not be destroyed under it."""
         if not self._alive:
-            return
+            return not self.ctx
         self._alive = False
         done = threading.Event()
         self._teardown_done = done
         self._kick.emit()                  # wakes _render, which tears down because _alive is False
-        done.wait(3)
+        freed = done.wait(3)
         self.thread.quit()
         self.thread.wait(3000)
+        return freed
 
     # ------------------------------------------------------------ render thread
     def _create(self):
