@@ -10,6 +10,7 @@ import hashlib
 import json
 import os
 import re
+import stat
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -176,9 +177,10 @@ def encode(text: str, encoding: str, newline: str) -> tuple[bytes, str]:
 def read(path: Path) -> Loaded:
     """Read a text file for editing. Raises OSError or NotText."""
     real = Path(os.path.realpath(path))
-    with open(real, "rb") as f:
+    fd = os.open(real, os.O_RDONLY | os.O_NONBLOCK)      # a FIFO named note.md would block the worker forever
+    with os.fdopen(fd, "rb") as f:
         st = os.fstat(f.fileno())
-        if not os.path.isfile(real):
+        if not stat.S_ISREG(st.st_mode):
             raise NotText(tr("grimoire.spells.notel.store", "Only files can be opened."))
         if st.st_size > MAX_OPEN:
             raise NotText(tr("grimoire.spells.notel.store", "This file is too big to edit here."))
@@ -250,7 +252,10 @@ def save(path: Path, text: str, loaded: Loaded | None, force: bool = False) -> L
 def disk_state(path: Path) -> tuple[str, str] | None:
     """(digest, text) of the file as it is on disk now, or None when it's gone or unreadable."""
     try:
-        with open(os.path.realpath(path), "rb") as f:
+        fd = os.open(os.path.realpath(path), os.O_RDONLY | os.O_NONBLOCK)
+        with os.fdopen(fd, "rb") as f:
+            if not stat.S_ISREG(os.fstat(f.fileno()).st_mode):
+                return None
             data = f.read(MAX_OPEN + 1)
         return digest(data), decode(data)[0]
     except (OSError, NotText):

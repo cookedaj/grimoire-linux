@@ -146,6 +146,7 @@ class Doc:
         self.path, self.loaded, self.editor, self.in_vault = path, loaded, editor, in_vault
         self.conflict = ""           # "", "changed" or "deleted"
         self.saving = False
+        self.landed = None           # what a save wrote, before its answer reaches the UI thread
         self.again = False           # another save was asked for while one ran
         self.closing = False         # close the tab once the save lands
         self.error = ""
@@ -652,8 +653,9 @@ class NoteLPage(QWidget):
     def _save_now(self, d: Doc) -> bool:
         """A save on this thread, for closing: the window is going away, so there's no later to wait for."""
         WRITER.waitForDone(5000)
+        base = d.landed if d.saving and d.landed else d.loaded     # a save that landed but wasn't answered yet
         try:
-            d.loaded = store.save(d.path, d.editor.toPlainText(), d.loaded)
+            d.loaded = store.save(d.path, d.editor.toPlainText(), base)
         except store.Conflict as c:
             d.conflict = c.kind
             self._show_conflict()
@@ -1220,13 +1222,16 @@ class NoteLPage(QWidget):
         in_vault = d.in_vault
 
         def work():
-            new = store.save(path, text, loaded, force)
+            new = d.landed = store.save(path, text, loaded, force)
             return new, (index.with_note(snap, path, text) if snap and in_vault else None)
         self._update_status()
-        self.run(work, lambda r: self._saved(d, rev, snap, r), writer=True)
+        self.run(work, lambda r: self._saved(d, rev, snap, r, loaded), writer=True)
 
-    def _saved(self, d: Doc, rev: int, base_snap, r):
+    def _saved(self, d: Doc, rev: int, base_snap, r, base=None):
         d.saving = False
+        d.landed = None
+        if d not in self.docs or d.loaded is not base:
+            return                    # closed, or _save_now already wrote a newer version while this was on its way
         if isinstance(r, store.Conflict):
             d.conflict = r.kind
             d.closing = False
