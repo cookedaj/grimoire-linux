@@ -233,30 +233,44 @@ def set_jpeg_orientation(data: bytes, orient: int) -> bytes:
     Raises ValueError if it isn't a JPEG we can safely change."""
     if data[:2] != b"\xff\xd8" or orient not in ORIENT:
         raise ValueError("not a JPEG")
+    try:
+        return _set_orientation(data, orient)
+    except (struct.error, IndexError) as e:  # a cut-off or malformed EXIF block
+        raise ValueError("unreadable EXIF") from e
+
+
+def _set_orientation(data: bytes, orient: int) -> bytes:
     span = _jpeg_app1(data)
     if not span:  # no EXIF yet: add one after SOI (and a JFIF APP0)
         at = 2
         if data[2:4] == b"\xff\xe0":
             at = 4 + struct.unpack(">H", data[4:6])[0]
+            if at > len(data):
+                raise ValueError("JPEG header cut off")
         return data[:at] + _minimal_app1(orient) + data[at:]
     start, end = span
+    if end > len(data) or end - start < 8:
+        raise ValueError("EXIF block cut off")
     t = _Tiff(data[start:end])
     ifd0 = t.u32(4)
-    for tag, typ, count, at_value, _ in t.entries(ifd0):
+    entries = list(t.entries(ifd0))
+    for tag, typ, count, at_value, _ in entries:
         if tag == 0x0112 and typ == 3 and count == 1:  # patch the two bytes in place
+            if at_value + 2 > len(t.b):  # never write past the EXIF block into the picture
+                raise ValueError("bad Orientation entry")
             pos = start + at_value
             return data[:pos] + struct.pack(t.e + "H", orient) + data[pos + 2 :]
     # EXIF without an Orientation tag: append a copy of IFD0 plus the tag at the end of the block and point the
     # header at it. Every other offset in the block stays valid; the old IFD0 is simply no longer used.
-    entries = [t.b[e : e + 12] for _, _, _, _, e in t.entries(ifd0)]
     nxt = t.u32(ifd0 + 2 + 12 * len(entries))
-    entries.append(struct.pack(t.e + "HHIHH", 0x0112, 3, 1, orient, 0))
-    entries.sort(key=lambda raw: struct.unpack(t.e + "H", raw[:2])[0])
+    rows = [t.b[e : e + 12] for tag, _, _, _, e in entries if tag != 0x0112]  # an odd-typed one: replaced
+    rows.append(struct.pack(t.e + "HHIHH", 0x0112, 3, 1, orient, 0))
+    rows.sort(key=lambda raw: struct.unpack(t.e + "H", raw[:2])[0])
     block = bytearray(t.b)
     if len(block) % 2:
         block += b"\0"
     new_at = len(block)
-    block += struct.pack(t.e + "H", len(entries)) + b"".join(entries) + struct.pack(t.e + "I", nxt)
+    block += struct.pack(t.e + "H", len(rows)) + b"".join(rows) + struct.pack(t.e + "I", nxt)
     block[4:8] = struct.pack(t.e + "I", new_at)
     seg = b"Exif\0\0" + bytes(block)
     if len(seg) + 2 > 0xFFFF:

@@ -118,6 +118,23 @@ class Controls(QWidget):
         lay.addLayout(row2)
         self.setStyleSheet(CONTROLS_QSS)
 
+    def resizeEvent(self, e):
+        self._fit(e.size().width())
+        super().resizeEvent(e)
+
+    def _fit(self, width: int):
+        """Too narrow for every control (the queue open in a small window): leave out the least needed ones, the
+        volume slider first (mute and the keys stay), instead of drawing them over each other."""
+        optional = (self.volume, self.speed, self.shuffle, self.repeat, self.subs, self.audio)
+        for w in optional:
+            w.setHidden(False)
+        lay = self.layout()
+        for w in optional:
+            lay.invalidate()
+            if lay.minimumSize().width() <= width:
+                break
+            w.setHidden(True)
+
     def set_times(self, pos: float | None, length: float | None):
         self.cur.setText(clock(pos or 0))
         self.total.setText(clock(length) if length else "–:––")

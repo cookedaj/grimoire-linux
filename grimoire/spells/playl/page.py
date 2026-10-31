@@ -365,6 +365,8 @@ class PlayLPage(QWidget):
         self.library._scanned.connect(lambda _r: QTimer.singleShot(0, self._titles))
 
     def _titles(self):
+        if not self.player:
+            return
         self.player.titles = self.library.titles()
         if self.queue:
             self.queue.refresh()
@@ -468,9 +470,11 @@ class PlayLPage(QWidget):
         self.show_panel("now")
         POOL.start(Job(lambda: media.gather(paths), lambda entries: self._opened.emit(entries, replace)))
 
-    _opened = Signal(list, bool)
+    _opened = Signal(object, bool)           # object: a list would go through QString and lose non-UTF-8 names
 
     def _got_entries(self, entries: list, replace: bool):
+        if not self.player:                   # shut down while the folder was being read
+            return
         if not entries:
             self.say(tr("grimoire.spells.playl.page", "Nothing to play there"))
             return
@@ -628,7 +632,7 @@ class PlayLPage(QWidget):
 
     def _thumb(self, entry: str, t: float, img):
         bar = self.stage.controls.bar
-        if entry == self.player.current.get("entry") and bar.hover is not None:
+        if self.player and entry == self.player.current.get("entry") and bar.hover is not None:
             self.stage.bubble.set_image(img)
 
     # ------------------------------------------------------------ fullscreen

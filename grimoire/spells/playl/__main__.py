@@ -12,7 +12,15 @@ import os
 import sys
 from pathlib import Path
 
-SOCKET = f"grimoire-playl-{os.getuid()}"
+MAX_MESSAGE = 1 << 20
+
+
+def socket_name() -> str:
+    """In $XDG_RUNTIME_DIR (private to you): a bare name would land in /tmp, where another user could take it first
+    and be handed the files you open."""
+    run = os.environ.get("XDG_RUNTIME_DIR", "")
+    base = Path(run) if run and Path(run).is_dir() else Path.home() / ".cache"
+    return str(base / f"grimoire-playl-{os.getuid()}.sock")
 
 
 def _absolute(args: list[str]) -> list[str]:
@@ -29,7 +37,7 @@ def _hand_over(args: list[str], enqueue: bool) -> bool:
     """Send the files to a running PlayL; True when one took them."""
     from PySide6.QtNetwork import QLocalSocket
     s = QLocalSocket()
-    s.connectToServer(SOCKET)
+    s.connectToServer(socket_name())
     if not s.waitForConnected(400):
         return False
     s.write(json.dumps({"open": args, "enqueue": enqueue}).encode() + b"\n")
@@ -79,19 +87,25 @@ def main(argv: list[str]):
     win.setMinimumSize(900, 560)
 
     server = QLocalServer(win)
-    QLocalServer.removeServer(SOCKET)                 # a stale socket from a crashed run
-    server.listen(SOCKET)
+    server.setSocketOptions(QLocalServer.SocketOption.UserAccessOption)
+    QLocalServer.removeServer(socket_name())          # a stale socket from a crashed run
+    server.listen(socket_name())
 
     def incoming():
         conn = server.nextPendingConnection()
 
         def read():
+            if conn.bytesAvailable() > MAX_MESSAGE and not conn.canReadLine():
+                conn.abort()
+                return
             while conn.canReadLine():
                 try:
                     msg = json.loads(bytes(conn.readLine()).decode())
                 except ValueError:
                     continue
-                files = [str(f) for f in msg.get("open", []) if isinstance(f, str)]
+                if not isinstance(msg, dict) or not isinstance(msg.get("open", []), list):
+                    continue
+                files = [f for f in msg.get("open", []) if isinstance(f, str)]
                 if files:
                     page.open_paths(files, replace=not msg.get("enqueue"))
                 win.show()

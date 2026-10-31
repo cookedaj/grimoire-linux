@@ -701,7 +701,7 @@ class ViewLPage(QWidget):
         if not view and self.mode != "browse":
             self._set_mode("browse")
         self.heading.setText(folder.name or str(folder))
-        self.crumb.setText(tilde(folder))
+        self.crumb.setText(ltr(tilde(folder)))  # a path reads left to right in Arabic and Urdu too
         self.up_btn.setEnabled(folder.parent != folder)
         for b, p in self.place_btns:
             b.setChecked(p == folder)
@@ -1008,7 +1008,7 @@ class ViewLPage(QWidget):
         self.where.setText(
             tr("grimoire.spells.viewl.page", "{n} of {total}").format(n=self.cur + 1, total=len(self.images))
             + "  ·  "
-            + tilde(e.path.parent)
+            + ltr(tilde(e.path.parent))
         )
         self.title_changed.emit(e.name)
 
@@ -1101,6 +1101,7 @@ class ViewLPage(QWidget):
             tr("grimoire.spells.viewl.page", "Save the turned {name}?").format(name=isolate(e.name)),
             parent=self,
         )
+        box.setTextFormat(Qt.TextFormat.PlainText)  # a file name like "<b>x</b>.jpg" is no markup
         box.setInformativeText(
             tr("grimoire.spells.viewl.page", "Save replaces the file; the original goes to the Trash.")
         )
@@ -1113,7 +1114,8 @@ class ViewLPage(QWidget):
         box.exec()
         clicked = box.clickedButton()
         if clicked is save:
-            self.save(ask=False)
+            if not self.save(ask=False):  # another change still running: keep the turn, stay here
+                return False
         elif clicked is save_as:
             if not self.save_as():
                 return False
@@ -1123,10 +1125,11 @@ class ViewLPage(QWidget):
         self._update_pending()
         return True
 
-    def save(self, ask: bool):
+    def save(self, ask: bool) -> bool:
+        """True when the save started."""
         e = self.current()
         if not e or self.orient == 1 or self._busy or not self.save_btn.isEnabled():
-            return
+            return False
         if ask:
             box = QMessageBox(
                 QMessageBox.Icon.NoIcon,
@@ -1136,6 +1139,7 @@ class ViewLPage(QWidget):
                 ),
                 parent=self,
             )
+            box.setTextFormat(Qt.TextFormat.PlainText)  # a file name like "<b>x</b>.jpg" is no markup
             box.setInformativeText(
                 tr("grimoire.spells.viewl.page", "The original goes to the Trash, so you can get it back.")
             )
@@ -1144,11 +1148,12 @@ class ViewLPage(QWidget):
             box.setDefaultButton(ok)
             box.exec()
             if box.clickedButton() is not ok:
-                return
+                return False
         orient, path = self.orient, e.path
         self._run("saved", lambda: ops.save_turned(path, orient))
         self.orient = 1  # the canvas keeps showing the turn until the saved file is reloaded
         self._update_pending()
+        return True
 
     def save_as(self) -> bool:
         e = self.current()
@@ -1198,7 +1203,7 @@ class ViewLPage(QWidget):
         def work():
             try:
                 return kind, fn()
-            except (OSError, RuntimeError) as err:
+            except Exception as err:  # anything else would leave _busy set and every later change refused
                 return kind, err
 
         POOL.start(Job(work, lambda r: sig.done.emit(r)))
@@ -1326,6 +1331,7 @@ class ViewLPage(QWidget):
             ),
             parent=self,
         )
+        box.setTextFormat(Qt.TextFormat.PlainText)  # a file name like "<b>x</b>.jpg" is no markup
         box.setInformativeText(
             tr("grimoire.spells.viewl.page", "A copy goes into MuraL's library, so it stays even if this file moves.")
         )

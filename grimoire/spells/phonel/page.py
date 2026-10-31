@@ -470,6 +470,8 @@ class PhoneLPage(QWidget):
 
     def ask(self, title: str, text: str, yes: str) -> bool:
         box = QMessageBox(QMessageBox.Icon.Question, title, text, parent=self)
+        box.setTextFormat(Qt.TextFormat.PlainText)        # device names come from the network: no markup that
+                                                          # could fake the key or the warning in a pairing prompt
         ok = box.addButton(yes, QMessageBox.ButtonRole.AcceptRole)
         box.addButton(tr("grimoire.spells.phonel.page", "Cancel"), QMessageBox.ButtonRole.RejectRole)
         box.setDefaultButton(ok)
