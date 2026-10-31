@@ -14,6 +14,7 @@ import webbrowser
 from collections import OrderedDict
 
 from PySide6.QtCore import QCoreApplication, QObject, QRect, QSize, Qt, QThreadPool, QTimer, Signal
+from PySide6 import QtGui
 from PySide6.QtGui import QColor, QIcon, QImage, QImageReader, QPainter, QPixmap
 from PySide6.QtWidgets import (QAbstractItemView, QCheckBox, QComboBox, QFrame, QHBoxLayout, QLabel, QLineEdit,
                                QListWidget, QListWidgetItem, QPushButton, QVBoxLayout, QWidget)
@@ -318,7 +319,7 @@ class StoreView(QWidget):
             row = QListWidgetItem(QIcon(QPixmap.fromImage(card)) if card is not None else placeholder,
                                   _label(it, it.id in installed))
             row.setTextAlignment(Qt.AlignmentFlag.AlignHCenter)
-            row.setToolTip(it.summary or it.name)
+            row.setToolTip(QtGui.Qt.convertFromPlainText(str(it.summary or it.name)))   # store text: never HTML
             self.grid.addItem(row)
             if card is None:
                 self._pending.append(i)

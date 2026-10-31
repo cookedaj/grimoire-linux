@@ -388,7 +388,7 @@ def _pick_file(item: Item) -> tuple[str, str]:
 
 # ---------------------------------------------------------------- install per kind
 def _dirs_with(root: Path, predicate) -> list[Path]:
-    return [d for d in [root, *sorted(p for p in root.rglob("*") if p.is_dir())] if predicate(d)]
+    return [d for d in [root, *sorted(p for p in root.rglob("*") if p.is_dir() and not p.is_symlink())] if predicate(d)]
 
 
 def _ini(path: Path) -> ConfigParser:
@@ -421,13 +421,38 @@ def _copyfile(src: Path, dst: Path, item: str):
     shutil.copy(src, dst)
 
 
+_SKIP = shutil.ignore_patterns("*.sh", "*.py", "install*")
+
+
 def _copytree(src: Path, dst: Path, item: str):
+    """Links become plain copies, so a folder link back up the theme ("loop -> ..") or links fanning out to the same
+    folder could copy it without end: links to a folder holding the link are left out, and the copy is capped."""
     if dst.resolve().parent != dst.parent.resolve():
         raise RuntimeError(tr("grimoire.spells.mural.store", "unsafe theme name: {name}").format(name=dst.name))
     _claim(dst, item)
     if dst.exists():
         shutil.rmtree(dst)
-    shutil.copytree(src, dst, symlinks=False, ignore=shutil.ignore_patterns("*.sh", "*.py", "install*"))
+    budget = [MAX_ARCHIVE * 3]
+
+    def ignore(folder, names):
+        here = Path(folder).resolve()
+        skip = set(_SKIP(folder, names))
+        for n in names:
+            p = Path(folder) / n
+            if p.is_symlink() and p.is_dir() and here.is_relative_to(p.resolve()):
+                skip.add(n)
+        return skip
+
+    def copy(s, d):
+        budget[0] -= os.path.getsize(s)
+        if budget[0] < 0:
+            raise _too_large()
+        return shutil.copy2(s, d)
+    try:
+        shutil.copytree(src, dst, symlinks=False, ignore=ignore, copy_function=copy)
+    except BaseException:
+        shutil.rmtree(dst, ignore_errors=True)         # our own half-made copy
+        raise
 
 
 def install(cat: Category, item: Item, to_bw: bool = False) -> list[dict]:
