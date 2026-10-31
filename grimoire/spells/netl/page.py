@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 """NetL page: network monitor and quick controls. Overview (live traffic, addresses, on-demand checks), per-app
-bandwidth, connections, Wi-Fi & VPN, and usage history, each a panel picked from the list on the left.
+bandwidth, connections, Wi-Fi & VPN, Bluetooth, and usage history, each a panel picked from the list on the left.
 
 One Sampler reads the interface counters on a worker thread once a second while the page is on screen; per-app
 TCP counters are read every 2 s while Apps is shown and every 10 s otherwise (so session totals keep adding up),
@@ -22,6 +22,7 @@ from grimoire.glyphs import glyph
 from grimoire.i18n import tr, tr_noop
 from grimoire.jobs import POOL, Job
 from grimoire.spells.netl import probe, usage
+from grimoire.spells.netl.btview import BluetoothPanel
 from grimoire.spells.netl.usageview import UsagePanel
 from grimoire.spells.netl.wifiview import WifiPanel
 from grimoire.spells.systeml import system
@@ -33,6 +34,7 @@ PANELS = [("overview", tr_noop("grimoire.spells.netl.page", "Overview"), "net"),
           ("apps", tr_noop("grimoire.spells.netl.page", "Apps"), "grid"),
           ("conns", tr_noop("grimoire.spells.netl.page", "Connections"), "link"),
           ("wifi", tr_noop("grimoire.spells.netl.page", "Wi-Fi & VPN"), "wifi"),
+          ("bluetooth", tr_noop("grimoire.spells.netl.page", "Bluetooth"), "bluetooth"),
           ("usage", tr_noop("grimoire.spells.netl.page", "Usage history"), "clock")]
 RECORD_EVERY = 60            # seconds between writes to the usage file while open
 
@@ -508,7 +510,7 @@ class NetLPage(QWidget):
         right.addWidget(self.heading)
         self.stack = QStackedWidget()
         self.panels = {"overview": OverviewPanel(self), "apps": AppsPanel(self), "conns": ConnsPanel(self),
-                       "wifi": WifiPanel(self), "usage": UsagePanel(self)}
+                       "wifi": WifiPanel(self), "bluetooth": BluetoothPanel(self), "usage": UsagePanel(self)}
         for p in self.panels.values():
             self.stack.addWidget(p)
         right.addWidget(self.stack, 1)

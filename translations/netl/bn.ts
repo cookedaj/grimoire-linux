@@ -2,105 +2,419 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="bn" sourcelanguage="en">
 <context>
-    <name>grimoire.spells.netl.nm</name>
+    <name>grimoire.spells.netl.bluez</name>
     <message>
-        <location filename="../../grimoire/spells/netl/nm.py"/>
-        <source>done</source>
-        <translation>হয়েছে</translation>
+        <location filename="../../grimoire/spells/netl/bluez.py"/>
+        <source>Bluetooth needs python3-gi: {command}</source>
+        <translation>ব্লুটুথের জন্য python3-gi লাগবে: {command}</translation>
     </message>
     <message>
-        <location filename="../../grimoire/spells/netl/nm.py"/>
-        <source>the password can&apos;t contain line breaks</source>
-        <translation>পাসওয়ার্ডে লাইন ব্রেক থাকতে পারে না</translation>
+        <location filename="../../grimoire/spells/netl/bluez.py"/>
+        <source>the adapter is off</source>
+        <translation>অ্যাডাপ্টার বন্ধ</translation>
     </message>
     <message>
-        <location filename="../../grimoire/spells/netl/nm.py"/>
-        <source>{security} networks need Plasma&apos;s network settings</source>
-        <translation>{security} নেটওয়ার্কের জন্য Plasma-র নেটওয়ার্ক সেটিংস লাগবে</translation>
+        <location filename="../../grimoire/spells/netl/bluez.py"/>
+        <source>the codes didn&apos;t match, or the device refused</source>
+        <translation>কোড মেলেনি, বা ডিভাইস প্রত্যাখ্যান করেছে</translation>
     </message>
     <message>
-        <location filename="../../grimoire/spells/netl/nm.py"/>
-        <source>this network needs a password</source>
-        <translation>এই নেটওয়ার্কে পাসওয়ার্ড লাগবে</translation>
+        <location filename="../../grimoire/spells/netl/bluez.py"/>
+        <source>the device refused</source>
+        <translation>ডিভাইস প্রত্যাখ্যান করেছে</translation>
     </message>
     <message>
-        <location filename="../../grimoire/spells/netl/nm.py"/>
-        <source>NetworkManager didn&apos;t say which profile it made</source>
-        <translation>NetworkManager জানায়নি কোন প্রোফাইল তৈরি করেছে</translation>
+        <location filename="../../grimoire/spells/netl/bluez.py"/>
+        <source>the device didn&apos;t answer in time</source>
+        <translation>ডিভাইস সময়মতো সাড়া দেয়নি</translation>
     </message>
     <message>
-        <location filename="../../grimoire/spells/netl/nm.py"/>
-        <source>connected to {network}</source>
-        <translation>{network}-এ সংযুক্ত</translation>
+        <location filename="../../grimoire/spells/netl/bluez.py"/>
+        <source>the device didn&apos;t answer: is it on and nearby?</source>
+        <translation>ডিভাইস সাড়া দেয়নি: এটি কি চালু এবং কাছাকাছি আছে?</translation>
     </message>
     <message>
-        <location filename="../../grimoire/spells/netl/nm.py"/>
-        <source>Couldn&apos;t connect</source>
-        <translation>সংযোগ করা গেল না</translation>
+        <location filename="../../grimoire/spells/netl/bluez.py"/>
+        <source>already paired</source>
+        <translation>আগেই পেয়ার করা</translation>
     </message>
     <message>
-        <location filename="../../grimoire/spells/netl/nm.py"/>
-        <source>Couldn&apos;t create the profile</source>
-        <translation>প্রোফাইল তৈরি করা গেল না</translation>
+        <location filename="../../grimoire/spells/netl/bluez.py"/>
+        <source>the device is gone</source>
+        <translation>ডিভাইসটি আর নেই</translation>
     </message>
     <message>
-        <location filename="../../grimoire/spells/netl/nm.py"/>
-        <source>Couldn&apos;t disconnect</source>
-        <translation>সংযোগ বিচ্ছিন্ন করা গেল না</translation>
+        <location filename="../../grimoire/spells/netl/bluez.py"/>
+        <source>already busy with this device</source>
+        <translation>এই ডিভাইস নিয়ে আগে থেকেই কাজ চলছে</translation>
     </message>
     <message>
-        <location filename="../../grimoire/spells/netl/nm.py"/>
-        <source>Couldn&apos;t switch Wi-Fi</source>
-        <translation>Wi-Fi বদলানো গেল না</translation>
+        <location filename="../../grimoire/spells/netl/bluez.py"/>
+        <source>Bluetooth is blocked (airplane mode or a hardware switch)</source>
+        <translation>ব্লুটুথ আটকানো আছে (বিমান মোড বা হার্ডওয়্যার সুইচ)</translation>
     </message>
     <message>
-        <location filename="../../grimoire/spells/netl/nm.py"/>
-        <source>Couldn&apos;t switch airplane mode</source>
-        <translation>বিমান মোড বদলানো গেল না</translation>
+        <location filename="../../grimoire/spells/netl/bluez.py"/>
+        <source>not allowed</source>
+        <translation>অনুমতি নেই</translation>
     </message>
     <message>
-        <location filename="../../grimoire/spells/netl/nm.py"/>
-        <source>Couldn&apos;t switch the VPN</source>
-        <translation>VPN বদলানো গেল না</translation>
+        <location filename="../../grimoire/spells/netl/bluez.py"/>
+        <source>not available</source>
+        <translation>পাওয়া যাচ্ছে না</translation>
     </message>
     <message>
-        <location filename="../../grimoire/spells/netl/nm.py"/>
-        <source>{device} disconnected</source>
-        <translation>{device} বিচ্ছিন্ন</translation>
+        <location filename="../../grimoire/spells/netl/bluez.py"/>
+        <source>the Bluetooth service isn&apos;t running</source>
+        <translation>ব্লুটুথ সার্ভিস চলছে না</translation>
     </message>
     <message>
-        <location filename="../../grimoire/spells/netl/nm.py"/>
-        <source>Wi-Fi on</source>
-        <translation>Wi-Fi চালু</translation>
+        <location filename="../../grimoire/spells/netl/bluez.py"/>
+        <source>Couldn&apos;t reach the system bus: {error}</source>
+        <translation>সিস্টেম বাসে পৌঁছানো গেল না: {error}</translation>
     </message>
     <message>
-        <location filename="../../grimoire/spells/netl/nm.py"/>
-        <source>Wi-Fi off</source>
-        <translation>Wi-Fi বন্ধ</translation>
+        <location filename="../../grimoire/spells/netl/bluez.py"/>
+        <source>paired; connect it when it&apos;s ready</source>
+        <translation>পেয়ার হয়েছে; তৈরি হলে এটি কানেক্ট করুন</translation>
     </message>
     <message>
-        <location filename="../../grimoire/spells/netl/nm.py"/>
-        <source>airplane mode on</source>
-        <translation>বিমান মোড চালু</translation>
+        <location filename="../../grimoire/spells/netl/bluez.py"/>
+        <source>paired and connected</source>
+        <translation>পেয়ার ও কানেক্ট হয়েছে</translation>
     </message>
     <message>
-        <location filename="../../grimoire/spells/netl/nm.py"/>
-        <source>airplane mode off</source>
-        <translation>বিমান মোড বন্ধ</translation>
-    </message>
-    <message>
-        <location filename="../../grimoire/spells/netl/nm.py"/>
+        <location filename="../../grimoire/spells/netl/bluez.py"/>
         <source>connected</source>
-        <translation>সংযুক্ত</translation>
+        <translation>কানেক্ট হয়েছে</translation>
     </message>
     <message>
-        <location filename="../../grimoire/spells/netl/nm.py"/>
+        <location filename="../../grimoire/spells/netl/bluez.py"/>
         <source>disconnected</source>
-        <translation>বিচ্ছিন্ন</translation>
+        <translation>ডিসকানেক্ট হয়েছে</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/bluez.py"/>
+        <source>removed</source>
+        <translation>সরানো হয়েছে</translation>
+    </message>
+</context>
+<context>
+    <name>grimoire.spells.netl.btview</name>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>strong signal</source>
+        <translation>শক্তিশালী সিগন্যাল</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>good signal</source>
+        <translation>ভালো সিগন্যাল</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>weak signal</source>
+        <translation>দুর্বল সিগন্যাল</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>Pair with {device}</source>
+        <translation>{device}-এর সাথে পেয়ার করুন</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>Check that {device} shows this number, then confirm on both.</source>
+        <translation>দেখুন {device} এই সংখ্যাটি দেখাচ্ছে কিনা, তারপর দুটিতেই নিশ্চিত করুন।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>Type this number on {device}, then press Enter on it.</source>
+        <translation>এই সংখ্যাটি {device}-এ টাইপ করুন, তারপর সেখানে Enter চাপুন।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>Type this PIN on {device}, then press Enter on it.</source>
+        <translation>এই PIN {device}-এ টাইপ করুন, তারপর সেখানে Enter চাপুন।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>Type the number {device} shows.</source>
+        <translation>{device} যে সংখ্যাটি দেখাচ্ছে সেটি টাইপ করুন।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>Type the PIN for {device} (often 0000 or 1234, or the one in its manual).</source>
+        <translation>{device}-এর PIN টাইপ করুন (সাধারণত 0000 বা 1234, বা এর ম্যানুয়ালে যেটি আছে)।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>{device} wants to pair with this PC. Allow it?</source>
+        <translation>{device} এই PC-র সাথে পেয়ার করতে চায়। অনুমতি দেবেন?</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>{device} wants to use a service on this PC ({service}). Allow it?</source>
+        <translation>{device} এই PC-র একটি সার্ভিস ({service}) ব্যবহার করতে চায়। অনুমতি দেবেন?</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>Cancel pairing</source>
+        <translation>পেয়ারিং বাতিল করুন</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>Don&apos;t allow</source>
+        <translation>অনুমতি দেবেন না</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>Doesn&apos;t match</source>
+        <translation>মেলেনি</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>Cancel</source>
+        <translation>বাতিল</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>Allow</source>
+        <translation>অনুমতি দিন</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>It matches</source>
+        <translation>মিলেছে</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>Pair</source>
+        <translation>পেয়ার করুন</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>Connected</source>
+        <translation>কানেক্টেড</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>Not connected</source>
+        <translation>কানেক্ট করা নেই</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>battery {percent}</source>
+        <translation>ব্যাটারি {percent}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>Disconnect</source>
+        <translation>ডিসকানেক্ট করুন</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>Connect</source>
+        <translation>কানেক্ট করুন</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>Remove</source>
+        <translation>সরান</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>Forget this device (pair it again to use it)</source>
+        <translation>এই ডিভাইসটি ভুলে যান (ব্যবহার করতে আবার পেয়ার করুন)</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>Pairing…</source>
+        <translation>পেয়ার হচ্ছে…</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>Visible to nearby devices</source>
+        <translation>কাছের ডিভাইসগুলোর কাছে দৃশ্যমান</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>My devices</source>
+        <translation>আমার ডিভাইস</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>Nearby devices</source>
+        <translation>কাছের ডিভাইস</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>Scan</source>
+        <translation>স্ক্যান</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>Look for devices in pairing mode for {seconds} seconds</source>
+        <translation>{seconds} সেকেন্ড ধরে পেয়ারিং মোডের ডিভাইস খুঁজুন</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>The Bluetooth service isn&apos;t running. Start it with {command}.</source>
+        <translation>ব্লুটুথ সার্ভিস চলছে না। {command} দিয়ে চালু করুন।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>No Bluetooth adapter found. If this PC has one, it may be switched off in the firmware settings or need a driver.</source>
+        <translation>কোনো ব্লুটুথ অ্যাডাপ্টার পাওয়া যায়নি। এই PC-তে থাকলে, হয়তো ফার্মওয়্যার সেটিংসে বন্ধ আছে বা ড্রাইভার লাগবে।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>Bluetooth is blocked by airplane mode or a hardware switch. Turn airplane mode off in Wi-Fi &amp; VPN.</source>
+        <translation>বিমান মোড বা হার্ডওয়্যার সুইচ ব্লুটুথ আটকে রেখেছে। Wi-Fi ও VPN-এ বিমান মোড বন্ধ করুন।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>Pairing isn&apos;t available right now (BlueZ didn&apos;t accept NetL&apos;s pairing helper); devices you already paired still work.</source>
+        <translation>এখন পেয়ারিং করা যাচ্ছে না (BlueZ NetL-এর পেয়ারিং সহায়ক গ্রহণ করেনি); আগে পেয়ার করা ডিভাইস কাজ করতে থাকবে।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>{name} · {address}</source>
+        <translation>{name} · {address}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>Off</source>
+        <translation>বন্ধ</translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>Others can find this PC as {name}. Turns itself off after %n minute(s).</source>
+        <translation>
+            <numerusform>অন্যরা এই PC-কে {name} নামে খুঁজে পাবে। %n মিনিট পরে নিজে থেকে বন্ধ হয়।</numerusform>
+            <numerusform>অন্যরা এই PC-কে {name} নামে খুঁজে পাবে। %n মিনিট পরে নিজে থেকে বন্ধ হয়।</numerusform>
+        </translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>Others can find this PC as {name} while this is on.</source>
+        <translation>এটি চালু থাকা পর্যন্ত অন্যরা এই PC-কে {name} নামে খুঁজে পাবে।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>Stop</source>
+        <translation>থামান</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>No paired devices yet. Put a device in pairing mode, press Scan, then Pair.</source>
+        <translation>এখনো কোনো পেয়ার করা ডিভাইস নেই। একটি ডিভাইস পেয়ারিং মোডে রাখুন, স্ক্যান চাপুন, তারপর পেয়ার করুন।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>Looking for devices in pairing mode…</source>
+        <translation>পেয়ারিং মোডের ডিভাইস খোঁজা হচ্ছে…</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>Press Scan to look for devices in pairing mode.</source>
+        <translation>পেয়ারিং মোডের ডিভাইস খুঁজতে স্ক্যান চাপুন।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>done</source>
+        <translation>হয়ে গেছে</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>cancelled</source>
+        <translation>বাতিল হয়েছে</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>Couldn&apos;t pair with {what}: {error}</source>
+        <translation>{what}-এর সাথে পেয়ার করা গেল না: {error}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>Couldn&apos;t connect to {what}: {error}</source>
+        <translation>{what}-এ কানেক্ট করা গেল না: {error}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>Couldn&apos;t change {what}: {error}</source>
+        <translation>{what} বদলানো গেল না: {error}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>{what}: {result}</source>
+        <translation>{what}: {result}</translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>Turn Bluetooth off? %n device(s) will disconnect.</source>
+        <translation>
+            <numerusform>ব্লুটুথ বন্ধ করবেন? %n ডিভাইস ডিসকানেক্ট হবে।</numerusform>
+            <numerusform>ব্লুটুথ বন্ধ করবেন? %n ডিভাইস ডিসকানেক্ট হবে।</numerusform>
+        </translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>on</source>
+        <translation>চালু</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>off</source>
+        <translation>বন্ধ</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>Visibility</source>
+        <translation>দৃশ্যমানতা</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>visible</source>
+        <translation>দৃশ্যমান</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>hidden</source>
+        <translation>লুকানো</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>Connecting to {device}…</source>
+        <translation>{device}-এ কানেক্ট হচ্ছে…</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>Pairing with {device}… follow what it asks.</source>
+        <translation>{device}-এর সাথে পেয়ার হচ্ছে… এটি যা চায় তা করুন।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>Remove {device}? To use it again, put it in pairing mode and pair it from here.</source>
+        <translation>{device} সরাবেন? আবার ব্যবহার করতে এটিকে পেয়ারিং মোডে রেখে এখান থেকে পেয়ার করুন।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>Remove device</source>
+        <translation>ডিভাইস সরান</translation>
+    </message>
+    <message>
+        <source>CONNECTED</source>
+        <translation type="vanished">কানেক্টেড</translation>
     </message>
 </context>
 <context>
     <name>grimoire.spells.netl.page</name>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <location filename="../../grimoire/spells/netl/page.py"/>
+        <source>Bluetooth</source>
+        <translation>ব্লুটুথ</translation>
+    </message>
     <message>
         <location filename="../../grimoire/spells/netl/page.py"/>
         <source>Overview</source>
@@ -413,6 +727,104 @@
         <location filename="../../grimoire/spells/netl/page.py"/>
         <source>Couldn&apos;t change {what}: {error}</source>
         <translation>{what} বদলানো গেল না: {error}</translation>
+    </message>
+</context>
+<context>
+    <name>grimoire.spells.netl.nm</name>
+    <message>
+        <location filename="../../grimoire/spells/netl/nm.py"/>
+        <source>done</source>
+        <translation>হয়েছে</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/nm.py"/>
+        <source>the password can&apos;t contain line breaks</source>
+        <translation>পাসওয়ার্ডে লাইন ব্রেক থাকতে পারে না</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/nm.py"/>
+        <source>{security} networks need Plasma&apos;s network settings</source>
+        <translation>{security} নেটওয়ার্কের জন্য Plasma-র নেটওয়ার্ক সেটিংস লাগবে</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/nm.py"/>
+        <source>this network needs a password</source>
+        <translation>এই নেটওয়ার্কে পাসওয়ার্ড লাগবে</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/nm.py"/>
+        <source>NetworkManager didn&apos;t say which profile it made</source>
+        <translation>NetworkManager জানায়নি কোন প্রোফাইল তৈরি করেছে</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/nm.py"/>
+        <source>connected to {network}</source>
+        <translation>{network}-এ সংযুক্ত</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/nm.py"/>
+        <source>Couldn&apos;t connect</source>
+        <translation>সংযোগ করা গেল না</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/nm.py"/>
+        <source>Couldn&apos;t create the profile</source>
+        <translation>প্রোফাইল তৈরি করা গেল না</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/nm.py"/>
+        <source>Couldn&apos;t disconnect</source>
+        <translation>সংযোগ বিচ্ছিন্ন করা গেল না</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/nm.py"/>
+        <source>Couldn&apos;t switch Wi-Fi</source>
+        <translation>Wi-Fi বদলানো গেল না</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/nm.py"/>
+        <source>Couldn&apos;t switch airplane mode</source>
+        <translation>বিমান মোড বদলানো গেল না</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/nm.py"/>
+        <source>Couldn&apos;t switch the VPN</source>
+        <translation>VPN বদলানো গেল না</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/nm.py"/>
+        <source>{device} disconnected</source>
+        <translation>{device} বিচ্ছিন্ন</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/nm.py"/>
+        <source>Wi-Fi on</source>
+        <translation>Wi-Fi চালু</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/nm.py"/>
+        <source>Wi-Fi off</source>
+        <translation>Wi-Fi বন্ধ</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/nm.py"/>
+        <source>airplane mode on</source>
+        <translation>বিমান মোড চালু</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/nm.py"/>
+        <source>airplane mode off</source>
+        <translation>বিমান মোড বন্ধ</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/nm.py"/>
+        <source>connected</source>
+        <translation>সংযুক্ত</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/nm.py"/>
+        <source>disconnected</source>
+        <translation>বিচ্ছিন্ন</translation>
     </message>
 </context>
 <context>

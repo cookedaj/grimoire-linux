@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 """SystemL page: Grimoire's system monitor (in place of KDE System Monitor). Overview graphs, processes, per-app
-history, services, startup apps, disks and background alerts, each a panel picked from the list on the left.
+history, services, startup apps, drives, logs and background alerts, each a panel picked from the list on the left.
 
 One Sampler reads the machine on a worker thread once a second while the page is on screen; nothing is sampled
 while it's hidden. Actions that can take a moment (or ask for the password) run on the pool too.
@@ -15,9 +15,9 @@ from pathlib import Path
 
 from PySide6.QtCore import QAbstractItemModel, QDateTime, QLocale, QModelIndex, QObject, Qt, QTimer, Signal
 from PySide6.QtWidgets import (QAbstractItemView, QCheckBox, QFrame, QGridLayout, QHBoxLayout, QHeaderView,
-                               QInputDialog, QLabel, QLineEdit, QMenu, QMessageBox, QPlainTextEdit, QPushButton,
-                               QScrollArea, QSizePolicy, QStackedWidget, QTreeView, QTreeWidget, QTreeWidgetItem,
-                               QVBoxLayout, QWidget, QDialog)
+                               QInputDialog, QLabel, QLineEdit, QMenu, QMessageBox, QPushButton,
+                               QScrollArea, QStackedWidget, QTreeView, QTreeWidget, QTreeWidgetItem,
+                               QVBoxLayout, QWidget)
 
 from grimoire.fsutil import human
 from grimoire.glyphs import glyph
@@ -25,8 +25,10 @@ from grimoire.i18n import tr, tr_noop
 from grimoire.jobs import POOL, Job
 from grimoire.spells.systeml import probe, system
 from grimoire.spells.systeml.alertview import AlertsPanel
+from grimoire.spells.systeml.driveview import DrivesPanel
+from grimoire.spells.systeml.logview import LogsPanel
 from grimoire.spells.systeml.bidi import lead, ltr
-from grimoire.spells.systeml.graph import Bar, CoreGrid, Graph, Spark
+from grimoire.spells.systeml.graph import CoreGrid, Graph, Spark
 from grimoire.spells.systeml.history import History, per_app
 from grimoire.widgets import Switch, segments
 
@@ -37,7 +39,8 @@ PANELS = [("overview", tr_noop("grimoire.spells.systeml.page", "Overview"), "sys
           ("apps", tr_noop("grimoire.spells.systeml.page", "Apps & history"), "clock"),
           ("services", tr_noop("grimoire.spells.systeml.page", "Services"), "boot"),
           ("startup", tr_noop("grimoire.spells.systeml.page", "Startup apps"), "splash"),
-          ("disks", tr_noop("grimoire.spells.systeml.page", "Disks"), "drive"),
+          ("drives", tr_noop("grimoire.spells.systeml.page", "Drives"), "drive"),
+          ("logs", tr_noop("grimoire.spells.systeml.page", "Logs"), "journal"),
           ("alerts", tr_noop("grimoire.spells.systeml.page", "Alerts"), "bell")]
 PRIORITIES = [(tr_noop("grimoire.spells.systeml.page", "Very high"), -10),
               (tr_noop("grimoire.spells.systeml.page", "High"), -5),
@@ -84,10 +87,8 @@ class _Signals(QObject):
     sampled = Signal(object)
     acted = Signal(object)        # (what, message, ok, then, quiet)
     failed = Signal(object)       # failed service count
-    log = Signal(object)          # (unit, text)
     services = Signal(object)
     startup = Signal(object)
-    drives = Signal(object)
     info = Signal(object)
 
 
@@ -736,7 +737,7 @@ class ServicesPanel(QWidget):
             return
         unit, user = u["unit"], self.user
         if action == "log":
-            POOL.start(Job(lambda: (unit, system.unit_log(user, unit)), self.page.sig.log.emit))
+            self.page.show_logs(unit, user)
             return
         if action in ("stop", "disable", "restart") and system.is_core(unit):
             return
@@ -849,85 +850,6 @@ class StartupPanel(QWidget):
             app = apps[names.index(name)]
             self.page.act(name, lambda: system.add_startup(app["path"]) and tr("grimoire.spells.systeml.page", "added"),
                           then=self.load)
-
-
-# ---------------------------------------------------------------- disks
-class DisksPanel(QWidget):
-    def __init__(self, page):
-        super().__init__()
-        self.page = page
-        self.rate_labels: dict[str, QLabel] = {}
-        lay = QVBoxLayout(self)
-        lay.setContentsMargins(0, 0, 0, 0)
-        scroll = QScrollArea()
-        scroll.setWidgetResizable(True)
-        scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
-        inner = QWidget()
-        inner.setObjectName("Page")
-        self.col = QVBoxLayout(inner)
-        self.col.setContentsMargins(0, 0, 10, 10)
-        self.col.setSpacing(10)
-        scroll.setWidget(inner)
-        lay.addWidget(scroll)
-
-    def load(self):
-        POOL.start(Job(system.drives, self.page.sig.drives.emit))
-
-    def loaded(self, drives):
-        while self.col.count():
-            w = self.col.takeAt(0).widget()
-            if w:
-                w.deleteLater()
-        self.rate_labels = {}
-        for d in drives:
-            card = QFrame()
-            card.setObjectName("Row")
-            cl = QVBoxLayout(card)
-            cl.setContentsMargins(20, 16, 20, 16)
-            cl.setSpacing(10)
-            top = QHBoxLayout()
-            top.addWidget(_label(d["model"], "RowTitle"))
-            top.addWidget(_label(d["kind"].upper(), "Badge"))
-            top.addWidget(_label(human(d["size"]), "Muted"))
-            top.addStretch(1)
-            rate = _label("", "Value")
-            top.addWidget(rate)
-            self.rate_labels[d["name"]] = rate
-            cl.addLayout(top)
-            for p in d["parts"]:
-                row = QHBoxLayout()
-                row.setSpacing(12)
-                name = p["label"] or p["name"]
-                fs = p["fs"] or tr("grimoire.spells.systeml.page", "no file system")
-                row.addWidget(_label(f"{name}  ·  {fs}  ·  {human(p['size'])}"), 2)
-                mount = p["mounts"][0] if p["mounts"] else ""
-                row.addWidget(_label(mount or tr("grimoire.spells.systeml.page", "not mounted"), "Muted"), 2)
-                bar = Bar()
-                if p["total"]:
-                    bar.set(p["used"] / p["total"])
-                    row.addWidget(bar, 2)
-                    row.addWidget(_label(tr("grimoire.spells.systeml.page", "{used} of {total}").format(
-                        used=ltr(human(p["used"])), total=ltr(human(p["total"]))), "Muted"), 1)
-                else:
-                    row.addStretch(3)
-                if mount and mount != "[SWAP]":
-                    b = QPushButton(tr("grimoire.spells.systeml.page", "Open"))
-                    b.clicked.connect(lambda _=False, m=mount: _launch("grimoire.spells.vaultl", m))
-                    row.addWidget(b)
-                    if d["removable"]:
-                        u = QPushButton(tr("grimoire.spells.systeml.page", "Unmount"))
-                        u.clicked.connect(lambda _=False, n=p["name"]: self.page.act(
-                            n, lambda: system.unmount(n), then=self.load))
-                        row.addWidget(u)
-                cl.addLayout(row)
-            self.col.addWidget(card)
-        self.col.addStretch(1)
-
-    def set_rates(self, rates: dict):
-        for name, lab in self.rate_labels.items():
-            r, w = rates.get(name, (0, 0))
-            lab.setText(tr("grimoire.spells.systeml.page", "read {read}   write {write}").format(read=ltr(_rate(r)),
-                                                                                              write=ltr(_rate(w))))
 
 
 # ---------------------------------------------------------------- overview
@@ -1145,8 +1067,8 @@ class SystemLPage(QWidget):
         right.addWidget(self.heading)
         self.stack = QStackedWidget()
         self.panels = {"overview": OverviewPanel(self), "procs": ProcPanel(self), "apps": AppsPanel(self),
-                       "services": ServicesPanel(self), "startup": StartupPanel(self), "disks": DisksPanel(self),
-                       "alerts": AlertsPanel(self)}
+                       "services": ServicesPanel(self), "startup": StartupPanel(self), "drives": DrivesPanel(self),
+                       "logs": LogsPanel(self), "alerts": AlertsPanel(self)}
         for p in self.panels.values():
             self.stack.addWidget(p)
         right.addWidget(self.stack, 1)
@@ -1159,10 +1081,8 @@ class SystemLPage(QWidget):
         self.sig.sampled.connect(self._sampled)
         self.sig.acted.connect(self._acted)
         self.sig.failed.connect(lambda n: self.panels["overview"].tiles["failed"].setText(str(n)))
-        self.sig.log.connect(lambda r: self._show_log(*r))
         self.sig.services.connect(self.panels["services"].loaded)
         self.sig.startup.connect(self.panels["startup"].loaded)
-        self.sig.drives.connect(self.panels["disks"].loaded)
         self.timer = QTimer(self, interval=1000, timeout=self._sample)
         self.show_panel("overview")
         POOL.start(Job(system.failed_count, self.sig.failed.emit))
@@ -1215,8 +1135,8 @@ class SystemLPage(QWidget):
             self.panels["apps"].set_procs(s["procs"])
         else:
             self.panels["apps"].procs = s["procs"]
-        if current is self.panels["disks"]:
-            self.panels["disks"].set_rates(s["disk_rates"])
+        if current is self.panels["drives"]:
+            self.panels["drives"].set_rates(s["disk_rates"])
 
     # ------------------------------------------------------------ navigation
     def show_panel(self, pid: str):
@@ -1229,8 +1149,13 @@ class SystemLPage(QWidget):
             panel.refresh()
         elif pid == "apps":
             panel.fill()
-        elif pid in ("services", "startup", "disks", "alerts"):
+        elif pid in ("services", "startup", "drives", "logs", "alerts"):
             panel.load()
+
+    def show_logs(self, unit: str, user: bool):
+        """A service's Log button: the Logs panel, filtered to that unit."""
+        self.panels["logs"].show_unit(unit, user)
+        self.show_panel("logs")
 
     def find_app(self, app: str):
         self.show_panel("procs")
@@ -1260,20 +1185,6 @@ class SystemLPage(QWidget):
         self.toast.setText(text)
         self.toast.show()
         self._toast_timer.start()
-
-    def _show_log(self, unit: str, text: str):
-        d = QDialog(self)
-        d.setWindowTitle(tr("grimoire.spells.systeml.page", "{unit} log").format(unit=unit))
-        d.resize(900, 560)
-        lay = QVBoxLayout(d)
-        view = QPlainTextEdit(text)
-        view.setReadOnly(True)
-        view.setObjectName("Mono")
-        view.setLayoutDirection(Qt.LayoutDirection.LeftToRight)     # journal lines: never mirrored in RTL
-        view.setLineWrapMode(QPlainTextEdit.LineWrapMode.NoWrap)
-        lay.addWidget(view)
-        view.verticalScrollBar().setValue(view.verticalScrollBar().maximum())
-        d.show()
 
     def empty_swap(self):
         if QMessageBox.question(self, tr("grimoire.spells.systeml.page", "Empty swap"),

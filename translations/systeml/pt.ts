@@ -244,6 +244,798 @@
     </message>
 </context>
 <context>
+    <name>grimoire.spells.systeml.drives</name>
+    <message>
+        <location filename="../../grimoire/spells/systeml/drives.py"/>
+        <source>Drive actions need python3-dbus: {command}</source>
+        <translation>As ações em unidades precisam do python3-dbus: {command}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/drives.py"/>
+        <source>not allowed (polkit refused)</source>
+        <translation>não permitido (o polkit recusou)</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/drives.py"/>
+        <source>it&apos;s in use: close the files and apps using it, then try again</source>
+        <translation>está em uso: feche os arquivos e apps que o usam e tente de novo</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/drives.py"/>
+        <source>udisks2 isn&apos;t running</source>
+        <translation>o udisks2 não está em execução</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/drives.py"/>
+        <source>USB drive</source>
+        <translation>Pen drive USB</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/drives.py"/>
+        <source>Hard drive</source>
+        <translation>Disco rígido</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/drives.py"/>
+        <source>Optical drive</source>
+        <translation>Unidade óptica</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/drives.py"/>
+        <source>Memory card</source>
+        <translation>Cartão de memória</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/drives.py"/>
+        <source>Virtual disk</source>
+        <translation>Disco virtual</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/drives.py"/>
+        <source>not a udisks device</source>
+        <translation>não é um dispositivo do udisks</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/drives.py"/>
+        <source>the system runs from it, so it stays mounted</source>
+        <translation>o sistema roda a partir dele, então ele continua montado</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/drives.py"/>
+        <source>unmounted</source>
+        <translation>desmontado</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/drives.py"/>
+        <source>the system runs from this drive</source>
+        <translation>o sistema roda a partir desta unidade</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/drives.py"/>
+        <source>safe to unplug</source>
+        <translation>pode ser desconectado com segurança</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/drives.py"/>
+        <source>ejected</source>
+        <translation>ejetado</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/drives.py"/>
+        <source>unmounted; safe to unplug</source>
+        <translation>desmontado; pode ser desconectado com segurança</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/drives.py"/>
+        <source>This drive doesn&apos;t report its health to udisks.</source>
+        <translation>Esta unidade não informa sua saúde ao udisks.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/drives.py"/>
+        <source>smartctl needs root to read this drive; udisks has no health data for it.</source>
+        <translation>O smartctl precisa de root para ler esta unidade; o udisks não tem dados de saúde dela.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/drives.py"/>
+        <source>No health data for this drive.</source>
+        <translation>Nenhum dado de saúde para esta unidade.</translation>
+    </message>
+</context>
+<context>
+    <name>grimoire.spells.systeml.driveview</name>
+    <message>
+        <location filename="../../grimoire/spells/systeml/driveview.py"/>
+        <source>Temperature</source>
+        <translation>Temperatura</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/driveview.py"/>
+        <source>Powered on</source>
+        <translation>Tempo ligada</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/driveview.py"/>
+        <source>Bad sectors</source>
+        <translation>Setores defeituosos</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/driveview.py"/>
+        <source>Wear (of rated life)</source>
+        <translation>Desgaste (da vida útil)</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/driveview.py"/>
+        <source>Spare blocks left</source>
+        <translation>Blocos reserva restantes</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/driveview.py"/>
+        <source>Spare warning level</source>
+        <translation>Nível de alerta da reserva</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/driveview.py"/>
+        <source>Data written</source>
+        <translation>Dados gravados</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/driveview.py"/>
+        <source>Data read</source>
+        <translation>Dados lidos</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/driveview.py"/>
+        <source>Power cycles</source>
+        <translation>Ciclos de energia</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/driveview.py"/>
+        <source>Unsafe shutdowns</source>
+        <translation>Desligamentos abruptos</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/driveview.py"/>
+        <source>Media errors</source>
+        <translation>Erros de mídia</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/driveview.py"/>
+        <source>Error log entries</source>
+        <translation>Entradas no registro de erros</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/driveview.py"/>
+        <source>Sensors</source>
+        <translation>Sensores</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/driveview.py"/>
+        <source>Last self-test</source>
+        <translation>Último autoteste</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/driveview.py"/>
+        <source>passed</source>
+        <translation>aprovado</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/driveview.py"/>
+        <source>running</source>
+        <translation>em andamento</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/driveview.py"/>
+        <source>aborted</source>
+        <translation>abortado</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/driveview.py"/>
+        <source>interrupted</source>
+        <translation>interrompido</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/driveview.py"/>
+        <source>encrypted, locked</source>
+        <translation>criptografada, bloqueada</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/driveview.py"/>
+        <source>encrypted · {fs}</source>
+        <translation>criptografada · {fs}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/driveview.py"/>
+        <source>swap</source>
+        <translation>swap</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/driveview.py"/>
+        <source>extended</source>
+        <translation>estendida</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/driveview.py"/>
+        <source>no file system</source>
+        <translation>sem sistema de arquivos</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/driveview.py"/>
+        <source>Health unknown</source>
+        <translation>Saúde desconhecida</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/driveview.py"/>
+        <source>Failing</source>
+        <translation>Falhando</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/driveview.py"/>
+        <source>Healthy</source>
+        <translation>Saudável</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/driveview.py"/>
+        <source>Health of {drive}</source>
+        <translation>Saúde de {drive}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/driveview.py"/>
+        <source>serial {serial}</source>
+        <translation>nº de série {serial}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/driveview.py"/>
+        <source>firmware {version}</source>
+        <translation>firmware {version}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/driveview.py"/>
+        <source>Reading health data…</source>
+        <translation>Lendo dados de saúde…</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/driveview.py"/>
+        <source>Attribute</source>
+        <translation>Atributo</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/driveview.py"/>
+        <source>Value</source>
+        <translation>Valor</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/driveview.py"/>
+        <source>Worst</source>
+        <translation>Pior</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/driveview.py"/>
+        <source>Threshold</source>
+        <translation>Limite</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/driveview.py"/>
+        <source>Raw</source>
+        <translation>Bruto</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/driveview.py"/>
+        <source>Close</source>
+        <translation>Fechar</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/driveview.py"/>
+        <source>Healthy: the drive reports no problems.</source>
+        <translation>Saudável: a unidade não relata nenhum problema.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/driveview.py"/>
+        <source>Failing: back up what&apos;s on it now and plan to replace it.</source>
+        <translation>Falhando: faça backup do que tem nela agora e planeje substituí-la.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/driveview.py"/>
+        <source>Warning from the drive: {warning}</source>
+        <translation>Aviso da unidade: {warning}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/driveview.py"/>
+        <source>Read with smartctl.</source>
+        <translation>Lido com o smartctl.</translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../../grimoire/spells/systeml/driveview.py"/>
+        <source>%n hour(s)</source>
+        <translation>
+            <numerusform>%n hora</numerusform>
+            <numerusform>%n horas</numerusform>
+        </translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/driveview.py"/>
+        <source>SYSTEM</source>
+        <translation>SISTEMA</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/driveview.py"/>
+        <source>Show the drive&apos;s health report (SMART)</source>
+        <translation>Mostrar o relatório de saúde da unidade (SMART)</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/driveview.py"/>
+        <source>Eject</source>
+        <translation>Ejetar</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/driveview.py"/>
+        <source>Safely remove</source>
+        <translation>Remover com segurança</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/driveview.py"/>
+        <source>Unmounts everything on it, then powers it off so it can be unplugged</source>
+        <translation>Desmonta tudo o que há nela e a desliga para poder ser desconectada</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/driveview.py"/>
+        <source>No media</source>
+        <translation>Sem mídia</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/driveview.py"/>
+        <source>No partitions or file systems on this drive.</source>
+        <translation>Nenhuma partição ou sistema de arquivos nesta unidade.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/driveview.py"/>
+        <source>not mounted</source>
+        <translation>não montada</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/driveview.py"/>
+        <source>Open</source>
+        <comment>verb</comment>
+        <translation>Abrir</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/driveview.py"/>
+        <source>Open in VaultL</source>
+        <translation>Abrir no VaultL</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/driveview.py"/>
+        <source>Unmount</source>
+        <translation>Desmontar</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/driveview.py"/>
+        <source>The system runs from it, so it stays mounted</source>
+        <translation>O sistema roda a partir dela, então ela continua montada</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/driveview.py"/>
+        <source>Mount</source>
+        <translation>Montar</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/driveview.py"/>
+        <source>{used} of {total}</source>
+        <translation>{used} de {total}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/driveview.py"/>
+        <source>Formatting and partitions</source>
+        <translation>Formatação e partições</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/driveview.py"/>
+        <source>Creating, resizing, formatting and deleting partitions can erase a whole disk, so SystemL leaves them to KDE Partition Manager, which checks every step and asks for your password.</source>
+        <translation>Criar, redimensionar, formatar e apagar partições pode apagar um disco inteiro, então o SystemL deixa isso para o Gerenciador de partições do KDE, que confere cada passo e pede sua senha.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/driveview.py"/>
+        <source>It isn&apos;t installed: {command}</source>
+        <translation>Ele não está instalado: {command}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/driveview.py"/>
+        <source>Open Partition Manager</source>
+        <translation>Abrir o Gerenciador de partições</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/driveview.py"/>
+        <source>udisks2 isn&apos;t available, so drives are listed read-only (from lsblk): nothing can be mounted or removed from here.</source>
+        <translation>O udisks2 não está disponível, então as unidades aparecem só para leitura (pelo lsblk): nada pode ser montado ou removido daqui.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/driveview.py"/>
+        <source>No drives found.</source>
+        <translation>Nenhuma unidade encontrada.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/driveview.py"/>
+        <source>read {read}   write {write}</source>
+        <translation>leitura {read}   gravação {write}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/driveview.py"/>
+        <source>mounted at {folder}</source>
+        <translation>montada em {folder}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/driveview.py"/>
+        <source>Couldn&apos;t start KDE Partition Manager.</source>
+        <translation>Não foi possível iniciar o Gerenciador de partições do KDE.</translation>
+    </message>
+</context>
+<context>
+    <name>grimoire.spells.systeml.journal</name>
+    <message>
+        <location filename="../../grimoire/spells/systeml/journal.py"/>
+        <source>Emergency</source>
+        <translation>Emergência</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/journal.py"/>
+        <source>Alert</source>
+        <translation>Alerta</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/journal.py"/>
+        <source>Critical</source>
+        <translation>Crítico</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/journal.py"/>
+        <source>Error</source>
+        <translation>Erro</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/journal.py"/>
+        <source>Warning</source>
+        <translation>Aviso</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/journal.py"/>
+        <source>Notice</source>
+        <translation>Nota</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/journal.py"/>
+        <source>Info</source>
+        <translation>Info</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/journal.py"/>
+        <source>Debug</source>
+        <translation>Depuração</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/journal.py"/>
+        <source>Couldn&apos;t run journalctl: {error}</source>
+        <translation>Não foi possível executar o journalctl: {error}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/journal.py"/>
+        <source>journalctl stopped ({code})</source>
+        <translation>o journalctl parou ({code})</translation>
+    </message>
+</context>
+<context>
+    <name>grimoire.spells.systeml.logview</name>
+    <message>
+        <location filename="../../grimoire/spells/systeml/logview.py"/>
+        <source>Time</source>
+        <translation>Hora</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/logview.py"/>
+        <source>Level</source>
+        <translation>Nível</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/logview.py"/>
+        <source>Source</source>
+        <translation>Origem</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/logview.py"/>
+        <source>Message</source>
+        <translation>Mensagem</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/logview.py"/>
+        <source>All levels</source>
+        <translation>Todos os níveis</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/logview.py"/>
+        <source>Critical and worse</source>
+        <translation>Crítico ou pior</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/logview.py"/>
+        <source>Errors and worse</source>
+        <translation>Erros ou pior</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/logview.py"/>
+        <source>Warnings and worse</source>
+        <translation>Avisos ou pior</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/logview.py"/>
+        <source>Notices and worse</source>
+        <translation>Notas ou pior</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/logview.py"/>
+        <source>Everything but debug</source>
+        <translation>Tudo menos depuração</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/logview.py"/>
+        <source>Any time</source>
+        <translation>Qualquer hora</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/logview.py"/>
+        <source>Last 15 minutes</source>
+        <translation>Últimos 15 minutos</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/logview.py"/>
+        <source>Last hour</source>
+        <translation>Última hora</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/logview.py"/>
+        <source>Last 24 hours</source>
+        <translation>Últimas 24 horas</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/logview.py"/>
+        <source>Last 7 days</source>
+        <translation>Últimos 7 dias</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/logview.py"/>
+        <source>Custom range…</source>
+        <translation>Período personalizado…</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/logview.py"/>
+        <source>Yours</source>
+        <translation>Seus</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/logview.py"/>
+        <source>System</source>
+        <translation>Sistema</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/logview.py"/>
+        <source>Messages from the system and its services</source>
+        <translation>Mensagens do sistema e dos seus serviços</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/logview.py"/>
+        <source>Only members of the systemd-journal or adm group can read the system journal. To join: {command}, then log out and back in.</source>
+        <translation>Só membros do grupo systemd-journal ou adm podem ler o registro do sistema. Para entrar: {command}, depois saia da sessão e entre de novo.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/logview.py"/>
+        <source>Search messages</source>
+        <translation>Pesquisar nas mensagens</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/logview.py"/>
+        <source>Keep reading: new messages appear as they&apos;re written</source>
+        <translation>Continuar lendo: as mensagens novas aparecem assim que são escritas</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/logview.py"/>
+        <source>Follow</source>
+        <translation>Acompanhar</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/logview.py"/>
+        <source>Any unit or app</source>
+        <translation>Qualquer unidade ou app</translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../../grimoire/spells/systeml/logview.py"/>
+        <source>Last %n entries</source>
+        <translation>
+            <numerusform>Última %n entrada</numerusform>
+            <numerusform>Últimas %n entradas</numerusform>
+        </translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/logview.py"/>
+        <source>Lowest level to show</source>
+        <translation>Nível mínimo a mostrar</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/logview.py"/>
+        <source>Which boot</source>
+        <translation>Qual inicialização</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/logview.py"/>
+        <source>Time range</source>
+        <translation>Período</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/logview.py"/>
+        <source>Only this unit or app</source>
+        <translation>Só esta unidade ou app</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/logview.py"/>
+        <source>How many of the newest entries to read</source>
+        <translation>Quantas das entradas mais recentes ler</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/logview.py"/>
+        <source>From</source>
+        <translation>De</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/logview.py"/>
+        <source>to</source>
+        <translation>até</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/logview.py"/>
+        <source>Pick a line to see every field the journal keeps for it.</source>
+        <translation>Escolha uma linha para ver todos os campos que o registro guarda dela.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/logview.py"/>
+        <source>Copy</source>
+        <translation>Copiar</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/logview.py"/>
+        <source>Copy the selected lines ({key})</source>
+        <translation>Copiar as linhas selecionadas ({key})</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/logview.py"/>
+        <source>Export…</source>
+        <translation>Exportar…</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/logview.py"/>
+        <source>Save the lines shown to a text or JSON file ({key})</source>
+        <translation>Salvar as linhas mostradas em um arquivo de texto ou JSON ({key})</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/logview.py"/>
+        <source>Reload</source>
+        <translation>Recarregar</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/logview.py"/>
+        <source>This boot</source>
+        <translation>Esta inicialização</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/logview.py"/>
+        <source>Boot of {when}</source>
+        <translation>Inicialização de {when}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/logview.py"/>
+        <source>All boots</source>
+        <translation>Todas as inicializações</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/logview.py"/>
+        <source>journalctl: {error}</source>
+        <translation>journalctl: {error}</translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../../grimoire/spells/systeml/logview.py"/>
+        <source>Reading the journal… %n entries so far</source>
+        <translation>
+            <numerusform>Lendo o registro… %n entrada até agora</numerusform>
+            <numerusform>Lendo o registro… %n entradas até agora</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../../grimoire/spells/systeml/logview.py"/>
+        <source>Following · %n entries</source>
+        <translation>
+            <numerusform>Acompanhando · %n entrada</numerusform>
+            <numerusform>Acompanhando · %n entradas</numerusform>
+        </translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/logview.py"/>
+        <source>Nothing matches these filters.</source>
+        <translation>Nada corresponde a esses filtros.</translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../../grimoire/spells/systeml/logview.py"/>
+        <source>%n entries</source>
+        <translation>
+            <numerusform>%n entrada</numerusform>
+            <numerusform>%n entradas</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../../grimoire/spells/systeml/logview.py"/>
+        <source>%n selected</source>
+        <translation>
+            <numerusform>%n selecionada</numerusform>
+            <numerusform>%n selecionadas</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../../grimoire/spells/systeml/logview.py"/>
+        <source>%n line(s) copied</source>
+        <translation>
+            <numerusform>%n linha copiada</numerusform>
+            <numerusform>%n linhas copiadas</numerusform>
+        </translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/logview.py"/>
+        <source>Copy selected lines</source>
+        <translation>Copiar as linhas selecionadas</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/logview.py"/>
+        <source>Copy message</source>
+        <translation>Copiar a mensagem</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/logview.py"/>
+        <source>Copy all fields</source>
+        <translation>Copiar todos os campos</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/logview.py"/>
+        <source>Only {unit}</source>
+        <translation>Só {unit}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/logview.py"/>
+        <source>Only {app}</source>
+        <translation>Só {app}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/logview.py"/>
+        <source>Every unit and app</source>
+        <translation>Todas as unidades e apps</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/logview.py"/>
+        <source>Text (*.txt *.log);;JSON lines (*.jsonl *.json)</source>
+        <translation>Texto (*.txt *.log);;Linhas JSON (*.jsonl *.json)</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/logview.py"/>
+        <source>Export log</source>
+        <translation>Exportar registro</translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../../grimoire/spells/systeml/logview.py"/>
+        <source>Saved %n line(s) to {path}</source>
+        <translation>
+            <numerusform>%n linha salva em {path}</numerusform>
+            <numerusform>%n linhas salvas em {path}</numerusform>
+        </translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/logview.py"/>
+        <source>Couldn&apos;t save the log: {error}</source>
+        <translation>Não foi possível salvar o registro: {error}</translation>
+    </message>
+</context>
+<context>
     <name>grimoire.spells.systeml.page</name>
     <message>
         <location filename="../../grimoire/spells/systeml/page.py"/>
@@ -272,8 +1064,13 @@
     </message>
     <message>
         <location filename="../../grimoire/spells/systeml/page.py"/>
-        <source>Disks</source>
-        <translation>Discos</translation>
+        <source>Drives</source>
+        <translation>Unidades</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/page.py"/>
+        <source>Logs</source>
+        <translation>Registros</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/systeml/page.py"/>
@@ -851,36 +1648,6 @@
     </message>
     <message>
         <location filename="../../grimoire/spells/systeml/page.py"/>
-        <source>no file system</source>
-        <translation>sem sistema de arquivos</translation>
-    </message>
-    <message>
-        <location filename="../../grimoire/spells/systeml/page.py"/>
-        <source>not mounted</source>
-        <translation>não montado</translation>
-    </message>
-    <message>
-        <location filename="../../grimoire/spells/systeml/page.py"/>
-        <source>{used} of {total}</source>
-        <translation>{used} de {total}</translation>
-    </message>
-    <message>
-        <location filename="../../grimoire/spells/systeml/page.py"/>
-        <source>Open</source>
-        <translation>Abrir</translation>
-    </message>
-    <message>
-        <location filename="../../grimoire/spells/systeml/page.py"/>
-        <source>Unmount</source>
-        <translation>Desmontar</translation>
-    </message>
-    <message>
-        <location filename="../../grimoire/spells/systeml/page.py"/>
-        <source>read {read}   write {write}</source>
-        <translation>leitura {read}   gravação {write}</translation>
-    </message>
-    <message>
-        <location filename="../../grimoire/spells/systeml/page.py"/>
         <source>Swap</source>
         <translation>Swap</translation>
     </message>
@@ -1016,6 +1783,11 @@
     </message>
     <message>
         <location filename="../../grimoire/spells/systeml/page.py"/>
+        <source>{used} of {total}</source>
+        <translation>{used} de {total}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/page.py"/>
         <source>5 min {five} · 15 min {fifteen}</source>
         <translation>5 min {five} · 15 min {fifteen}</translation>
     </message>
@@ -1058,11 +1830,6 @@ Carga {load}</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/systeml/page.py"/>
-        <source>{unit} log</source>
-        <translation>Log de {unit}</translation>
-    </message>
-    <message>
-        <location filename="../../grimoire/spells/systeml/page.py"/>
         <source>Empty swap</source>
         <translation>Esvaziar swap</translation>
     </message>
@@ -1098,6 +1865,34 @@ Carga {load}</translation>
             <numerusform>limpo · resta %n serviço do sistema com falha</numerusform>
             <numerusform>limpo · restam %n serviços do sistema com falha</numerusform>
         </translation>
+    </message>
+    <message>
+        <source>{unit} log</source>
+        <translation type="vanished">Log de {unit}</translation>
+    </message>
+    <message>
+        <source>Disks</source>
+        <translation type="vanished">Discos</translation>
+    </message>
+    <message>
+        <source>no file system</source>
+        <translation type="vanished">sem sistema de arquivos</translation>
+    </message>
+    <message>
+        <source>not mounted</source>
+        <translation type="vanished">não montado</translation>
+    </message>
+    <message>
+        <source>Open</source>
+        <translation type="vanished">Abrir</translation>
+    </message>
+    <message>
+        <source>Unmount</source>
+        <translation type="vanished">Desmontar</translation>
+    </message>
+    <message>
+        <source>read {read}   write {write}</source>
+        <translation type="vanished">leitura {read}   gravação {write}</translation>
     </message>
 </context>
 <context>
@@ -1193,16 +1988,6 @@ Carga {load}</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/systeml/system.py"/>
-        <source>Couldn&apos;t read the log.</source>
-        <translation>Não foi possível ler o log.</translation>
-    </message>
-    <message>
-        <location filename="../../grimoire/spells/systeml/system.py"/>
-        <source>No log lines yet.</source>
-        <translation>Ainda não há linhas no log.</translation>
-    </message>
-    <message>
-        <location filename="../../grimoire/spells/systeml/system.py"/>
         <source>Plasma needs this to start; leaving it on</source>
         <translation>O Plasma precisa disso para iniciar; vai continuar ligado</translation>
     </message>
@@ -1212,19 +1997,24 @@ Carga {load}</translation>
         <translation>só as suas próprias entradas de inicialização podem ser removidas</translation>
     </message>
     <message>
-        <location filename="../../grimoire/spells/systeml/system.py"/>
+        <source>Couldn&apos;t read the log.</source>
+        <translation type="vanished">Não foi possível ler o log.</translation>
+    </message>
+    <message>
+        <source>No log lines yet.</source>
+        <translation type="vanished">Ainda não há linhas no log.</translation>
+    </message>
+    <message>
         <source>USB drive</source>
-        <translation>Pendrive/disco USB</translation>
+        <translation type="vanished">Pendrive/disco USB</translation>
     </message>
     <message>
-        <location filename="../../grimoire/spells/systeml/system.py"/>
         <source>Hard drive</source>
-        <translation>Disco rígido</translation>
+        <translation type="vanished">Disco rígido</translation>
     </message>
     <message>
-        <location filename="../../grimoire/spells/systeml/system.py"/>
         <source>couldn&apos;t unmount</source>
-        <translation>não foi possível desmontar</translation>
+        <translation type="vanished">não foi possível desmontar</translation>
     </message>
 </context>
 </TS>

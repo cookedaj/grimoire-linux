@@ -590,6 +590,14 @@ def _draw(name: str, p: QPainter):
         p.drawEllipse(QPointF(12, 12), 8.5, 8.5)
         p.drawLine(QPointF(12, 11), QPointF(12, 16.5))
         p.drawPoint(QPointF(12, 7.8))
+    elif name == "journal":                                # log lines: a time tick, then the message
+        p.drawRoundedRect(r(3.5, 4, 17, 16), 2, 2)
+        for y, end in ((8.5, 17), (12, 14.5), (15.5, 16)):
+            p.drawPoint(QPointF(7, y)); p.drawLine(QPointF(9.5, y), QPointF(end, y))
+    elif name == "bluetooth":                              # the Bluetooth rune
+        path = QPainterPath(QPointF(7.5, 8)); path.lineTo(16.5, 15.5); path.lineTo(12, 19.5); path.lineTo(12, 4.5)
+        path.lineTo(16.5, 8.5); path.lineTo(7.5, 16)
+        p.drawPath(path)
 
 
 def _pixmap(name: str, color: str, size: int) -> QPixmap:

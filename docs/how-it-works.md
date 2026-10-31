@@ -40,6 +40,11 @@ what goes over the network, see [security.md](security.md).
   passes. Stuck apps are windows KWin marks "Not Responding" and your processes frozen on a disk or device with no
   progress. Thresholds live in `~/.config/grimoire/systeml-alerts.json`, the alert history in
   `~/.local/share/grimoire/systeml-alerts-history.json`.
+  Logs run `journalctl -o json` on a reader thread (`systeml/journal.py`; follow mode adds `-f`) and show at most
+  the newest lines you pick; reading the system journal is journald's own group check, never a password. Drives
+  come from udisks2's object list on the system bus (`systeml/drives.py`, `lsblk -J` when udisks is missing) and
+  are re-read every 4 s while the panel is on screen; mount, unmount and power off are udisks calls made as you, so
+  polkit (Plasma's agent) asks for a password only when the drive needs one.
 - **TerminalL** runs your login shell (`$SHELL -l`) on a real PTY with `TERM=xterm-256color`; the screen is
   emulated by [pyte](https://github.com/selectel/pyte) (`python3-pyte`), with scrollback, the alternate screen and a
   few xterm extras added on top. Without pyte the page just shows the install command. Profiles and saved commands
@@ -132,6 +137,11 @@ what goes over the network, see [security.md](security.md).
   systemd's `timedate1` with interactive polkit for the time zone and clock (the usual password prompt). Every other
   KDE module is found from its plugin metadata and opened with `kcmshell6`. Nothing here needs Grimoire's root
   helpers, and SettingL never makes itself the default settings app.
+- **NetL Bluetooth** talks to BlueZ on the system bus as you (`netl/bluez.py`, GDBus from python3-gi), like Plasma's
+  Bluetooth applet: one private connection with a GLib loop on its own thread for change signals, and a pairing agent
+  that answers only for pairings you start from NetL (Plasma's agent stays the default). Codes to compare or type
+  show in NetL's own dialog; a scan stops after 30 s or when the panel is hidden. Without python3-gi the panel shows
+  the apt command.
 
 - **NoteL** reads the notes folder on a worker thread (hidden folders like `.obsidian`, `.git` and `.trash` are
   skipped; tags, `[[links]]` and backlinks are parsed from plain Markdown) and keeps it in memory for search. Saving
@@ -163,9 +173,9 @@ grimoire/            the app (PySide6)
   spells/sightc/     SightsL overlay + page
   spells/vaultl/     VaultL window, file operations, tidy engine, tidy panels, CLI/timer
   spells/optimizel/  OptimizeL tweak catalog, root helper, page
-  spells/systeml/    SystemL readings, graphs, per-app history, actions, alerts, root helper, page
+  spells/systeml/    SystemL readings, graphs, per-app history, actions, alerts, logs, drives, root helper, page
   spells/terminall/  TerminalL screen state (pyte), PTY sessions, keys, terminal view, page
-  spells/netl/       NetL readings, NetworkManager controls, usage recorder/timer, page and panels
+  spells/netl/       NetL readings, NetworkManager controls, Bluetooth (BlueZ), usage recorder/timer, page and panels
   spells/shotl/      ShotL capture, region picker, editor, recorder, gallery page, CLI
   spells/focusl/     FocusL timer state, background runner, guards (DND, apps, sites), root helper, page
   spells/launchl/    LaunchL install / replace / restore, page, CLI

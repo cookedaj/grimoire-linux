@@ -244,6 +244,798 @@
     </message>
 </context>
 <context>
+    <name>grimoire.spells.systeml.drives</name>
+    <message>
+        <location filename="../../grimoire/spells/systeml/drives.py"/>
+        <source>Drive actions need python3-dbus: {command}</source>
+        <translation>ڈرائیو کے کاموں کے لیے python3-dbus چاہیے: {command}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/drives.py"/>
+        <source>not allowed (polkit refused)</source>
+        <translation>اجازت نہیں (polkit نے انکار کیا)</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/drives.py"/>
+        <source>it&apos;s in use: close the files and apps using it, then try again</source>
+        <translation>یہ استعمال میں ہے: اسے استعمال کرنے والی فائلیں اور ایپس بند کریں، پھر دوبارہ کوشش کریں</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/drives.py"/>
+        <source>udisks2 isn&apos;t running</source>
+        <translation>‏udisks2 نہیں چل رہا</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/drives.py"/>
+        <source>USB drive</source>
+        <translation>‏USB ڈرائیو</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/drives.py"/>
+        <source>Hard drive</source>
+        <translation>ہارڈ ڈرائیو</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/drives.py"/>
+        <source>Optical drive</source>
+        <translation>آپٹیکل ڈرائیو</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/drives.py"/>
+        <source>Memory card</source>
+        <translation>میموری کارڈ</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/drives.py"/>
+        <source>Virtual disk</source>
+        <translation>ورچوئل ڈسک</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/drives.py"/>
+        <source>not a udisks device</source>
+        <translation>یہ udisks ڈیوائس نہیں ہے</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/drives.py"/>
+        <source>the system runs from it, so it stays mounted</source>
+        <translation>سسٹم اسی سے چلتا ہے، اس لیے یہ ماؤنٹ رہتا ہے</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/drives.py"/>
+        <source>unmounted</source>
+        <translation>ان ماؤنٹ ہو گیا</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/drives.py"/>
+        <source>the system runs from this drive</source>
+        <translation>سسٹم اسی ڈرائیو سے چلتا ہے</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/drives.py"/>
+        <source>safe to unplug</source>
+        <translation>اب محفوظ طریقے سے نکالا جا سکتا ہے</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/drives.py"/>
+        <source>ejected</source>
+        <translation>باہر نکال دیا گیا</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/drives.py"/>
+        <source>unmounted; safe to unplug</source>
+        <translation>ان ماؤنٹ ہو گیا؛ اب محفوظ طریقے سے نکالا جا سکتا ہے</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/drives.py"/>
+        <source>This drive doesn&apos;t report its health to udisks.</source>
+        <translation>یہ ڈرائیو udisks کو اپنی صحت کی معلومات نہیں دیتی۔</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/drives.py"/>
+        <source>smartctl needs root to read this drive; udisks has no health data for it.</source>
+        <translation>اس ڈرائیو کو پڑھنے کے لیے smartctl کو root چاہیے؛ udisks کے پاس اس کی صحت کا ڈیٹا نہیں ہے۔</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/drives.py"/>
+        <source>No health data for this drive.</source>
+        <translation>اس ڈرائیو کی صحت کا کوئی ڈیٹا نہیں۔</translation>
+    </message>
+</context>
+<context>
+    <name>grimoire.spells.systeml.driveview</name>
+    <message>
+        <location filename="../../grimoire/spells/systeml/driveview.py"/>
+        <source>Temperature</source>
+        <translation>درجہ حرارت</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/driveview.py"/>
+        <source>Powered on</source>
+        <translation>چالو رہنے کا وقت</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/driveview.py"/>
+        <source>Bad sectors</source>
+        <translation>خراب سیکٹر</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/driveview.py"/>
+        <source>Wear (of rated life)</source>
+        <translation>گھساؤ (طے شدہ عمر کا)</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/driveview.py"/>
+        <source>Spare blocks left</source>
+        <translation>باقی اضافی بلاک</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/driveview.py"/>
+        <source>Spare warning level</source>
+        <translation>اضافی بلاک کی وارننگ کی حد</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/driveview.py"/>
+        <source>Data written</source>
+        <translation>لکھا گیا ڈیٹا</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/driveview.py"/>
+        <source>Data read</source>
+        <translation>پڑھا گیا ڈیٹا</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/driveview.py"/>
+        <source>Power cycles</source>
+        <translation>پاور سائیکل</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/driveview.py"/>
+        <source>Unsafe shutdowns</source>
+        <translation>غیر محفوظ بندش</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/driveview.py"/>
+        <source>Media errors</source>
+        <translation>میڈیا کی خرابیاں</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/driveview.py"/>
+        <source>Error log entries</source>
+        <translation>خرابی لاگ کے اندراجات</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/driveview.py"/>
+        <source>Sensors</source>
+        <translation>سینسر</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/driveview.py"/>
+        <source>Last self-test</source>
+        <translation>پچھلا خود جانچ ٹیسٹ</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/driveview.py"/>
+        <source>passed</source>
+        <translation>کامیاب</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/driveview.py"/>
+        <source>running</source>
+        <translation>جاری ہے</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/driveview.py"/>
+        <source>aborted</source>
+        <translation>منسوخ</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/driveview.py"/>
+        <source>interrupted</source>
+        <translation>رک گیا</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/driveview.py"/>
+        <source>encrypted, locked</source>
+        <translation>انکرپٹڈ، لاک</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/driveview.py"/>
+        <source>encrypted · {fs}</source>
+        <translation>انکرپٹڈ · {fs}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/driveview.py"/>
+        <source>swap</source>
+        <translation>سواپ</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/driveview.py"/>
+        <source>extended</source>
+        <translation>ایکسٹینڈڈ</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/driveview.py"/>
+        <source>no file system</source>
+        <translation>کوئی فائل سسٹم نہیں</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/driveview.py"/>
+        <source>Health unknown</source>
+        <translation>صحت نامعلوم</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/driveview.py"/>
+        <source>Failing</source>
+        <translation>خراب ہو رہی ہے</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/driveview.py"/>
+        <source>Healthy</source>
+        <translation>ٹھیک ہے</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/driveview.py"/>
+        <source>Health of {drive}</source>
+        <translation>‏{drive} کی صحت</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/driveview.py"/>
+        <source>serial {serial}</source>
+        <translation>سیریل {serial}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/driveview.py"/>
+        <source>firmware {version}</source>
+        <translation>فرم ویئر {version}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/driveview.py"/>
+        <source>Reading health data…</source>
+        <translation>صحت کا ڈیٹا پڑھا جا رہا ہے…</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/driveview.py"/>
+        <source>Attribute</source>
+        <translation>خاصیت</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/driveview.py"/>
+        <source>Value</source>
+        <translation>قدر</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/driveview.py"/>
+        <source>Worst</source>
+        <translation>بدترین</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/driveview.py"/>
+        <source>Threshold</source>
+        <translation>حد</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/driveview.py"/>
+        <source>Raw</source>
+        <translation>خام قدر</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/driveview.py"/>
+        <source>Close</source>
+        <translation>بند کریں</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/driveview.py"/>
+        <source>Healthy: the drive reports no problems.</source>
+        <translation>ٹھیک ہے: ڈرائیو کوئی مسئلہ نہیں بتاتی۔</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/driveview.py"/>
+        <source>Failing: back up what&apos;s on it now and plan to replace it.</source>
+        <translation>خراب ہو رہی ہے: اس پر موجود چیزوں کا ابھی بیک اپ لیں اور اسے بدلنے کا منصوبہ بنائیں۔</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/driveview.py"/>
+        <source>Warning from the drive: {warning}</source>
+        <translation>ڈرائیو کی وارننگ: {warning}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/driveview.py"/>
+        <source>Read with smartctl.</source>
+        <translation>‏smartctl سے پڑھا گیا۔</translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../../grimoire/spells/systeml/driveview.py"/>
+        <source>%n hour(s)</source>
+        <translation>
+            <numerusform>‏%n گھنٹا</numerusform>
+            <numerusform>‏%n گھنٹے</numerusform>
+        </translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/driveview.py"/>
+        <source>SYSTEM</source>
+        <translation>سسٹم</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/driveview.py"/>
+        <source>Show the drive&apos;s health report (SMART)</source>
+        <translation>ڈرائیو کی صحت کی رپورٹ (SMART) دکھائیں</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/driveview.py"/>
+        <source>Eject</source>
+        <translation>باہر نکالیں</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/driveview.py"/>
+        <source>Safely remove</source>
+        <translation>محفوظ طریقے سے ہٹائیں</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/driveview.py"/>
+        <source>Unmounts everything on it, then powers it off so it can be unplugged</source>
+        <translation>اس پر سب کچھ ان ماؤنٹ کرتا ہے، پھر اسے بند کرتا ہے تاکہ اسے نکالا جا سکے</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/driveview.py"/>
+        <source>No media</source>
+        <translation>کوئی میڈیا نہیں</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/driveview.py"/>
+        <source>No partitions or file systems on this drive.</source>
+        <translation>اس ڈرائیو پر کوئی پارٹیشن یا فائل سسٹم نہیں۔</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/driveview.py"/>
+        <source>not mounted</source>
+        <translation>ماؤنٹ نہیں</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/driveview.py"/>
+        <source>Open</source>
+        <comment>verb</comment>
+        <translation>کھولیں</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/driveview.py"/>
+        <source>Open in VaultL</source>
+        <translation>‏VaultL میں کھولیں</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/driveview.py"/>
+        <source>Unmount</source>
+        <translation>ان ماؤنٹ کریں</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/driveview.py"/>
+        <source>The system runs from it, so it stays mounted</source>
+        <translation>سسٹم اسی سے چلتا ہے، اس لیے یہ ماؤنٹ رہتا ہے</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/driveview.py"/>
+        <source>Mount</source>
+        <translation>ماؤنٹ کریں</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/driveview.py"/>
+        <source>{used} of {total}</source>
+        <translation>‏{total} میں سے {used}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/driveview.py"/>
+        <source>Formatting and partitions</source>
+        <translation>فارمیٹنگ اور پارٹیشن</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/driveview.py"/>
+        <source>Creating, resizing, formatting and deleting partitions can erase a whole disk, so SystemL leaves them to KDE Partition Manager, which checks every step and asks for your password.</source>
+        <translation>پارٹیشن بنانا، سائز بدلنا، فارمیٹ کرنا اور مٹانا پوری ڈسک مٹا سکتا ہے، اس لیے SystemL یہ کام KDE پارٹیشن مینیجر پر چھوڑتا ہے، جو ہر قدم جانچتا ہے اور آپ کا پاس ورڈ پوچھتا ہے۔</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/driveview.py"/>
+        <source>It isn&apos;t installed: {command}</source>
+        <translation>یہ انسٹال نہیں ہے: {command}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/driveview.py"/>
+        <source>Open Partition Manager</source>
+        <translation>پارٹیشن مینیجر کھولیں</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/driveview.py"/>
+        <source>udisks2 isn&apos;t available, so drives are listed read-only (from lsblk): nothing can be mounted or removed from here.</source>
+        <translation>‏udisks2 دستیاب نہیں، اس لیے ڈرائیوز صرف پڑھنے کے لیے دکھائی گئی ہیں (lsblk سے): یہاں سے کچھ بھی ماؤنٹ یا ہٹایا نہیں جا سکتا۔</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/driveview.py"/>
+        <source>No drives found.</source>
+        <translation>کوئی ڈرائیو نہیں ملی۔</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/driveview.py"/>
+        <source>read {read}   write {write}</source>
+        <translation>پڑھنا {read}   لکھنا {write}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/driveview.py"/>
+        <source>mounted at {folder}</source>
+        <translation>‏{folder} پر ماؤنٹ ہو گیا</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/driveview.py"/>
+        <source>Couldn&apos;t start KDE Partition Manager.</source>
+        <translation>‏KDE پارٹیشن مینیجر شروع نہیں ہو سکا۔</translation>
+    </message>
+</context>
+<context>
+    <name>grimoire.spells.systeml.journal</name>
+    <message>
+        <location filename="../../grimoire/spells/systeml/journal.py"/>
+        <source>Emergency</source>
+        <translation>ہنگامی</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/journal.py"/>
+        <source>Alert</source>
+        <translation>الرٹ</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/journal.py"/>
+        <source>Critical</source>
+        <translation>سنگین</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/journal.py"/>
+        <source>Error</source>
+        <translation>خرابی</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/journal.py"/>
+        <source>Warning</source>
+        <translation>وارننگ</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/journal.py"/>
+        <source>Notice</source>
+        <translation>اطلاع</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/journal.py"/>
+        <source>Info</source>
+        <translation>معلومات</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/journal.py"/>
+        <source>Debug</source>
+        <translation>ڈیبگ</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/journal.py"/>
+        <source>Couldn&apos;t run journalctl: {error}</source>
+        <translation>‏journalctl نہیں چل سکا: {error}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/journal.py"/>
+        <source>journalctl stopped ({code})</source>
+        <translation>‏journalctl رک گیا ({code})</translation>
+    </message>
+</context>
+<context>
+    <name>grimoire.spells.systeml.logview</name>
+    <message>
+        <location filename="../../grimoire/spells/systeml/logview.py"/>
+        <source>Time</source>
+        <translation>وقت</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/logview.py"/>
+        <source>Level</source>
+        <translation>سطح</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/logview.py"/>
+        <source>Source</source>
+        <translation>ذریعہ</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/logview.py"/>
+        <source>Message</source>
+        <translation>پیغام</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/logview.py"/>
+        <source>All levels</source>
+        <translation>تمام سطحیں</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/logview.py"/>
+        <source>Critical and worse</source>
+        <translation>سنگین اور اس سے بدتر</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/logview.py"/>
+        <source>Errors and worse</source>
+        <translation>خرابیاں اور اس سے بدتر</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/logview.py"/>
+        <source>Warnings and worse</source>
+        <translation>وارننگز اور اس سے بدتر</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/logview.py"/>
+        <source>Notices and worse</source>
+        <translation>اطلاعات اور اس سے بدتر</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/logview.py"/>
+        <source>Everything but debug</source>
+        <translation>ڈیبگ کے سوا سب</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/logview.py"/>
+        <source>Any time</source>
+        <translation>کسی بھی وقت</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/logview.py"/>
+        <source>Last 15 minutes</source>
+        <translation>پچھلے 15 منٹ</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/logview.py"/>
+        <source>Last hour</source>
+        <translation>پچھلا گھنٹا</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/logview.py"/>
+        <source>Last 24 hours</source>
+        <translation>پچھلے 24 گھنٹے</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/logview.py"/>
+        <source>Last 7 days</source>
+        <translation>پچھلے 7 دن</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/logview.py"/>
+        <source>Custom range…</source>
+        <translation>اپنی مدت…</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/logview.py"/>
+        <source>Yours</source>
+        <translation>آپ کے</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/logview.py"/>
+        <source>System</source>
+        <translation>سسٹم</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/logview.py"/>
+        <source>Messages from the system and its services</source>
+        <translation>سسٹم اور اس کی سروسز کے پیغامات</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/logview.py"/>
+        <source>Only members of the systemd-journal or adm group can read the system journal. To join: {command}, then log out and back in.</source>
+        <translation>سسٹم جرنل صرف systemd-journal یا adm گروپ کے ارکان پڑھ سکتے ہیں۔ شامل ہونے کے لیے: {command}، پھر لاگ آؤٹ کر کے دوبارہ لاگ اِن کریں۔</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/logview.py"/>
+        <source>Search messages</source>
+        <translation>پیغامات میں تلاش کریں</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/logview.py"/>
+        <source>Keep reading: new messages appear as they&apos;re written</source>
+        <translation>پڑھتے رہیں: نئے پیغامات لکھے جاتے ہی نظر آتے ہیں</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/logview.py"/>
+        <source>Follow</source>
+        <translation>فالو کریں</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/logview.py"/>
+        <source>Any unit or app</source>
+        <translation>کوئی بھی یونٹ یا ایپ</translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../../grimoire/spells/systeml/logview.py"/>
+        <source>Last %n entries</source>
+        <translation>
+            <numerusform>آخری %n اندراج</numerusform>
+            <numerusform>آخری %n اندراجات</numerusform>
+        </translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/logview.py"/>
+        <source>Lowest level to show</source>
+        <translation>دکھانے کی کم از کم سطح</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/logview.py"/>
+        <source>Which boot</source>
+        <translation>کون سا بوٹ</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/logview.py"/>
+        <source>Time range</source>
+        <translation>وقت کی حد</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/logview.py"/>
+        <source>Only this unit or app</source>
+        <translation>صرف یہ یونٹ یا ایپ</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/logview.py"/>
+        <source>How many of the newest entries to read</source>
+        <translation>کتنے تازہ ترین اندراجات پڑھنے ہیں</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/logview.py"/>
+        <source>From</source>
+        <translation>سے</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/logview.py"/>
+        <source>to</source>
+        <translation>تک</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/logview.py"/>
+        <source>Pick a line to see every field the journal keeps for it.</source>
+        <translation>کوئی سطر چنیں تاکہ جرنل اس کے لیے جو بھی فیلڈز رکھتا ہے وہ نظر آئیں۔</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/logview.py"/>
+        <source>Copy</source>
+        <translation>کاپی کریں</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/logview.py"/>
+        <source>Copy the selected lines ({key})</source>
+        <translation>چنی ہوئی سطریں کاپی کریں ({key})</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/logview.py"/>
+        <source>Export…</source>
+        <translation>ایکسپورٹ…</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/logview.py"/>
+        <source>Save the lines shown to a text or JSON file ({key})</source>
+        <translation>دکھائی گئی سطریں ٹیکسٹ یا JSON فائل میں محفوظ کریں ({key})</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/logview.py"/>
+        <source>Reload</source>
+        <translation>دوبارہ لوڈ کریں</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/logview.py"/>
+        <source>This boot</source>
+        <translation>یہ بوٹ</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/logview.py"/>
+        <source>Boot of {when}</source>
+        <translation>‏{when} کا بوٹ</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/logview.py"/>
+        <source>All boots</source>
+        <translation>تمام بوٹ</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/logview.py"/>
+        <source>journalctl: {error}</source>
+        <translation>‏journalctl: {error}</translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../../grimoire/spells/systeml/logview.py"/>
+        <source>Reading the journal… %n entries so far</source>
+        <translation>
+            <numerusform>جرنل پڑھا جا رہا ہے… اب تک %n اندراج</numerusform>
+            <numerusform>جرنل پڑھا جا رہا ہے… اب تک %n اندراجات</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../../grimoire/spells/systeml/logview.py"/>
+        <source>Following · %n entries</source>
+        <translation>
+            <numerusform>فالو جاری · %n اندراج</numerusform>
+            <numerusform>فالو جاری · %n اندراجات</numerusform>
+        </translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/logview.py"/>
+        <source>Nothing matches these filters.</source>
+        <translation>ان فلٹرز سے کچھ نہیں ملتا۔</translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../../grimoire/spells/systeml/logview.py"/>
+        <source>%n entries</source>
+        <translation>
+            <numerusform>‏%n اندراج</numerusform>
+            <numerusform>‏%n اندراجات</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../../grimoire/spells/systeml/logview.py"/>
+        <source>%n selected</source>
+        <translation>
+            <numerusform>‏%n منتخب</numerusform>
+            <numerusform>‏%n منتخب</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../../grimoire/spells/systeml/logview.py"/>
+        <source>%n line(s) copied</source>
+        <translation>
+            <numerusform>‏%n سطر کاپی ہوئی</numerusform>
+            <numerusform>‏%n سطریں کاپی ہوئیں</numerusform>
+        </translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/logview.py"/>
+        <source>Copy selected lines</source>
+        <translation>چنی ہوئی سطریں کاپی کریں</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/logview.py"/>
+        <source>Copy message</source>
+        <translation>پیغام کاپی کریں</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/logview.py"/>
+        <source>Copy all fields</source>
+        <translation>تمام فیلڈز کاپی کریں</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/logview.py"/>
+        <source>Only {unit}</source>
+        <translation>صرف {unit}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/logview.py"/>
+        <source>Only {app}</source>
+        <translation>صرف {app}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/logview.py"/>
+        <source>Every unit and app</source>
+        <translation>تمام یونٹ اور ایپس</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/logview.py"/>
+        <source>Text (*.txt *.log);;JSON lines (*.jsonl *.json)</source>
+        <translation>ٹیکسٹ (*.txt *.log);;JSON سطریں (*.jsonl *.json)</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/logview.py"/>
+        <source>Export log</source>
+        <translation>لاگ ایکسپورٹ کریں</translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../../grimoire/spells/systeml/logview.py"/>
+        <source>Saved %n line(s) to {path}</source>
+        <translation>
+            <numerusform>‏%n سطر {path} میں محفوظ ہوئی</numerusform>
+            <numerusform>‏%n سطریں {path} میں محفوظ ہوئیں</numerusform>
+        </translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/logview.py"/>
+        <source>Couldn&apos;t save the log: {error}</source>
+        <translation>لاگ محفوظ نہیں ہو سکا: {error}</translation>
+    </message>
+</context>
+<context>
     <name>grimoire.spells.systeml.page</name>
     <message>
         <location filename="../../grimoire/spells/systeml/page.py"/>
@@ -272,8 +1064,13 @@
     </message>
     <message>
         <location filename="../../grimoire/spells/systeml/page.py"/>
-        <source>Disks</source>
-        <translation>ڈسکس</translation>
+        <source>Drives</source>
+        <translation>ڈرائیوز</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/page.py"/>
+        <source>Logs</source>
+        <translation>لاگز</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/systeml/page.py"/>
@@ -851,36 +1648,6 @@
     </message>
     <message>
         <location filename="../../grimoire/spells/systeml/page.py"/>
-        <source>no file system</source>
-        <translation>کوئی فائل سسٹم نہیں</translation>
-    </message>
-    <message>
-        <location filename="../../grimoire/spells/systeml/page.py"/>
-        <source>not mounted</source>
-        <translation>ماؤنٹ نہیں</translation>
-    </message>
-    <message>
-        <location filename="../../grimoire/spells/systeml/page.py"/>
-        <source>{used} of {total}</source>
-        <translation>‏{total} میں سے {used}</translation>
-    </message>
-    <message>
-        <location filename="../../grimoire/spells/systeml/page.py"/>
-        <source>Open</source>
-        <translation>کھولیں</translation>
-    </message>
-    <message>
-        <location filename="../../grimoire/spells/systeml/page.py"/>
-        <source>Unmount</source>
-        <translation>ان ماؤنٹ</translation>
-    </message>
-    <message>
-        <location filename="../../grimoire/spells/systeml/page.py"/>
-        <source>read {read}   write {write}</source>
-        <translation>پڑھنا {read}   لکھنا {write}</translation>
-    </message>
-    <message>
-        <location filename="../../grimoire/spells/systeml/page.py"/>
         <source>Swap</source>
         <translation>سویپ</translation>
     </message>
@@ -1016,6 +1783,11 @@
     </message>
     <message>
         <location filename="../../grimoire/spells/systeml/page.py"/>
+        <source>{used} of {total}</source>
+        <translation>‏{total} میں سے {used}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/systeml/page.py"/>
         <source>5 min {five} · 15 min {fifteen}</source>
         <translation>‏5 منٹ {five} · 15 منٹ {fifteen}</translation>
     </message>
@@ -1058,11 +1830,6 @@ Load {load}</source>
     </message>
     <message>
         <location filename="../../grimoire/spells/systeml/page.py"/>
-        <source>{unit} log</source>
-        <translation>‏{unit} لاگ</translation>
-    </message>
-    <message>
-        <location filename="../../grimoire/spells/systeml/page.py"/>
         <source>Empty swap</source>
         <translation>سویپ خالی کریں</translation>
     </message>
@@ -1098,6 +1865,34 @@ Load {load}</source>
             <numerusform>صاف کر دیا · %n ناکام سسٹم سروس باقی</numerusform>
             <numerusform>صاف کر دیا · %n ناکام سسٹم سروسز باقی</numerusform>
         </translation>
+    </message>
+    <message>
+        <source>{unit} log</source>
+        <translation type="vanished">‏{unit} لاگ</translation>
+    </message>
+    <message>
+        <source>Disks</source>
+        <translation type="vanished">ڈسکس</translation>
+    </message>
+    <message>
+        <source>no file system</source>
+        <translation type="vanished">کوئی فائل سسٹم نہیں</translation>
+    </message>
+    <message>
+        <source>not mounted</source>
+        <translation type="vanished">ماؤنٹ نہیں</translation>
+    </message>
+    <message>
+        <source>Open</source>
+        <translation type="vanished">کھولیں</translation>
+    </message>
+    <message>
+        <source>Unmount</source>
+        <translation type="vanished">ان ماؤنٹ</translation>
+    </message>
+    <message>
+        <source>read {read}   write {write}</source>
+        <translation type="vanished">پڑھنا {read}   لکھنا {write}</translation>
     </message>
 </context>
 <context>
@@ -1193,16 +1988,6 @@ Load {load}</source>
     </message>
     <message>
         <location filename="../../grimoire/spells/systeml/system.py"/>
-        <source>Couldn&apos;t read the log.</source>
-        <translation>لاگ نہیں پڑھا جا سکا۔</translation>
-    </message>
-    <message>
-        <location filename="../../grimoire/spells/systeml/system.py"/>
-        <source>No log lines yet.</source>
-        <translation>لاگ میں ابھی کوئی سطر نہیں۔</translation>
-    </message>
-    <message>
-        <location filename="../../grimoire/spells/systeml/system.py"/>
         <source>Plasma needs this to start; leaving it on</source>
         <translation>‏Plasma کو شروع ہونے کے لیے اس کی ضرورت ہے؛ اسے آن رکھا گیا</translation>
     </message>
@@ -1212,19 +1997,24 @@ Load {load}</source>
         <translation>صرف آپ کے اپنے اسٹارٹ اپ اندراجات ہٹائے جا سکتے ہیں</translation>
     </message>
     <message>
-        <location filename="../../grimoire/spells/systeml/system.py"/>
+        <source>Couldn&apos;t read the log.</source>
+        <translation type="vanished">لاگ نہیں پڑھا جا سکا۔</translation>
+    </message>
+    <message>
+        <source>No log lines yet.</source>
+        <translation type="vanished">لاگ میں ابھی کوئی سطر نہیں۔</translation>
+    </message>
+    <message>
         <source>USB drive</source>
-        <translation>‏USB ڈرائیو</translation>
+        <translation type="vanished">‏USB ڈرائیو</translation>
     </message>
     <message>
-        <location filename="../../grimoire/spells/systeml/system.py"/>
         <source>Hard drive</source>
-        <translation>ہارڈ ڈرائیو</translation>
+        <translation type="vanished">ہارڈ ڈرائیو</translation>
     </message>
     <message>
-        <location filename="../../grimoire/spells/systeml/system.py"/>
         <source>couldn&apos;t unmount</source>
-        <translation>ان ماؤنٹ نہیں ہو سکا</translation>
+        <translation type="vanished">ان ماؤنٹ نہیں ہو سکا</translation>
     </message>
 </context>
 </TS>

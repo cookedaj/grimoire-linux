@@ -2,105 +2,419 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="es" sourcelanguage="en">
 <context>
-    <name>grimoire.spells.netl.nm</name>
+    <name>grimoire.spells.netl.bluez</name>
     <message>
-        <location filename="../../grimoire/spells/netl/nm.py"/>
+        <location filename="../../grimoire/spells/netl/bluez.py"/>
+        <source>Bluetooth needs python3-gi: {command}</source>
+        <translation>Bluetooth necesita python3-gi: {command}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/bluez.py"/>
+        <source>the adapter is off</source>
+        <translation>el adaptador está apagado</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/bluez.py"/>
+        <source>the codes didn&apos;t match, or the device refused</source>
+        <translation>los códigos no coincidían o el dispositivo lo rechazó</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/bluez.py"/>
+        <source>the device refused</source>
+        <translation>el dispositivo lo rechazó</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/bluez.py"/>
+        <source>the device didn&apos;t answer in time</source>
+        <translation>el dispositivo no respondió a tiempo</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/bluez.py"/>
+        <source>the device didn&apos;t answer: is it on and nearby?</source>
+        <translation>el dispositivo no respondió: ¿está encendido y cerca?</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/bluez.py"/>
+        <source>already paired</source>
+        <translation>ya está emparejado</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/bluez.py"/>
+        <source>the device is gone</source>
+        <translation>el dispositivo ya no está</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/bluez.py"/>
+        <source>already busy with this device</source>
+        <translation>ya está ocupado con este dispositivo</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/bluez.py"/>
+        <source>Bluetooth is blocked (airplane mode or a hardware switch)</source>
+        <translation>Bluetooth está bloqueado (modo avión o un interruptor físico)</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/bluez.py"/>
+        <source>not allowed</source>
+        <translation>no permitido</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/bluez.py"/>
+        <source>not available</source>
+        <translation>no disponible</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/bluez.py"/>
+        <source>the Bluetooth service isn&apos;t running</source>
+        <translation>el servicio Bluetooth no está en ejecución</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/bluez.py"/>
+        <source>Couldn&apos;t reach the system bus: {error}</source>
+        <translation>No se pudo acceder al bus del sistema: {error}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/bluez.py"/>
+        <source>paired; connect it when it&apos;s ready</source>
+        <translation>emparejado; conéctalo cuando esté listo</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/bluez.py"/>
+        <source>paired and connected</source>
+        <translation>emparejado y conectado</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/bluez.py"/>
+        <source>connected</source>
+        <translation>conectado</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/bluez.py"/>
+        <source>disconnected</source>
+        <translation>desconectado</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/bluez.py"/>
+        <source>removed</source>
+        <translation>eliminado</translation>
+    </message>
+</context>
+<context>
+    <name>grimoire.spells.netl.btview</name>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>strong signal</source>
+        <translation>señal fuerte</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>good signal</source>
+        <translation>buena señal</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>weak signal</source>
+        <translation>señal débil</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>Pair with {device}</source>
+        <translation>Emparejar con {device}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>Check that {device} shows this number, then confirm on both.</source>
+        <translation>Comprueba que {device} muestra este número y confirma en ambos.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>Type this number on {device}, then press Enter on it.</source>
+        <translation>Escribe este número en {device} y pulsa Intro en él.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>Type this PIN on {device}, then press Enter on it.</source>
+        <translation>Escribe este PIN en {device} y pulsa Intro en él.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>Type the number {device} shows.</source>
+        <translation>Escribe el número que muestra {device}.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>Type the PIN for {device} (often 0000 or 1234, or the one in its manual).</source>
+        <translation>Escribe el PIN de {device} (suele ser 0000 o 1234, o el de su manual).</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>{device} wants to pair with this PC. Allow it?</source>
+        <translation>{device} quiere emparejarse con este PC. ¿Lo permites?</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>{device} wants to use a service on this PC ({service}). Allow it?</source>
+        <translation>{device} quiere usar un servicio de este PC ({service}). ¿Lo permites?</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>Cancel pairing</source>
+        <translation>Cancelar emparejamiento</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>Don&apos;t allow</source>
+        <translation>No permitir</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>Doesn&apos;t match</source>
+        <translation>No coincide</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>Cancel</source>
+        <translation>Cancelar</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>Allow</source>
+        <translation>Permitir</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>It matches</source>
+        <translation>Coincide</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>Pair</source>
+        <translation>Emparejar</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>Connected</source>
+        <translation>Conectado</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>Not connected</source>
+        <translation>Sin conectar</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>battery {percent}</source>
+        <translation>batería {percent}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>Disconnect</source>
+        <translation>Desconectar</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>Connect</source>
+        <translation>Conectar</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>Remove</source>
+        <translation>Quitar</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>Forget this device (pair it again to use it)</source>
+        <translation>Olvidar este dispositivo (emparéjalo de nuevo para usarlo)</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>Pairing…</source>
+        <translation>Emparejando…</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>Visible to nearby devices</source>
+        <translation>Visible para dispositivos cercanos</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>My devices</source>
+        <translation>Mis dispositivos</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>Nearby devices</source>
+        <translation>Dispositivos cercanos</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>Scan</source>
+        <translation>Buscar</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>Look for devices in pairing mode for {seconds} seconds</source>
+        <translation>Buscar dispositivos en modo emparejamiento durante {seconds} segundos</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>The Bluetooth service isn&apos;t running. Start it with {command}.</source>
+        <translation>El servicio Bluetooth no está en ejecución. Inícialo con {command}.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>No Bluetooth adapter found. If this PC has one, it may be switched off in the firmware settings or need a driver.</source>
+        <translation>No se encontró ningún adaptador Bluetooth. Si este PC tiene uno, puede estar desactivado en el firmware o necesitar un controlador.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>Bluetooth is blocked by airplane mode or a hardware switch. Turn airplane mode off in Wi-Fi &amp; VPN.</source>
+        <translation>Bluetooth está bloqueado por el modo avión o un interruptor físico. Desactiva el modo avión en Wi-Fi y VPN.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>Pairing isn&apos;t available right now (BlueZ didn&apos;t accept NetL&apos;s pairing helper); devices you already paired still work.</source>
+        <translation>El emparejamiento no está disponible ahora (BlueZ no aceptó el asistente de emparejamiento de NetL); los dispositivos ya emparejados siguen funcionando.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>{name} · {address}</source>
+        <translation>{name} · {address}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>Off</source>
+        <translation>Apagado</translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>Others can find this PC as {name}. Turns itself off after %n minute(s).</source>
+        <translation>
+            <numerusform>Otros pueden encontrar este PC como {name}. Se desactiva solo tras %n minuto.</numerusform>
+            <numerusform>Otros pueden encontrar este PC como {name}. Se desactiva solo tras %n minutos.</numerusform>
+        </translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>Others can find this PC as {name} while this is on.</source>
+        <translation>Otros pueden encontrar este PC como {name} mientras esto esté activado.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>Stop</source>
+        <translation>Detener</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>No paired devices yet. Put a device in pairing mode, press Scan, then Pair.</source>
+        <translation>Aún no hay dispositivos emparejados. Pon un dispositivo en modo emparejamiento, pulsa Buscar y luego Emparejar.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>Looking for devices in pairing mode…</source>
+        <translation>Buscando dispositivos en modo emparejamiento…</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>Press Scan to look for devices in pairing mode.</source>
+        <translation>Pulsa Buscar para encontrar dispositivos en modo emparejamiento.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
         <source>done</source>
         <translation>hecho</translation>
     </message>
     <message>
-        <location filename="../../grimoire/spells/netl/nm.py"/>
-        <source>the password can&apos;t contain line breaks</source>
-        <translation>la contraseña no puede contener saltos de línea</translation>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>cancelled</source>
+        <translation>cancelado</translation>
     </message>
     <message>
-        <location filename="../../grimoire/spells/netl/nm.py"/>
-        <source>{security} networks need Plasma&apos;s network settings</source>
-        <translation>las redes {security} necesitan la configuración de red de Plasma</translation>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>Couldn&apos;t pair with {what}: {error}</source>
+        <translation>No se pudo emparejar con {what}: {error}</translation>
     </message>
     <message>
-        <location filename="../../grimoire/spells/netl/nm.py"/>
-        <source>this network needs a password</source>
-        <translation>esta red necesita contraseña</translation>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>Couldn&apos;t connect to {what}: {error}</source>
+        <translation>No se pudo conectar con {what}: {error}</translation>
     </message>
     <message>
-        <location filename="../../grimoire/spells/netl/nm.py"/>
-        <source>NetworkManager didn&apos;t say which profile it made</source>
-        <translation>NetworkManager no indicó qué perfil creó</translation>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>Couldn&apos;t change {what}: {error}</source>
+        <translation>No se pudo cambiar {what}: {error}</translation>
     </message>
     <message>
-        <location filename="../../grimoire/spells/netl/nm.py"/>
-        <source>connected to {network}</source>
-        <translation>conectado a {network}</translation>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>{what}: {result}</source>
+        <translation>{what}: {result}</translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>Turn Bluetooth off? %n device(s) will disconnect.</source>
+        <translation>
+            <numerusform>¿Apagar Bluetooth? Se desconectará %n dispositivo.</numerusform>
+            <numerusform>¿Apagar Bluetooth? Se desconectarán %n dispositivos.</numerusform>
+        </translation>
     </message>
     <message>
-        <location filename="../../grimoire/spells/netl/nm.py"/>
-        <source>Couldn&apos;t connect</source>
-        <translation>No se pudo conectar</translation>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>on</source>
+        <translation>activado</translation>
     </message>
     <message>
-        <location filename="../../grimoire/spells/netl/nm.py"/>
-        <source>Couldn&apos;t create the profile</source>
-        <translation>No se pudo crear el perfil</translation>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>off</source>
+        <translation>desactivado</translation>
     </message>
     <message>
-        <location filename="../../grimoire/spells/netl/nm.py"/>
-        <source>Couldn&apos;t disconnect</source>
-        <translation>No se pudo desconectar</translation>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>Visibility</source>
+        <translation>Visibilidad</translation>
     </message>
     <message>
-        <location filename="../../grimoire/spells/netl/nm.py"/>
-        <source>Couldn&apos;t switch Wi-Fi</source>
-        <translation>No se pudo cambiar el Wi-Fi</translation>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>visible</source>
+        <translation>visible</translation>
     </message>
     <message>
-        <location filename="../../grimoire/spells/netl/nm.py"/>
-        <source>Couldn&apos;t switch airplane mode</source>
-        <translation>No se pudo cambiar el modo avión</translation>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>hidden</source>
+        <translation>oculto</translation>
     </message>
     <message>
-        <location filename="../../grimoire/spells/netl/nm.py"/>
-        <source>Couldn&apos;t switch the VPN</source>
-        <translation>No se pudo cambiar la VPN</translation>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>Connecting to {device}…</source>
+        <translation>Conectando con {device}…</translation>
     </message>
     <message>
-        <location filename="../../grimoire/spells/netl/nm.py"/>
-        <source>{device} disconnected</source>
-        <translation>{device} desconectado</translation>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>Pairing with {device}… follow what it asks.</source>
+        <translation>Emparejando con {device}… sigue lo que te pida.</translation>
     </message>
     <message>
-        <location filename="../../grimoire/spells/netl/nm.py"/>
-        <source>Wi-Fi on</source>
-        <translation>Wi-Fi activado</translation>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>Remove {device}? To use it again, put it in pairing mode and pair it from here.</source>
+        <translation>¿Quitar {device}? Para usarlo de nuevo, ponlo en modo emparejamiento y emparéjalo desde aquí.</translation>
     </message>
     <message>
-        <location filename="../../grimoire/spells/netl/nm.py"/>
-        <source>Wi-Fi off</source>
-        <translation>Wi-Fi desactivado</translation>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>Remove device</source>
+        <translation>Quitar dispositivo</translation>
     </message>
     <message>
-        <location filename="../../grimoire/spells/netl/nm.py"/>
-        <source>airplane mode on</source>
-        <translation>modo avión activado</translation>
-    </message>
-    <message>
-        <location filename="../../grimoire/spells/netl/nm.py"/>
-        <source>airplane mode off</source>
-        <translation>modo avión desactivado</translation>
-    </message>
-    <message>
-        <location filename="../../grimoire/spells/netl/nm.py"/>
-        <source>connected</source>
-        <translation>conectada</translation>
-    </message>
-    <message>
-        <location filename="../../grimoire/spells/netl/nm.py"/>
-        <source>disconnected</source>
-        <translation>desconectada</translation>
+        <source>CONNECTED</source>
+        <translation type="vanished">CONECTADO</translation>
     </message>
 </context>
 <context>
     <name>grimoire.spells.netl.page</name>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <location filename="../../grimoire/spells/netl/page.py"/>
+        <source>Bluetooth</source>
+        <translation>Bluetooth</translation>
+    </message>
     <message>
         <location filename="../../grimoire/spells/netl/page.py"/>
         <source>Overview</source>
@@ -413,6 +727,104 @@
         <location filename="../../grimoire/spells/netl/page.py"/>
         <source>Couldn&apos;t change {what}: {error}</source>
         <translation>No se pudo cambiar {what}: {error}</translation>
+    </message>
+</context>
+<context>
+    <name>grimoire.spells.netl.nm</name>
+    <message>
+        <location filename="../../grimoire/spells/netl/nm.py"/>
+        <source>done</source>
+        <translation>hecho</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/nm.py"/>
+        <source>the password can&apos;t contain line breaks</source>
+        <translation>la contraseña no puede contener saltos de línea</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/nm.py"/>
+        <source>{security} networks need Plasma&apos;s network settings</source>
+        <translation>las redes {security} necesitan la configuración de red de Plasma</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/nm.py"/>
+        <source>this network needs a password</source>
+        <translation>esta red necesita contraseña</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/nm.py"/>
+        <source>NetworkManager didn&apos;t say which profile it made</source>
+        <translation>NetworkManager no indicó qué perfil creó</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/nm.py"/>
+        <source>connected to {network}</source>
+        <translation>conectado a {network}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/nm.py"/>
+        <source>Couldn&apos;t connect</source>
+        <translation>No se pudo conectar</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/nm.py"/>
+        <source>Couldn&apos;t create the profile</source>
+        <translation>No se pudo crear el perfil</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/nm.py"/>
+        <source>Couldn&apos;t disconnect</source>
+        <translation>No se pudo desconectar</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/nm.py"/>
+        <source>Couldn&apos;t switch Wi-Fi</source>
+        <translation>No se pudo cambiar el Wi-Fi</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/nm.py"/>
+        <source>Couldn&apos;t switch airplane mode</source>
+        <translation>No se pudo cambiar el modo avión</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/nm.py"/>
+        <source>Couldn&apos;t switch the VPN</source>
+        <translation>No se pudo cambiar la VPN</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/nm.py"/>
+        <source>{device} disconnected</source>
+        <translation>{device} desconectado</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/nm.py"/>
+        <source>Wi-Fi on</source>
+        <translation>Wi-Fi activado</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/nm.py"/>
+        <source>Wi-Fi off</source>
+        <translation>Wi-Fi desactivado</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/nm.py"/>
+        <source>airplane mode on</source>
+        <translation>modo avión activado</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/nm.py"/>
+        <source>airplane mode off</source>
+        <translation>modo avión desactivado</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/nm.py"/>
+        <source>connected</source>
+        <translation>conectada</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/nm.py"/>
+        <source>disconnected</source>
+        <translation>desconectada</translation>
     </message>
 </context>
 <context>

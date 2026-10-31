@@ -2,6 +2,25 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="en" sourcelanguage="en">
 <context>
+    <name>grimoire.spells.netl.btview</name>
+    <message numerus="yes">
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>Others can find this PC as {name}. Turns itself off after %n minute(s).</source>
+        <translation>
+            <numerusform>Others can find this PC as {name}. Turns itself off after %n minute.</numerusform>
+            <numerusform>Others can find this PC as {name}. Turns itself off after %n minutes.</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>Turn Bluetooth off? %n device(s) will disconnect.</source>
+        <translation>
+            <numerusform>Turn Bluetooth off? %n device will disconnect.</numerusform>
+            <numerusform>Turn Bluetooth off? %n devices will disconnect.</numerusform>
+        </translation>
+    </message>
+</context>
+<context>
     <name>grimoire.spells.netl.page</name>
     <message numerus="yes">
         <location filename="../../grimoire/spells/netl/page.py"/>

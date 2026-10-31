@@ -202,3 +202,19 @@ that holds more than it declares (a zip bomb) stops there; at least 512 MB is al
 a hidden staging folder and moves into place under a free name: nothing is ever overwritten, and a cancel or an
 error removes only the staging folder. Passwords reach 7-Zip on its stdin, never on a command line, and are not
 stored. Preview copies are owner-only and never executable.
+## Logs, drives and Bluetooth
+
+**Logs.** Journal text comes from any program on the machine, so SystemL treats it as hostile: terminal escapes,
+control characters and bidi overrides are stripped, non-UTF-8 fields are decoded with replacement characters, and
+lines only ever reach plain-text widgets (no rich text, no tooltips). Search text goes to `journalctl --grep`
+escaped, as one argument, never through a shell. Exports never replace an existing file.
+
+**Drives.** Every change is a udisks2 call as you, authorised by polkit; SystemL never runs `mount`, `umount` or
+`mkfs` itself, refuses to unmount the system's own mount points (`/`, `/boot`, `/home`…) and has no format or
+partition actions at all (KDE Partition Manager does those).
+
+**Bluetooth.** NetL registers a pairing agent with BlueZ only for pairings it starts (it never asks to become the
+default agent), answers agent calls only from bluetoothd's own bus name, and shows device names as plain text.
+Nothing is paired, trusted or connected without your click; a device you pair is marked trusted so it can reconnect,
+as Plasma's applet does.
+
