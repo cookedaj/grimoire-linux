@@ -274,7 +274,9 @@ def scan_itch() -> list[Game]:
             cave = str(r.get("cave") or "")
             if not CAVE_RE.match(cave) or cave in games or not r.get("title"):
                 continue
-            folder = os.path.join(r["base"], r["folder"]) if r.get("base") and r.get("folder") else ""
+            base, sub = r.get("base"), r.get("folder")          # any type: the database is just a file
+            folder = os.path.join(base, sub) if isinstance(base, str) and isinstance(sub, str) and base and sub \
+                else ""
             last = r.get("last")
             secs = r.get("secs")
             games[cave] = Game("itch", cave, str(r["title"]), folder if os.path.isabs(folder) else "",
@@ -312,8 +314,8 @@ def scan_bottles() -> list[Game]:
             try:
                 with open(b / "bottle.yml", "rb") as f:
                     d = yaml.load(f.read(4 * 1024 * 1024), Loader=loader)
-            except (OSError, yaml.YAMLError, RecursionError):
-                continue
+            except (OSError, yaml.YAMLError, RecursionError, ValueError, TypeError, OverflowError):
+                continue                           # ValueError etc.: a date like 2020-99-99 fails while loading
             if not isinstance(d, dict):
                 continue
             bottle = str(d.get("Name") or b.name)
