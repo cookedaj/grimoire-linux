@@ -193,3 +193,12 @@ as PNG, JPEG, GIF, BMP or WebP (never SVG) and decoded with a size check first. 
 fetched from the network or your disk; Markdown is shown with raw HTML as text and only images next to the file.
 The reading history (`readl.json`: file paths, places, bookmarks) stays on the PC: backups and settings sync leave
 it out.
+## Archives (VaultL)
+
+Archives are untrusted input. VaultL writes every member itself (7z's output is checked the same way afterwards):
+names that are absolute or contain `..` are skipped, links are made only when they stay inside the extracted
+folder, devices and fifos never are, setuid bits are dropped, and bytes are counted as they come out, so an archive
+that holds more than it declares (a zip bomb) stops there; at least 512 MB is always left free. Everything lands in
+a hidden staging folder and moves into place under a free name: nothing is ever overwritten, and a cancel or an
+error removes only the staging folder. Passwords reach 7-Zip on its stdin, never on a command line, and are not
+stored. Preview copies are owner-only and never executable.

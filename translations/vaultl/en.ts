@@ -2,6 +2,81 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="en" sourcelanguage="en">
 <context>
+    <name>grimoire.spells.vaultl.archiveview</name>
+    <message numerus="yes">
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>%n entry(s) with unsafe names (absolute paths or &quot;..&quot;) are hidden and won&apos;t be extracted.</source>
+        <translation>
+            <numerusform>%n entry with an unsafe name (an absolute path or &quot;..&quot;) is hidden and won&apos;t be extracted.</numerusform>
+            <numerusform>%n entries with unsafe names (absolute paths or &quot;..&quot;) are hidden and won&apos;t be extracted.</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>%n item(s)</source>
+        <translation>
+            <numerusform>%n item</numerusform>
+            <numerusform>%n items</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>%n selected</source>
+        <translation>
+            <numerusform>%n selected</numerusform>
+            <numerusform>%n selected</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>%n file(s), {size} unpacked</source>
+        <translation>
+            <numerusform>%n file, {size} unpacked</numerusform>
+            <numerusform>%n files, {size} unpacked</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>Archive · %n file(s)</source>
+        <translation>
+            <numerusform>Archive · %n file</numerusform>
+            <numerusform>Archive · %n files</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>Folder · %n item(s)</source>
+        <translation>
+            <numerusform>Folder · %n item</numerusform>
+            <numerusform>Folder · %n items</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>Preparing %n item(s) to drag…</source>
+        <translation>
+            <numerusform>Preparing %n item to drag…</numerusform>
+            <numerusform>Preparing %n items to drag…</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>Left out %n unsafe or special entry(s) (links leaving the folder, devices, absolute paths).</source>
+        <translation>
+            <numerusform>Left out %n unsafe or special entry (a link leaving the folder, a device, an absolute path).</numerusform>
+            <numerusform>Left out %n unsafe or special entries (links leaving the folder, devices, absolute paths).</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>Compress %n item(s)</source>
+        <translation>
+            <numerusform>Compress %n item</numerusform>
+            <numerusform>Compress %n items</numerusform>
+        </translation>
+    </message>
+</context>
+<context>
     <name>grimoire.spells.vaultl.page</name>
     <message numerus="yes">
         <location filename="../../grimoire/spells/vaultl/page.py"/>

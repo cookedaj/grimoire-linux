@@ -16,6 +16,8 @@ what goes over the network, see [security.md](security.md).
   KDE's clipboard format), so files, Trash and clipboard are shared with every other KDE app. Auto-tidy runs as
   the systemd user timer `grimoire-tidyl.timer` every 10 minutes; rules live in `~/.config/grimoire/vaultl.json`
   and the undo log in `~/.local/share/grimoire/vaultl/` (copied once from TidyL's files, which stay as a backup).
+  Archives open inside VaultL: zip and tar are read by Python itself, 7z and rar by the `7z` tool (or `bsdtar`);
+  previews and drags use private copies in `~/.cache/grimoire/vaultl-archive/`, cleared after an hour.
 - **OptimizeL** stages switch flips and applies them in one go. System tweaks go through `pkexec` to
   its root helper (`optimizel-root-helper.sh`), which only knows a fixed list of tweaks, writes files whose names
   contain `grimoire-optimizel` (sysctl.d, journald.conf.d, apt.conf.d, systemd drop-ins, zram-generator.conf),

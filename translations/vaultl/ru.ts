@@ -2,6 +2,483 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="ru" sourcelanguage="en">
 <context>
+    <name>grimoire.spells.vaultl.archive</name>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archive.py"/>
+        <source>Wrong password.</source>
+        <translation>Неверный пароль.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archive.py"/>
+        <source>This archive needs a password.</source>
+        <translation>Для этого архива нужен пароль.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archive.py"/>
+        <source>Cancelled.</source>
+        <translation>Отменено.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archive.py"/>
+        <source>The archive holds more than it says it does (a zip bomb?). Stopped.</source>
+        <translation>В архиве больше данных, чем заявлено (zip-бомба?). Остановлено.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archive.py"/>
+        <source>The archive is damaged: {error}</source>
+        <translation>Архив повреждён: {error}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archive.py"/>
+        <source>Not enough space: needs {need}, {free} free.</source>
+        <translation>Недостаточно места: нужно {need}, свободно {free}.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archive.py"/>
+        <source>Not a regular file.</source>
+        <translation>Это не обычный файл.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archive.py"/>
+        <source>The archive is damaged or not what its name says.</source>
+        <translation>Архив повреждён или не то, чем назван.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archive.py"/>
+        <source>Not an archive VaultL can open.</source>
+        <translation>VaultL не умеет открывать такой файл как архив.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archive.py"/>
+        <source>Opening .rar archives needs 7-Zip&apos;s rar codec.</source>
+        <translation>Для открытия архивов .rar нужен кодек rar для 7-Zip.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archive.py"/>
+        <source>Opening this kind of archive needs 7-Zip.</source>
+        <translation>Для такого архива нужен 7-Zip.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archive.py"/>
+        <source>The archive has too many entries.</source>
+        <translation>В архиве слишком много записей.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archive.py"/>
+        <source>7-Zip can&apos;t unpack this (a codec is missing, e.g. 7zip-rar for rar).</source>
+        <translation>7-Zip не может это распаковать (нет кодека, например 7zip-rar для rar).</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archive.py"/>
+        <source>Opening .tar.zst needs bsdtar.</source>
+        <translation>Для .tar.zst нужен bsdtar.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archive.py"/>
+        <source>Can&apos;t write in {folder}: {error}</source>
+        <translation>Не удаётся записать в {folder}: {error}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archive.py"/>
+        <source>This format can&apos;t carry a password.</source>
+        <translation>Этот формат не поддерживает пароль.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archive.py"/>
+        <source>Passwords can&apos;t contain line breaks.</source>
+        <translation>Пароль не может содержать переносы строк.</translation>
+    </message>
+</context>
+<context>
+    <name>grimoire.spells.vaultl.archiveview</name>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>Store (no compression)</source>
+        <translation>Без сжатия</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>Fast</source>
+        <translation>Быстро</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>Normal</source>
+        <translation>Обычный</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>Maximum</source>
+        <translation>Максимальное</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>Cancel</source>
+        <translation>Отмена</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>Stopping…</source>
+        <translation>Остановка…</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>{done} of {total}</source>
+        <translation>{done} из {total}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>Name</source>
+        <translation>Название</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>Size</source>
+        <translation>Размер</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>Packed</source>
+        <translation>Сжато</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>Modified</source>
+        <translation>Изменён</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>Encrypted</source>
+        <translation>Зашифровано</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>Link</source>
+        <translation>Ссылка</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>Back (Alt+Left)</source>
+        <translation>Назад (Alt+Left)</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>Up (Alt+Up)</source>
+        <translation>Вверх (Alt+Up)</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>Search this folder</source>
+        <translation>Поиск в этой папке</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>Extract here</source>
+        <translation>Распаковать сюда</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>Extract everything (or the selection) next to the archive</source>
+        <translation>Распаковать всё (или выделенное) рядом с архивом</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>Extract to…</source>
+        <translation>Распаковать в…</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>Open</source>
+        <translation>Открыть</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>Opens a copy: changes to it don&apos;t go back into the archive</source>
+        <translation>Открывается копия: изменения в ней не попадут в архив</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>Reading {name}…</source>
+        <translation>Чтение {name}…</translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>%n entry(s) with unsafe names (absolute paths or &quot;..&quot;) are hidden and won&apos;t be extracted.</source>
+        <translation>
+            <numerusform>%n запись с небезопасным именем (абсолютный путь или «..») скрыта и не будет распакована.</numerusform>
+            <numerusform>%n записи с небезопасными именами (абсолютные пути или «..») скрыты и не будут распакованы.</numerusform>
+            <numerusform>%n записей с небезопасными именами (абсолютные пути или «..») скрыты и не будут распакованы.</numerusform>
+        </translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>Enter password…</source>
+        <translation>Ввести пароль…</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>{problem} Install it with: {command}</source>
+        <translation>{problem} Установите командой: {command}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>Copy command</source>
+        <translation>Копировать команду</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>Command copied.</source>
+        <translation>Команда скопирована.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>Can&apos;t open {name}: {error}</source>
+        <translation>Не удаётся открыть {name}: {error}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>Password</source>
+        <translation>Пароль</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>Password for {name}:</source>
+        <translation>Пароль для {name}:</translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>%n item(s)</source>
+        <translation>
+            <numerusform>%n элемент</numerusform>
+            <numerusform>%n элемента</numerusform>
+            <numerusform>%n элементов</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>%n selected</source>
+        <translation>
+            <numerusform>выбран %n</numerusform>
+            <numerusform>выбрано %n</numerusform>
+            <numerusform>выбрано %n</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>%n file(s), {size} unpacked</source>
+        <translation>
+            <numerusform>%n файл, {size} в распакованном виде</numerusform>
+            <numerusform>%n файла, {size} в распакованном виде</numerusform>
+            <numerusform>%n файлов, {size} в распакованном виде</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>Archive · %n file(s)</source>
+        <translation>
+            <numerusform>Архив · %n файл</numerusform>
+            <numerusform>Архив · %n файла</numerusform>
+            <numerusform>Архив · %n файлов</numerusform>
+        </translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>{size} unpacked · {packed} packed</source>
+        <translation>{size} без сжатия · {packed} в архиве</translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>Folder · %n item(s)</source>
+        <translation>
+            <numerusform>Папка · %n элемент</numerusform>
+            <numerusform>Папка · %n элемента</numerusform>
+            <numerusform>Папка · %n элементов</numerusform>
+        </translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>{size} packed</source>
+        <translation>{size} в архиве</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>Modified {when}</source>
+        <translation>Изменено {when}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>Opening {name}…</source>
+        <translation>Открытие {name}…</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>Extract to</source>
+        <translation>Распаковать в</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>Names copied.</source>
+        <translation>Имена скопированы.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>Too big to drag ({size}): use Extract to… instead.</source>
+        <translation>Слишком большой для перетаскивания ({size}): используйте «Распаковать в…».</translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>Preparing %n item(s) to drag…</source>
+        <translation>
+            <numerusform>Подготовка %n элемента к перетаскиванию…</numerusform>
+            <numerusform>Подготовка %n элементов к перетаскиванию…</numerusform>
+            <numerusform>Подготовка %n элементов к перетаскиванию…</numerusform>
+        </translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>Copy name</source>
+        <translation>Копировать имя</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>Extract all here</source>
+        <translation>Распаковать всё сюда</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>Extract all to…</source>
+        <translation>Распаковать всё в…</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>Up</source>
+        <translation>Вверх</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>Close archive</source>
+        <translation>Закрыть архив</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>Nothing to extract.</source>
+        <translation>Нечего распаковывать.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>Extracted to {path}.</source>
+        <translation>Распаковано в {path}.</translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>Left out %n unsafe or special entry(s) (links leaving the folder, devices, absolute paths).</source>
+        <translation>
+            <numerusform>Пропущена %n небезопасная или особая запись (ссылки за пределы папки, устройства, абсолютные пути).</numerusform>
+            <numerusform>Пропущены %n небезопасные или особые записи (ссылки за пределы папки, устройства, абсолютные пути).</numerusform>
+            <numerusform>Пропущено %n небезопасных или особых записей (ссылки за пределы папки, устройства, абсолютные пути).</numerusform>
+        </translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>Extracting {name}</source>
+        <translation>Распаковка {name}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>Can&apos;t extract {name}: {error}</source>
+        <translation>Не удаётся распаковать {name}: {error}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>Compress</source>
+        <translation>Сжать</translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>Compress %n item(s)</source>
+        <translation>
+            <numerusform>Сжать %n элемент</numerusform>
+            <numerusform>Сжать %n элемента</numerusform>
+            <numerusform>Сжать %n элементов</numerusform>
+        </translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>Saved in {folder}</source>
+        <translation>Сохраняется в {folder}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>Format</source>
+        <translation>Формат</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>Compression</source>
+        <translation>Сжатие</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>Optional</source>
+        <translation>Необязательно</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>Repeat password</source>
+        <translation>Повторите пароль</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>A password encrypts the contents with AES-256 (7z also hides the file names).</source>
+        <translation>Пароль шифрует содержимое по AES-256 (7z также скрывает имена файлов).</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>Passwords need 7-Zip. Install it with: {command}</source>
+        <translation>Для паролей нужен 7-Zip. Установите командой: {command}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>tar archives keep Linux permissions and links; they can&apos;t carry a password.</source>
+        <translation>Архивы tar сохраняют права и ссылки Linux; пароль в них нельзя.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>Pick a file name (no slashes).</source>
+        <translation>Укажите имя файла (без косой черты).</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>The passwords don&apos;t match.</source>
+        <translation>Пароли не совпадают.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>Passwords can&apos;t contain line breaks.</source>
+        <translation>Пароль не может содержать переносы строк.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>Pick items from one folder to compress.</source>
+        <translation>Выберите для сжатия элементы из одной папки.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>Made {name} ({size}).</source>
+        <translation>Создан {name} ({size}).</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>Couldn&apos;t compress: {error}</source>
+        <translation>Не удалось сжать: {error}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
+        <source>Compressing into {name}</source>
+        <translation>Сжатие в {name}</translation>
+    </message>
+</context>
+<context>
     <name>grimoire.spells.vaultl.ops</name>
     <message>
         <location filename="../../grimoire/spells/vaultl/ops.py"/>
@@ -205,6 +682,11 @@
         <location filename="../../grimoire/spells/vaultl/page.py"/>
         <source>Can&apos;t open {path}</source>
         <translation>Не удаётся открыть {path}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/page.py"/>
+        <source>Extract to</source>
+        <translation>Распаковать в</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/vaultl/page.py"/>
@@ -504,6 +986,26 @@ This can&apos;t be undone.</source>
         <location filename="../../grimoire/spells/vaultl/page.py"/>
         <source>Copy path</source>
         <translation>Копировать путь</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/page.py"/>
+        <source>Browse archive</source>
+        <translation>Просмотреть архив</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/page.py"/>
+        <source>Extract here</source>
+        <translation>Распаковать сюда</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/page.py"/>
+        <source>Extract to…</source>
+        <translation>Распаковать в…</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/page.py"/>
+        <source>Compress…</source>
+        <translation>Сжать…</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/vaultl/page.py"/>

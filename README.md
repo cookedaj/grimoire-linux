@@ -53,6 +53,14 @@ KDE-compatible copy/cut/paste and Dolphin's keyboard shortcuts. Its **Tidy** sec
 type in the background, sends stale installers and archives to the Trash, and finds big files and duplicates.
 Never deletes: everything goes to the Trash and every move can be undone. Can be your default file manager.
 
+**Archives** open like folders: zip, tar (.gz/.xz/.bz2/.zst), single .gz/.xz files, 7z and rar (7z and rar
+through 7-Zip: `sudo apt install 7zip 7zip-rar`). Preview files inside, Extract here / Extract to…, drag entries out,
+and Compress… to zip, tar.zst, tar.gz or 7z (with an AES-256 password for zip/7z). Extraction never overwrites
+anything and leaves out what could escape the folder (absolute paths, `..`, outside links, devices) or blow up
+(zip bombs stop at the size they claimed); progress and Cancel run in a bar at the bottom.
+
+![VaultL archives](docs/screenshots/vaultl-archive.png)
+
 ### OptimizeL: speed tweaks as switches
 
 ![OptimizeL](docs/screenshots/optimizel.png)
