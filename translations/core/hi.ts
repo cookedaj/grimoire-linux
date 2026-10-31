@@ -3101,6 +3101,11 @@
         <source>Desktop widgets in black and white: a clock, your system&apos;s readings, the weather and what&apos;s playing</source>
         <translation>काले और सफ़ेद डेस्कटॉप विजेट: घड़ी, आपके सिस्टम की रीडिंग, मौसम और जो बज रहा है</translation>
     </message>
+    <message>
+        <location filename="../../grimoire/spells/__init__.py"/>
+        <source>KDE&apos;s settings in black and white: displays, sound, network, Bluetooth, mouse, keyboard, power, date, language, default apps and more, with every other KDE module one search away</source>
+        <translation>ब्लैक एंड व्हाइट में KDE की सेटिंग्स: डिस्प्ले, साउंड, नेटवर्क, ब्लूटूथ, माउस, कीबोर्ड, पावर, तारीख़, भाषा, डिफ़ॉल्ट ऐप्स और भी बहुत कुछ, और KDE का हर दूसरा मॉड्यूल बस एक खोज दूर</translation>
+    </message>
 </context>
 <context>
     <name>grimoire.standalone</name>

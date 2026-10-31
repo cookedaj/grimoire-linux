@@ -257,3 +257,20 @@ SPELLS.append(Spell("widgetl", "WidgetL",
                     tr_noop("grimoire.spells", "Desktop widgets in black and white: a clock, your system's readings, "
                                                "the weather and what's playing"),
                     _widgetl, "widgets", _widgetl_status))
+
+
+def _settingl():
+    from grimoire.spells.settingl.page import SettingLPage
+    return SettingLPage()
+
+
+def _settingl_status() -> str:
+    from grimoire.spells.settingl.page import status
+    return status()
+
+
+SPELLS.append(Spell("settingl", "SettingL",
+                    tr_noop("grimoire.spells", "KDE's settings in black and white: displays, sound, network, "
+                                               "Bluetooth, mouse, keyboard, power, date, language, default apps and "
+                                               "more, with every other KDE module one search away"),
+                    _settingl, "settingl", _settingl_status))

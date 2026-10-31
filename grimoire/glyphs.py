@@ -307,6 +307,27 @@ def _draw(name: str, p: QPainter):
         p.drawLine(QPointF(16.75, 7.25), QPointF(16.75, 5.3)); p.drawLine(QPointF(16.75, 7.25), QPointF(18.3, 7.25))
         p.drawRoundedRect(r(3.5, 13, 7.5, 7.5), 1.8, 1.8)
         p.drawRoundedRect(r(13, 13, 7.5, 7.5), 1.8, 1.8)
+    elif name == "settingl":                               # two switches, one on and one off: settings
+        p.drawRoundedRect(r(3.5, 5, 17, 6), 3, 3)
+        p.drawRoundedRect(r(3.5, 13, 17, 6), 3, 3)
+        p.setBrush(p.pen().color())
+        p.drawEllipse(QPointF(17.5, 8), 1.6, 1.6)
+        p.setBrush(Qt.BrushStyle.NoBrush)
+        p.drawEllipse(QPointF(6.5, 16), 1.6, 1.6)
+    elif name == "bluetooth":                              # the Bluetooth rune
+        path = QPainterPath(QPointF(7, 8)); path.lineTo(17, 16); path.lineTo(12, 20.5); path.lineTo(12, 3.5)
+        path.lineTo(17, 8); path.lineTo(7, 16); p.drawPath(path)
+    elif name == "mouse":                                  # a mouse with its wheel
+        p.drawRoundedRect(r(7, 3.5, 10, 17), 5, 5)
+        p.drawLine(QPointF(12, 6.5), QPointF(12, 9.5))
+    elif name == "globe":                                  # a globe: languages and regions
+        p.drawEllipse(QPointF(12, 12), 8.5, 8.5)
+        p.drawEllipse(QPointF(12, 12), 3.8, 8.5)
+        p.drawLine(QPointF(3.5, 12), QPointF(20.5, 12))
+    elif name == "info":                                   # an i in a circle: about
+        p.drawEllipse(QPointF(12, 12), 8.5, 8.5)
+        p.drawLine(QPointF(12, 11), QPointF(12, 16.5))
+        p.drawPoint(QPointF(12, 7.8))
 
 
 def _pixmap(name: str, color: str, size: int) -> QPixmap:
