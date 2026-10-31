@@ -21,6 +21,76 @@
     </message>
 </context>
 <context>
+    <name>grimoire.spells.systeml.driveview</name>
+    <message numerus="yes">
+        <location filename="../../grimoire/spells/systeml/driveview.py"/>
+        <source>%n hour(s)</source>
+        <translation>
+            <numerusform>%n hour</numerusform>
+            <numerusform>%n hours</numerusform>
+        </translation>
+    </message>
+</context>
+<context>
+    <name>grimoire.spells.systeml.logview</name>
+    <message numerus="yes">
+        <location filename="../../grimoire/spells/systeml/logview.py"/>
+        <source>Last %n entries</source>
+        <translation>
+            <numerusform>Last %n entry</numerusform>
+            <numerusform>Last %n entries</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../../grimoire/spells/systeml/logview.py"/>
+        <source>Reading the journal… %n entries so far</source>
+        <translation>
+            <numerusform>Reading the journal… %n entry so far</numerusform>
+            <numerusform>Reading the journal… %n entries so far</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../../grimoire/spells/systeml/logview.py"/>
+        <source>Following · %n entries</source>
+        <translation>
+            <numerusform>Following · %n entry</numerusform>
+            <numerusform>Following · %n entries</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../../grimoire/spells/systeml/logview.py"/>
+        <source>%n entries</source>
+        <translation>
+            <numerusform>%n entry</numerusform>
+            <numerusform>%n entries</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../../grimoire/spells/systeml/logview.py"/>
+        <source>%n selected</source>
+        <translation>
+            <numerusform>%n selected</numerusform>
+            <numerusform>%n selected</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../../grimoire/spells/systeml/logview.py"/>
+        <source>%n line(s) copied</source>
+        <translation>
+            <numerusform>%n line copied</numerusform>
+            <numerusform>%n lines copied</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../../grimoire/spells/systeml/logview.py"/>
+        <source>Saved %n line(s) to {path}</source>
+        <translation>
+            <numerusform>Saved %n line to {path}</numerusform>
+            <numerusform>Saved %n lines to {path}</numerusform>
+        </translation>
+    </message>
+</context>
+<context>
     <name>grimoire.spells.systeml.page</name>
     <message numerus="yes">
         <location filename="../../grimoire/spells/systeml/page.py"/>

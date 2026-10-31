@@ -71,6 +71,15 @@ and load; a process list with search, tree view, end/force quit and priority; pe
 hour, a day or a week ago); systemd services with start/stop/logs; startup apps; disks; and background alerts when
 memory, temperatures, free space or a stuck app cross the line you set, even while SystemL is closed.
 
+**Logs** (in place of KSystemLog) reads the systemd journal without root: yours by default, the system's too when
+you're in the `systemd-journal` or `adm` group. Filter by level, unit or app, boot, time and text, follow new lines
+as they come, see every field of a line, copy, and export to text or JSON. **Drives** shows each disk with a map of
+its partitions, usage, read/write rates and health (SMART), and mounts, unmounts and safely removes drives through
+udisks the way Dolphin does. Formatting and partitioning stay in KDE Partition Manager, one click away.
+
+![SystemL Logs](docs/screenshots/systeml-logs.png)
+![SystemL Drives](docs/screenshots/systeml-drives.png)
+
 ### TerminalL: a black & white terminal
 
 ![TerminalL](docs/screenshots/terminall.png)
@@ -101,6 +110,12 @@ away; then your streak, today, this week and the last 14 days. It keeps running 
 Live download/upload per interface and per app (from the kernel's own TCP counters, no root), connections with
 host names, addresses, gateway and DNS, Wi-Fi scan and connect, Wi-Fi/airplane/VPN switches, and daily and monthly
 usage. Public IP and ping checks only run when you press them.
+
+**Bluetooth**: turn the adapter on or off, make the PC visible, see paired devices with their battery, connect,
+disconnect or remove them, and scan and pair new ones; codes to compare or type show in a plain black & white
+dialog. Everything goes through BlueZ as you, like Plasma's Bluetooth applet.
+
+![NetL Bluetooth](docs/screenshots/netl-bluetooth.png)
 
 ### LaunchL: a Plasma app launcher
 
@@ -233,7 +248,8 @@ update with your system; the in-app updater is off there.
 KDE Plasma 6 (Wayland is best; made on Kubuntu 26.04) and Python 3.12+ with PySide6, Pillow and psutil, plus
 layer-shell-qt (SightsL), Qt Multimedia (video wallpapers), pyte (TerminalL) and dbus-python (GitHub sign-in).
 Optional: ffmpeg (video thumbnails, recordings), Spectacle (ShotL), NetworkManager (NetL controls), PipeWire's
-`pw-dump`/`wpctl` (AudioL; on every Plasma 6 system), rsync.
+`pw-dump`/`wpctl` (AudioL; on every Plasma 6 system), rsync, python3-gi (NetL Bluetooth), KDE Partition Manager
+(SystemL's Formatting button), smartmontools (drive health udisks can't read).
 
 ```bash
 # Ubuntu / Kubuntu / Debian

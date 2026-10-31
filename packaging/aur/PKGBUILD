@@ -33,7 +33,7 @@ depends=(
 optdepends=(
     'spectacle: ShotL screenshots'
     'ffmpeg: video wallpaper thumbnails and ShotL recordings'
-    'python-gobject: ShotL screen recording'
+    'python-gobject: ShotL screen recording, NetL Bluetooth'
     'gst-plugin-pipewire: ShotL screen recording'
     'networkmanager: NetL Wi-Fi and VPN controls'
     'iproute2: NetL connection list'
@@ -46,6 +46,8 @@ optdepends=(
     'qt6-translations: Qt dialogs in your language'
     'noto-fonts: Arabic, Urdu, Hindi and Bengali text'
     'noto-fonts-cjk: Chinese text'
+    'partitionmanager: SystemL Drives formatting and partitions'
+    'smartmontools: SystemL drive health udisks cannot read'
 )
 makedepends=('git')
 provides=("$_pkgname")

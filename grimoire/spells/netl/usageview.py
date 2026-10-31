@@ -15,7 +15,7 @@ from grimoire.spells.systeml.alertview import _row
 from grimoire.spells.systeml.graph import BG, DIM, EDGE, GRID, INK, SOFT, _font, draw_text
 from grimoire.spells.systeml.bidi import ltr
 from grimoire.spells.systeml.page import NumItem, _label, _tree
-from grimoire.widgets import Switch
+from grimoire.widgets import Switch, segments
 
 SHOWN = {"days": 31, "months": 12}
 
@@ -103,10 +103,10 @@ class UsagePanel(QWidget):
             b = QPushButton(name)
             b.setObjectName("Segment")
             b.setCheckable(True)
-            b.setProperty("pos", "first" if i == 0 else "last")
             b.clicked.connect(lambda _=False, k=key: self.set_period(k))
             bar.addWidget(b)
             self.segs.append((b, key))
+        segments([b for b, _ in self.segs])
         bar.addSpacing(12)
         self.iface = QComboBox()
         self.iface.setMinimumWidth(200)

@@ -166,3 +166,20 @@ server never follow redirects (they carry the key and token), and only https is 
 **Settings sync.** The same `.grimoire-backup` zip as a file (without MuraL's wallpaper library), at most 1 MB,
 in your `user_settings` row. Restoring it goes through the same checks, preview and safety backup as any backup
 file. The older GitHub gist backup stays available in Settings → GitHub backup as an optional extra.
+
+## Logs, drives and Bluetooth
+
+**Logs.** Journal text comes from any program on the machine, so SystemL treats it as hostile: terminal escapes,
+control characters and bidi overrides are stripped, non-UTF-8 fields are decoded with replacement characters, and
+lines only ever reach plain-text widgets (no rich text, no tooltips). Search text goes to `journalctl --grep`
+escaped, as one argument, never through a shell. Exports never replace an existing file.
+
+**Drives.** Every change is a udisks2 call as you, authorised by polkit; SystemL never runs `mount`, `umount` or
+`mkfs` itself, refuses to unmount the system's own mount points (`/`, `/boot`, `/home`…) and has no format or
+partition actions at all (KDE Partition Manager does those).
+
+**Bluetooth.** NetL registers a pairing agent with BlueZ only for pairings it starts (it never asks to become the
+default agent), answers agent calls only from bluetoothd's own bus name, and shows device names as plain text.
+Nothing is paired, trusted or connected without your click; a device you pair is marked trusted so it can reconnect,
+as Plasma's applet does.
+

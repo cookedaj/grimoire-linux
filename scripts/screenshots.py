@@ -113,7 +113,7 @@ def render(names: list[str]):
         if name == "tray":
             tray_shot(wait)
             continue
-        page = "home" if name == "hub" else name
+        page = "home" if name == "hub" else PAGE_OF.get(name, name)
         if name == "shotl":
             seed_shots()
         win.open(page)
@@ -370,6 +370,149 @@ PREPARE["updatel"] = _updatel
 PAGES.insert(PAGES.index("settings"), "updatel")
 PREPARE["audiol"] = _audiol
 WAIT = {"widgetl": 5000, "mural": 6000, "systeml": 30000, "netl": 30000, "optimizel": 5000, "terminall": 3500, "vaultl": 3000}
+
+
+# ---------------------------------------------------------------- SystemL Logs/Drives, NetL Bluetooth (made-up data)
+PAGE_OF = {}
+
+
+def _systeml_logs(page, wait):
+    """A made-up journal: the sandbox has none of its own and the real one is personal."""
+    import json
+    import time
+    from grimoire.spells.systeml import journal
+    now = time.time() - 600
+    lines = [(0, 6, "systemd", "1", "init.scope", "Started session-2.scope - Session 2 of User user."),
+             (2, 6, "NetworkManager", "812", "NetworkManager.service", "device (wlan0): state change: activated"),
+             (5, 5, "kernel", "", "", "usb 3-2: new high-speed USB device number 7 using xhci_hcd"),
+             (5, 6, "kernel", "", "", "usb-storage 3-2:1.0: USB Mass Storage device detected"),
+             (6, 6, "udisksd", "1043", "udisks2.service", "Mounted /dev/sdb1 at /media/user/STICK on behalf of "
+                                                           "uid 1000"),
+             (40, 4, "pipewire", "1510", "pipewire.service", "spa.alsa: hw:1: snd_pcm_avail after recover: Broken "
+                                                             "pipe"),
+             (75, 6, "plasmashell", "1622", "plasma-plasmashell.service", "Notification server ready"),
+             (120, 3, "bluetoothd", "905", "bluetooth.service", "src/service.c:btd_service_connect() a2dp-sink "
+                                                                "profile connect failed for 02:00:00:00:00:10: "
+                                                                "Device or resource busy"),
+             (121, 6, "bluetoothd", "905", "bluetooth.service", "Endpoint registered: sender=:1.84 "
+                                                                "path=/MediaEndpoint/A2DPSink/sbc"),
+             (180, 7, "kwin_wayland", "1488", "plasma-kwin_wayland.service", "Output DP-1: mode 2560x1440@165"),
+             (240, 4, "firefox", "4410", "app-firefox.scope", "Sandbox: seccomp sandbox violation: pid 4410, "
+                                                             "syscall 41"),
+             (300, 6, "systemd", "1", "init.scope", "Starting fwupd-refresh.service - Refresh fwupd metadata..."),
+             (302, 6, "fwupd", "2290", "fwupd.service", "Daemon ready for requests"),
+             (360, 2, "kernel", "", "", "nvme nvme0: I/O 412 QID 7 timeout, completion polled"),
+             (420, 6, "grimoire-netl", "5120", "grimoire-netl-usage.service", "usage recorded"),
+             (480, 6, "systemd", "1", "init.scope", "Finished fwupd-refresh.service - Refresh fwupd metadata.")]
+    entries = []
+    for dt, prio, ident, pid, unit, msg in lines:
+        raw = {"__REALTIME_TIMESTAMP": str(int((now + dt) * 1e6)), "PRIORITY": str(prio), "SYSLOG_IDENTIFIER": ident,
+               "_PID": pid, "_SYSTEMD_UNIT": unit, "MESSAGE": msg, "_HOSTNAME": "grimoire", "_BOOT_ID": "0" * 32,
+               "_TRANSPORT": "kernel" if ident == "kernel" else "journal"}
+        entries.append(journal.parse(json.dumps({k: v for k, v in raw.items() if v})))
+
+    class Reader:
+        def __init__(self, cmd):
+            self.done, self.error, self._left = True, "", list(entries)
+
+        def start(self):
+            return self
+
+        def take(self):
+            out, self._left = self._left, []
+            return out
+
+        def stop(self):
+            pass
+    journal.Reader = Reader
+    journal.boots = lambda scope="user": [{"id": "0" * 32, "index": 0, "first": now - 3600, "last": now}]
+    journal.sources = lambda scope="user": sorted({e["unit"] for e in entries if e["unit"]})
+    panel = page.panels["logs"]
+    panel.system_ok = True
+    panel.segs[1][0].setEnabled(True)
+    page.show_panel("logs")
+    panel.set_scope("system")
+    wait(600)
+    panel.view.setCurrentIndex(panel.model.index(7, 0))
+
+
+def _systeml_drives(page, wait):
+    from grimoire.spells.systeml import drives
+
+    def part(n, label, fs, size, mounts=(), used=None, total=None, system=False, offset=0):
+        return {"object": f"/fake/{label}{n}", "device": f"/dev/fake{n}", "number": n, "offset": offset,
+                "size": size, "label": label, "fs": fs, "usage": "filesystem", "system": system, "can_mount": True,
+                "mounts": list(mounts), "encrypted": False, "unlocked": False, "swap": False, "used": used,
+                "total": total, "container": False, "type": ""}
+    tb = 1000 ** 4
+    nvme = {"object": "/fake/nvme", "model": "Example NVMe 1TB", "serial": "0000", "revision": "1.0", "size": tb,
+            "kind": "nvme", "removable": False, "can_power_off": False, "ejectable": False, "media": True,
+            "health": {"source": "nvme", "failing": False, "temp": 41.0, "hours": 1840, "selftest": "success"},
+            "device": "/dev/nvme0n1", "table": "gpt", "sort": "0", "system": True,
+            "parts": [part(1, "EFI", "vfat", 315 * 10 ** 6, ["/boot/efi"], 8 * 10 ** 6, 313 * 10 ** 6, True),
+                      part(2, "kubuntu", "ext4", tb - 316 * 10 ** 6, ["/"], 412 * 10 ** 9, 983 * 10 ** 9, True)]}
+    hdd = {"object": "/fake/hdd", "model": "Example HDD 4TB", "serial": "0001", "revision": "1.0", "size": 4 * tb,
+           "kind": "hdd", "removable": False, "can_power_off": False, "ejectable": False, "media": True,
+           "health": {"source": "ata", "failing": False, "temp": 34.0, "hours": 12020}, "device": "/dev/sda",
+           "table": "gpt", "sort": "1", "system": False,
+           "parts": [part(1, "Games", "ext4", 3 * tb, ["/mnt/games"], 1900 * 10 ** 9, 2950 * 10 ** 9),
+                     part(2, "Archive", "ntfs", tb, [])]}
+    usb = {"object": "/fake/usb", "model": "Generic Flash Disk", "serial": "0002", "revision": "8.07",
+           "size": 32 * 10 ** 9, "kind": "usb", "removable": True, "can_power_off": True, "ejectable": True,
+           "media": True, "health": {"source": "", "failing": None, "temp": None, "hours": None},
+           "device": "/dev/sdb", "table": "dos", "sort": "2", "system": False,
+           "parts": [part(1, "STICK", "vfat", 32 * 10 ** 9, ["/media/user/STICK"], 9 * 10 ** 9, 32 * 10 ** 9)]}
+    drives.snapshot = lambda: {"udisks": True, "drives": [nvme, hdd, usb]}
+    page.show_panel("drives")
+
+
+def _netl_bluetooth(page, wait):
+    from grimoire.spells.netl import bluez
+
+    class Client:
+        def __init__(self, **kw):
+            pass
+
+        def start(self):
+            return self
+
+        def snapshot(self):
+            def dev(n, name, icon, paired, connected, battery=None, rssi=None):
+                return {"path": f"/fake/dev{n}", "adapter": "/fake/hci0", "address": f"02:00:00:00:00:{n:02x}",
+                        "name": name, "named": True, "icon": icon, "paired": paired, "bonded": paired,
+                        "trusted": paired, "connected": connected, "blocked": False, "rssi": rssi,
+                        "battery": battery}
+            return {"running": True, "agent": True, "error": "",
+                    "adapters": [{"path": "/fake/hci0", "name": "grimoire", "address": "02:00:00:00:00:01",
+                                  "powered": True, "blocked": False, "discoverable": False, "discovering": True,
+                                  "timeout": 180}],
+                    "devices": [dev(16, "Studio Headphones", "audio-headset", True, True, 80),
+                                dev(17, "Desk Keyboard", "input-keyboard", True, True, 64),
+                                dev(18, "Game Controller", "input-gaming", True, False, 35),
+                                dev(32, "Bookshelf Speaker", "audio-card", False, False, rssi=-58),
+                                dev(33, "Phone", "phone", False, False, rssi=-79)]}
+
+        def scan(self, adapter, on):
+            pass
+
+        def stop(self):
+            pass
+    bluez.missing = lambda: ""
+    bluez.Client = Client
+    page.show_panel("bluetooth")
+    wait(800)
+    panel = page.panels["bluetooth"]
+    panel._scan_timer.start()
+    panel.scan_btn.setText(panel.scan_btn.text())
+    panel.load()
+
+
+for _name, _page, _prep in (("systeml-logs", "systeml", _systeml_logs), ("systeml-drives", "systeml", _systeml_drives),
+                            ("netl-bluetooth", "netl", _netl_bluetooth)):
+    PAGES.append(_name)
+    PAGE_OF[_name] = _page
+    PREPARE[_name] = _prep
+    WAIT[_name] = 3000
 
 
 def main():

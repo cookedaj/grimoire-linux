@@ -307,6 +307,14 @@ def _draw(name: str, p: QPainter):
         p.drawLine(QPointF(16.75, 7.25), QPointF(16.75, 5.3)); p.drawLine(QPointF(16.75, 7.25), QPointF(18.3, 7.25))
         p.drawRoundedRect(r(3.5, 13, 7.5, 7.5), 1.8, 1.8)
         p.drawRoundedRect(r(13, 13, 7.5, 7.5), 1.8, 1.8)
+    elif name == "journal":                                # log lines: a time tick, then the message
+        p.drawRoundedRect(r(3.5, 4, 17, 16), 2, 2)
+        for y, end in ((8.5, 17), (12, 14.5), (15.5, 16)):
+            p.drawPoint(QPointF(7, y)); p.drawLine(QPointF(9.5, y), QPointF(end, y))
+    elif name == "bluetooth":                              # the Bluetooth rune
+        path = QPainterPath(QPointF(7.5, 8)); path.lineTo(16.5, 15.5); path.lineTo(12, 19.5); path.lineTo(12, 4.5)
+        path.lineTo(16.5, 8.5); path.lineTo(7.5, 16)
+        p.drawPath(path)
 
 
 def _pixmap(name: str, color: str, size: int) -> QPixmap:

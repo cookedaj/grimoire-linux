@@ -2,105 +2,417 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="zh_CN" sourcelanguage="en">
 <context>
-    <name>grimoire.spells.netl.nm</name>
+    <name>grimoire.spells.netl.bluez</name>
     <message>
-        <location filename="../../grimoire/spells/netl/nm.py"/>
-        <source>done</source>
-        <translation>完成</translation>
+        <location filename="../../grimoire/spells/netl/bluez.py"/>
+        <source>Bluetooth needs python3-gi: {command}</source>
+        <translation>蓝牙需要 python3-gi：{command}</translation>
     </message>
     <message>
-        <location filename="../../grimoire/spells/netl/nm.py"/>
-        <source>the password can&apos;t contain line breaks</source>
-        <translation>密码不能包含换行</translation>
+        <location filename="../../grimoire/spells/netl/bluez.py"/>
+        <source>the adapter is off</source>
+        <translation>适配器已关闭</translation>
     </message>
     <message>
-        <location filename="../../grimoire/spells/netl/nm.py"/>
-        <source>{security} networks need Plasma&apos;s network settings</source>
-        <translation>{security} 网络需要使用 Plasma 的网络设置</translation>
+        <location filename="../../grimoire/spells/netl/bluez.py"/>
+        <source>the codes didn&apos;t match, or the device refused</source>
+        <translation>配对码不一致，或设备拒绝了</translation>
     </message>
     <message>
-        <location filename="../../grimoire/spells/netl/nm.py"/>
-        <source>this network needs a password</source>
-        <translation>这个网络需要密码</translation>
+        <location filename="../../grimoire/spells/netl/bluez.py"/>
+        <source>the device refused</source>
+        <translation>设备拒绝了</translation>
     </message>
     <message>
-        <location filename="../../grimoire/spells/netl/nm.py"/>
-        <source>NetworkManager didn&apos;t say which profile it made</source>
-        <translation>NetworkManager 没有告知它创建了哪个配置</translation>
+        <location filename="../../grimoire/spells/netl/bluez.py"/>
+        <source>the device didn&apos;t answer in time</source>
+        <translation>设备没有及时响应</translation>
     </message>
     <message>
-        <location filename="../../grimoire/spells/netl/nm.py"/>
-        <source>connected to {network}</source>
-        <translation>已连接到 {network}</translation>
+        <location filename="../../grimoire/spells/netl/bluez.py"/>
+        <source>the device didn&apos;t answer: is it on and nearby?</source>
+        <translation>设备没有响应：它是否已开启并在附近？</translation>
     </message>
     <message>
-        <location filename="../../grimoire/spells/netl/nm.py"/>
-        <source>Couldn&apos;t connect</source>
-        <translation>无法连接</translation>
+        <location filename="../../grimoire/spells/netl/bluez.py"/>
+        <source>already paired</source>
+        <translation>已经配对</translation>
     </message>
     <message>
-        <location filename="../../grimoire/spells/netl/nm.py"/>
-        <source>Couldn&apos;t create the profile</source>
-        <translation>无法创建配置</translation>
+        <location filename="../../grimoire/spells/netl/bluez.py"/>
+        <source>the device is gone</source>
+        <translation>设备已不在</translation>
     </message>
     <message>
-        <location filename="../../grimoire/spells/netl/nm.py"/>
-        <source>Couldn&apos;t disconnect</source>
-        <translation>无法断开连接</translation>
+        <location filename="../../grimoire/spells/netl/bluez.py"/>
+        <source>already busy with this device</source>
+        <translation>正在处理这个设备</translation>
     </message>
     <message>
-        <location filename="../../grimoire/spells/netl/nm.py"/>
-        <source>Couldn&apos;t switch Wi-Fi</source>
-        <translation>无法切换 Wi-Fi</translation>
+        <location filename="../../grimoire/spells/netl/bluez.py"/>
+        <source>Bluetooth is blocked (airplane mode or a hardware switch)</source>
+        <translation>蓝牙被阻止（飞行模式或硬件开关）</translation>
     </message>
     <message>
-        <location filename="../../grimoire/spells/netl/nm.py"/>
-        <source>Couldn&apos;t switch airplane mode</source>
-        <translation>无法切换飞行模式</translation>
+        <location filename="../../grimoire/spells/netl/bluez.py"/>
+        <source>not allowed</source>
+        <translation>不允许</translation>
     </message>
     <message>
-        <location filename="../../grimoire/spells/netl/nm.py"/>
-        <source>Couldn&apos;t switch the VPN</source>
-        <translation>无法切换 VPN</translation>
+        <location filename="../../grimoire/spells/netl/bluez.py"/>
+        <source>not available</source>
+        <translation>不可用</translation>
     </message>
     <message>
-        <location filename="../../grimoire/spells/netl/nm.py"/>
-        <source>{device} disconnected</source>
-        <translation>{device} 已断开</translation>
+        <location filename="../../grimoire/spells/netl/bluez.py"/>
+        <source>the Bluetooth service isn&apos;t running</source>
+        <translation>蓝牙服务未运行</translation>
     </message>
     <message>
-        <location filename="../../grimoire/spells/netl/nm.py"/>
-        <source>Wi-Fi on</source>
-        <translation>Wi-Fi 已开启</translation>
+        <location filename="../../grimoire/spells/netl/bluez.py"/>
+        <source>Couldn&apos;t reach the system bus: {error}</source>
+        <translation>无法连接到系统总线：{error}</translation>
     </message>
     <message>
-        <location filename="../../grimoire/spells/netl/nm.py"/>
-        <source>Wi-Fi off</source>
-        <translation>Wi-Fi 已关闭</translation>
+        <location filename="../../grimoire/spells/netl/bluez.py"/>
+        <source>paired; connect it when it&apos;s ready</source>
+        <translation>已配对；设备准备好后再连接</translation>
     </message>
     <message>
-        <location filename="../../grimoire/spells/netl/nm.py"/>
-        <source>airplane mode on</source>
-        <translation>飞行模式已开启</translation>
+        <location filename="../../grimoire/spells/netl/bluez.py"/>
+        <source>paired and connected</source>
+        <translation>已配对并连接</translation>
     </message>
     <message>
-        <location filename="../../grimoire/spells/netl/nm.py"/>
-        <source>airplane mode off</source>
-        <translation>飞行模式已关闭</translation>
-    </message>
-    <message>
-        <location filename="../../grimoire/spells/netl/nm.py"/>
+        <location filename="../../grimoire/spells/netl/bluez.py"/>
         <source>connected</source>
         <translation>已连接</translation>
     </message>
     <message>
-        <location filename="../../grimoire/spells/netl/nm.py"/>
+        <location filename="../../grimoire/spells/netl/bluez.py"/>
         <source>disconnected</source>
         <translation>已断开</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/bluez.py"/>
+        <source>removed</source>
+        <translation>已移除</translation>
+    </message>
+</context>
+<context>
+    <name>grimoire.spells.netl.btview</name>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>strong signal</source>
+        <translation>信号强</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>good signal</source>
+        <translation>信号良好</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>weak signal</source>
+        <translation>信号弱</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>Pair with {device}</source>
+        <translation>与 {device} 配对</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>Check that {device} shows this number, then confirm on both.</source>
+        <translation>确认 {device} 显示的是这个数字，然后在两边都确认。</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>Type this number on {device}, then press Enter on it.</source>
+        <translation>在 {device} 上输入这个数字，然后在它上面按回车。</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>Type this PIN on {device}, then press Enter on it.</source>
+        <translation>在 {device} 上输入这个 PIN，然后在它上面按回车。</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>Type the number {device} shows.</source>
+        <translation>输入 {device} 显示的数字。</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>Type the PIN for {device} (often 0000 or 1234, or the one in its manual).</source>
+        <translation>输入 {device} 的 PIN（通常是 0000 或 1234，或说明书上的那个）。</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>{device} wants to pair with this PC. Allow it?</source>
+        <translation>{device} 想与这台电脑配对。允许吗？</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>{device} wants to use a service on this PC ({service}). Allow it?</source>
+        <translation>{device} 想使用这台电脑上的一项服务（{service}）。允许吗？</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>Cancel pairing</source>
+        <translation>取消配对</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>Don&apos;t allow</source>
+        <translation>不允许</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>Doesn&apos;t match</source>
+        <translation>不一致</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>Cancel</source>
+        <translation>取消</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>Allow</source>
+        <translation>允许</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>It matches</source>
+        <translation>一致</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>Pair</source>
+        <translation>配对</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>Connected</source>
+        <translation>已连接</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>Not connected</source>
+        <translation>未连接</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>battery {percent}</source>
+        <translation>电量 {percent}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>Disconnect</source>
+        <translation>断开</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>Connect</source>
+        <translation>连接</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>Remove</source>
+        <translation>移除</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>Forget this device (pair it again to use it)</source>
+        <translation>忘记这个设备（要再次使用请重新配对）</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>Pairing…</source>
+        <translation>正在配对…</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>Visible to nearby devices</source>
+        <translation>对附近设备可见</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>My devices</source>
+        <translation>我的设备</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>Nearby devices</source>
+        <translation>附近的设备</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>Scan</source>
+        <translation>扫描</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>Look for devices in pairing mode for {seconds} seconds</source>
+        <translation>在 {seconds} 秒内查找处于配对模式的设备</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>The Bluetooth service isn&apos;t running. Start it with {command}.</source>
+        <translation>蓝牙服务未运行。用 {command} 启动它。</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>No Bluetooth adapter found. If this PC has one, it may be switched off in the firmware settings or need a driver.</source>
+        <translation>没有找到蓝牙适配器。如果这台电脑有，它可能在固件设置中被关闭，或需要驱动。</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>Bluetooth is blocked by airplane mode or a hardware switch. Turn airplane mode off in Wi-Fi &amp; VPN.</source>
+        <translation>蓝牙被飞行模式或硬件开关阻止。请在 Wi-Fi 和 VPN 中关闭飞行模式。</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>Pairing isn&apos;t available right now (BlueZ didn&apos;t accept NetL&apos;s pairing helper); devices you already paired still work.</source>
+        <translation>现在无法配对（BlueZ 没有接受 NetL 的配对助手）；已配对的设备仍可使用。</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>{name} · {address}</source>
+        <translation>{name} · {address}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>Off</source>
+        <translation>关</translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>Others can find this PC as {name}. Turns itself off after %n minute(s).</source>
+        <translation>
+            <numerusform>其他设备可以找到名为 {name} 的这台电脑。%n 分钟后自动关闭。</numerusform>
+        </translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>Others can find this PC as {name} while this is on.</source>
+        <translation>打开时，其他设备可以找到名为 {name} 的这台电脑。</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>Stop</source>
+        <translation>停止</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>No paired devices yet. Put a device in pairing mode, press Scan, then Pair.</source>
+        <translation>还没有配对的设备。让设备进入配对模式，按“扫描”，然后按“配对”。</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>Looking for devices in pairing mode…</source>
+        <translation>正在查找处于配对模式的设备…</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>Press Scan to look for devices in pairing mode.</source>
+        <translation>按“扫描”查找处于配对模式的设备。</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>done</source>
+        <translation>完成</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>cancelled</source>
+        <translation>已取消</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>Couldn&apos;t pair with {what}: {error}</source>
+        <translation>无法与 {what} 配对：{error}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>Couldn&apos;t connect to {what}: {error}</source>
+        <translation>无法连接到 {what}：{error}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>Couldn&apos;t change {what}: {error}</source>
+        <translation>无法更改 {what}：{error}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>{what}: {result}</source>
+        <translation>{what}：{result}</translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>Turn Bluetooth off? %n device(s) will disconnect.</source>
+        <translation>
+            <numerusform>要关闭蓝牙吗？%n 个设备将断开连接。</numerusform>
+        </translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>on</source>
+        <translation>开</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>off</source>
+        <translation>关</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>Visibility</source>
+        <translation>可见性</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>visible</source>
+        <translation>可见</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>hidden</source>
+        <translation>隐藏</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>Connecting to {device}…</source>
+        <translation>正在连接到 {device}…</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>Pairing with {device}… follow what it asks.</source>
+        <translation>正在与 {device} 配对… 请按它的提示操作。</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>Remove {device}? To use it again, put it in pairing mode and pair it from here.</source>
+        <translation>移除 {device}？要再次使用它，请让它进入配对模式并在这里配对。</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <source>Remove device</source>
+        <translation>移除设备</translation>
+    </message>
+    <message>
+        <source>CONNECTED</source>
+        <translation type="vanished">已连接</translation>
     </message>
 </context>
 <context>
     <name>grimoire.spells.netl.page</name>
+    <message>
+        <location filename="../../grimoire/spells/netl/btview.py"/>
+        <location filename="../../grimoire/spells/netl/page.py"/>
+        <source>Bluetooth</source>
+        <translation>蓝牙</translation>
+    </message>
     <message>
         <location filename="../../grimoire/spells/netl/page.py"/>
         <source>Overview</source>
@@ -411,6 +723,104 @@
         <location filename="../../grimoire/spells/netl/page.py"/>
         <source>Couldn&apos;t change {what}: {error}</source>
         <translation>无法更改 {what}：{error}</translation>
+    </message>
+</context>
+<context>
+    <name>grimoire.spells.netl.nm</name>
+    <message>
+        <location filename="../../grimoire/spells/netl/nm.py"/>
+        <source>done</source>
+        <translation>完成</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/nm.py"/>
+        <source>the password can&apos;t contain line breaks</source>
+        <translation>密码不能包含换行</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/nm.py"/>
+        <source>{security} networks need Plasma&apos;s network settings</source>
+        <translation>{security} 网络需要使用 Plasma 的网络设置</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/nm.py"/>
+        <source>this network needs a password</source>
+        <translation>这个网络需要密码</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/nm.py"/>
+        <source>NetworkManager didn&apos;t say which profile it made</source>
+        <translation>NetworkManager 没有告知它创建了哪个配置</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/nm.py"/>
+        <source>connected to {network}</source>
+        <translation>已连接到 {network}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/nm.py"/>
+        <source>Couldn&apos;t connect</source>
+        <translation>无法连接</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/nm.py"/>
+        <source>Couldn&apos;t create the profile</source>
+        <translation>无法创建配置</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/nm.py"/>
+        <source>Couldn&apos;t disconnect</source>
+        <translation>无法断开连接</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/nm.py"/>
+        <source>Couldn&apos;t switch Wi-Fi</source>
+        <translation>无法切换 Wi-Fi</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/nm.py"/>
+        <source>Couldn&apos;t switch airplane mode</source>
+        <translation>无法切换飞行模式</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/nm.py"/>
+        <source>Couldn&apos;t switch the VPN</source>
+        <translation>无法切换 VPN</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/nm.py"/>
+        <source>{device} disconnected</source>
+        <translation>{device} 已断开</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/nm.py"/>
+        <source>Wi-Fi on</source>
+        <translation>Wi-Fi 已开启</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/nm.py"/>
+        <source>Wi-Fi off</source>
+        <translation>Wi-Fi 已关闭</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/nm.py"/>
+        <source>airplane mode on</source>
+        <translation>飞行模式已开启</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/nm.py"/>
+        <source>airplane mode off</source>
+        <translation>飞行模式已关闭</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/nm.py"/>
+        <source>connected</source>
+        <translation>已连接</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/netl/nm.py"/>
+        <source>disconnected</source>
+        <translation>已断开</translation>
     </message>
 </context>
 <context>

@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
-"""SystemL's actions and lists: process signals and priority, systemd services, startup apps, disks.
+"""SystemL's actions and lists: process signals and priority, systemd services, startup apps, disk rates.
 
 Anything you own is done directly; anything that needs root goes through root-helper.sh with pkexec (one
 password prompt). Every call that can take a moment is meant to run on a worker thread.
@@ -171,15 +171,6 @@ def unit_action(user: bool, action: str, unit: str) -> str:
     return tr("grimoire.spells.systeml.system", "done")
 
 
-def unit_log(user: bool, unit: str, lines=200) -> str:
-    cmd = ["journalctl", "--user-unit" if user else "-u", unit, "-n", str(lines), "--no-pager", "-o", "short-iso"]
-    try:
-        out = subprocess.run(cmd, capture_output=True, text=True, timeout=15)
-    except (OSError, subprocess.TimeoutExpired):
-        return tr("grimoire.spells.systeml.system", "Couldn't read the log.")
-    return out.stdout.strip() or out.stderr.strip() or tr("grimoire.spells.systeml.system", "No log lines yet.")
-
-
 def failed_count() -> int:
     n = 0
     for user in (False, True):
@@ -326,39 +317,7 @@ def remove_startup(file: str):
     trash(path)
 
 
-# ---------------------------------------------------------------- disks
-def drives() -> list[dict]:
-    """Physical drives with their partitions, from lsblk, plus usage for mounted ones."""
-    try:
-        data = json.loads(subprocess.run(["lsblk", "-J", "-b", "-o", "NAME,MODEL,SIZE,TYPE,ROTA,TRAN,RM,"
-                                          "MOUNTPOINTS,FSTYPE,LABEL"], capture_output=True, text=True,
-                                         timeout=10).stdout)
-    except (OSError, subprocess.TimeoutExpired, ValueError):
-        return []
-    out = []
-    for dev in data.get("blockdevices", []):
-        if dev.get("type") not in ("disk",) or dev["name"].startswith(("loop", "zram", "ram")):
-            continue
-        kind = "NVMe SSD" if dev.get("tran") == "nvme" else \
-            tr("grimoire.spells.systeml.system", "USB drive") if dev.get("tran") == "usb" else \
-            tr("grimoire.spells.systeml.system", "Hard drive") if dev.get("rota") else "SSD"
-        parts = []
-        for p in dev.get("children") or [dev]:
-            mounts = [m for m in (p.get("mountpoints") or []) if m]
-            usage = None
-            if mounts and not mounts[0].startswith("[SWAP]"):
-                try:
-                    usage = psutil.disk_usage(mounts[0])
-                except OSError:
-                    pass
-            parts.append({"name": p["name"], "size": p.get("size") or 0, "fs": p.get("fstype") or "",
-                          "label": p.get("label") or "", "mounts": mounts, "used": usage.used if usage else None,
-                          "total": usage.total if usage else None})
-        out.append({"name": dev["name"], "model": (dev.get("model") or dev["name"]).strip(), "size": dev["size"],
-                    "kind": kind, "removable": bool(dev.get("rm")) or dev.get("tran") == "usb", "parts": parts})
-    return out
-
-
+# ---------------------------------------------------------------- disks (the Drives panel is drives.py)
 def disk_rates(prev: dict | None, dt: float) -> tuple[dict, dict]:
     """Per-drive read/write bytes per second since prev (as returned last time)."""
     now = psutil.disk_io_counters(perdisk=True) or {}
@@ -369,10 +328,3 @@ def disk_rates(prev: dict | None, dt: float) -> tuple[dict, dict]:
                 rates[name] = (max(0, c.read_bytes - prev[name].read_bytes) / dt,
                                max(0, c.write_bytes - prev[name].write_bytes) / dt)
     return now, rates
-
-
-def unmount(device: str) -> str:
-    r = subprocess.run(["udisksctl", "unmount", "-b", f"/dev/{device}"], capture_output=True, text=True, timeout=30)
-    if r.returncode:
-        raise RuntimeError(r.stderr.strip() or tr("grimoire.spells.systeml.system", "couldn't unmount"))
-    return r.stdout.strip()

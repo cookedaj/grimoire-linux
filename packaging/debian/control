@@ -48,7 +48,7 @@ Recommends: kpackagetool6,
             fonts-noto-cjk,
             wireplumber,
             pulseaudio-utils
-Suggests: rsync, python3-numpy, wl-clipboard, baloo6
+Suggests: rsync, python3-numpy, wl-clipboard, baloo6, partitionmanager, smartmontools
 Description: black & white toolkit for KDE Plasma 6
  Grimoire Linux is one app with a set of black & white desktop tools
  ("spells") for KDE Plasma 6 on Wayland:
