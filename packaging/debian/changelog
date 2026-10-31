@@ -1,3 +1,29 @@
+grimoire-linux (0.3.1) unstable; urgency=medium
+
+  * RTL: stat tile numbers align right like their labels
+  * UpdateL: the update summary wraps instead of cutting off the security count
+  * SightsL: key chips no longer cut off at the hub's minimum size
+  * Settings: Run setup again opens the setup again; hotkey buttons fit long languages
+  * AUR: .SRCINFO description matches PKGBUILD
+  * PlayL software fallback without QtOpenGL; backups skip ShotL's token; package descriptions
+  * prefs.save: a temp file per writer
+  * Sign-in: start the session off the UI thread
+  * Sign-out failure message: its own string, translated
+  * Tray: escape notification text
+  * Home cards: show status lines as plain text
+  * Accounts, GitHub: a garbled HTTP answer is an error, not a stuck screen
+  * Update restart: close the windows before starting the new copy
+  * AUR: python-gobject is also what PhoneL and VaultL's show-in-folder service use
+  * GitHub backup: one sign-in per profile, not one for the whole PC
+  * Restart and sign-out: close the windows first, sign out off the UI thread
+  * Self-update waits out the helper prompt; StoreL named with the other root helpers
+  * Backups: leave out PlayL's resume points and LaunchL's machine state
+  * uninstall.sh --purge: remove Grimoire's sign-ins from the keyring too
+  * Hub: read the home cards' status lines off the UI thread
+  * Packaging: fix debian/control so the .deb builds again
+
+ -- cookedaj <285303240+cookedaj@users.noreply.github.com>  Sat, 31 Oct 2026 16:46:08 -0400
+
 grimoire-linux (0.3.0) unstable; urgency=medium
 
   * ReadL: FIFOs don't hang the sniffing; UTF-16 entity declarations refused too
