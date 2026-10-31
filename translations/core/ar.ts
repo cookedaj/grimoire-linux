@@ -3670,42 +3670,42 @@
     <message>
         <location filename="../../grimoire/spells/__init__.py"/>
         <source>Emoji, symbols and every Unicode character on a hotkey: search in your language, skin tones, favorites and a full Unicode block browser</source>
-        <translation type="unfinished"></translation>
+        <translation>الرموز التعبيرية والرموز وكل محارف يونيكود باختصار واحد: بحث بلغتك، ألوان البشرة، المفضلة ومتصفح كامل لكتل يونيكود</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/__init__.py"/>
         <source>Google Drive, OneDrive and Dropbox as folders on your PC through rclone: sign in from your browser, mount, see the space left and what is still uploading, and open them in VaultL</source>
-        <translation type="unfinished"></translation>
+        <translation>‏Google Drive وOneDrive وDropbox كمجلدات على حاسوبك عبر rclone: سجّل الدخول من المتصفح، اربطها، اعرف المساحة المتبقية وما زال يُرفع، وافتحها في VaultL</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/__init__.py"/>
         <source>Your pictures: a fast thumbnail grid, a full view with zoom, turns, slideshow and EXIF info, plus rename, Trash and set as wallpaper</source>
-        <translation type="unfinished"></translation>
+        <translation>صورك: شبكة مصغّرات سريعة، عرض كامل مع التكبير والتدوير وعرض الشرائح ومعلومات EXIF، إضافة إلى إعادة التسمية والمهملات والتعيين كخلفية</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/__init__.py"/>
         <source>Install and remove apps from Flathub, Ubuntu&apos;s archive and the Snap Store: search, screenshots, a preview of every change, and each Flatpak&apos;s permissions</source>
-        <translation type="unfinished"></translation>
+        <translation>ثبّت التطبيقات وأزلها من Flathub وأرشيف Ubuntu وSnap Store: بحث، لقطات شاشة، معاينة لكل تغيير، وأذونات كل Flatpak</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/__init__.py"/>
         <source>A quiet reader for PDFs, EPUB books, Markdown and text: covers, contents, search, bookmarks, night and paper pages, and it remembers where you stopped</source>
-        <translation type="unfinished"></translation>
+        <translation>قارئ هادئ لملفات PDF وكتب EPUB وMarkdown والنصوص: الأغلفة، الفهرس، البحث، العلامات، صفحات ليلية وورقية، ويتذكر أين توقفت</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/__init__.py"/>
         <source>Your phone on this PC through KDE Connect: send files, ring it, share the clipboard, browse its files, read and dismiss its notifications, text messages, media and commands</source>
-        <translation type="unfinished"></translation>
+        <translation>هاتفك على هذا الحاسوب عبر KDE Connect: أرسل الملفات، اجعله يرن، شارك الحافظة، تصفّح ملفاته، اقرأ إشعاراته وأغلقها، الرسائل النصية والوسائط والأوامر</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/__init__.py"/>
         <source>Markdown notes and a text editor in one: a notes folder with search, tags, [[links]] and backlinks, a live preview, tabs, and syntax colors for code</source>
-        <translation type="unfinished"></translation>
+        <translation>ملاحظات Markdown ومحرر نصوص في واحد: مجلد ملاحظات مع بحث ووسوم و[[روابط]] وروابط عكسية، معاينة حية، ألسنة، وتلوين بنية الشيفرة</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/__init__.py"/>
         <source>Videos and music: a queue you can drag around, subtitles and audio tracks, resume where you stopped, your music library with covers, and Plasma&apos;s media controls</source>
-        <translation type="unfinished"></translation>
+        <translation>الفيديو والموسيقى: قائمة تشغيل يمكنك سحبها، ترجمات ومسارات صوت، استئناف من حيث توقفت، مكتبة موسيقاك مع الأغلفة، وأدوات تحكم الوسائط في Plasma</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/__init__.py"/>

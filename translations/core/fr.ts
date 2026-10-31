@@ -3550,42 +3550,42 @@
     <message>
         <location filename="../../grimoire/spells/__init__.py"/>
         <source>Emoji, symbols and every Unicode character on a hotkey: search in your language, skin tones, favorites and a full Unicode block browser</source>
-        <translation type="unfinished"></translation>
+        <translation>Émojis, symboles et tous les caractères Unicode sur un raccourci : recherche dans votre langue, tons de peau, favoris et un navigateur complet des blocs Unicode</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/__init__.py"/>
         <source>Google Drive, OneDrive and Dropbox as folders on your PC through rclone: sign in from your browser, mount, see the space left and what is still uploading, and open them in VaultL</source>
-        <translation type="unfinished"></translation>
+        <translation>Google Drive, OneDrive et Dropbox comme dossiers sur votre PC grâce à rclone : connexion depuis votre navigateur, montage, espace restant, ce qui est encore en cours d&apos;envoi, et ouverture dans VaultL</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/__init__.py"/>
         <source>Your pictures: a fast thumbnail grid, a full view with zoom, turns, slideshow and EXIF info, plus rename, Trash and set as wallpaper</source>
-        <translation type="unfinished"></translation>
+        <translation>Vos images : une grille de miniatures rapide, une vue complète avec zoom, rotations, diaporama et infos EXIF, plus renommer, Corbeille et définir comme fond d&apos;écran</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/__init__.py"/>
         <source>Install and remove apps from Flathub, Ubuntu&apos;s archive and the Snap Store: search, screenshots, a preview of every change, and each Flatpak&apos;s permissions</source>
-        <translation type="unfinished"></translation>
+        <translation>Installez et supprimez des applications depuis Flathub, l&apos;archive d&apos;Ubuntu et le Snap Store : recherche, captures d&apos;écran, aperçu de chaque changement et permissions de chaque Flatpak</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/__init__.py"/>
         <source>A quiet reader for PDFs, EPUB books, Markdown and text: covers, contents, search, bookmarks, night and paper pages, and it remembers where you stopped</source>
-        <translation type="unfinished"></translation>
+        <translation>Un lecteur tranquille pour PDF, livres EPUB, Markdown et texte : couvertures, sommaire, recherche, signets, pages nuit et papier, et il se souvient où vous vous êtes arrêté</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/__init__.py"/>
         <source>Your phone on this PC through KDE Connect: send files, ring it, share the clipboard, browse its files, read and dismiss its notifications, text messages, media and commands</source>
-        <translation type="unfinished"></translation>
+        <translation>Votre téléphone sur ce PC via KDE Connect : envoyer des fichiers, le faire sonner, partager le presse-papiers, parcourir ses fichiers, lire et fermer ses notifications, SMS, médias et commandes</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/__init__.py"/>
         <source>Markdown notes and a text editor in one: a notes folder with search, tags, [[links]] and backlinks, a live preview, tabs, and syntax colors for code</source>
-        <translation type="unfinished"></translation>
+        <translation>Notes Markdown et éditeur de texte en un : un dossier de notes avec recherche, étiquettes, [[liens]] et rétroliens, aperçu en direct, onglets et couleurs syntaxiques pour le code</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/__init__.py"/>
         <source>Videos and music: a queue you can drag around, subtitles and audio tracks, resume where you stopped, your music library with covers, and Plasma&apos;s media controls</source>
-        <translation type="unfinished"></translation>
+        <translation>Vidéos et musique : une file que vous pouvez réorganiser, sous-titres et pistes audio, reprise là où vous vous êtes arrêté, votre bibliothèque musicale avec pochettes, et les contrôles multimédias de Plasma</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/__init__.py"/>

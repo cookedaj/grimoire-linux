@@ -3580,42 +3580,42 @@
     <message>
         <location filename="../../grimoire/spells/__init__.py"/>
         <source>Emoji, symbols and every Unicode character on a hotkey: search in your language, skin tones, favorites and a full Unicode block browser</source>
-        <translation type="unfinished"></translation>
+        <translation>Эмодзи, символы и любые символы Unicode по горячей клавише: поиск на вашем языке, оттенки кожи, избранное и полный обзор блоков Unicode</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/__init__.py"/>
         <source>Google Drive, OneDrive and Dropbox as folders on your PC through rclone: sign in from your browser, mount, see the space left and what is still uploading, and open them in VaultL</source>
-        <translation type="unfinished"></translation>
+        <translation>Google Drive, OneDrive и Dropbox как папки на вашем ПК через rclone: вход через браузер, подключение, свободное место и то, что ещё загружается, и открытие в VaultL</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/__init__.py"/>
         <source>Your pictures: a fast thumbnail grid, a full view with zoom, turns, slideshow and EXIF info, plus rename, Trash and set as wallpaper</source>
-        <translation type="unfinished"></translation>
+        <translation>Ваши изображения: быстрая сетка миниатюр, полный просмотр с масштабом, поворотами, слайд-шоу и данными EXIF, а также переименование, Корзина и установка обоев</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/__init__.py"/>
         <source>Install and remove apps from Flathub, Ubuntu&apos;s archive and the Snap Store: search, screenshots, a preview of every change, and each Flatpak&apos;s permissions</source>
-        <translation type="unfinished"></translation>
+        <translation>Установка и удаление приложений из Flathub, архива Ubuntu и Snap Store: поиск, снимки экрана, предпросмотр каждого изменения и разрешения каждого Flatpak</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/__init__.py"/>
         <source>A quiet reader for PDFs, EPUB books, Markdown and text: covers, contents, search, bookmarks, night and paper pages, and it remembers where you stopped</source>
-        <translation type="unfinished"></translation>
+        <translation>Спокойная читалка для PDF, книг EPUB, Markdown и текста: обложки, оглавление, поиск, закладки, ночные и бумажные страницы, и она помнит, где вы остановились</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/__init__.py"/>
         <source>Your phone on this PC through KDE Connect: send files, ring it, share the clipboard, browse its files, read and dismiss its notifications, text messages, media and commands</source>
-        <translation type="unfinished"></translation>
+        <translation>Ваш телефон на этом ПК через KDE Connect: отправка файлов, звонок на телефон, общий буфер обмена, просмотр файлов, чтение и закрытие уведомлений, SMS, медиа и команды</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/__init__.py"/>
         <source>Markdown notes and a text editor in one: a notes folder with search, tags, [[links]] and backlinks, a live preview, tabs, and syntax colors for code</source>
-        <translation type="unfinished"></translation>
+        <translation>Заметки Markdown и текстовый редактор в одном: папка заметок с поиском, тегами, [[ссылками]] и обратными ссылками, живой предпросмотр, вкладки и подсветка синтаксиса кода</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/__init__.py"/>
         <source>Videos and music: a queue you can drag around, subtitles and audio tracks, resume where you stopped, your music library with covers, and Plasma&apos;s media controls</source>
-        <translation type="unfinished"></translation>
+        <translation>Видео и музыка: очередь, которую можно перетаскивать, субтитры и звуковые дорожки, продолжение с места остановки, музыкальная библиотека с обложками и медиа-управление Plasma</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/__init__.py"/>

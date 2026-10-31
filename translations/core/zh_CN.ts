@@ -3520,42 +3520,42 @@
     <message>
         <location filename="../../grimoire/spells/__init__.py"/>
         <source>Emoji, symbols and every Unicode character on a hotkey: search in your language, skin tones, favorites and a full Unicode block browser</source>
-        <translation type="unfinished"></translation>
+        <translation>一键调出表情、符号和所有 Unicode 字符：用你的语言搜索、肤色、收藏，以及完整的 Unicode 区块浏览器</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/__init__.py"/>
         <source>Google Drive, OneDrive and Dropbox as folders on your PC through rclone: sign in from your browser, mount, see the space left and what is still uploading, and open them in VaultL</source>
-        <translation type="unfinished"></translation>
+        <translation>通过 rclone 将 Google Drive、OneDrive 和 Dropbox 作为电脑上的文件夹：在浏览器中登录、挂载、查看剩余空间和仍在上传的内容，并在 VaultL 中打开</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/__init__.py"/>
         <source>Your pictures: a fast thumbnail grid, a full view with zoom, turns, slideshow and EXIF info, plus rename, Trash and set as wallpaper</source>
-        <translation type="unfinished"></translation>
+        <translation>你的图片：快速的缩略图网格、带缩放、旋转、幻灯片和 EXIF 信息的完整视图，以及重命名、移到回收站和设为壁纸</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/__init__.py"/>
         <source>Install and remove apps from Flathub, Ubuntu&apos;s archive and the Snap Store: search, screenshots, a preview of every change, and each Flatpak&apos;s permissions</source>
-        <translation type="unfinished"></translation>
+        <translation>从 Flathub、Ubuntu 软件仓库和 Snap Store 安装和移除应用：搜索、截图、每项更改的预览，以及每个 Flatpak 的权限</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/__init__.py"/>
         <source>A quiet reader for PDFs, EPUB books, Markdown and text: covers, contents, search, bookmarks, night and paper pages, and it remembers where you stopped</source>
-        <translation type="unfinished"></translation>
+        <translation>安静的 PDF、EPUB 图书、Markdown 和文本阅读器：封面、目录、搜索、书签、夜间和纸张页面，并记住你读到哪里</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/__init__.py"/>
         <source>Your phone on this PC through KDE Connect: send files, ring it, share the clipboard, browse its files, read and dismiss its notifications, text messages, media and commands</source>
-        <translation type="unfinished"></translation>
+        <translation>通过 KDE Connect 在这台电脑上使用你的手机：发送文件、让它响铃、共享剪贴板、浏览文件、阅读和清除通知、短信、媒体和命令</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/__init__.py"/>
         <source>Markdown notes and a text editor in one: a notes folder with search, tags, [[links]] and backlinks, a live preview, tabs, and syntax colors for code</source>
-        <translation type="unfinished"></translation>
+        <translation>Markdown 笔记与文本编辑器合一：带搜索、标签、[[链接]]和反向链接的笔记文件夹、实时预览、标签页和代码语法着色</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/__init__.py"/>
         <source>Videos and music: a queue you can drag around, subtitles and audio tracks, resume where you stopped, your music library with covers, and Plasma&apos;s media controls</source>
-        <translation type="unfinished"></translation>
+        <translation>视频和音乐：可拖动排序的播放队列、字幕和音轨、从上次停下的地方继续、带封面的音乐库，以及 Plasma 的媒体控制</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/__init__.py"/>

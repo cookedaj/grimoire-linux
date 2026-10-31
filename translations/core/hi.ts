@@ -3550,42 +3550,42 @@
     <message>
         <location filename="../../grimoire/spells/__init__.py"/>
         <source>Emoji, symbols and every Unicode character on a hotkey: search in your language, skin tones, favorites and a full Unicode block browser</source>
-        <translation type="unfinished"></translation>
+        <translation>एक हॉटकी पर इमोजी, चिह्न और हर यूनिकोड अक्षर: अपनी भाषा में खोज, त्वचा के रंग, पसंदीदा और पूरा यूनिकोड ब्लॉक ब्राउज़र</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/__init__.py"/>
         <source>Google Drive, OneDrive and Dropbox as folders on your PC through rclone: sign in from your browser, mount, see the space left and what is still uploading, and open them in VaultL</source>
-        <translation type="unfinished"></translation>
+        <translation>rclone के ज़रिए Google Drive, OneDrive और Dropbox आपके पीसी पर फ़ोल्डर की तरह: ब्राउज़र से साइन इन करें, माउंट करें, बची जगह और अभी अपलोड हो रही चीज़ें देखें, और उन्हें VaultL में खोलें</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/__init__.py"/>
         <source>Your pictures: a fast thumbnail grid, a full view with zoom, turns, slideshow and EXIF info, plus rename, Trash and set as wallpaper</source>
-        <translation type="unfinished"></translation>
+        <translation>आपकी तस्वीरें: तेज़ थंबनेल ग्रिड, ज़ूम, घुमाव, स्लाइडशो और EXIF जानकारी वाला पूरा दृश्य, साथ में नाम बदलना, ट्रैश और वॉलपेपर बनाना</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/__init__.py"/>
         <source>Install and remove apps from Flathub, Ubuntu&apos;s archive and the Snap Store: search, screenshots, a preview of every change, and each Flatpak&apos;s permissions</source>
-        <translation type="unfinished"></translation>
+        <translation>Flathub, Ubuntu के संग्रह और Snap Store से ऐप इंस्टॉल करें और हटाएँ: खोज, स्क्रीनशॉट, हर बदलाव का पूर्वावलोकन और हर Flatpak की अनुमतियाँ</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/__init__.py"/>
         <source>A quiet reader for PDFs, EPUB books, Markdown and text: covers, contents, search, bookmarks, night and paper pages, and it remembers where you stopped</source>
-        <translation type="unfinished"></translation>
+        <translation>PDF, EPUB किताबों, Markdown और टेक्स्ट के लिए एक शांत रीडर: कवर, विषय-सूची, खोज, बुकमार्क, रात और कागज़ वाले पेज, और यह याद रखता है कि आप कहाँ रुके थे</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/__init__.py"/>
         <source>Your phone on this PC through KDE Connect: send files, ring it, share the clipboard, browse its files, read and dismiss its notifications, text messages, media and commands</source>
-        <translation type="unfinished"></translation>
+        <translation>KDE Connect से इस पीसी पर आपका फ़ोन: फ़ाइलें भेजें, उसे बजाएँ, क्लिपबोर्ड साझा करें, उसकी फ़ाइलें देखें, उसकी सूचनाएँ पढ़ें और हटाएँ, टेक्स्ट संदेश, मीडिया और कमांड</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/__init__.py"/>
         <source>Markdown notes and a text editor in one: a notes folder with search, tags, [[links]] and backlinks, a live preview, tabs, and syntax colors for code</source>
-        <translation type="unfinished"></translation>
+        <translation>Markdown नोट्स और टेक्स्ट एडिटर एक में: खोज, टैग, [[लिंक]] और बैकलिंक वाला नोट्स फ़ोल्डर, लाइव पूर्वावलोकन, टैब और कोड के लिए सिंटैक्स रंग</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/__init__.py"/>
         <source>Videos and music: a queue you can drag around, subtitles and audio tracks, resume where you stopped, your music library with covers, and Plasma&apos;s media controls</source>
-        <translation type="unfinished"></translation>
+        <translation>वीडियो और संगीत: खींचकर बदली जा सकने वाली कतार, उपशीर्षक और ऑडियो ट्रैक, जहाँ रुके थे वहीं से जारी, कवर वाली आपकी संगीत लाइब्रेरी, और Plasma के मीडिया नियंत्रण</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/__init__.py"/>
