@@ -58,12 +58,16 @@ def run(cmd: str) -> int:
     if cmd in ("hide", "quit"):
         return 0                                        # nothing running: nothing to hide
     lock = _lock()
-    if lock is None:                                    # another one is starting right now: wait for it
+    if lock is None:                                    # another one is starting (or quitting) right now
         for _ in range(50):
             time.sleep(0.1)
-            if send(cmd):
+            if send(cmd, timeout=0.5):
                 return 0
-        return 1
+            lock = _lock()                              # the old one quit meanwhile: be the popup
+            if lock is not None:
+                break
+        else:
+            return 1
     return _serve(cmd, lock)
 
 
@@ -98,14 +102,21 @@ def _serve(cmd: str, lock) -> int:
     def connection():
         conn = server.nextPendingConnection()
         buf = bytearray()
+        done = []
 
         def ready():
+            if done:                                    # one command per connection: later bytes are ignored
+                conn.readAll()
+                return
             buf.extend(bytes(conn.readAll()))
             if b"\n" not in buf and len(buf) < 4096:
                 return
+            done.append(True)
             try:
                 msg = json.loads(buf.split(b"\n")[0])
             except ValueError:
+                msg = {}
+            if not isinstance(msg, dict):               # valid JSON but not an object: would raise below
                 msg = {}
             conn.write(b"ok\n")
             conn.flush()
@@ -123,7 +134,7 @@ def _serve(cmd: str, lock) -> int:
     tick.start()
     popup.command(cmd, os.environ.pop("XDG_ACTIVATION_TOKEN", ""))
     code = app.exec()
+    server.close()                                      # a press from now on starts a new popup, not waits on us
     popup.finish()
-    server.close()
     lock.close()
     return code
