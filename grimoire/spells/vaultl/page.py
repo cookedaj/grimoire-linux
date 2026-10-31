@@ -222,6 +222,7 @@ class VaultLPage(QWidget):
         ml.addWidget(split, 1)
         self.status = QLabel()
         self.status.setObjectName("Muted")
+        self.status.setTextFormat(Qt.TextFormat.PlainText)     # file names and archive errors are anyone's
         ml.addWidget(self.status)
         self.body = QStackedWidget()                      # 0: files, 1: tidy panels, 2: inside an archive
         self.body.addWidget(main)
@@ -405,6 +406,7 @@ class VaultLPage(QWidget):
         icon.setPixmap(glyph("tidy", 18).pixmap(18, 18))
         h.addWidget(icon)
         self.tidy_note = QLabel()
+        self.tidy_note.setTextFormat(Qt.TextFormat.PlainText)
         self.tidy_note.setObjectName("Muted")
         self.tidy_note.setWordWrap(True)
         h.addWidget(self.tidy_note, 1)
@@ -504,6 +506,8 @@ class VaultLPage(QWidget):
         self.pv_info.setTextInteractionFlags(Qt.TextInteractionFlag.TextSelectableByMouse)
         for x in (self.pv_image, self.pv_text, self.pv_name, self.pv_info):
             v.addWidget(x)
+        for x in (self.pv_text, self.pv_name, self.pv_info):
+            x.setTextFormat(Qt.TextFormat.PlainText)            # a file named <h1>… or holding HTML stays text
         self.pv_text.hide()
         v.addStretch(1)
         self.pv_open = QPushButton(tr("grimoire.spells.vaultl.page", "Open"))

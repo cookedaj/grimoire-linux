@@ -470,6 +470,38 @@ def scrub(root: Path, private=False) -> int:
     return dropped
 
 
+def _confine(item: Path, around: Path) -> int:
+    """Before item moves out of the staging folder on its own: drop the links in it that lead out of it (into
+    the staging or the folder it lands in), and item itself when it is a link leading out of around. Our own
+    fresh staging files only. Returns how many were dropped."""
+    def leaves(p: str, top: str, strict: bool) -> bool:
+        target = os.readlink(p)
+        if target.startswith("/"):
+            return True
+        for where in (os.path.normpath(os.path.join(os.path.dirname(p), target)), os.path.realpath(p)):
+            if not (where.startswith(top + os.sep) or (where == top and not strict)):
+                return True
+        return False
+
+    item, top_around = str(item), os.path.realpath(around)
+    if os.path.islink(item):
+        if leaves(item, top_around, True):
+            os.unlink(item)
+            return 1
+        return 0
+    if not os.path.isdir(item):
+        return 0
+    top, dropped = os.path.realpath(item), 0
+    for dirpath, dirnames, filenames in os.walk(item):
+        for name in dirnames + filenames:
+            p = os.path.join(dirpath, name)
+            if os.path.islink(p) and leaves(p, top, False):
+                os.unlink(p)
+                dropped += 1
+        dirnames[:] = [d for d in dirnames if not os.path.islink(os.path.join(dirpath, d))]
+    return dropped
+
+
 def free_bytes(path: Path) -> int:
     try:
         st = os.statvfs(path)
@@ -579,18 +611,16 @@ class TarReader(Reader):
     pipe for formats Python can't read (7z, rar)."""
 
     def _open(self):
+        """(tarfile, close function or None). Per call: a preview and an extraction can read at once."""
         if self.comp == "zst" and zstd is None:
             raise missing(SEVEN)
         return tarfile.open(self.path, "r|" + ({"gz": "gz", "xz": "xz", "bz2": "bz2", "zst": "zst"}
-                                                .get(self.comp, "")))
-
-    def _close(self):
-        pass
+                                                .get(self.comp, ""))), None
 
     def _members(self, progress):
-        t = None
+        t = close = None
         try:
-            t = self._open()
+            t, close = self._open()
             count = 0
             for m in t:
                 progress.check()
@@ -603,7 +633,8 @@ class TarReader(Reader):
         finally:
             if t is not None:
                 t.close()
-            self._close()
+            if close is not None:
+                close()
 
     def _list(self, progress) -> Listing:
         out = Listing()
@@ -612,7 +643,11 @@ class TarReader(Reader):
             if name is None:
                 out.unsafe += 1
                 continue
-            out.add(Entry(name, m.isdir(), m.size if m.isreg() else 0, -1, m.mtime or None, m.issym(),
+            size = m.size if m.isreg() else 0
+            if m.islnk():                              # written as a copy of an earlier member: counts its bytes
+                target = out.entries.get(clean_name(m.linkname) or "")
+                size = target.size if target and not target.is_dir else 0
+            out.add(Entry(name, m.isdir(), size, -1, m.mtime or None, m.issym(),
                           not (m.isreg() or m.isdir() or m.issym() or m.islnk()), False, m.name))
         return out
 
@@ -650,15 +685,16 @@ class BsdtarReader(TarReader):
     needs_tool = "bsdtar"
 
     def _open(self):
-        self._proc = subprocess.Popen([tools()["bsdtar"], "-cf", "-", "--format", "pax", "@" + str(self.path)],
-                                      stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.DEVNULL,
-                                      env=ENV)
-        return tarfile.open(fileobj=self._proc.stdout, mode="r|")
+        proc = subprocess.Popen([tools()["bsdtar"], "-cf", "-", "--format", "pax", "@" + str(self.path)],
+                                stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.DEVNULL, env=ENV)
+        try:
+            return tarfile.open(fileobj=proc.stdout, mode="r|"), lambda: self._close(proc)
+        except BaseException:
+            self._close(proc)                          # bsdtar's own message says more than "empty file"
+            raise
 
-    def _close(self):
-        proc = getattr(self, "_proc", None)
-        if proc is None:
-            return
+    @staticmethod
+    def _close(proc):
         if proc.poll() is None:
             proc.kill()
         err = proc.stderr.read().decode(errors="replace") if proc.stderr else ""
@@ -746,8 +782,11 @@ class SevenReader(Reader):
                     if limit and _du(watch, limit) > limit:
                         raise _bomb()
                 time.sleep(0.05)
+            if watch is not None and limit and _du(watch, limit) > limit:
+                raise _bomb()                          # a fast 7z can finish between two checks
         except BaseException:
-            proc.kill()
+            if proc.poll() is None:
+                proc.kill()
             proc.wait()
             raise
         reader.join(5)
@@ -926,13 +965,18 @@ def _extract(r, dest, names, base, progress, smart, private) -> Result:
         if names is not None:
             src = stage / base if base else stage
             tops = sorted(src.iterdir()) if src.is_dir() else []
+            result.skipped += sum(_confine(item, src) for item in tops)
+            tops = [t for t in tops if t.is_symlink() or t.exists()]
             for item in tops:
                 target = free_name(dest / item.name)
                 os.rename(item, target)
                 result.placed.append(target)
         else:
             tops = list(stage.iterdir())
-            if smart and len(tops) == 1:
+            single = smart and len(tops) == 1
+            result.skipped += _confine(tops[0] if single else stage, stage)
+            tops = [t for t in tops if t.is_symlink() or t.exists()]
+            if single and tops:
                 target = free_name(dest / tops[0].name)
                 os.rename(tops[0], target)
             else:
@@ -967,6 +1011,20 @@ def formats() -> list[str]:
 def can_encrypt(fmt: str) -> bool:
     """zip and 7z can carry a password, both through 7z (AES-256): Python can't write encrypted zips."""
     return fmt in (ZIPF, SEVENF) and bool(tools()["7z"])
+
+
+def password_problem(fmt: str, password: str) -> str:
+    """Why this password can't protect an archive of this format ("" when it can)."""
+    if not password:
+        return ""
+    if not can_encrypt(fmt):
+        return tr("grimoire.spells.vaultl.archive", "This format can't carry a password.")
+    if "\n" in password or "\r" in password:
+        return tr("grimoire.spells.vaultl.archive", "Passwords can't contain line breaks.")
+    if fmt == ZIPF and not password.isascii():           # 7z stops with E_INVALIDARG
+        return tr("grimoire.spells.vaultl.archive",
+                  "zip passwords can only use English letters, digits and symbols. Pick 7z to use this one.")
+    return ""
 
 
 def default_name(sources: list[Path], fmt: str) -> str:
@@ -1014,10 +1072,9 @@ def compress(sources: list[Path], out: Path, fmt: str, level: int = 2, password:
     """Pack sources (all in one folder) into out, or a free name next to it. level indexes LEVELS (0 store …
     3 max). Writes to a hidden file first and only takes the final name if it's still free."""
     progress = progress or Progress()
-    if password and not can_encrypt(fmt):
-        raise ArchiveError(tr("grimoire.spells.vaultl.archive", "This format can't carry a password."))
-    if "\n" in password or "\r" in password:
-        raise ArchiveError(tr("grimoire.spells.vaultl.archive", "Passwords can't contain line breaks."))
+    problem = password_problem(fmt, password)
+    if problem:
+        raise ArchiveError(problem)
     items = list(_walk(sources))
     total = sum(st.st_size for _, _, st in items if stat.S_ISREG(st.st_mode))
     progress.report(0, total, sources[0].name if sources else "", force=True)

@@ -88,6 +88,11 @@
         <source>Passwords can&apos;t contain line breaks.</source>
         <translation>Las contraseñas no pueden tener saltos de línea.</translation>
     </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archive.py"/>
+        <source>zip passwords can only use English letters, digits and symbols. Pick 7z to use this one.</source>
+        <translation>Las contraseñas zip solo pueden usar letras inglesas, cifras y símbolos. Elige 7z para usar esta.</translation>
+    </message>
 </context>
 <context>
     <name>grimoire.spells.vaultl.archiveview</name>
@@ -445,11 +450,6 @@
     </message>
     <message>
         <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
-        <source>Passwords can&apos;t contain line breaks.</source>
-        <translation>Las contraseñas no pueden tener saltos de línea.</translation>
-    </message>
-    <message>
-        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
         <source>Pick items from one folder to compress.</source>
         <translation>Elige elementos de una misma carpeta para comprimir.</translation>
     </message>
@@ -467,6 +467,10 @@
         <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
         <source>Compressing into {name}</source>
         <translation>Comprimiendo en {name}</translation>
+    </message>
+    <message>
+        <source>Passwords can&apos;t contain line breaks.</source>
+        <translation type="vanished">Las contraseñas no pueden tener saltos de línea.</translation>
     </message>
 </context>
 <context>

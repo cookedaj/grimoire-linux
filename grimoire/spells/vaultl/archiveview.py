@@ -124,6 +124,7 @@ class JobRow(QFrame):
         icon.setPixmap(glyph("archive", 18).pixmap(18, 18))
         h.addWidget(icon)
         self.title = QLabel(title)
+        self.title.setTextFormat(Qt.TextFormat.PlainText)      # archive names come from anyone
         h.addWidget(self.title, 1)
         self.detail = QLabel()
         self.detail.setObjectName("Muted")
@@ -323,6 +324,7 @@ class ArchivePanel(QWidget):
         self.folder = ""                                   # current folder inside the archive ("" = top)
         self.history: list[str] = []
         self.loading: archive.Progress | None = None
+        self.preview_job: archive.Progress | None = None   # the preview being extracted (one at a time)
         self.preview_req = 0
         lay = QVBoxLayout(self)
         lay.setContentsMargins(18, 14, 18, 10)
@@ -364,6 +366,8 @@ class ArchivePanel(QWidget):
         self.status = QLabel()
         self.status.setObjectName("Muted")
         lay.addWidget(self.status)
+        for label in (self.note_text, self.pv_text, self.pv_name, self.pv_info, self.status):
+            label.setTextFormat(Qt.TextFormat.PlainText)   # entry names, file contents and 7z's errors are anyone's
 
     # ------------------------------------------------------------ layout
     def _tool(self, icon, tip, slot) -> QToolButton:
@@ -559,6 +563,7 @@ class ArchivePanel(QWidget):
         if self.loading:
             self.loading.cancel()
             self.loading = None
+        self._stop_preview()
         self.path = None
         self.reader = None
         self.note.hide()
@@ -672,10 +677,16 @@ class ArchivePanel(QWidget):
             text += "   ·   " + tr("grimoire.spells.vaultl.archiveview", "Encrypted")
         self.status.setText(text)
 
+    def _stop_preview(self):
+        if self.preview_job:
+            self.preview_job.cancel()
+            self.preview_job = None
+
     def _preview(self):
         if not self.preview.isVisible() or not self.reader:
             return
         self.preview_req += 1
+        self._stop_preview()                               # arrowing through a tar.xz: only the last one runs
         sel = self.selected()
         self.pv_text.hide()
         self.pv_text.clear()
@@ -743,6 +754,7 @@ class ArchivePanel(QWidget):
             img, text, d = result
             if req != self.preview_req:
                 return
+            self.preview_job = None
             if img is not None and not img.isNull():
                 self.pv_image.setPixmap(QPixmap.fromImage(img))
             elif text is not None:
@@ -750,7 +762,7 @@ class ArchivePanel(QWidget):
                 self.pv_text.show()
                 self.pv_image.setPixmap(self.model.icon(e).pixmap(56, 56))
 
-        self.jobs.start("", work, done, lambda err: None, show=False)
+        self.preview_job = self.jobs.start("", work, done, lambda err: None, show=False)
 
     # ------------------------------------------------------------ actions
     def _activated(self, index):
@@ -1050,6 +1062,7 @@ class CompressDialog(QDialog):
         self.hint.setTextInteractionFlags(Qt.TextInteractionFlag.TextSelectableByMouse)
         lay.addWidget(self.hint)
         self.error = QLabel()
+        self.error.setTextFormat(Qt.TextFormat.PlainText)
         self.error.setWordWrap(True)
         self.error.hide()
         lay.addWidget(self.error)
@@ -1099,8 +1112,9 @@ class CompressDialog(QDialog):
         pw = self.pw.text() if self.pw.isEnabled() else ""
         if pw != (self.pw2.text() if self.pw2.isEnabled() else ""):
             return self._err(tr("grimoire.spells.vaultl.archiveview", "The passwords don't match."))
-        if "\n" in pw or "\r" in pw:
-            return self._err(tr("grimoire.spells.vaultl.archiveview", "Passwords can't contain line breaks."))
+        problem = archive.password_problem(self.fmt, pw)
+        if problem:
+            return self._err(problem)
         ext = archive.FORMATS[self.fmt]
         if not name.lower().endswith(ext):
             name += ext

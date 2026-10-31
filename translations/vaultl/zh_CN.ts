@@ -88,6 +88,11 @@
         <source>Passwords can&apos;t contain line breaks.</source>
         <translation>密码不能包含换行。</translation>
     </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/archive.py"/>
+        <source>zip passwords can only use English letters, digits and symbols. Pick 7z to use this one.</source>
+        <translation>zip 密码只能使用英文字母、数字和符号。要使用这个密码，请选择 7z。</translation>
+    </message>
 </context>
 <context>
     <name>grimoire.spells.vaultl.archiveview</name>
@@ -436,11 +441,6 @@
     </message>
     <message>
         <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
-        <source>Passwords can&apos;t contain line breaks.</source>
-        <translation>密码不能包含换行。</translation>
-    </message>
-    <message>
-        <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
         <source>Pick items from one folder to compress.</source>
         <translation>请从同一个文件夹中选择要压缩的项目。</translation>
     </message>
@@ -458,6 +458,10 @@
         <location filename="../../grimoire/spells/vaultl/archiveview.py"/>
         <source>Compressing into {name}</source>
         <translation>正在压缩为 {name}</translation>
+    </message>
+    <message>
+        <source>Passwords can&apos;t contain line breaks.</source>
+        <translation type="vanished">密码不能包含换行。</translation>
     </message>
 </context>
 <context>
