@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 """A minimal Secret Service client (org.freedesktop.secrets: KWallet on Plasma, GNOME Keyring elsewhere) for the
-one secret Grimoire keeps: the GitHub sign-in token.
+secrets Grimoire keeps: each profile's GitHub sign-in token and the account's refresh token (session.py).
 
 Why not python3-keyring: it isn't installed here (and pip isn't an option). Why not QtDBus: PySide6 can't marshal
 the a{ss} attribute maps and (oayays) secret structs this API needs (it aborts the process). dbus-python
@@ -158,6 +158,37 @@ def delete(attrs: dict = ATTRS) -> int:
             if s.prompt(prompt, lambda p=path: p not in sum(s.search(attrs), [])):
                 n += 1
     return n
+
+
+# ---------------------------------------------------------------- the GitHub sign-in, per profile
+def github_attrs() -> dict:
+    """The active profile's GitHub sign-in. Each account and the guest keep their own: a shared one let a guest
+    see the owner's GitHub, sign it out, or overwrite the owner's backup gist with the guest's settings. (A service
+    name of its own, because a search matches every item holding the attributes asked for.)"""
+    from grimoire import paths
+    return {"application": "grimoire", "service": "github-profile", "profile": paths.PROFILE or "default"}
+
+
+def github_load() -> str | None:
+    """This profile's GitHub token. The one sign-in from before profiles (ATTRS) moves to the first account
+    profile that asks for it, never to a guest."""
+    from grimoire import paths
+    value = load(github_attrs())
+    if value or paths.PROFILE == paths.GUEST:
+        return value
+    value = load(ATTRS)
+    if value:
+        store(value, github_attrs())
+        delete(ATTRS)
+    return value
+
+
+def github_store(secret: str):
+    store(secret, github_attrs())
+
+
+def github_delete() -> int:
+    return delete(github_attrs())
 
 
 @_guard

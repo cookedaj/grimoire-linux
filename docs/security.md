@@ -77,8 +77,10 @@ without asking you first.
   account. Revoke it any time at github.com/settings/applications (Sign out links there; GitHub doesn't let an app
   without a client secret revoke its own token).
 - **Token storage.** Only in the system keyring (Secret Service: KWallet on Plasma), as an item with
-  `application=grimoire, service=github`. Never in a file, a log, an error message or the UI; inside Grimoire it's
-  wrapped so printing it shows `Token(…)`. It crosses the local session bus to the keyring unencrypted ("plain"
+  `application=grimoire, service=github-profile, profile=<account id>`: each account and the guest keep their
+  own (the one sign-in from before accounts, `service=github`, moves to the first account that opens the panel,
+  never to a guest). Never in a file, a log, an error message or the UI; inside Grimoire it's wrapped so printing
+  it shows `Token(…)`. It crosses the local session bus to the keyring unencrypted ("plain"
   session), like most keyring clients.
 - **Secret isn't private.** The backup gist is *secret*: unlisted, but anyone who has its link can read it. It holds
   your Grimoire settings (which can include local file paths such as wallpaper locations), never the token.

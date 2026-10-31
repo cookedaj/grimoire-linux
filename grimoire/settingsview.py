@@ -681,7 +681,7 @@ class AccountPanel(QWidget):
 
     def _signout(self):
         from grimoire import keystore
-        run(keystore.delete, self._signed_out, (keystore.KeyringError,))
+        run(keystore.github_delete, self._signed_out, (keystore.KeyringError,))
 
     def _signed_out(self, ok, value):
         if not ok:
@@ -736,7 +736,7 @@ _quitting = threading.Event()      # set when the app quits: Python waits for po
 
 def _token():
     from grimoire import github, keystore
-    value = keystore.load()
+    value = keystore.github_load()
     if not value:
         raise github.GitHubError(tr("grimoire.settingsview", "Not signed in any more; sign in again."))
     return github.Token(value)
@@ -745,7 +745,7 @@ def _token():
 def _who():
     """(user, avatar bytes) if a sign-in is saved, else None. Runs off the UI thread."""
     from grimoire import github, keystore
-    value = keystore.load()
+    value = keystore.github_load()
     if not value:
         return None
     token = github.Token(value)
@@ -761,7 +761,7 @@ def _finish_signin(dc, cancelled):
     from grimoire import github, keystore
     token = github.poll(dc, cancelled)
     user = github.user(token)                   # proves the token works before it's saved
-    keystore.store(token.reveal())
+    keystore.github_store(token.reveal())
     try:
         pic = github.avatar(user["avatar_url"])
     except github.GitHubError:
