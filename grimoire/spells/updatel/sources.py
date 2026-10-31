@@ -200,7 +200,7 @@ def apt_changelog(item: dict) -> str:
 
 # ---------------------------------------------------------------- simulation (apt-get -s, as you)
 _INST = re.compile(r"^Inst (\S+)(?: \[([^\]]+)\])? \((\S+)")
-_REMV = re.compile(r"^Remv (\S+)(?: \[([^\]]+)\])?")
+_REMV = re.compile(r"^(?:Remv|Purg) (\S+)(?: \[([^\]]+)\])?")
 
 
 def parse_simulation(text: str) -> dict:

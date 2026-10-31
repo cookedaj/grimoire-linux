@@ -75,7 +75,7 @@ apt_step() {
     if [[ "$1" == --all ]]; then cmd=(-y --with-new-pkgs upgrade); else cmd=(-y --only-upgrade install -- "$@"); fi
     echo "== Simulating the upgrade (apt-get -s)"
     sim=$(apt-get -s "${cmd[@]}") || die 5 "apt-get couldn't plan this upgrade"
-    removals=$(awk '/^Remv / {print $2}' <<<"$sim")
+    removals=$(awk '/^(Remv|Purg) / {print $2}' <<<"$sim")    # Purg: when apt is set to purge
     for r in $removals; do
         case "${r%%:*}" in kubuntu-desktop|fonts-ibm-plex*) protected+=("$r") ;; esac
     done
