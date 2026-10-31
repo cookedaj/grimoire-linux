@@ -294,9 +294,14 @@ class Notifications(QWidget):
                       then=self.load)
 
     def _reply(self, n):
-        text, ok = QInputDialog.getText(self, tr("grimoire.spells.phonel.views", "Reply"),
-                                        tr("grimoire.spells.phonel.views", "Reply to {title} ({app}):").format(
-                                            title=isolate(n["title"]), app=isolate(n["app"])))
+        dlg = QInputDialog(self)
+        dlg.setWindowTitle(tr("grimoire.spells.phonel.views", "Reply"))
+        dlg.setLabelText(tr("grimoire.spells.phonel.views", "Reply to {title} ({app}):").format(
+            title=isolate(n["title"]), app=isolate(n["app"])))
+        for lab in dlg.findChildren(QLabel):
+            lab.setTextFormat(Qt.TextFormat.PlainText)     # the title is whatever the phone's app or sender wrote
+        ok = dlg.exec() == QInputDialog.DialogCode.Accepted
+        text = dlg.textValue()
         if ok and text.strip():
             dev = self.view.dev["id"]
             self.page.act(lambda: kdc.reply_notification(dev, n["id"], text.strip()),

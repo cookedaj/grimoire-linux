@@ -235,7 +235,8 @@ def device(dev: str) -> dict:
     """One device as the page shows it."""
     path = dev_path(dev)
     p = props(path, DEVICE)
-    d = {"id": dev, "name": str(p.get("name") or dev), "type": str(p.get("type") or "phone"),
+    # a nearby device picks its own name: one line, so it can't add lines of its own to the pairing prompt
+    d = {"id": dev, "name": " ".join(str(p.get("name") or dev).split()) or dev, "type": str(p.get("type") or "phone"),
          "reachable": bool(p.get("isReachable")), "paired": bool(p.get("isPaired")),
          "requested": bool(p.get("isPairRequested")), "by_peer": bool(p.get("isPairRequestedByPeer")),
          "supported": sorted(p.get("supportedPlugins") or []), "plugins": [], "battery": None, "signal": None,
@@ -285,8 +286,8 @@ def snapshot() -> dict:
         for dev in ids:
             try:
                 snap["devices"].append(device(dev))
-            except Error:
-                continue                      # it went away between the two calls
+            except (Error, TypeError, ValueError):
+                continue                      # it went away between the two calls, or answered oddly
     except Error as err:
         snap["error"] = str(err)
     # paired first (connected ones on top), then nearby devices, each by name
