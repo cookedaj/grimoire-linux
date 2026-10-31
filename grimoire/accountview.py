@@ -42,10 +42,19 @@ def sign_out(parent):
                                              "sign-in screen. Your settings stay on this PC.")) \
             != QMessageBox.StandardButton.Yes:
         return
-    session.end()
-    import os
-    os.environ.pop("GRIMOIRE_PROFILE", None)
-    restart()
+    parent.setEnabled(False)                       # telling the server can take a while (a token refresh first)
+
+    def ended(ok, value):
+        import os
+        if not ok:                                 # e.g. session.json couldn't be written: still signed in
+            parent.setEnabled(True)
+            QMessageBox.warning(parent, NAME, tr("grimoire.settingsview", "Couldn't change it: {err}").format(
+                err=value))
+            return
+        os.environ.pop("GRIMOIRE_PROFILE", None)
+        if not restart():
+            parent.setEnabled(True)
+    run(session.end, ended)
 
 
 class GuestBar(QFrame):

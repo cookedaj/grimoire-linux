@@ -528,9 +528,17 @@ class AccountDialog(QDialog):
 
 
 # ---------------------------------------------------------------- the gate
-def restart():
+def restart() -> bool:
     """Start this program again (to load another profile); GRIMOIRE_PROFILE says which. A session that isn't kept
-    in the keyring crosses the restart through a pipe (session.handoff), never a file or the environment."""
+    in the keyring crosses the restart through a pipe (session.handoff), never a file or the environment.
+    The open windows are closed first, so pages save what they hold (NoteL asks about unsaved files); exec skips
+    every close handler. Returns False, and restarts nothing, when a window refuses to close."""
+    from PySide6.QtWidgets import QApplication
+    app = QApplication.instance()
+    if isinstance(app, QApplication):
+        app.closeAllWindows()
+        if any(w.isVisible() for w in app.topLevelWidgets() if w.isWindow()):
+            return False
     sys.stdout.flush()
     session.handoff()
     os.execv(sys.executable, sys.orig_argv)
