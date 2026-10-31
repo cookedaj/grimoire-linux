@@ -11,7 +11,7 @@
 #   - copies WidgetL's desktop widgets into Plasma (they only show up once you add them to a desktop)
 #   - adds the Grimoire Tray menu entry (it starts at login only once you turn that on)
 #   - records the commit it came from (app/INSTALLED.json), so Grimoire can tell when there's an update
-#   - installs the root helpers (MuraL, OptimizeL, SystemL, FocusL, UpdateL) root-owned into /usr/local/libexec/grimoire-linux,
+#   - installs the root helpers (MuraL, OptimizeL, SystemL, FocusL, UpdateL, StoreL) root-owned into /usr/local/libexec/grimoire-linux,
 #     plus their polkit actions, asking for your password once, and only when they're missing or changed: pkexec
 #     must never run a copy you (or anything running as you) can edit. --no-system skips this step.
 #   ./install.sh [--all] [--no-system]

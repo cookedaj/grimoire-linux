@@ -337,7 +337,7 @@ def apply(sha: str, date: str = "", progress=lambda text: None) -> dict:
             env.pop("PYTHONPATH", None)            # install.sh runs the new code, not the running copy's
             try:
                 r = subprocess.run(["bash", str(root / "install.sh")], cwd=root, env=env, capture_output=True,
-                                   text=True, timeout=300)
+                                   text=True, timeout=900)   # past roothelper's 600 s password prompt
             except (OSError, subprocess.TimeoutExpired) as e:
                 raise UpdateError(tr("grimoire.update", "The installer didn't finish: {error}")
                                   .format(error=e)) from None

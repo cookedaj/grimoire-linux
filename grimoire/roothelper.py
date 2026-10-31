@@ -265,7 +265,7 @@ def install(dry: bool = False) -> int:
         print(f"  {(pol_dir if f.endswith('.policy') else directory) / f}")
     print("Installing them asks for your password once (pkexec).")
     later = "Root features (MuraL login/boot themes, OptimizeL system tweaks, SystemL root actions, FocusL sites, " \
-            "UpdateL system updates) stay unavailable until you run ./install.sh again."
+            "UpdateL system updates, StoreL installs) stay unavailable until you run ./install.sh again."
     if dry:
         print("[dry] pkexec /bin/sh -c <install step> …")
         return 0
