@@ -56,6 +56,7 @@ class _Signals(QObject):
 
 def _label(text="", name="", wrap=False) -> QLabel:
     lab = QLabel(text)
+    lab.setTextFormat(Qt.TextFormat.PlainText)        # search words, app and package names: never rich text
     if name:
         lab.setObjectName(name)
     lab.setWordWrap(wrap)

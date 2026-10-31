@@ -126,6 +126,8 @@ def flatpak_files() -> list[tuple[str, str, Path]]:
 
 
 def _icon_paths(base: Path, name: str) -> str:
+    if not name or "/" in name or name.startswith("."):          # a file in the icons folder, nothing else
+        return ""
     for size in ("128x128", "64x64"):
         p = base / "icons" / size / name
         if p.is_file():
@@ -252,8 +254,12 @@ def _dep11_component(doc: dict, origin: str, media: str) -> dict | None:
     if isinstance(ic, dict):
         icon["stock"] = str(ic.get("stock") or "")
         for c in sorted(ic.get("cached") or [], key=lambda c: -int(c.get("width") or 0) if isinstance(c, dict) else 0):
-            if isinstance(c, dict) and not c.get("scale") and origin:
-                p = SWCATALOG / "icons" / origin / f"{c.get('width')}x{c.get('height')}" / str(c.get("name", ""))
+            name = str(c.get("name", "")) if isinstance(c, dict) else ""
+            size = f"{c.get('width')}x{c.get('height')}" if name else ""
+            # names from the metadata stay inside the icons folder
+            if origin and re.fullmatch(r"\d+x\d+", size) and not c.get("scale") and \
+                    not any("/" in t or t.startswith(".") for t in (name, origin)):
+                p = SWCATALOG / "icons" / origin / size / name
                 if p.is_file():
                     icon["file"] = str(p)
                     break

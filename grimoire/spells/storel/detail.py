@@ -3,6 +3,7 @@
 Install / Open / Remove / Permissions, screenshots (the only colour in StoreL: they show the app as it is), the
 description as plain text and the facts (version, sizes, license). Sizes and screenshots load on worker threads."""
 from PySide6.QtCore import QObject, QSize, Qt, QUrl, Signal
+from PySide6 import QtGui
 from PySide6.QtGui import QDesktopServices, QImage, QPixmap
 from PySide6.QtWidgets import (QButtonGroup, QDialog, QFrame, QGridLayout, QHBoxLayout, QLabel, QProgressBar,
                                QPushButton, QScrollArea, QVBoxLayout, QWidget)
@@ -282,7 +283,7 @@ class DetailView(QScrollArea):
         self.desc.setText(app["desc"] or app["summary"] or tr("grimoire.spells.storel.detail",
                                                               "No description was published."))
         self.home.setVisible(app["home"].startswith(("https://", "http://")))
-        self.home.setToolTip(app["home"])
+        self.home.setToolTip(QtGui.Qt.convertFromPlainText(app["home"]))
         self._sources()
         self._fill_shots()
         self.refresh()

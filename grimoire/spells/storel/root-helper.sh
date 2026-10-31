@@ -99,7 +99,7 @@ apt_step() {
     local cmd=(-y "$action" -- "$@")
     echo "== Simulating (apt-get -s $action $*)"
     sim=$(apt-get -s "${cmd[@]}") || die 5 "apt-get couldn't plan this"
-    removals=$(awk '/^Remv / {print $2}' <<<"$sim")
+    removals=$(awk '/^(Remv|Purg) / {print $2}' <<<"$sim")    # Purg: when apt is set to purge
     if [[ "$action" == remove ]] && grep -q '^Inst ' <<<"$sim"; then
         die 3 "refused: this removal would install packages"
     fi

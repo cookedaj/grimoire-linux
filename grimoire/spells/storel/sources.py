@@ -347,6 +347,9 @@ def simulate(action: str, pkgs: list[str]) -> dict:
         msg = [ln for ln in (r.stderr or r.stdout).splitlines() if ln.startswith("E:")] or [r.stderr.strip()]
         raise RuntimeError(msg[-1] or tr("grimoire.spells.storel.sources", "APT couldn't plan this."))
     sim = parse_simulation(r.stdout)
+    # apt set to purge (APT::Get::Purge) says "Purg" instead of "Remv": still a removal, as the helper counts it
+    sim["remove"] += [m.group(1) for m in re.finditer(r"^Purg (\S+)", r.stdout, re.M)
+                      if m.group(1) not in sim["remove"]]
     have_now = apt_installed()
     sim["blocked"] = [(n, removable(n.split(":")[0], have_now.get(n) or have_now.get(n.split(":")[0])))
                       for n in sim["remove"]]
