@@ -53,6 +53,11 @@ optdepends=(
     'kdeconnect: PhoneL'
     'partitionmanager: SystemL Drives formatting and partitions'
     'smartmontools: SystemL drive health udisks cannot read'
+    'mpv: PlayL (libmpv)'
+    'python-mutagen: PlayL music tags'
+    'python-yaml: StoreL APT catalog, GameL Bottles'
+    '7zip: VaultL 7z and rar archives'
+    'libarchive: VaultL archives (bsdtar)'
 )
 makedepends=('git')
 provides=("$_pkgname")
