@@ -5,6 +5,7 @@ performance mode, open any spell). Plasma shows it through StatusNotifierItem, s
     grimoire-tray                        start it (one per session; a second start just says it's running)
     grimoire-tray autostart on|off       start it at login or not (also in its menu and on Grimoire's home page)
 """
+import html
 import json
 import os
 import signal
@@ -179,7 +180,9 @@ class Tray(QObject):
             self._toggle_crosshair()
 
     def notify(self, title: str, text: str, icon: str = ""):
-        self.icon.showMessage(title, text, glyph(icon, 32) if icon else QIcon(), 6000)
+        """Plasma reads a notification's body as markup, and the text can hold file names from Downloads (tidy
+        errors): escaped, so a file named <a href=…> shows as its name, not a link."""
+        self.icon.showMessage(title, html.escape(text, quote=False), glyph(icon, 32) if icon else QIcon(), 6000)
 
     # -- live icon
     def tick(self):

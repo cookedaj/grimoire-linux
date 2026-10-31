@@ -11,6 +11,7 @@ Error messages are built from status codes, never from requests, so it can't end
 Every call here blocks: the UI runs them off its thread. HTTP is the one network function; tests replace it.
 """
 import base64
+import http.client
 import json
 import time
 import urllib.error
@@ -89,10 +90,10 @@ def _urllib(method: str, url: str, headers: dict, body: bytes | None) -> tuple[i
     except urllib.error.HTTPError as e:
         try:
             data = e.read(MAX_BODY + 1)
-        except OSError:
+        except (OSError, http.client.HTTPException):
             data = b""
         return e.code, dict(e.headers or {}), data
-    except (urllib.error.URLError, TimeoutError, OSError) as e:
+    except (urllib.error.URLError, TimeoutError, OSError, http.client.HTTPException) as e:   # a garbled answer
         raise GitHubError(tr("grimoire.github", "Couldn't reach GitHub (offline?): {reason}")
                           .format(reason=getattr(e, "reason", None) or type(e).__name__)) from None
 

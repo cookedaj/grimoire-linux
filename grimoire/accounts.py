@@ -18,6 +18,7 @@ ever passed through. Error messages come from fixed texts and server error codes
 import base64
 import hashlib
 import hmac
+import http.client
 import http.server
 import json
 import math
@@ -275,9 +276,11 @@ def _urllib(method: str, url: str, headers: dict, body: bytes | None) -> tuple[i
     except urllib.error.HTTPError as e:
         try:
             return e.code, e.read(MAX_BODY + 1)
-        except OSError:
+        except (OSError, http.client.HTTPException):
             return e.code, b""
-    except (urllib.error.URLError, TimeoutError, OSError):
+    except (urllib.error.URLError, TimeoutError, OSError, http.client.HTTPException):
+        # HTTPException: a garbled answer (bad status line, header too long…) from a proxy or captive portal; it
+        # isn't an OSError, and escaping the worker it left the sign-in screen busy for good
         raise AccountError(tr("grimoire.accounts", "Couldn't reach the account server. Are you online?")) from None
 
 
@@ -407,8 +410,8 @@ class Supabase(Backend):
             expires = float(d.get("expires_at") or time.time() + float(d.get("expires_in", 3600)))
         except (KeyError, TypeError, ValueError):
             raise AccountError(tr("grimoire.accounts", "The account server sent an unexpected answer.")) from None
-        meta = user.get("user_metadata") or {}
-        name = str(meta.get("username") or "")
+        meta = user.get("user_metadata")
+        name = str(meta.get("username") or "") if isinstance(meta, dict) else ""
         s = Session(User(uid, name, provider), Token(access), Token(refresh), expires)
         if not USERNAME.fullmatch(name):                       # OAuth accounts get theirs from the database trigger
             s.user.username = self.username(s) or "you"

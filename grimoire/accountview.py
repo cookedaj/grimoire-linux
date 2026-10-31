@@ -19,13 +19,16 @@ PROVIDER_LINE = {"password": tr_noop("grimoire.accountview", "Signed in with a u
 def _restart_as_new_session(result, parent, from_guest):
     """After the account dialog: begin the session, then restart the hub so every spell reads its settings."""
     from grimoire.loginview import restart
-    try:
-        session.begin(result["session"], result["remember"], from_guest=from_guest)
-    except OSError as e:
-        QMessageBox.warning(parent, NAME, tr("grimoire.accountview", "Couldn't set up your profile: {err}").format(
-            err=e.strerror or e))
-        return
-    restart()
+    parent.setEnabled(False)                       # saving the sign-in may wait on the keyring's unlock prompt
+
+    def begun(ok, value):
+        parent.setEnabled(True)
+        if not ok:
+            QMessageBox.warning(parent, NAME, tr("grimoire.accountview", "Couldn't set up your profile: {err}")
+                                .format(err=value))
+            return
+        restart()
+    run(lambda: session.begin(result["session"], result["remember"], from_guest=from_guest), begun)
 
 
 def create_account(parent, mode="create"):
@@ -42,10 +45,18 @@ def sign_out(parent):
                                              "sign-in screen. Your settings stay on this PC.")) \
             != QMessageBox.StandardButton.Yes:
         return
-    session.end()
-    import os
-    os.environ.pop("GRIMOIRE_PROFILE", None)
-    restart()
+    parent.setEnabled(False)                       # telling the server can take a while (a token refresh first)
+
+    def ended(ok, value):
+        import os
+        if not ok:                                 # e.g. session.json couldn't be written: still signed in
+            parent.setEnabled(True)
+            QMessageBox.warning(parent, NAME, tr("grimoire.accountview", "Couldn't sign out: {err}").format(err=value))
+            return
+        os.environ.pop("GRIMOIRE_PROFILE", None)
+        if not restart():
+            parent.setEnabled(True)
+    run(session.end, ended)
 
 
 class GuestBar(QFrame):

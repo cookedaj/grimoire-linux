@@ -6,6 +6,7 @@ sign-in lives in the system keyring (keystore.py), only the backup gist's id is 
 """
 import json
 import os
+import threading
 from pathlib import Path
 
 from grimoire.i18n import LANGUAGES
@@ -43,9 +44,12 @@ def load() -> dict:
 def save(**changes):
     d = load() | changes
     FILE.parent.mkdir(parents=True, exist_ok=True)
-    tmp = FILE.with_suffix(".json.tmp")
-    tmp.write_text(json.dumps(d, indent=1))
-    tmp.replace(FILE)
+    tmp = FILE.with_name(f".{FILE.name}.{os.getpid()}.{threading.get_ident()}.tmp")   # one per writer: the hub,
+    try:                                                                               # spell windows, workers
+        tmp.write_text(json.dumps(d, indent=1))
+        tmp.replace(FILE)
+    finally:
+        tmp.unlink(missing_ok=True)
 
 
 def auto_update() -> bool:
