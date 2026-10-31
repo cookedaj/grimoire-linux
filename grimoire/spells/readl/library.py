@@ -42,6 +42,8 @@ def kind_of(path) -> str:
     if k:
         return k
     try:
+        if not p.is_file():                         # a FIFO would block the UI thread on open()
+            return ""
         with open(p, "rb") as f:
             head = f.read(64)
     except OSError:

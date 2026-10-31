@@ -107,7 +107,8 @@ class Book:
 def _xml(data: bytes) -> ET.Element:
     if len(data) > MAX_XML:
         raise EpubError(tr("grimoire.spells.readl.epub", "This book's index is too large."))
-    if re.search(rb"<!ENTITY", data, re.I):
+    if re.search(rb"<!ENTITY", data, re.I) or re.search(rb"<\x00!\x00E\x00N\x00T\x00I\x00T\x00Y|\x00<\x00!\x00E\x00N\x00T"
+                                                        rb"\x00I\x00T\x00Y", data, re.I):     # UTF-16 too
         raise EpubError(tr("grimoire.spells.readl.epub", "This book's index declares entities, which ReadL refuses."))
     try:
         return ET.fromstring(data)
