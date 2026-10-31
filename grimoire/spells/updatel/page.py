@@ -106,7 +106,8 @@ class UpdatesPanel(QWidget):
         bar.addWidget(self.refresh_btn)
         bar.addStretch(1)
         self.summary = _label("", "Muted")
-        self.summary.setMinimumWidth(1)              # longer translations clip here rather than widen the window
+        self.summary.setMinimumWidth(1)              # longer translations wrap here rather than widen the window
+        self.summary.setWordWrap(True)               # (cut off, the security count went missing in Russian)
         bar.addWidget(self.summary)
         bar.addSpacing(8)
         self.sel_btn = QPushButton(tr("grimoire.spells.updatel.page", "Update selected"))

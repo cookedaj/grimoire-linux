@@ -166,7 +166,11 @@ class HotkeyRow(QFrame):
                              else tr("grimoire.settingsview", "Clear"), self._reset,
                              tip=tr("grimoire.settingsview", "Back to Grimoire's default key") if hk.default
                              else tr("grimoire.settingsview", "Remove this shortcut"))
-        self.reset.setFixedWidth(84)
+        widths = [84]                       # one width for every row, as wide as the longer of both words needs
+        for word in (tr("grimoire.settingsview", "Default"), tr("grimoire.settingsview", "Clear"), self.reset.text()):
+            self.reset.setText(word)
+            widths.append(self.reset.sizeHint().width())
+        self.reset.setFixedWidth(max(widths))
         top.addWidget(self.reset)
         lay.addLayout(top)
         self.note = _label("", "Muted")
@@ -835,7 +839,7 @@ class GeneralPanel(QWidget):
         lay.addWidget(Row(tr("grimoire.settingsview", "Setup"),
                           tr("grimoire.settingsview", "Pick your spells, a look, hotkeys and the language again."), [
             _button(tr("grimoire.settingsview", "Choose spells…"), lambda: self._setup("spells")),
-            _button(tr("grimoire.settingsview", "Run setup again"), self._setup)]))
+            _button(tr("grimoire.settingsview", "Run setup again"), lambda: self._setup())]))  # clicked passes False
         self.status = _label("", "Status")
         self.status.hide()
         lay.addWidget(self.status)
