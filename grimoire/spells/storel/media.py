@@ -7,6 +7,7 @@ first. FETCH is the stub point for tests.
 """
 import hashlib
 import os
+import threading
 import urllib.request
 from pathlib import Path
 
@@ -60,7 +61,7 @@ def get(url: str) -> Path | None:
         return None
     try:
         DIR.mkdir(parents=True, exist_ok=True)
-        tmp = dest.with_suffix(".part")
+        tmp = dest.with_name(f"{dest.name}.{threading.get_ident()}.part")     # two loads of one URL at once
         tmp.write_bytes(data)
         os.replace(tmp, dest)
     except OSError:
@@ -72,7 +73,8 @@ def get(url: str) -> Path | None:
 def trim(keep: int = KEEP):
     """Drop the least recently shown images once the cache passes keep bytes (our own cache files only)."""
     try:
-        files = [(p.stat().st_mtime, p.stat().st_size, p) for p in DIR.iterdir() if p.is_file()]
+        files = [(p.stat().st_mtime, p.stat().st_size, p) for p in DIR.iterdir()
+                 if p.is_file() and not p.name.endswith(".part")]
     except OSError:
         return
     total = sum(s for _t, s, _p in files)
