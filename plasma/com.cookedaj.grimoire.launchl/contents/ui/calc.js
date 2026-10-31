@@ -26,6 +26,11 @@ const CONSTS = { pi: Math.PI, "π": Math.PI, e: Math.E, tau: 2 * Math.PI, "τ": 
 const WORDS = { mod: "mod", of: "of" }
 const MAX_LENGTH = 200
 
+// own keys only: "constructor" in FUNCS is true through Object.prototype (it would run Object())
+function has(table, key) {
+    return Object.prototype.hasOwnProperty.call(table, key)
+}
+
 // Text → tokens ({t: "num", v} | {t: "op", v} | {t: "id", v}); throws on anything else.
 // decimal: the locale's decimal point. With ",", both "," and "." are decimal points; with ".", a "," between
 // digit groups of three is a thousands separator (1,000,000).
@@ -80,7 +85,7 @@ function tokens(text, decimal) {
                 j++
             }
             const word = text.slice(i, j).toLowerCase()
-            if (!(word in FUNCS) && !(word in CONSTS) && !(word in WORDS)) {
+            if (!has(FUNCS, word) && !has(CONSTS, word) && !has(WORDS, word)) {
                 throw new Error("unknown word")
             }
             out.push({ t: "id", v: word })
@@ -116,7 +121,7 @@ function evaluate(text, decimal) {
     // implicit multiplication: 2pi, 3(4+1), 2 sqrt(2); never two numbers in a row ("12 7", "1.5.5")
     function startsImplicit() {
         const p = peek()
-        return p && ((p.t === "op" && p.v === "(") || (p.t === "id" && !(p.v in WORDS)))
+        return p && ((p.t === "op" && p.v === "(") || (p.t === "id" && !has(WORDS, p.v)))
     }
 
     function term() {
@@ -209,11 +214,11 @@ function evaluate(text, decimal) {
             }
             return { v: inner.v, pct: inner.pct }
         }
-        if (p.t === "id" && p.v in CONSTS) {
+        if (p.t === "id" && has(CONSTS, p.v)) {
             // a constant alone isn't a sum: "e" or "pi" typed to find an app shows no result (2pi does)
             return { v: CONSTS[p.v], pct: false }
         }
-        if (p.t === "id" && p.v in FUNCS) {
+        if (p.t === "id" && has(FUNCS, p.v)) {
             const arg = power()                                     // sqrt(2), sqrt 2, sin pi/2 = sin(pi)/2
             ops++
             return { v: FUNCS[p.v](arg.v), pct: false }

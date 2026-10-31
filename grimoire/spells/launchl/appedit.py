@@ -39,29 +39,26 @@ def valid_id(app_id: str) -> bool:
 
 
 def _find(base: Path, app_id: str) -> Path | None:
-    """The file with this desktop id under an applications folder ("kde4-foo.desktop" may be kde4/foo.desktop)."""
+    """The file with this desktop id under an applications folder ("kde4-foo.desktop" may be kde4/foo.desktop).
+    Only folders that exist are followed, so an id with many dashes can't make it try every split."""
     direct = base / app_id
     if direct.is_file():
         return direct
     if "-" not in app_id or not base.is_dir():
         return None
-    parts = app_id.split("-")
+    return _walk(base, app_id.split("-"), 0)
+
+
+def _walk(folder: Path, parts: list[str], depth: int) -> Path | None:
     for cut in range(1, len(parts)):                      # kde4/foo-bar.desktop, kde4/foo/bar.desktop, ...
-        for sub in _splits(parts[:cut]):
-            p = base.joinpath(*sub, "-".join(parts[cut:]))
+        sub = folder / "-".join(parts[:cut])
+        if depth < 8 and sub.is_dir():
+            p = sub / "-".join(parts[cut:])
             if p.is_file():
                 return p
+            if (found := _walk(sub, parts[cut:], depth + 1)) is not None:
+                return found
     return None
-
-
-def _splits(parts: list[str]):
-    """Every way to make folder names from these dash-separated parts (a-b → [a-b], [a, b])."""
-    if len(parts) == 1:
-        yield [parts[0]]
-        return
-    for rest in _splits(parts[1:]):
-        yield [parts[0]] + rest
-        yield [parts[0] + "-" + rest[0]] + rest[1:]
 
 
 def system_file(app_id: str) -> Path | None:
@@ -224,7 +221,7 @@ class App:
 
     @property
     def resettable(self) -> bool:
-        return self.user is not None and (self.system is not None or self.edited)
+        return self.user is not None and (self.system is not None or self.edited)    # edited: system app gone
 
 
 def _lang_keys() -> list[str]:
@@ -310,7 +307,10 @@ def save(app: App, name: str | None = None, icon: str | None = None, command: st
         raise OSError(tr("grimoire.spells.launchl.appedit", "The app's desktop file is gone."))
     if not sets and not remove:                          # nothing changed: no copy needed
         return app.user or src
-    sets[MARK] = "true"
+    if app.system is not None or app.edited:
+        # ours to Reset (to the Trash) only when it's a copy of a system entry: never mark your own app, whose
+        # file is the only one there is
+        sets[MARK] = "true"
     text = edit_group(_read(src), sets, drop, remove)
     if app.system is not None and _same(text, _read(app.system)):
         # back to exactly the system entry (say, shown again after hiding): no copy needed any more
