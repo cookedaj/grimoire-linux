@@ -139,7 +139,10 @@ def _start(job: Job, priority: int):
     if not _hooked and (app := QCoreApplication.instance()) is not None:
         _hooked = True
         app.aboutToQuit.connect(shutdown)
-    NET.start(job, priority)
+    try:
+        NET.start(job, priority)
+    except RuntimeError:                        # the pool went with the app while a prefetch was still queueing
+        pass
 
 
 def prefetch(keys=None):
