@@ -56,6 +56,10 @@ URDU_QSS = """
 QLabel#Hero, QLabel#Title, QLabel#PageHeading, QLabel#SectionTitle {
     font-family: "IBM Plex Sans", "Noto Nastaliq Urdu"; }
 """
+# a QLabel aligns by its text's own direction, so a bare number ("0", "12 GB") sat on the left of an RTL stat tile
+RTL_QSS = """
+QLabel#StatNum { qproperty-alignment: 'AlignRight | AlignAbsolute | AlignVCenter'; }
+"""
 SCRIPT_FONTS = {"ar": ["IBM Plex Sans Arabic", "Noto Sans Arabic", "Noto Naskh Arabic"],
                 "ur": ["Noto Naskh Arabic UI", "Noto Naskh Arabic", "IBM Plex Sans Arabic"],
                 "hi": ["IBM Plex Sans Devanagari", "Noto Sans Devanagari"],

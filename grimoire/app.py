@@ -342,7 +342,8 @@ def style_app(app: QApplication):
                         (QPalette.ColorRole.Button, "#121212"), (QPalette.ColorRole.ButtonText, "#e8e8e8")):
         pal.setColor(role, QColor(color))
     app.setPalette(pal)
-    app.setStyleSheet(i18n.qss(QSS) + (i18n.URDU_QSS if i18n.loaded() == "ur" else ""))
+    app.setStyleSheet(i18n.qss(QSS) + (i18n.URDU_QSS if i18n.loaded() == "ur" else "")
+                      + (i18n.RTL_QSS if i18n.rtl(i18n.loaded()) else ""))
 
 
 def main():
