@@ -4,7 +4,6 @@
 like Dolphin: native programs and scripts are run after a question, .desktop launchers through gio, Windows and
 macOS programs get an explanation (and a Windows compatibility tool when one is installed). No Qt widgets here.
 """
-import configparser
 import os
 import shutil
 import stat
@@ -91,16 +90,59 @@ class Entry:
 
 
 def desktop_entry(p: Path) -> Entry | None:
-    """The [Desktop Entry] group of a launcher, or None if it isn't one."""
-    cp = configparser.ConfigParser(interpolation=None, strict=False)
-    cp.optionxform = str                                  # keys are case-sensitive (Name, Exec…)
+    """The [Desktop Entry] group of a launcher, or None if it isn't one. Read with GLib's own key-file parser, the
+    one `gio launch` uses, so the command shown is the command that runs (an indented second Exec= line or a
+    duplicate group reads differently in configparser)."""
     try:
-        cp.read_string(p.read_text(errors="replace")[:200_000])
-    except (OSError, configparser.Error):
+        if not stat.S_ISREG(p.stat().st_mode) or p.stat().st_size > 1 << 20:
+            return None
+        data = p.read_bytes()
+    except OSError:
         return None
-    if not cp.has_section("Desktop Entry"):
+    try:
+        from gi.repository import GLib
+    except (ImportError, ValueError):
+        return _desktop_entry_fallback(p, data)
+    kf = GLib.KeyFile()
+    try:
+        kf.load_from_bytes(GLib.Bytes.new(data), GLib.KeyFileFlags.NONE)
+        if not kf.has_group("Desktop Entry"):
+            return None
+    except GLib.Error:
+        return None                                       # gio launch refuses it too
+
+    def get(key: str, default: str = "") -> str:
+        try:
+            return kf.get_string("Desktop Entry", key)
+        except GLib.Error:
+            return default
+    try:
+        name = kf.get_locale_string("Desktop Entry", "Name", None)
+    except GLib.Error:
+        name = p.stem
+    return Entry(name=name, exec=get("Exec"), type=get("Type", "Application"), url=get("URL"),
+                 terminal=get("Terminal", "false").lower() == "true")
+
+
+def _desktop_entry_fallback(p: Path, data: bytes) -> Entry | None:
+    """Without python3-gi: GLib's rules by hand (leading blanks ignored, the last key or group wins, anything else
+    makes the file unreadable)."""
+    groups: dict[str, dict[str, str]] = {}
+    group = None
+    for line in data.decode("utf-8", "replace").split("\n"):
+        line = line.lstrip(" \t").rstrip("\r")
+        if not line or line.startswith("#"):
+            continue
+        if line.startswith("[") and line.endswith("]"):
+            group = groups.setdefault(line[1:-1], {})
+        elif "=" in line and group is not None:
+            k, _, v = line.partition("=")
+            group[k.rstrip(" \t")] = v.lstrip(" \t")
+        else:
+            return None
+    d = groups.get("Desktop Entry")
+    if d is None:
         return None
-    d = cp["Desktop Entry"]
     return Entry(name=d.get("Name", p.stem), exec=d.get("Exec", ""), type=d.get("Type", "Application"),
                  url=d.get("URL", ""), terminal=d.get("Terminal", "false").lower() == "true")
 
