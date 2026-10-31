@@ -8,7 +8,7 @@
 # Before removing the package, run /usr/share/grimoire-linux/uninstall.sh as yourself to clear those.
 pkgname=grimoire-linux-git
 _pkgname=grimoire-linux
-pkgver=0.2.0
+pkgver=0.3.0
 pkgrel=1
 pkgdesc="Black & white toolkit for KDE Plasma 6: customization, crosshair overlay, file manager, system monitor, terminal"
 arch=('any')

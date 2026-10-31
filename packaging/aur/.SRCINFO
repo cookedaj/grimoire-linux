@@ -1,6 +1,6 @@
 pkgbase = grimoire-linux-git
 	pkgdesc = Black & white toolkit for KDE Plasma 6: customization, crosshair overlay, file manager, system monitor, terminal
-	pkgver = 0.2.0
+	pkgver = 0.3.0
 	pkgrel = 1
 	url = https://github.com/cookedaj/grimoire-linux
 	arch = any

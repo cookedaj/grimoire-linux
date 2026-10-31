@@ -1,3 +1,48 @@
+grimoire-linux (0.3.0) unstable; urgency=medium
+
+  * ReadL: FIFOs don't hang the sniffing; UTF-16 entity declarations refused too
+  * NoteL: no spurious conflict when closing right after an autosave; FIFOs never block
+  * VaultL: read .desktop launchers with GLib's parser
+  * VaultL archives: confine links to what is placed, hard links count their bytes
+  * PlayL: never destroy the mpv core under a live render context
+  * ViewL: folder paths read left to right in Arabic and Urdu
+  * PlayL: controls drop the least needed buttons instead of overlapping
+  * GlyphL: popup socket takes one well-formed command per connection
+  * PhoneL: prompts show network text as plain text
+  * ViewL: lossless turn never writes past the EXIF block; failed saves don't lock the page
+  * Translate the newest spells' home taglines
+  * PlayL: safe hand-over socket, non-UTF-8 names, no callbacks after close
+  * UpdateL: count purges as removals
+  * System settings sweep: safer KDE writes, display revert, live mount checks
+  * StoreL: two loads of one screenshot don't fail each other
+  * MuraL store: theme copies can't multiply through folder links
+  * LaunchL: Reset never trashes your own app; id lookup follows real folders
+  * GameL: one odd itch row or bottle.yml no longer hides the whole launcher
+  * StoreL: count purges as removals, keep metadata icon paths inside their folder
+  * MuraL: store prefetch doesn't crash when the app quits mid-queue
+  * SystemL logs and drives, NetL Bluetooth
+  * SettingL: KDE's System Settings in black and white
+  * PlayL: a video and music player on libmpv
+  * VaultL: archives (browse, preview, extract, compress)
+  * PhoneL: your phone on this PC through KDE Connect
+  * Add NoteL: Markdown notes and a text editor
+  * Add ReadL: a quiet PDF and ebook reader
+  * LaunchL: calculator in search, edit and hide apps
+  * MuraL: translate the new designs, Import and Reset
+  * Segmented buttons use widgets.segments() everywhere
+  * MuraL: no store work left running when the app quits
+  * Share setup: carry every MuraL tab's new options
+  * i18n: core catalog back in sync after the spell merges
+  * i18n: one AREAS list (merge fix)
+  * Add StoreL: install and remove apps (replaces Discover)
+  * Add ViewL, an image viewer and organizer
+  * Add CloudL: Google Drive, OneDrive and Dropbox through rclone
+  * Settings → Printers and an About this PC card on the home page
+  * Add GlyphL: emoji, symbol and Unicode picker on a hotkey
+  * GameL: every game on the PC, GE-Proton manager, Protontricks, Roblox
+
+ -- cookedaj <285303240+cookedaj@users.noreply.github.com>  Sat, 31 Oct 2026 12:02:40 -0400
+
 grimoire-linux (0.2.0) unstable; urgency=medium
 
   * First packaged release, as Grimoire Linux (github.com/cookedaj/grimoire-linux).
