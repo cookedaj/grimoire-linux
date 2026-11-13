@@ -13,6 +13,12 @@ def plain_tip(text) -> str:
     return QtGui.Qt.convertFromPlainText(text) if text else ""
 
 
+def no_mnemonic(text) -> str:
+    """Button, tab and menu text from outside (a folder "Tom & Jerry", an app "Fonts & Colors"): Qt reads "&" as a
+    keyboard accelerator marker, which hides it and underlines the next letter. "&&" shows one "&"."""
+    return str(text).replace("&", "&&")
+
+
 def segments(buttons):
     """Join buttons (objectName "Segment", laid out in a row in this order) into one segmented control: rounded
     outer corners and single borders between them. Sets the "seg" property theme.py styles, by where each button

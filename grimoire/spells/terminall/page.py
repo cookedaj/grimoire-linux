@@ -21,7 +21,7 @@ from grimoire.glyphs import glyph
 from grimoire.i18n import tr
 from grimoire.paths import CACHE, HOME
 from grimoire.spells.terminall import config
-from grimoire.widgets import plain_tip, segments
+from grimoire.widgets import no_mnemonic, plain_tip, segments
 
 APT = "sudo apt install python3-pyte"
 CTRL = Qt.KeyboardModifier.ControlModifier
@@ -754,7 +754,7 @@ class TerminalLPage(QWidget):
             v = tab.active if tab.active in views else views[0]
             title = v.title()
             # isolated, so "~/Repos" keeps its "~/" in front in a right-to-left UI
-            short = "\u2068" + (title if len(title) <= 32 else "…" + title[-31:]) + "\u2069"
+            short = "\u2068" + no_mnemonic(title if len(title) <= 32 else "…" + title[-31:]) + "\u2069"
             if self.tabs.tabText(i) != short:
                 self.tabs.setTabText(i, short)
                 # programs set the title; as a plain tooltip Qt would render any markup in it

@@ -21,7 +21,7 @@ from grimoire.glyphs import glyph
 from grimoire.i18n import isolate, ltr, tr, tr_noop
 from grimoire.paths import CACHE
 from grimoire.spells.vaultl import archive
-from grimoire.widgets import plain_tip
+from grimoire.widgets import no_mnemonic, plain_tip
 
 TEMP = CACHE / "vaultl-archive"                       # preview / open / drag copies, owner-only
 PREVIEW_MAX = 64 * 1024 * 1024                        # bigger entries preview on request only
@@ -614,7 +614,7 @@ class ArchivePanel(QWidget):
                 sep = QLabel("‹" if self.isRightToLeft() else "›")
                 sep.setObjectName("Muted")
                 self.crumb_lay.addWidget(sep)
-            b = QPushButton(label)
+            b = QPushButton(no_mnemonic(isolate(label)))                  # RTL: ".cache" keeps its dot in front
             b.setObjectName("Crumb")
             b.setFlat(True)
             if i == 0:

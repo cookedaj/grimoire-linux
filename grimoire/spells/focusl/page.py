@@ -14,7 +14,7 @@ from grimoire.i18n import tr
 from grimoire.jobs import POOL, Job
 from grimoire.spells.focusl import runner, store
 from grimoire.spells.focusl.dial import Bars, Ring
-from grimoire.widgets import Switch
+from grimoire.widgets import Switch, no_mnemonic
 
 
 class _Signals(QObject):
@@ -305,7 +305,7 @@ class FocusLPage(QWidget):
                 names.add(n)
         menu = QMenu(self)
         for n in sorted(names)[:60]:
-            menu.addAction(n, lambda n=n: self._add_app(n))
+            menu.addAction(no_mnemonic(n), lambda n=n: self._add_app(n))
         menu.exec(btn.mapToGlobal(btn.rect().bottomLeft()))
 
     def _add_app(self, name: str):

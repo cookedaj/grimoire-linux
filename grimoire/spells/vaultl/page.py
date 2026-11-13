@@ -28,6 +28,7 @@ from grimoire.jobs import Job
 from grimoire.paths import CACHE, HOME
 from grimoire.spells.vaultl import archive, archiveview, launch, ops, runview
 from grimoire.spells.vaultl.tidyview import PANELS, TidyPanel, ltr, when
+from grimoire.widgets import no_mnemonic
 
 IMAGE_EXT = {".png", ".jpg", ".jpeg", ".webp", ".bmp", ".gif", ".avif", ".tif", ".tiff", ".svg"}
 TEXT_EXT = {".txt", ".md", ".py", ".lua", ".luau", ".json", ".toml", ".yaml", ".yml", ".sh", ".ini", ".cfg",
@@ -666,7 +667,7 @@ class VaultLPage(QWidget):
                 label = tr("grimoire.spells.vaultl.page", "Home")
             if part == ops.TRASH_FILES:
                 label = tr("grimoire.spells.vaultl.page", "Trash")
-            b = QPushButton(label)
+            b = QPushButton(no_mnemonic(isolate(label)))                  # RTL: ".cache" keeps its dot in front
             b.setObjectName("Crumb")
             b.setFlat(True)
             b.clicked.connect(lambda _=False, part=part: self.navigate(part))
@@ -1063,7 +1064,7 @@ class VaultLPage(QWidget):
                 continue
             name = next((l[5:] for l in info.read_text(errors="ignore").splitlines() if l.startswith("Name=")),
                         desktop_id)
-            menu.addAction(name, lambda info=info: subprocess.Popen(["gio", "launch", str(info), str(p)],
+            menu.addAction(no_mnemonic(name), lambda info=info: subprocess.Popen(["gio", "launch", str(info), str(p)],
                                                                     start_new_session=True))
         if not apps:
             menu.addAction(tr("grimoire.spells.vaultl.page", "No apps registered for this type")).setEnabled(False)

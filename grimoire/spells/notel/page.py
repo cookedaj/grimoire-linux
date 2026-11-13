@@ -27,7 +27,7 @@ from grimoire.jobs import POOL, Job
 from grimoire.paths import command
 from grimoire.spells.notel import highlight, index, preview, store
 from grimoire.spells.notel.editor import Editor, FindBar
-from grimoire.widgets import Switch, plain_tip
+from grimoire.widgets import Switch, no_mnemonic, plain_tip
 
 AUTOSAVE_MS = 900
 BIG_HIGHLIGHT = 3 << 20          # no syntax colors past this (keeps typing fast in huge files)
@@ -1030,9 +1030,9 @@ class NoteLPage(QWidget):
     def _insert_tab(self, d: Doc, at: int):
         self.docs.append(d)
         self.editors.addWidget(d.editor)
-        i = self.tabs.insertTab(at, d.path.stem if d.markdown else d.path.name)
+        i = self.tabs.insertTab(at, no_mnemonic(d.path.stem if d.markdown else d.path.name))
         self.tabs.setTabData(i, d)
-        self.tabs.setTabToolTip(i, tilde(d.path))
+        self.tabs.setTabToolTip(i, plain_tip(tilde(d.path)))
         close = _tool("close", tr("grimoire.spells.notel.page", "Close tab (Ctrl+W)"),
                       lambda d=d: self.close_tab(self._index_of(d)), 12)
         self.tabs.setTabButton(i, QTabBar.ButtonPosition.RightSide, close)
@@ -1064,7 +1064,7 @@ class NoteLPage(QWidget):
             return
         name = d.path.stem if d.markdown else d.path.name
         mark = "! " if d.conflict else "• " if d.modified else ""
-        self.tabs.setTabText(i, mark + name)
+        self.tabs.setTabText(i, mark + no_mnemonic(name))
         if d is self.current():
             self._update_status()
 
