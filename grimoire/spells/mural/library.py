@@ -76,8 +76,12 @@ def thumbnail(path: Path) -> QImage:
     if cached.exists():
         return QImage(str(cached))
     if is_video(path):
-        subprocess.run(["ffmpeg", "-hide_banner", "-loglevel", "error", "-y", "-ss", "1", "-i", str(path),
-                        "-frames:v", "1", "-vf", "scale=640:-1", str(cached)], check=False)
+        try:                                    # a FIFO or a stalled network file must not hang the worker forever
+            subprocess.run(["ffmpeg", "-nostdin", "-hide_banner", "-loglevel", "error", "-y", "-ss", "1", "-i",
+                            str(path), "-frames:v", "1", "-vf", "scale=640:-1", str(cached)],
+                           check=False, stdin=subprocess.DEVNULL, capture_output=True, timeout=30)
+        except (OSError, subprocess.TimeoutExpired):
+            pass
         img = QImage(str(cached))
     else:
         reader = QImageReader(str(path))
