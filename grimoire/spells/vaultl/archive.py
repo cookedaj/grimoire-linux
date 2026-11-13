@@ -29,7 +29,7 @@ from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path, PurePosixPath
 
-from grimoire.fsutil import free_name
+from grimoire.fsutil import free_name, move_free
 from grimoire.i18n import tr
 
 try:
@@ -968,21 +968,17 @@ def _extract(r, dest, names, base, progress, smart, private) -> Result:
             result.skipped += sum(_confine(item, src) for item in tops)
             tops = [t for t in tops if t.is_symlink() or t.exists()]
             for item in tops:
-                target = free_name(dest / item.name)
-                os.rename(item, target)
-                result.placed.append(target)
+                result.placed.append(move_free(item, dest / item.name))
         else:
             tops = list(stage.iterdir())
             single = smart and len(tops) == 1
             result.skipped += _confine(tops[0] if single else stage, stage)
             tops = [t for t in tops if t.is_symlink() or t.exists()]
             if single and tops:
-                target = free_name(dest / tops[0].name)
-                os.rename(tops[0], target)
+                target = move_free(tops[0], dest / tops[0].name)
             else:
-                target = free_name(dest / (stem(r.path) or "archive"))
                 os.chmod(stage, 0o755)
-                os.rename(stage, target)
+                target = move_free(stage, dest / (stem(r.path) or "archive"))
             result.placed.append(target)
     except OSError as e:
         raise ArchiveError(e.strerror or str(e)) from None
@@ -1093,10 +1089,10 @@ def compress(sources: list[Path], out: Path, fmt: str, level: int = 2, password:
         try:
             os.link(tmp, final)                        # fails rather than replace anything
             os.unlink(tmp)
-        except OSError:                                # drives without hard links: rename if still free
-            if final.exists() or final.is_symlink():
-                final = free_name(final)
-            os.rename(tmp, final)
+        except FileExistsError:                        # taken since free_name: the next free name
+            final = move_free(tmp, final)
+        except OSError:                                # drives without hard links
+            final = move_free(tmp, final)
         return final
     except OSError as e:
         raise ArchiveError(e.strerror or str(e)) from None

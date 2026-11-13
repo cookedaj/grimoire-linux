@@ -1,5 +1,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 """File helpers shared by several spells: safe names, the Trash, and friendly sizes/paths."""
+import errno
+import os
 import subprocess
 import sys
 from pathlib import Path
@@ -23,6 +25,48 @@ def free_name(dest: Path) -> Path:
         if not cand.exists() and not cand.is_symlink():
             return cand
         n += 1
+
+
+_RENAME_NOREPLACE = 1
+_libc = None
+
+
+def rename_noreplace(src: Path, dest: Path):
+    """os.rename that raises FileExistsError instead of replacing dest (Linux renameat2 RENAME_NOREPLACE). Where the
+    kernel or filesystem can't do that, it falls back to a plain rename after an exists check (the old behavior)."""
+    global _libc
+    try:
+        if _libc is None:
+            import ctypes
+            import ctypes.util
+            _libc = ctypes.CDLL(ctypes.util.find_library("c") or "libc.so.6", use_errno=True)
+            _libc.renameat2.argtypes = [ctypes.c_int, ctypes.c_char_p, ctypes.c_int, ctypes.c_char_p, ctypes.c_uint]
+        fn = _libc.renameat2
+    except (OSError, AttributeError):
+        fn = None
+    if fn is not None:
+        import ctypes
+        AT_FDCWD = -100
+        if fn(AT_FDCWD, os.fsencode(src), AT_FDCWD, os.fsencode(dest), _RENAME_NOREPLACE) == 0:
+            return
+        err = ctypes.get_errno()
+        if err not in (errno.EINVAL, errno.ENOSYS):        # EINVAL: this filesystem has no NOREPLACE
+            raise OSError(err, os.strerror(err), str(dest))
+    if dest.exists() or dest.is_symlink():
+        raise FileExistsError(errno.EEXIST, os.strerror(errno.EEXIST), str(dest))
+    os.rename(src, dest)
+
+
+def move_free(src: Path, dest: Path) -> Path:
+    """Move src to dest or the next free 'name (2)' beside it, never over anything, even if a name gets taken
+    between the check and the move. Returns where it went."""
+    while True:
+        target = free_name(dest)
+        try:
+            rename_noreplace(src, target)
+            return target
+        except FileExistsError:
+            continue
 
 
 def trash(path: Path):
