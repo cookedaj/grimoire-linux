@@ -246,9 +246,10 @@ def thumbnail(url: str) -> Path | None:
 # ---------------------------------------------------------------- registry
 def registry() -> dict:
     try:
-        return json.loads(REGISTRY.read_text())
+        reg = json.loads(REGISTRY.read_text())
     except (OSError, ValueError):
         return {}
+    return reg if isinstance(reg, dict) else {}
 
 
 def installed(cat_kind: str) -> list[dict]:

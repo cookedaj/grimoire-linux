@@ -33,6 +33,8 @@ def load() -> dict:
         saved = json.loads(SETTINGS.read_text())
     except (OSError, ValueError):
         saved = {}
+    if not isinstance(saved, dict):
+        saved = {}
     return DEFAULTS | {k: v for k, v in saved.items() if k in DEFAULTS and type(v) is type(DEFAULTS[k])}
 
 
@@ -100,7 +102,7 @@ def _read() -> list[dict]:
     try:
         data = json.loads(HISTORY.read_text())
         return [e for e in data if isinstance(e, dict) and isinstance(e.get("path"), str)]
-    except (OSError, ValueError):
+    except (OSError, ValueError, TypeError):                             # TypeError: not a list
         return []
 
 

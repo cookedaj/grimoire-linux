@@ -137,8 +137,11 @@ def load_saved() -> dict:
         d = json.loads(SAVED.read_text())
     except (OSError, ValueError):
         d = {}
+    if not isinstance(d, dict):
+        d = {}
     for k in ("orig", "pending"):
-        d.setdefault(k, {})
+        if not isinstance(d.get(k), dict):
+            d[k] = {}
     return d
 
 

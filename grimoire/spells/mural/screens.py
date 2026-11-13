@@ -134,9 +134,10 @@ class WrapButton(_Wrapping, QPushButton):
 
 def load_state() -> dict:
     try:
-        return json.loads(STATE.read_text())
+        state = json.loads(STATE.read_text())
     except (OSError, ValueError):
         return {}
+    return {k: v for k, v in state.items() if isinstance(v, dict)} if isinstance(state, dict) else {}
 
 
 def save_state(key: str, value: dict):

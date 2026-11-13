@@ -344,9 +344,10 @@ print(k.id);
 
 def load_state() -> dict:
     try:
-        return json.loads(STATE.read_text())
+        state = json.loads(STATE.read_text())
     except (OSError, ValueError):
         return {}
+    return state if isinstance(state, dict) else {}
 
 
 def save_state(state: dict):

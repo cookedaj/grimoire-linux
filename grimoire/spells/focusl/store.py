@@ -44,10 +44,12 @@ PHASES = {"focus": tr_noop("grimoire.spells.focusl.store", "Focus"),       # sho
 
 # ---------------------------------------------------------------- json files
 def _read(path, default):
+    """default also when the file holds the wrong kind of JSON (a list where a dict belongs, null…)."""
     try:
-        return json.loads(path.read_text())
+        data = json.loads(path.read_text())
     except (OSError, ValueError):
         return default
+    return data if type(data) is type(default) else default
 
 
 def _write(path, data):

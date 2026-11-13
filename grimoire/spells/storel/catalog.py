@@ -384,7 +384,7 @@ def load(remotes: dict[str, list[str]] | None = None, force: bool = False) -> di
     if not force:
         try:
             data = json.loads(CACHE_FILE.read_text())
-            if data.get("stamp") == want and isinstance(data.get("apps"), list):
+            if isinstance(data, dict) and data.get("stamp") == want and isinstance(data.get("apps"), list):
                 return data
         except (OSError, ValueError):
             pass

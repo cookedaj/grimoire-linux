@@ -31,7 +31,7 @@ class Settings:
         try:
             data = json.loads(STATE.read_text())
             return cls(**{k: v for k, v in data.items() if k in cls.__dataclass_fields__})
-        except (OSError, ValueError, TypeError):
+        except (OSError, ValueError, TypeError, AttributeError):          # AttributeError: not a dict
             return cls()
 
     def save(self):

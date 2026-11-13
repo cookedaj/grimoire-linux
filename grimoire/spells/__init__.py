@@ -37,8 +37,8 @@ def _mural_status() -> str:
              "taskbar": tr("grimoire.spells", "Taskbar"), "terminal": tr("grimoire.spells", "Terminal"),
              "fonts": tr("grimoire.spells", "Fonts"), "cursor": tr("grimoire.spells", "Cursor"),
              "colors": tr("grimoire.spells", "Colors"), "style": tr("grimoire.spells", "Style")}
-    bits = [f"{label} · {state[k]['design'].removeprefix('store:').split(':')[-1].replace('_', ' ').title()}"
-            for k, label in names.items() if k in state]
+    bits = [f"{label} · {str(state[k].get('design')).removeprefix('store:').split(':')[-1].replace('_', ' ').title()}"
+            for k, label in names.items() if isinstance(state.get(k), dict) and state[k].get('design')]
     from grimoire.spells.mural.looks import active_name
     look = active_name()
     bits = ([tr("grimoire.spells", "Look") + f" · {look}"] if look else []) + bits
