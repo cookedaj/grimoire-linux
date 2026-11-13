@@ -23,7 +23,7 @@ from PySide6.QtWidgets import (QAbstractItemView, QFileDialog, QFileSystemModel,
 
 from grimoire.fsutil import human, tilde
 from grimoire.glyphs import glyph
-from grimoire.i18n import tr, tr_noop
+from grimoire.i18n import isolate, tr, tr_noop
 from grimoire.jobs import Job
 from grimoire.paths import CACHE, HOME
 from grimoire.spells.vaultl import archive, archiveview, launch, ops, runview
@@ -99,7 +99,7 @@ class GridDelegate(QStyledItemDelegate):
         p.setFont(f)
         fm = QFontMetrics(f)
         text_rect = QRect(r.x() + 4, icon_rect.bottom() + 6, r.width() - 8, fm.height() * 2 + 2)
-        name = model.fileName(index)
+        name = isolate(model.fileName(index))          # RTL: ".cache" must not read "cache."
         lines = fm.elidedText(name, Qt.TextElideMode.ElideMiddle, text_rect.width() * 2 - 12)
         p.drawText(text_rect, Qt.AlignmentFlag.AlignHCenter | Qt.AlignmentFlag.AlignTop | Qt.TextFlag.TextWrapAnywhere,
                    lines)
@@ -135,6 +135,15 @@ class GridDelegate(QStyledItemDelegate):
             while len(self.cache) > THUMB_CACHE:              # ~80 KB each: forget the oldest, not every photo seen
                 del self.cache[next(iter(self.cache))]
             self.page.grid.viewport().update()
+
+
+class NameDelegate(QStyledItemDelegate):
+    """Details view names laid out by their own first letter, so an RTL UI doesn't move ".cache"'s dot to the end.
+    Only the painted text: editing and type-to-find keep the plain name."""
+
+    def initStyleOption(self, option, index):
+        super().initStyleOption(option, index)
+        option.text = isolate(option.text)
 
 
 class FileModel(QFileSystemModel):
@@ -476,6 +485,7 @@ class VaultLPage(QWidget):
         t.sortByColumn(0, Qt.SortOrder.AscendingOrder)
         t.setIconSize(QSize(20, 20))
         t.setAlternatingRowColors(False)
+        t.setItemDelegateForColumn(0, NameDelegate(t))
         h = t.header()
         h.setStretchLastSection(False)
         h.setSectionResizeMode(0, QHeaderView.ResizeMode.Stretch)
