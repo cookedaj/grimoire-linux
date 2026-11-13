@@ -27,7 +27,7 @@ from grimoire.jobs import POOL, Job
 from grimoire.paths import command
 from grimoire.spells.notel import highlight, index, preview, store
 from grimoire.spells.notel.editor import Editor, FindBar
-from grimoire.widgets import Switch
+from grimoire.widgets import Switch, plain_tip
 
 AUTOSAVE_MS = 900
 BIG_HIGHLIGHT = 3 << 20          # no syntax colors past this (keeps typing fast in huge files)
@@ -768,7 +768,7 @@ class NoteLPage(QWidget):
                 item.setIcon(0, glyph("pin", 16))
                 item.setData(0, ROLE, str(p))
                 item.setData(0, ROLE + 1, "note")
-                item.setToolTip(0, tilde(p))
+                item.setToolTip(0, plain_tip(tilde(p)))
                 group.addChild(item)
             group.setExpanded(True)
         folders = {"": self.tree.invisibleRootItem()}
@@ -794,7 +794,7 @@ class NoteLPage(QWidget):
             item.setIcon(0, glyph("document", 16))
             item.setData(0, ROLE, str(note.path))
             item.setData(0, ROLE + 1, "note")
-            item.setToolTip(0, note.rel)
+            item.setToolTip(0, plain_tip(note.rel))
             parent.addChild(item)
         self._sort_tree(self.tree.invisibleRootItem())
         if first:
@@ -917,7 +917,7 @@ class NoteLPage(QWidget):
             item.setData(ROLE, str(h.note.path))
             item.setData(ROLE + 2, h.note.title)
             item.setData(ROLE + 3, lines[0][:300] if lines else "")
-            item.setToolTip(h.note.rel)
+            item.setToolTip(plain_tip(h.note.rel))
             self.results.addItem(item)
         if not hits:
             item = QListWidgetItem(tr("grimoire.spells.notel.page", "Nothing matches “{query}”.")
@@ -1572,7 +1572,7 @@ class NoteLPage(QWidget):
             note = self.snap.notes.get(r)
             item = QListWidgetItem(glyph("link", 16), note.title if note else r)
             item.setData(ROLE, str(self.snap.root / r))
-            item.setToolTip(r)
+            item.setToolTip(plain_tip(r))
             self.backlinks.addItem(item)
         row = self.backlinks.sizeHintForRow(0) if refs else 34
         self.backlinks.setFixedHeight(min(170, row * max(1, len(refs)) + 6))

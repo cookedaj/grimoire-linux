@@ -13,6 +13,7 @@ from grimoire.glyphs import _pixmap, glyph
 from grimoire.i18n import ltr, tr, tr_noop
 from grimoire.jobs import POOL, Job
 from grimoire.spells.playl import art, library, media
+from grimoire.widgets import plain_tip
 
 VIEWS = ["albums", "artists", "songs"]       # the stack's pages, picked from the page's side bar
 TILE = 150
@@ -436,7 +437,7 @@ class LibraryPanel(QWidget):
             text = a["title"] + ("\n" + a["artist"] if a["artist"] else "")
             it = QListWidgetItem(ph, text)
             it.setData(KEY, a["key"])
-            it.setToolTip(text)
+            it.setToolTip(plain_tip(text))
             it.setTextAlignment(Qt.AlignmentFlag.AlignHCenter | Qt.AlignmentFlag.AlignTop)
             self.grid.addItem(it)
             self._items[a["key"]] = it

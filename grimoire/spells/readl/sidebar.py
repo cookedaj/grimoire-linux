@@ -7,7 +7,7 @@ from PySide6.QtWidgets import (QAbstractItemView, QFrame, QHBoxLayout, QInputDia
                                QVBoxLayout)
 
 from grimoire.i18n import tr
-from grimoire.widgets import segments
+from grimoire.widgets import plain_tip, segments
 
 THUMB_W = 132
 
@@ -131,7 +131,7 @@ class Sidebar(QFrame):
             while parents and parents[-1][0] >= level:
                 parents.pop()
             item = QTreeWidgetItem([title])
-            item.setToolTip(0, title)
+            item.setToolTip(0, plain_tip(title))
             item.setData(0, Qt.ItemDataRole.UserRole, target)
             if parents:
                 parents[-1][1].addChild(item)
@@ -237,7 +237,8 @@ class Sidebar(QFrame):
         for b in marks:
             it = QListWidgetItem(f"{b['label']}\n{describe(b['pos'])}")
             it.setData(Qt.ItemDataRole.UserRole, b["pos"])
-            it.setToolTip(b["label"])
+            it.setData(Qt.ItemDataRole.UserRole + 1, b["label"])  # the tooltip is escaped HTML, not the label
+            it.setToolTip(plain_tip(b["label"]))
             self.marks.addItem(it)
         self.marks.setVisible(bool(marks))
         self.marks_empty.setVisible(not marks)
@@ -255,7 +256,7 @@ class Sidebar(QFrame):
         m.exec(self.marks.viewport().mapToGlobal(pt))
 
     def _rename(self, it, pos):
-        old = it.toolTip()
+        old = it.data(Qt.ItemDataRole.UserRole + 1) or ""
         text, ok = QInputDialog.getText(self, tr("grimoire.spells.readl.sidebar", "Rename bookmark"),
                                         tr("grimoire.spells.readl.sidebar", "Name"), text=old)
         if ok and text.strip():

@@ -18,6 +18,7 @@ from grimoire.i18n import tr, tr_noop
 from grimoire.jobs import POOL, Job
 from grimoire.paths import HOME
 from grimoire.spells.vaultl import cli, tidy
+from grimoire.widgets import plain_tip
 
 # (sidebar label, glyph, panel title, what the panel is for)
 # (translated where shown: tr("grimoire.spells.vaultl.tidyview", text))
@@ -139,7 +140,7 @@ class PreviewDialog(QDialog):
             item.setFlags(Qt.ItemFlag.ItemIsEnabled | Qt.ItemFlag.ItemIsUserCheckable)
             item.setCheckState(0, Qt.CheckState.Checked)
             item.setCheckState(3, Qt.CheckState.Unchecked)
-            item.setToolTip(0, tilde(path))
+            item.setToolTip(0, plain_tip(tilde(path)))
             item.setData(0, Qt.ItemDataRole.UserRole, entry)
             for c in (1, 2):
                 item.setForeground(c, Qt.GlobalColor.gray)
@@ -483,7 +484,7 @@ class TidyPanel(QWidget):
         names = ", ".join(Path(p).name for p in self.settings.ignore[:4]) + ("…" if n > 4 else "")
         self.skipped.setText(tr("grimoire.spells.vaultl.tidyview",
                                 "%n file(s) you chose to always skip: {names}", n=n).format(names=names))
-        self.skipped.setToolTip("\n".join(tilde(p) for p in self.settings.ignore))
+        self.skipped.setToolTip(plain_tip("\n".join(tilde(p) for p in self.settings.ignore)))
         for w in (self.skipped, self.forget_btn):
             w.setVisible(bool(n))
 

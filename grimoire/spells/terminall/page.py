@@ -21,7 +21,7 @@ from grimoire.glyphs import glyph
 from grimoire.i18n import tr
 from grimoire.paths import CACHE, HOME
 from grimoire.spells.terminall import config
-from grimoire.widgets import segments
+from grimoire.widgets import plain_tip, segments
 
 APT = "sudo apt install python3-pyte"
 CTRL = Qt.KeyboardModifier.ControlModifier
@@ -303,7 +303,7 @@ class Palette(QFrame):
                 name = tr("grimoire.spells.terminall.config", c["name"])    # the built-in ones are translated
                 item = QListWidgetItem(f"{name}\n{c['command']}")
                 item.setData(Qt.ItemDataRole.UserRole, c)
-                item.setToolTip(c["command"])
+                item.setToolTip(plain_tip(c["command"]))
                 self.list.addItem(item)
         if self.list.count():
             self.list.setCurrentRow(0)

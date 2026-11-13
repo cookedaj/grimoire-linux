@@ -8,6 +8,7 @@ from PySide6.QtWidgets import (QAbstractItemView, QFrame, QHBoxLayout, QLabel, Q
 from grimoire.glyphs import glyph
 from grimoire.i18n import tr
 from grimoire.spells.playl import media
+from grimoire.widgets import plain_tip
 
 ENTRY = Qt.ItemDataRole.UserRole
 ROW = Qt.ItemDataRole.UserRole + 1
@@ -126,7 +127,7 @@ class QueuePanel(QFrame):
             it = QListWidgetItem(self._label(entry))
             it.setData(ENTRY, entry)
             it.setData(ROW, i)
-            it.setToolTip(entry)
+            it.setToolTip(plain_tip(entry))
             self.list.addItem(it)
         self.list.blockSignals(False)
         n = len(self.player.queue)

@@ -17,7 +17,7 @@ from grimoire.i18n import ltr, tr, tr_noop
 from grimoire.spells.mural import backdrop, library, plasma, wallgen
 from grimoire.spells.mural.screens import Choice, ScreenTab, WrapButton, WrapCheck, load_state, save_state
 from grimoire.spells.mural.storeview import StoreView
-from grimoire.widgets import Slider, segments
+from grimoire.widgets import Slider, plain_tip, segments
 
 PATH_ROLE = Qt.ItemDataRole.UserRole
 
@@ -212,7 +212,7 @@ class DesktopTab(QWidget):
             label = ("▶  " if library.is_video(path) else "") + path.stem
             item = QListWidgetItem(QIcon(placeholder), label)
             item.setData(PATH_ROLE, str(path))
-            item.setToolTip(path.name)
+            item.setToolTip(plain_tip(path.name))
             item.setTextAlignment(Qt.AlignmentFlag.AlignHCenter)
             self.grid.addItem(item)
             self._thumb_queue.append(item)

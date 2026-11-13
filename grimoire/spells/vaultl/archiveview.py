@@ -21,6 +21,7 @@ from grimoire.glyphs import glyph
 from grimoire.i18n import isolate, ltr, tr, tr_noop
 from grimoire.paths import CACHE
 from grimoire.spells.vaultl import archive
+from grimoire.widgets import plain_tip
 
 TEMP = CACHE / "vaultl-archive"                       # preview / open / drag copies, owner-only
 PREVIEW_MAX = 64 * 1024 * 1024                        # bigger entries preview on request only
@@ -151,7 +152,7 @@ class JobRow(QFrame):
             if done:
                 self.detail.setText(ltr(human(done)))
         if label:
-            self.title.setToolTip(label)
+            self.title.setToolTip(plain_tip(label))
 
 
 class Jobs(QWidget):

@@ -20,7 +20,7 @@ from grimoire.jobs import POOL, Job
 from grimoire.spells.shotl import capture, newshot, record, shots
 from grimoire.spells.shotl.editor import Editor
 from grimoire.spells.shotl.icons import icon
-from grimoire.widgets import segments
+from grimoire.widgets import plain_tip, segments
 
 THUMB = QSize(232, 140)
 DELAYS = [0, 3, 5, 10]
@@ -515,7 +515,7 @@ class ShotLPage(QWidget):
             it = QListWidgetItem(f"{name}\n{shots.ago(e['time'])} · {shots.ltr(size)}")
             it.setData(Qt.ItemDataRole.UserRole, e["path"])
             it.setData(Qt.ItemDataRole.UserRole + 1, e["video"])
-            it.setToolTip(tilde(path))
+            it.setToolTip(plain_tip(tilde(path)))
             it.setTextAlignment(Qt.AlignmentFlag.AlignHCenter | Qt.AlignmentFlag.AlignTop)
             key = self._key(path)
             it.setIcon(QIcon(self._thumbs.get(key, placeholder)))

@@ -19,6 +19,7 @@ from grimoire.glyphs import glyph
 from grimoire.i18n import tr
 from grimoire.jobs import POOL, Job
 from grimoire.spells.readl import library, pdfdoc
+from grimoire.widgets import plain_tip
 
 ZOOMS = (0.5, 0.75, 1.0, 1.25, 1.5, 2.0, 3.0, 4.0)
 MEASURES = {"narrow": 600, "medium": 720, "wide": 920}
@@ -429,7 +430,7 @@ class Reader(QWidget):
             self._build_book()
             author, pages = obj.author, len(obj.chapters)
         self.title.setText(title)
-        self.title.setToolTip(self.path)
+        self.title.setToolTip(plain_tip(self.path))
         self.titleChanged.emit(title)
         self.entry = library.opened(self.path, title=title, author=author, kind=kind, pages=pages)
         self._refresh_marks()

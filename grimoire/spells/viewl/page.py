@@ -77,6 +77,7 @@ from grimoire.paths import DATA, command
 from grimoire.spells.viewl import exif, images, ops, thumbs
 from grimoire.spells.viewl.infoview import InfoPanel, gather
 from grimoire.spells.viewl.view import Canvas, Decoded, Decoder
+from grimoire.widgets import plain_tip
 
 SIZES = (112, 160, 224)  # grid thumbnail boxes: small, medium, large
 STRIP = 72
@@ -365,7 +366,7 @@ class ViewLPage(QWidget):
             b = QPushButton(glyph(icon, 18), "  " + tr("grimoire.spells.viewl.page", name))
             b.setObjectName("SubNavItem")
             b.setCheckable(True)
-            b.setToolTip(tilde(path))
+            b.setToolTip(plain_tip(tilde(path)))
             b.clicked.connect(lambda _=False, p=path: self.open_path(p))
             b.setVisible(path.is_dir())
             nl.addWidget(b)
@@ -814,7 +815,7 @@ class ViewLPage(QWidget):
             b.setObjectName("SubNavItem")
             b.setCheckable(True)
             b.setChecked(r == self.folder)
-            b.setToolTip(tilde(r))
+            b.setToolTip(plain_tip(tilde(r)))
             b.clicked.connect(lambda _=False, p=r: self.open_path(p))
             self.recent_box.addWidget(b)
 

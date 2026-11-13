@@ -19,6 +19,7 @@ from grimoire.i18n import tr
 from grimoire.jobs import POOL, Job
 from grimoire.spells.readl import covers, library, pdfdoc
 from grimoire.spells.readl.reader import Reader
+from grimoire.widgets import plain_tip
 
 ICON = QSize(120, 170)
 FILTER = "*.pdf *.epub *.md *.markdown *.txt"
@@ -205,9 +206,9 @@ class LibraryView(QWidget):
             sub = progress_text(e) if ok else tr("grimoire.spells.readl.page", "Not found")
             it = QListWidgetItem(self.icon(e), f"{e['title']}\n{sub}")
             it.setData(Qt.ItemDataRole.UserRole, e["path"])
-            it.setToolTip("\n".join(x for x in (e["title"], e["author"], tilde(e["path"]),
+            it.setToolTip(plain_tip("\n".join(x for x in (e["title"], e["author"], tilde(e["path"]),
                                                  tr("grimoire.spells.readl.page", "Opened {when}")
-                                                 .format(when=ago(e["opened"])) if e["opened"] else "") if x))
+                                                 .format(when=ago(e["opened"])) if e["opened"] else "") if x)))
             if not ok:
                 it.setForeground(QColor("#5a5a5a"))
             self.grid.addItem(it)

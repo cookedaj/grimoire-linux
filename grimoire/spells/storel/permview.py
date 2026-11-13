@@ -10,7 +10,7 @@ from grimoire import i18n
 from grimoire.i18n import tr
 from grimoire.jobs import POOL, Job
 from grimoire.spells.storel import perms
-from grimoire.widgets import Switch
+from grimoire.widgets import Switch, plain_tip
 
 
 class _Signals(QObject):
@@ -127,7 +127,7 @@ class PermissionsPanel(QWidget):
         for app_id, name in sorted(set(apps), key=lambda t: t[1].casefold()):
             it = QListWidgetItem(name)
             it.setData(Qt.ItemDataRole.UserRole, app_id)
-            it.setToolTip(app_id)
+            it.setToolTip(plain_tip(app_id))
             self.list.addItem(it)
         self.list.blockSignals(False)
         if not apps:

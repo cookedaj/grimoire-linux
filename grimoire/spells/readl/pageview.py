@@ -14,6 +14,7 @@ from PySide6.QtGui import (QColor, QDesktopServices, QGuiApplication, QImage, QK
 from PySide6.QtWidgets import QAbstractScrollArea, QApplication
 
 from grimoire.spells.readl import pdfdoc
+from grimoire.widgets import plain_tip
 
 GAP = 14                          # between pages, logical px
 MARGIN = 18
@@ -452,7 +453,7 @@ class PageView(QAbstractScrollArea):
         self.viewport().setCursor(Qt.CursorShape.PointingHandCursor if link else Qt.CursorShape.IBeamCursor
                                   if self._hit_page(e.position()) else Qt.CursorShape.ArrowCursor)
         if link and link[2]:
-            self.viewport().setToolTip(link[2])
+            self.viewport().setToolTip(plain_tip(link[2]))
         else:
             self.viewport().setToolTip("")
 

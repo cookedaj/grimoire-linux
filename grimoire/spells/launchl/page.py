@@ -6,6 +6,7 @@ from PySide6.QtWidgets import QHBoxLayout, QLabel, QMessageBox, QPushButton, QVB
 from grimoire.i18n import isolate, ltr, tr, tr_noop
 from grimoire.jobs import POOL, Job
 from grimoire.spells.launchl import appedit, panel
+from grimoire.widgets import plain_tip
 
 NAMES = {"org.kde.plasma.kickoff": "Kickoff",
          "org.kde.plasma.kicker": tr_noop("grimoire.spells.launchl.page", "Application Menu"),
@@ -193,7 +194,7 @@ class LaunchLPage(QWidget):
             reset.clicked.connect(lambda _=False, a=app.id: self._start("reset", lambda: self._apply(
                 appedit.reset, a)))
             row.addWidget(reset)
-            line.setToolTip(ltr(app.id))
+            line.setToolTip(plain_tip(ltr(app.id)))
             self.edits.addWidget(line)
 
     @staticmethod

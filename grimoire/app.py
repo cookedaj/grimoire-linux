@@ -19,6 +19,7 @@ from grimoire.settingsview import SettingsPage
 from grimoire.spells import SPELLS
 from grimoire.theme import FONT, QSS
 from grimoire.updateview import Banner, Updater, VersionButton, WhatsNew
+from grimoire.widgets import plain_tip
 
 
 def spaced(text: str, size: int, spacing: float, weight=QFont.Weight.DemiBold) -> QLabel:
@@ -288,7 +289,7 @@ class Window(QMainWindow):
         account.setIcon(glyph("login", 22))
         account.setIconSize(QSize(22, 22))
         account.setFixedSize(48, 48)
-        account.setToolTip(self._who())
+        account.setToolTip(plain_tip(self._who()))
         account.clicked.connect(lambda: (self.open("settings"), self.pages["settings"][1].show_section("profile")))
         rl.addWidget(account, 0, Qt.AlignmentFlag.AlignHCenter)
         self._add_page("settings", tr("grimoire.app", "Settings"), "gear", None, rl,

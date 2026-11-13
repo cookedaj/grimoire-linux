@@ -29,6 +29,7 @@ from grimoire.i18n import tr, tr_noop
 from grimoire.jobs import POOL, Job
 from grimoire.spells.settingl import kcms
 from grimoire.spells.settingl.common import label
+from grimoire.widgets import plain_tip
 
 CTX = "grimoire.spells.settingl.page"
 # id, name, glyph, module, class, search words (translated, plus the English ones), KDE modules it covers
@@ -434,7 +435,7 @@ class SettingLPage(QWidget):
                         )
                     ),
                 )
-                it.setToolTip(extra)
+                it.setToolTip(plain_tip(extra))
             it.setData(Qt.ItemDataRole.UserRole, (kind, hid))
             self.results.addItem(it)
         if not hits:

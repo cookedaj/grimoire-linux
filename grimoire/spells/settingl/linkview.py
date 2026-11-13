@@ -14,6 +14,7 @@ from grimoire.i18n import tr, tr_noop
 from grimoire.jobs import POOL, Job
 from grimoire.spells.settingl import kcms, kde
 from grimoire.spells.settingl.common import OPEN_SPELL, FlowLinks, Panel, Row, label
+from grimoire.widgets import plain_tip
 
 CTX = "grimoire.spells.settingl.linkview"
 
@@ -397,7 +398,7 @@ class KdePanel(QWidget):
             for m in sorted(groups[cid], key=lambda m: (m["weight"], m["name"].casefold())):
                 it = QTreeWidgetItem(["    " * depth + m["name"], m["description"]])
                 it.setData(0, Qt.ItemDataRole.UserRole, m["id"])
-                it.setToolTip(1, m["description"])
+                it.setToolTip(1, plain_tip(m["description"]))
                 self.tree.addTopLevelItem(it)
         self.open_btn.setEnabled(False)
 

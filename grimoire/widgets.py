@@ -2,7 +2,15 @@
 """Small widgets shared by several spells."""
 from PySide6.QtCore import QRectF, QSize, Qt, QVariantAnimation
 from PySide6.QtGui import QColor, QPainter
+from PySide6 import QtGui
 from PySide6.QtWidgets import QAbstractButton, QHBoxLayout, QLabel, QSlider, QWidget
+
+
+def plain_tip(text) -> str:
+    """A tooltip for text someone else wrote (file names, titles, device names): Qt reads a tooltip that looks like
+    HTML as rich text, so "<b>x</b>.mp3" would render bold (or load an <img>). Escaped, it shows as typed."""
+    text = str(text)
+    return QtGui.Qt.convertFromPlainText(text) if text else ""
 
 
 def segments(buttons):

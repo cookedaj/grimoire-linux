@@ -18,6 +18,7 @@ from grimoire.spells.phonel import kdc
 from grimoire.spells.phonel.page import lead
 from grimoire.spells.phonel.views import _clear, fetch
 from grimoire.spells.systeml.page import _label
+from grimoire.widgets import plain_tip
 
 NUMBER = re.compile(r"^\+?[0-9][0-9 ()./-]{1,30}$")
 SENT_QSS = "QFrame#Sent { background: #f2f2f2; border-radius: 12px; } QFrame#Sent QLabel { color: #000000; }"
@@ -217,7 +218,7 @@ class Messages(QWidget):
                 lab.setAttribute(Qt.WidgetAttribute.WA_TransparentForMouseEvents)
             item = QListWidgetItem()
             item.setData(Qt.ItemDataRole.UserRole, m["thread"])
-            item.setToolTip(", ".join(m["addresses"]))
+            item.setToolTip(plain_tip(", ".join(m["addresses"])))
             cell.ensurePolished()
             item.setSizeHint(cell.sizeHint() + QSize(0, 6))
             self.list.addItem(item)

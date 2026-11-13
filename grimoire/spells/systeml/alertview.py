@@ -11,7 +11,7 @@ from grimoire.i18n import tr, tr_noop
 from grimoire.jobs import POOL, Job
 from grimoire.spells.systeml import alerts
 from grimoire.spells.systeml.bidi import lead, ltr
-from grimoire.widgets import Switch
+from grimoire.widgets import Switch, plain_tip
 
 # (settings key, title, what it watches, threshold field, lowest, highest, suffix); the sentence ends at the spin box
 ALERTS = [("ram", tr_noop("grimoire.spells.systeml.alertview", "Memory"),
@@ -240,5 +240,5 @@ def when_text(t: float) -> str:
 
 def _item(texts):
     it = QTreeWidgetItem(texts)
-    it.setToolTip(2, texts[2])
+    it.setToolTip(2, plain_tip(texts[2]))
     return it

@@ -18,6 +18,7 @@ from grimoire.jobs import POOL, Job
 from grimoire.spells.phonel import kdc
 from grimoire.spells.phonel.listen import Listener
 from grimoire.spells.systeml.page import _label
+from grimoire.widgets import plain_tip
 
 POLL_MS = 3000
 # actions run one at a time, in the order you made them (typed text, then Enter; a move, then the click)
@@ -404,7 +405,7 @@ class PhoneLPage(QWidget):
                 self.dev_list.addWidget(b)
                 self.dev_buttons[d["id"]] = b
         for d in devices:
-            self.dev_buttons[d["id"]].setToolTip(device_status(d))
+            self.dev_buttons[d["id"]].setToolTip(plain_tip(device_status(d)))
         self.none.setVisible(not devices and self.snap.get("state") == "running")
 
     def device(self, dev: str | None = None) -> dict | None:

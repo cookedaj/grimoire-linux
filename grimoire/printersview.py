@@ -14,6 +14,7 @@ from grimoire import NAME, i18n, printers
 from grimoire.fsutil import human
 from grimoire.i18n import tr
 from grimoire.settingsview import Row, _button, _label, run
+from grimoire.widgets import plain_tip
 
 POLL_MS = 4000
 LAUNCH = QProcess.startDetached          # tests swap this; never opens KDE's settings there
@@ -77,7 +78,7 @@ class PrinterRow(Row):
         menu.addAction(tr("grimoire.printersview", "Remove printer…"), self._remove)
         self.more.setMenu(menu)
         super().__init__(p.label, " · ".join(sub), [self.default, self.pause, self.test, self.more])
-        self.title.setToolTip(p.name)
+        self.title.setToolTip(plain_tip(p.name))
         if p.default:                              # the badge sits right after the name
             head = QHBoxLayout()
             head.setSpacing(8)

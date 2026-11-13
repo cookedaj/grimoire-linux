@@ -29,7 +29,7 @@ from grimoire.spells.storel.permview import PermissionsPanel
 from grimoire.spells.storel.preview import PreviewDialog
 from grimoire.spells.storel.queueview import Queue, QueuePanel
 from grimoire.spells.systeml.page import NumItem, _tree
-from grimoire.widgets import segments
+from grimoire.widgets import plain_tip, segments
 
 CATS = {"AudioVideo": (tr_noop("grimoire.spells.storel.page", "Audio & Video"), "music"),
         "Development": (tr_noop("grimoire.spells.storel.page", "Development"), "terminal"),
@@ -211,7 +211,7 @@ class InstalledPanel(QWidget):
                 row.setData(c, Qt.ItemDataRole.UserRole, v)
             row.setData(0, Qt.ItemDataRole.UserRole + 1, n)
             row.setTextAlignment(3, Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter)
-            row.setToolTip(0, copy["name"])
+            row.setToolTip(0, plain_tip(copy["name"]))
             pm = self.page.icons.get(app)
             row.setIcon(0, pm or self.page.icons.fallback)
             if copy["keep"]:
