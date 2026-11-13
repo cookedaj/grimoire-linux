@@ -71,7 +71,7 @@ from PySide6.QtWidgets import (
 from grimoire import i18n
 from grimoire.fsutil import tilde
 from grimoire.glyphs import glyph
-from grimoire.i18n import isolate, ltr, tr, tr_noop
+from grimoire.i18n import isolate, ltr, rtl, tr, tr_noop
 from grimoire.jobs import POOL, Job
 from grimoire.paths import DATA, command
 from grimoire.spells.viewl import exif, images, ops, thumbs
@@ -389,6 +389,9 @@ class ViewLPage(QWidget):
         lay.setSpacing(12)
         head = QHBoxLayout()
         self.heading = _label("", "PageHeading")
+        if rtl():                                   # a Latin folder name would otherwise sit on the far (left) side
+            self.heading.setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignAbsolute
+                                      | Qt.AlignmentFlag.AlignVCenter)
         head.addWidget(self.heading, 1)
         self.count = _label("", "Muted")
         head.addWidget(self.count)
@@ -700,7 +703,7 @@ class ViewLPage(QWidget):
         self._pending_select, self._pending_view = select, view
         if not view and self.mode != "browse":
             self._set_mode("browse")
-        self.heading.setText(folder.name or str(folder))
+        self.heading.setText(isolate(folder.name or str(folder)))  # stays on the start side in RTL
         self.crumb.setText(ltr(tilde(folder)))  # a path reads left to right in Arabic and Urdu too
         self.up_btn.setEnabled(folder.parent != folder)
         for b, p in self.place_btns:
