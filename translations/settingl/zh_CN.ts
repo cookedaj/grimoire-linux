@@ -411,6 +411,12 @@
     </message>
     <message>
         <location filename="../../grimoire/spells/settingl/deviceview.py"/>
+        <source> ms</source>
+        <comment>milliseconds, after a number</comment>
+        <translation> 毫秒</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/settingl/deviceview.py"/>
         <source>Delay</source>
         <translation>延迟</translation>
     </message>
@@ -418,6 +424,12 @@
         <location filename="../../grimoire/spells/settingl/deviceview.py"/>
         <source>How long to hold a key before it repeats.</source>
         <translation>按住多久后开始重复。</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/settingl/deviceview.py"/>
+        <source>/s</source>
+        <comment>times a second, after a number</comment>
+        <translation>/秒</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/settingl/deviceview.py"/>
@@ -1483,6 +1495,11 @@ sudo apt install pipewire-bin wireplumber</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/settingl/systemview.py"/>
+        <source>Computer name</source>
+        <translation>计算机名</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/settingl/systemview.py"/>
         <source>SOFTWARE</source>
         <translation>软件</translation>
     </message>
@@ -1537,11 +1554,6 @@ sudo apt install pipewire-bin wireplumber</translation>
         <location filename="../../grimoire/spells/settingl/systemview.py"/>
         <source>System disk</source>
         <translation>系统磁盘</translation>
-    </message>
-    <message>
-        <location filename="../../grimoire/spells/settingl/systemview.py"/>
-        <source>Computer name</source>
-        <translation>计算机名</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/settingl/systemview.py"/>

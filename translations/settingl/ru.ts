@@ -415,6 +415,12 @@
     </message>
     <message>
         <location filename="../../grimoire/spells/settingl/deviceview.py"/>
+        <source> ms</source>
+        <comment>milliseconds, after a number</comment>
+        <translation> мс</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/settingl/deviceview.py"/>
         <source>Delay</source>
         <translation>Задержка</translation>
     </message>
@@ -422,6 +428,12 @@
         <location filename="../../grimoire/spells/settingl/deviceview.py"/>
         <source>How long to hold a key before it repeats.</source>
         <translation>Сколько держать клавишу, прежде чем начнётся повтор.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/settingl/deviceview.py"/>
+        <source>/s</source>
+        <comment>times a second, after a number</comment>
+        <translation>/с</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/settingl/deviceview.py"/>
@@ -1495,6 +1507,11 @@ sudo apt install pipewire-bin wireplumber</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/settingl/systemview.py"/>
+        <source>Computer name</source>
+        <translation>Имя компьютера</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/settingl/systemview.py"/>
         <source>SOFTWARE</source>
         <translation>ПРОГРАММЫ</translation>
     </message>
@@ -1551,11 +1568,6 @@ sudo apt install pipewire-bin wireplumber</translation>
         <location filename="../../grimoire/spells/settingl/systemview.py"/>
         <source>System disk</source>
         <translation>Системный диск</translation>
-    </message>
-    <message>
-        <location filename="../../grimoire/spells/settingl/systemview.py"/>
-        <source>Computer name</source>
-        <translation>Имя компьютера</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/settingl/systemview.py"/>

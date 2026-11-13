@@ -413,6 +413,12 @@
     </message>
     <message>
         <location filename="../../grimoire/spells/settingl/deviceview.py"/>
+        <source> ms</source>
+        <comment>milliseconds, after a number</comment>
+        <translation> मि.से.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/settingl/deviceview.py"/>
         <source>Delay</source>
         <translation>देरी</translation>
     </message>
@@ -420,6 +426,12 @@
         <location filename="../../grimoire/spells/settingl/deviceview.py"/>
         <source>How long to hold a key before it repeats.</source>
         <translation>दोहराने से पहले की को कितनी देर दबाए रखना है।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/settingl/deviceview.py"/>
+        <source>/s</source>
+        <comment>times a second, after a number</comment>
+        <translation>/से.</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/settingl/deviceview.py"/>
@@ -1489,6 +1501,11 @@ sudo apt install pipewire-bin wireplumber</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/settingl/systemview.py"/>
+        <source>Computer name</source>
+        <translation>कंप्यूटर का नाम</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/settingl/systemview.py"/>
         <source>SOFTWARE</source>
         <translation>सॉफ़्टवेयर</translation>
     </message>
@@ -1544,11 +1561,6 @@ sudo apt install pipewire-bin wireplumber</translation>
         <location filename="../../grimoire/spells/settingl/systemview.py"/>
         <source>System disk</source>
         <translation>सिस्टम डिस्क</translation>
-    </message>
-    <message>
-        <location filename="../../grimoire/spells/settingl/systemview.py"/>
-        <source>Computer name</source>
-        <translation>कंप्यूटर का नाम</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/settingl/systemview.py"/>

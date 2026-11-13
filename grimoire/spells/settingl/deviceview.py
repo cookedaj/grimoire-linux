@@ -459,8 +459,9 @@ class KeyboardPanel(Panel):
         self.col.addWidget(
             Row(tr("grimoire.spells.settingl.deviceview", "Repeat a key while it's held down"), "", self.rep_sw)
         )
-        self.delay = Slider(100, 2000, " ms")
-        self.delay.v.setFixedWidth(70)
+        ms = tr("grimoire.spells.settingl.deviceview", " ms", "milliseconds, after a number")
+        self.delay = Slider(100, 2000, ms)
+        self.delay.v.setFixedWidth(max(70, self.delay.v.fontMetrics().horizontalAdvance("2000" + self.delay.suffix) + 8))
         self.delay.setMinimumWidth(260)
         self.delay.s.setSingleStep(25)
         self.delay.s.valueChanged.connect(lambda _v: self._later())
@@ -471,8 +472,8 @@ class KeyboardPanel(Panel):
                 self.delay,
             )
         )
-        self.rate = Slider(1, 100, "/s")
-        self.rate.v.setFixedWidth(70)
+        self.rate = Slider(1, 100, tr("grimoire.spells.settingl.deviceview", "/s", "times a second, after a number"))
+        self.rate.v.setFixedWidth(max(70, self.rate.v.fontMetrics().horizontalAdvance("100" + self.rate.suffix) + 8))
         self.rate.setMinimumWidth(260)
         self.rate.s.valueChanged.connect(lambda _v: self._later())
         self.col.addWidget(
