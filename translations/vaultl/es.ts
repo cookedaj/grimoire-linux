@@ -545,6 +545,11 @@
     </message>
     <message>
         <location filename="../../grimoire/spells/vaultl/page.py"/>
+        <source>Folder</source>
+        <translation>Carpeta</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/page.py"/>
         <source>Items in the Trash stay where they are. Use Restore to put them back.</source>
         <translation>Los elementos de la Papelera se quedan donde están. Usa Restaurar para devolverlos a su sitio.</translation>
     </message>

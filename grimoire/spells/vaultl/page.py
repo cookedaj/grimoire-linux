@@ -14,8 +14,8 @@ from pathlib import Path
 
 from PySide6.QtCore import (QDir, QItemSelectionModel, QMimeData, QMimeDatabase, QModelIndex,
                             QObject, QRect, QRectF, QSize, QStorageInfo, Qt, QThreadPool, QTimer, QUrl, Signal)
-from PySide6.QtGui import (QColor, QDesktopServices, QFont, QFontMetrics, QGuiApplication, QIcon, QImage,
-                           QImageReader, QKeySequence, QPainter, QPainterPath, QPixmap, QShortcut)
+from PySide6.QtGui import (QAbstractFileIconProvider, QColor, QDesktopServices, QFont, QFontMetrics, QGuiApplication,
+                           QIcon, QImage, QImageReader, QKeySequence, QPainter, QPainterPath, QPixmap, QShortcut)
 from PySide6.QtWidgets import (QAbstractItemView, QFileDialog, QFileSystemModel, QFrame, QHBoxLayout, QHeaderView,
                                QLabel, QLineEdit, QListView, QListWidget, QListWidgetItem, QMenu, QMessageBox,
                                QPushButton, QSplitter, QStackedWidget, QStyle, QStyledItemDelegate, QToolButton,
@@ -139,12 +139,34 @@ class GridDelegate(QStyledItemDelegate):
 
 
 class NameDelegate(QStyledItemDelegate):
-    """Details view names laid out by their own first letter, so an RTL UI doesn't move ".cache"'s dot to the end.
-    Only the painted text: editing and type-to-find keep the plain name."""
+    """Details view text laid out on its own, so an RTL UI doesn't move ".cache"'s dot to the end (names: by their
+    first letter) or turn "13 Nov 2026 17:55" and "0 bytes" around (sizes and dates: left to right). Only the painted
+    text: editing and type-to-find keep the plain name."""
+
+    def __init__(self, parent, as_ltr=False):
+        super().__init__(parent)
+        self.as_ltr = as_ltr
 
     def initStyleOption(self, option, index):
         super().initStyleOption(option, index)
-        option.text = isolate(option.text)
+        option.text = ltr(option.text) if self.as_ltr and option.text else isolate(option.text)
+
+
+class TypeNames(QAbstractFileIconProvider):
+    """The Type column in the user's language: Qt's own names ("Folder", "png File") have no translations, the
+    shared-mime-info comments ("PNG image", "صورة PNG") do. Matched by name only (no file is opened) since
+    QFileSystemModel asks from its gatherer thread for every file; sorting by Type follows the same names."""
+
+    def __init__(self):
+        super().__init__()
+        self.mimes = QMimeDatabase()
+        self.folder = tr("grimoire.spells.vaultl.page", "Folder")
+
+    def type(self, info):
+        if info.isDir():
+            return self.folder
+        mime = self.mimes.mimeTypeForFile(info.fileName(), QMimeDatabase.MatchMode.MatchExtension)
+        return super().type(info) if mime.isDefault() else mime.comment()     # unknown: Qt's "xyz File" names it
 
 
 class FileModel(QFileSystemModel):
@@ -191,6 +213,8 @@ class VaultLPage(QWidget):
         self.cwd = HOME
 
         self.model = FileModel(self)
+        self.type_names = TypeNames()                     # kept here: the model doesn't own its provider
+        self.model.setIconProvider(self.type_names)
         self.model.trash_drop.connect(self._trash_paths)
         self.model.transfer_drop.connect(lambda srcs, dest, move: self._transfer(srcs, Path(dest), move))
         self.model.refused.connect(lambda msg: self.status.setText(msg))
@@ -487,6 +511,9 @@ class VaultLPage(QWidget):
         t.setIconSize(QSize(20, 20))
         t.setAlternatingRowColors(False)
         t.setItemDelegateForColumn(0, NameDelegate(t))
+        if self.isRightToLeft():
+            for c in (1, 3):                                  # size, date modified
+                t.setItemDelegateForColumn(c, NameDelegate(t, as_ltr=True))
         h = t.header()
         h.setStretchLastSection(False)
         h.setSectionResizeMode(0, QHeaderView.ResizeMode.Stretch)

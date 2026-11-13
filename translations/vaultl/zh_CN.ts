@@ -536,6 +536,11 @@
     </message>
     <message>
         <location filename="../../grimoire/spells/vaultl/page.py"/>
+        <source>Folder</source>
+        <translation>文件夹</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/page.py"/>
         <source>Items in the Trash stay where they are. Use Restore to put them back.</source>
         <translation>回收站中的项目不能移动。请用“恢复”把它们放回原处。</translation>
     </message>

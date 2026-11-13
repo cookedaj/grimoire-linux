@@ -554,6 +554,11 @@
     </message>
     <message>
         <location filename="../../grimoire/spells/vaultl/page.py"/>
+        <source>Folder</source>
+        <translation>Папка</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/page.py"/>
         <source>Items in the Trash stay where they are. Use Restore to put them back.</source>
         <translation>Объекты в Корзине остаются на месте. Чтобы вернуть их, используйте «Восстановить».</translation>
     </message>

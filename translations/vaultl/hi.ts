@@ -545,6 +545,11 @@
     </message>
     <message>
         <location filename="../../grimoire/spells/vaultl/page.py"/>
+        <source>Folder</source>
+        <translation>फ़ोल्डर</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/page.py"/>
         <source>Items in the Trash stay where they are. Use Restore to put them back.</source>
         <translation>ट्रैश के आइटम अपनी जगह रहते हैं। उन्हें वापस रखने के लिए पुनर्स्थापित करें का उपयोग करें।</translation>
     </message>
