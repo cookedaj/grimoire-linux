@@ -65,6 +65,7 @@ class Notice(QWidget):
         lay.addStretch(1)
         self.heading = _label("", "PageHeading", wrap=True)
         self.text = _label("", "Muted", wrap=True)
+        self.heading.setProperty("centered", True)    # RTL_QSS right-aligns headings otherwise
         for w in (self.heading, self.text):
             w.setAlignment(Qt.AlignmentFlag.AlignHCenter)
             lay.addWidget(w)

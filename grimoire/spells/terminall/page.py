@@ -88,6 +88,7 @@ class Missing(QWidget):
             label.setObjectName(name)
             label.setWordWrap(True)
             label.setAlignment(Qt.AlignmentFlag.AlignHCenter)
+            label.setProperty("centered", True)        # RTL_QSS right-aligns headings otherwise
             lay.addWidget(label)
         lay.addSpacing(12)
         cmd = QLabel(APT)

@@ -171,6 +171,7 @@ class LibraryView(QWidget):
                                                           "here. ReadL remembers where you stopped."), "Muted")):
             lab = _label(t, name, wrap=True)
             lab.setAlignment(Qt.AlignmentFlag.AlignHCenter)
+            lab.setProperty("centered", True)          # RTL_QSS right-aligns headings otherwise
             el.addWidget(lab)
         el.addStretch(2)
         root.addWidget(self.empty, 1)
