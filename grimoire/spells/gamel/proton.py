@@ -21,7 +21,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from urllib.parse import urlparse
 
-from grimoire.fsutil import trash
+from grimoire.fsutil import rename_noreplace, trash
 from grimoire.i18n import tr
 from grimoire.paths import CACHE
 from grimoire.spells.gamel import library, vdf
@@ -332,9 +332,10 @@ def extract(archive: Path, target: Path, tag: str) -> Path:
         if not built.is_dir() or not ((built / "compatibilitytool.vdf").is_file() or (built / "proton").is_file()):
             raise ProtonError(tr("grimoire.spells.gamel.proton", "The archive isn't laid out like a Proton build; "
                                  "not installing it."))
-        if final.exists() or final.is_symlink():
-            raise ProtonError(tr("grimoire.spells.gamel.proton", "{name} is already installed.").format(name=tag))
-        built.rename(final)
+        try:
+            rename_noreplace(built, final)
+        except FileExistsError:
+            raise ProtonError(tr("grimoire.spells.gamel.proton", "{name} is already installed.").format(name=tag)) from None
     finally:
         shutil.rmtree(work, ignore_errors=True)
     return final

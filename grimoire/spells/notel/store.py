@@ -14,7 +14,7 @@ import stat
 from dataclasses import dataclass
 from pathlib import Path
 
-from grimoire.fsutil import free_name, trash
+from grimoire.fsutil import free_name, rename_noreplace, trash
 from grimoire.i18n import tr
 from grimoire.paths import CACHE, CONFIG
 
@@ -308,7 +308,13 @@ def rename(path: Path, new_name: str) -> Path:
         if target.name.lower() != path.name.lower() or not os.path.samefile(target, path):
             raise ValueError(tr("grimoire.spells.notel.store", "Something called {name} is already there.")
                              .format(name=target.name))
-    os.rename(path, target)
+        os.rename(path, target)                 # only a change of case on a case-blind drive gets here
+        return target
+    try:
+        rename_noreplace(path, target)          # never over a note that appeared since the check
+    except FileExistsError:
+        raise ValueError(tr("grimoire.spells.notel.store", "Something called {name} is already there.")
+                         .format(name=target.name)) from None
     return target
 
 

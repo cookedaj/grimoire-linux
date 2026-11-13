@@ -12,7 +12,7 @@ import re
 import shutil
 from pathlib import Path
 
-from grimoire.fsutil import free_name
+from grimoire.fsutil import move_free
 from grimoire.i18n import tr_noop
 from grimoire.paths import CONFIG
 
@@ -111,8 +111,7 @@ def write_conf(s: dict) -> Path | None:
     path.parent.mkdir(parents=True, exist_ok=True)
     moved = None
     if (path.exists() or path.is_symlink()) and not ours(path):
-        moved = free_name(path.with_name(path.name + ".before-gamel"))
-        path.rename(moved)
+        moved = move_free(path, path.with_name(path.name + ".before-gamel"))
     tmp = path.with_name(path.name + ".gamel-tmp")
     tmp.unlink(missing_ok=True)                # a leftover (or a symlink) there must not be written through
     tmp.write_text(conf_text(s), encoding="utf-8")

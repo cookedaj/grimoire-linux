@@ -13,7 +13,7 @@ from pathlib import Path
 
 from PySide6.QtGui import QImage, QImageReader, QImageWriter, QTransform
 
-from grimoire.fsutil import free_name, trash
+from grimoire.fsutil import free_name, rename_noreplace, trash
 from grimoire.i18n import tr
 from grimoire.paths import CACHE
 from grimoire.spells.viewl import exif
@@ -116,9 +116,10 @@ def rename(path: Path, name: str) -> Path:
     dest = path.with_name(name)
     if dest == path:
         return path
-    if dest.exists() or dest.is_symlink():
-        raise OSError(tr("grimoire.spells.viewl.ops", "A file called {name} is already there").format(name=name))
-    os.rename(path, dest)
+    try:
+        rename_noreplace(path, dest)
+    except FileExistsError:
+        raise OSError(tr("grimoire.spells.viewl.ops", "A file called {name} is already there").format(name=name)) from None
     return dest
 
 
