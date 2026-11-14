@@ -46,6 +46,7 @@ AREAS = (                                        # one per line: spells add thei
     "playl",
     "settingl",
     "cleanupl",
+    "passwordl",
 )
 TRANSLATIONS = ROOT / "translations"
 MACHINE = CONFIG_ROOT / "language"               # the last choice on this PC: the sign-in screen and guests follow it
