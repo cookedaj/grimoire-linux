@@ -408,3 +408,36 @@ SPELLS.append(Spell("settingl", "SettingL",
                                                "Bluetooth, mouse, keyboard, power, date, language, default apps and "
                                                "more, with every other KDE module one search away"),
                     _settingl, "settingl", _settingl_status))
+
+
+def _cleanupl():
+    from grimoire.spells.cleanupl.view import RemovalPage
+    return RemovalPage("cleanup")
+
+
+def _cleanupl_status() -> str:
+    from grimoire.spells.cleanupl.engine import status_line
+    return status_line("cleanup")
+
+
+SPELLS.append(Spell("cleanupl", "CleanupL",
+                    tr_noop("grimoire.spells", "Removes the apps Grimoire replaces (Dolphin, Gwenview, Okular, "
+                                               "Konsole, Kate…) and what they left behind, with a preview first and "
+                                               "Reinstall after"),
+                    _cleanupl, "cleanupl", _cleanupl_status))
+
+
+def _uninstallerl():
+    from grimoire.spells.cleanupl.view import RemovalPage
+    return RemovalPage("all")
+
+
+def _uninstallerl_status() -> str:
+    from grimoire.spells.cleanupl.engine import status_line
+    return status_line("all")
+
+
+SPELLS.append(Spell("uninstallerl", "UninstallerL",
+                    tr_noop("grimoire.spells", "Uninstall any app (packages, Flatpaks, snaps, AppImages, home "
+                                               "installs), then sweep up its settings, caches and autostart entries"),
+                    _uninstallerl, "uninstallerl", _uninstallerl_status))

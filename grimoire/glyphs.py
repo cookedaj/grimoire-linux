@@ -590,6 +590,19 @@ def _draw(name: str, p: QPainter):
         p.drawEllipse(QPointF(12, 12), 8.5, 8.5)
         p.drawLine(QPointF(12, 11), QPointF(12, 16.5))
         p.drawPoint(QPointF(12, 7.8))
+    elif name == "cleanupl":                               # a broom: the handle, the binding, the bristles
+        p.drawLine(QPointF(17.5, 3.5), QPointF(11.5, 11.5))
+        p.drawRoundedRect(r(8, 11, 7, 3), 1, 1)
+        bristles = QPainterPath(QPointF(8.5, 14)); bristles.lineTo(5, 20.5); bristles.lineTo(17, 20.5)
+        bristles.lineTo(14.5, 14); p.drawPath(bristles)
+        for x0, x1 in ((10, 8.5), (11.5, 11), (13, 13.8)):
+            p.drawLine(QPointF(x0, 15.5), QPointF(x1, 20.5))
+    elif name == "uninstallerl":                           # a box with an arrow leaving it
+        box = QPainterPath(QPointF(4, 10)); box.lineTo(4, 20); box.lineTo(20, 20); box.lineTo(20, 10)
+        p.drawPath(box)
+        p.drawLine(QPointF(4, 10), QPointF(9, 10)); p.drawLine(QPointF(15, 10), QPointF(20, 10))
+        p.drawLine(QPointF(12, 16), QPointF(12, 3.5))
+        head = QPainterPath(QPointF(8.5, 7)); head.lineTo(12, 3.5); head.lineTo(15.5, 7); p.drawPath(head)
     elif name == "journal":                                # log lines: a time tick, then the message
         p.drawRoundedRect(r(3.5, 4, 17, 16), 2, 2)
         for y, end in ((8.5, 17), (12, 14.5), (15.5, 16)):

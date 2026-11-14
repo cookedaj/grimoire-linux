@@ -3627,6 +3627,16 @@
         <source>KDE&apos;s settings in black and white: displays, sound, network, Bluetooth, mouse, keyboard, power, date, language, default apps and more, with every other KDE module one search away</source>
         <translation>Настройки KDE в чёрно-белом: экраны, звук, сеть, Bluetooth, мышь, клавиатура, питание, дата, язык, приложения по умолчанию и многое другое, а любой другой модуль KDE — в одном поиске</translation>
     </message>
+    <message>
+        <location filename="../../grimoire/spells/__init__.py"/>
+        <source>Removes the apps Grimoire replaces (Dolphin, Gwenview, Okular, Konsole, Kate…) and what they left behind, with a preview first and Reinstall after</source>
+        <translation>Удаляет приложения, которые заменяет Grimoire (Dolphin, Gwenview, Okular, Konsole, Kate…), и их остатки: сначала предпросмотр, потом можно переустановить</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/__init__.py"/>
+        <source>Uninstall any app (packages, Flatpaks, snaps, AppImages, home installs), then sweep up its settings, caches and autostart entries</source>
+        <translation>Удаляйте любые приложения (пакеты, Flatpak, snap, AppImage, программы в домашней папке), а затем их настройки, кэш и автозапуск</translation>
+    </message>
 </context>
 <context>
     <name>grimoire.standalone</name>

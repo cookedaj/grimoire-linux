@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+# SPDX-License-Identifier: GPL-3.0-or-later
+# UninstallerL in its own window:        grimoire-uninstallerl
+DIR="$(cd "$(dirname "$(readlink -f "$0")")/.." && pwd)"
+export PYTHONPATH="$DIR${PYTHONPATH:+:$PYTHONPATH}"
+export PYTHONSAFEPATH=1       # never import a grimoire/ folder from the current directory instead
+exec python3 -m grimoire.standalone uninstallerl
