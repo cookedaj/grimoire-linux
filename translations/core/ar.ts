@@ -3719,13 +3719,31 @@
     </message>
     <message>
         <location filename="../../grimoire/spells/__init__.py"/>
-        <source>Removes the apps Grimoire replaces (Dolphin, Gwenview, Okular, Konsole, Kate…) and what they left behind, with a preview first and Reinstall after</source>
-        <translation>يزيل التطبيقات التي يحل Grimoire محلها (Dolphin وGwenview وOkular وKonsole وKate…) وما تركته، مع معاينة أولًا وإعادة تثبيت بعدها</translation>
+        <source>Uninstall any app (packages, Flatpaks, snaps, AppImages, home installs) or the ones Grimoire replaces, then sweep up their settings, caches and autostart entries</source>
+        <translation>ألغِ تثبيت أي تطبيق (حزم وFlatpak وSnap وAppImage وتثبيتات المجلد الشخصي) أو ما يحل Grimoire محله، ثم نظّف إعداداتها وذاكرتها المؤقتة ومدخلات التشغيل التلقائي</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/__init__.py"/>
+        <source>Vault ready · locked</source>
+        <translation>الخزنة جاهزة · مقفلة</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/__init__.py"/>
+        <source>No vault yet</source>
+        <translation>لا خزنة بعد</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/__init__.py"/>
+        <source>Your passwords, cards, notes and two-factor codes in an encrypted vault on this PC: generator, security audit, import from other password managers</source>
+        <translation>كلمات مرورك وبطاقاتك وملاحظاتك ورموز التحقق بخطوتين في خزنة مشفرة على هذا الحاسوب: مولّد وتدقيق أمان واستيراد من مديري كلمات مرور آخرين</translation>
+    </message>
+    <message>
+        <source>Removes the apps Grimoire replaces (Dolphin, Gwenview, Okular, Konsole, Kate…) and what they left behind, with a preview first and Reinstall after</source>
+        <translation type="vanished">يزيل التطبيقات التي يحل Grimoire محلها (Dolphin وGwenview وOkular وKonsole وKate…) وما تركته، مع معاينة أولًا وإعادة تثبيت بعدها</translation>
+    </message>
+    <message>
         <source>Uninstall any app (packages, Flatpaks, snaps, AppImages, home installs), then sweep up its settings, caches and autostart entries</source>
-        <translation>ألغِ تثبيت أي تطبيق (حزم وFlatpak وSnap وAppImage وتثبيتات المجلد الشخصي) ثم نظّف إعداداته وذاكرته المؤقتة ومدخلات التشغيل التلقائي</translation>
+        <translation type="vanished">ألغِ تثبيت أي تطبيق (حزم وFlatpak وSnap وAppImage وتثبيتات المجلد الشخصي) ثم نظّف إعداداته وذاكرته المؤقتة ومدخلات التشغيل التلقائي</translation>
     </message>
 </context>
 <context>

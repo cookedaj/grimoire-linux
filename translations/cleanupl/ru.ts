@@ -345,13 +345,8 @@
     </message>
     <message>
         <location filename="../../grimoire/spells/cleanupl/view.py"/>
-        <source>Grimoire does these apps&apos; jobs now. Tick the ones you don&apos;t need: you see exactly what goes before anything changes, their settings are offered afterwards, and Reinstall brings any back.</source>
-        <translation>Теперь работу этих приложений делает Grimoire. Отметьте ненужные: вы увидите, что именно удалится, до любых изменений, затем вам предложат их настройки, а «Переустановить» вернёт любое.</translation>
-    </message>
-    <message>
-        <location filename="../../grimoire/spells/cleanupl/view.py"/>
-        <source>Every app on this PC: system packages, Flatpaks, snaps, AppImages and apps installed in your home. Uninstall, then sweep up what it left behind.</source>
-        <translation>Все приложения на этом ПК: системные пакеты, Flatpak, snap, AppImage и программы в домашней папке. Удалите, а потом уберите то, что осталось.</translation>
+        <source>Replaced by Grimoire</source>
+        <translation>Заменённые Grimoire</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/cleanupl/view.py"/>
@@ -417,6 +412,16 @@
         <location filename="../../grimoire/spells/cleanupl/view.py"/>
         <source>Staying on purpose: {list}</source>
         <translation>Остаются намеренно: {list}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/cleanupl/view.py"/>
+        <source>Grimoire does these apps&apos; jobs now. Tick the ones you don&apos;t need: you see exactly what goes before anything changes, their settings are offered afterwards, and Reinstall brings any back.</source>
+        <translation>Теперь работу этих приложений делает Grimoire. Отметьте ненужные: вы увидите, что именно удалится, до любых изменений, затем вам предложат их настройки, а «Переустановить» вернёт любое.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/cleanupl/view.py"/>
+        <source>Every app on this PC: system packages, Flatpaks, snaps, AppImages and apps installed in your home. Uninstall, then sweep up what it left behind.</source>
+        <translation>Все приложения на этом ПК: системные пакеты, Flatpak, snap, AppImage и программы в домашней папке. Удалите, а потом уберите то, что осталось.</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/cleanupl/view.py"/>

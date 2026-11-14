@@ -339,13 +339,8 @@
     </message>
     <message>
         <location filename="../../grimoire/spells/cleanupl/view.py"/>
-        <source>Grimoire does these apps&apos; jobs now. Tick the ones you don&apos;t need: you see exactly what goes before anything changes, their settings are offered afterwards, and Reinstall brings any back.</source>
-        <translation>Grimoire fait maintenant le travail de ces applis. Cochez celles dont vous n&apos;avez pas besoin : vous voyez exactement ce qui part avant tout changement, leurs réglages sont proposés ensuite, et Réinstaller ramène n&apos;importe laquelle.</translation>
-    </message>
-    <message>
-        <location filename="../../grimoire/spells/cleanupl/view.py"/>
-        <source>Every app on this PC: system packages, Flatpaks, snaps, AppImages and apps installed in your home. Uninstall, then sweep up what it left behind.</source>
-        <translation>Toutes les applis de ce PC : paquets système, Flatpaks, snaps, AppImages et applis installées dans votre dossier personnel. Désinstallez, puis balayez ce qu&apos;elle a laissé.</translation>
+        <source>Replaced by Grimoire</source>
+        <translation>Remplacées par Grimoire</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/cleanupl/view.py"/>
@@ -411,6 +406,16 @@
         <location filename="../../grimoire/spells/cleanupl/view.py"/>
         <source>Staying on purpose: {list}</source>
         <translation>Gardées exprès : {list}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/cleanupl/view.py"/>
+        <source>Grimoire does these apps&apos; jobs now. Tick the ones you don&apos;t need: you see exactly what goes before anything changes, their settings are offered afterwards, and Reinstall brings any back.</source>
+        <translation>Grimoire fait maintenant le travail de ces applis. Cochez celles dont vous n&apos;avez pas besoin : vous voyez exactement ce qui part avant tout changement, leurs réglages sont proposés ensuite, et Réinstaller ramène n&apos;importe laquelle.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/cleanupl/view.py"/>
+        <source>Every app on this PC: system packages, Flatpaks, snaps, AppImages and apps installed in your home. Uninstall, then sweep up what it left behind.</source>
+        <translation>Toutes les applis de ce PC : paquets système, Flatpaks, snaps, AppImages et applis installées dans votre dossier personnel. Désinstallez, puis balayez ce qu&apos;elle a laissé.</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/cleanupl/view.py"/>

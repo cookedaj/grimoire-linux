@@ -3599,13 +3599,31 @@
     </message>
     <message>
         <location filename="../../grimoire/spells/__init__.py"/>
-        <source>Removes the apps Grimoire replaces (Dolphin, Gwenview, Okular, Konsole, Kate…) and what they left behind, with a preview first and Reinstall after</source>
-        <translation>Grimoire जिन ऐप्स की जगह लेता है (Dolphin, Gwenview, Okular, Konsole, Kate…) उन्हें और उनकी बची फ़ाइलें हटाता है, पहले पूर्वावलोकन और बाद में फिर से इंस्टॉल</translation>
+        <source>Uninstall any app (packages, Flatpaks, snaps, AppImages, home installs) or the ones Grimoire replaces, then sweep up their settings, caches and autostart entries</source>
+        <translation>कोई भी ऐप (पैकेज, Flatpak, Snap, AppImage, होम इंस्टॉल) या जिनकी जगह Grimoire लेता है उन्हें अनइंस्टॉल करें, फिर उनकी सेटिंग्स, कैश और ऑटोस्टार्ट प्रविष्टियाँ साफ़ करें</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/__init__.py"/>
+        <source>Vault ready · locked</source>
+        <translation>वॉल्ट तैयार · लॉक</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/__init__.py"/>
+        <source>No vault yet</source>
+        <translation>अभी कोई वॉल्ट नहीं</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/__init__.py"/>
+        <source>Your passwords, cards, notes and two-factor codes in an encrypted vault on this PC: generator, security audit, import from other password managers</source>
+        <translation>आपके पासवर्ड, कार्ड, नोट्स और टू-फ़ैक्टर कोड इस पीसी पर एन्क्रिप्टेड वॉल्ट में: जनरेटर, सुरक्षा जाँच, दूसरे पासवर्ड मैनेजरों से इम्पोर्ट</translation>
+    </message>
+    <message>
+        <source>Removes the apps Grimoire replaces (Dolphin, Gwenview, Okular, Konsole, Kate…) and what they left behind, with a preview first and Reinstall after</source>
+        <translation type="vanished">Grimoire जिन ऐप्स की जगह लेता है (Dolphin, Gwenview, Okular, Konsole, Kate…) उन्हें और उनकी बची फ़ाइलें हटाता है, पहले पूर्वावलोकन और बाद में फिर से इंस्टॉल</translation>
+    </message>
+    <message>
         <source>Uninstall any app (packages, Flatpaks, snaps, AppImages, home installs), then sweep up its settings, caches and autostart entries</source>
-        <translation>कोई भी ऐप अनइंस्टॉल करें (पैकेज, Flatpak, Snap, AppImage, होम इंस्टॉल), फिर उसकी सेटिंग्स, कैश और ऑटोस्टार्ट प्रविष्टियाँ साफ़ करें</translation>
+        <translation type="vanished">कोई भी ऐप अनइंस्टॉल करें (पैकेज, Flatpak, Snap, AppImage, होम इंस्टॉल), फिर उसकी सेटिंग्स, कैश और ऑटोस्टार्ट प्रविष्टियाँ साफ़ करें</translation>
     </message>
 </context>
 <context>

@@ -333,13 +333,8 @@
     </message>
     <message>
         <location filename="../../grimoire/spells/cleanupl/view.py"/>
-        <source>Grimoire does these apps&apos; jobs now. Tick the ones you don&apos;t need: you see exactly what goes before anything changes, their settings are offered afterwards, and Reinstall brings any back.</source>
-        <translation>Grimoire 现在可以完成这些应用的工作。勾选你不需要的：在任何更改之前你都会看到确切会移除什么，之后会再列出它们的设置，“重新安装”可以把任何一个装回来。</translation>
-    </message>
-    <message>
-        <location filename="../../grimoire/spells/cleanupl/view.py"/>
-        <source>Every app on this PC: system packages, Flatpaks, snaps, AppImages and apps installed in your home. Uninstall, then sweep up what it left behind.</source>
-        <translation>这台电脑上的所有应用：系统软件包、Flatpak、Snap、AppImage 以及安装在主文件夹中的应用。卸载，然后清理它留下的东西。</translation>
+        <source>Replaced by Grimoire</source>
+        <translation>被 Grimoire 替代的</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/cleanupl/view.py"/>
@@ -405,6 +400,16 @@
         <location filename="../../grimoire/spells/cleanupl/view.py"/>
         <source>Staying on purpose: {list}</source>
         <translation>有意保留：{list}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/cleanupl/view.py"/>
+        <source>Grimoire does these apps&apos; jobs now. Tick the ones you don&apos;t need: you see exactly what goes before anything changes, their settings are offered afterwards, and Reinstall brings any back.</source>
+        <translation>Grimoire 现在可以完成这些应用的工作。勾选你不需要的：在任何更改之前你都会看到确切会移除什么，之后会再列出它们的设置，“重新安装”可以把任何一个装回来。</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/cleanupl/view.py"/>
+        <source>Every app on this PC: system packages, Flatpaks, snaps, AppImages and apps installed in your home. Uninstall, then sweep up what it left behind.</source>
+        <translation>这台电脑上的所有应用：系统软件包、Flatpak、Snap、AppImage 以及安装在主文件夹中的应用。卸载，然后清理它留下的东西。</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/cleanupl/view.py"/>

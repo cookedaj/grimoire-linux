@@ -3599,13 +3599,31 @@
     </message>
     <message>
         <location filename="../../grimoire/spells/__init__.py"/>
-        <source>Removes the apps Grimoire replaces (Dolphin, Gwenview, Okular, Konsole, Kate…) and what they left behind, with a preview first and Reinstall after</source>
-        <translation>‏Grimoire جن ایپس کی جگہ لیتا ہے (Dolphin، Gwenview، Okular، Konsole، Kate…) انہیں اور ان کی باقیات ہٹاتا ہے، پہلے پیش منظر اور بعد میں دوبارہ انسٹال</translation>
+        <source>Uninstall any app (packages, Flatpaks, snaps, AppImages, home installs) or the ones Grimoire replaces, then sweep up their settings, caches and autostart entries</source>
+        <translation>کوئی بھی ایپ (پیکجز، Flatpaks، Snaps، AppImages، ہوم انسٹال) یا جن کی جگہ Grimoire لیتا ہے ان انسٹال کریں، پھر ان کی ترتیبات، کیشے اور آٹو اسٹارٹ اندراجات صاف کریں</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/__init__.py"/>
+        <source>Vault ready · locked</source>
+        <translation>والٹ تیار · مقفل</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/__init__.py"/>
+        <source>No vault yet</source>
+        <translation>ابھی کوئی والٹ نہیں</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/__init__.py"/>
+        <source>Your passwords, cards, notes and two-factor codes in an encrypted vault on this PC: generator, security audit, import from other password managers</source>
+        <translation>آپ کے پاس ورڈ، کارڈ، نوٹس اور ٹو فیکٹر کوڈ اس پی سی پر انکرپٹڈ والٹ میں: جنریٹر، سیکیورٹی جانچ، دوسرے پاس ورڈ مینیجرز سے امپورٹ</translation>
+    </message>
+    <message>
+        <source>Removes the apps Grimoire replaces (Dolphin, Gwenview, Okular, Konsole, Kate…) and what they left behind, with a preview first and Reinstall after</source>
+        <translation type="vanished">‏Grimoire جن ایپس کی جگہ لیتا ہے (Dolphin، Gwenview، Okular، Konsole، Kate…) انہیں اور ان کی باقیات ہٹاتا ہے، پہلے پیش منظر اور بعد میں دوبارہ انسٹال</translation>
+    </message>
+    <message>
         <source>Uninstall any app (packages, Flatpaks, snaps, AppImages, home installs), then sweep up its settings, caches and autostart entries</source>
-        <translation>کوئی بھی ایپ ان انسٹال کریں (پیکجز، Flatpaks، Snaps، AppImages، ہوم انسٹال)، پھر اس کی ترتیبات، کیشے اور آٹو اسٹارٹ اندراجات صاف کریں</translation>
+        <translation type="vanished">کوئی بھی ایپ ان انسٹال کریں (پیکجز، Flatpaks، Snaps، AppImages، ہوم انسٹال)، پھر اس کی ترتیبات، کیشے اور آٹو اسٹارٹ اندراجات صاف کریں</translation>
     </message>
 </context>
 <context>

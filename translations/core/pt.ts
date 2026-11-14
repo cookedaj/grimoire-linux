@@ -3599,13 +3599,31 @@
     </message>
     <message>
         <location filename="../../grimoire/spells/__init__.py"/>
-        <source>Removes the apps Grimoire replaces (Dolphin, Gwenview, Okular, Konsole, Kate…) and what they left behind, with a preview first and Reinstall after</source>
-        <translation>Remove os apps que o Grimoire substitui (Dolphin, Gwenview, Okular, Konsole, Kate…) e o que deixaram, com prévia antes e Reinstalar depois</translation>
+        <source>Uninstall any app (packages, Flatpaks, snaps, AppImages, home installs) or the ones Grimoire replaces, then sweep up their settings, caches and autostart entries</source>
+        <translation>Desinstale qualquer app (pacotes, Flatpaks, snaps, AppImages, instalações na pasta pessoal) ou os que o Grimoire substitui, e depois limpe as configurações, caches e itens de inicialização</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/__init__.py"/>
+        <source>Vault ready · locked</source>
+        <translation>Cofre pronto · bloqueado</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/__init__.py"/>
+        <source>No vault yet</source>
+        <translation>Ainda sem cofre</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/__init__.py"/>
+        <source>Your passwords, cards, notes and two-factor codes in an encrypted vault on this PC: generator, security audit, import from other password managers</source>
+        <translation>Suas senhas, cartões, notas e códigos de dois fatores num cofre criptografado neste PC: gerador, auditoria de segurança e importação de outros gerenciadores</translation>
+    </message>
+    <message>
+        <source>Removes the apps Grimoire replaces (Dolphin, Gwenview, Okular, Konsole, Kate…) and what they left behind, with a preview first and Reinstall after</source>
+        <translation type="vanished">Remove os apps que o Grimoire substitui (Dolphin, Gwenview, Okular, Konsole, Kate…) e o que deixaram, com prévia antes e Reinstalar depois</translation>
+    </message>
+    <message>
         <source>Uninstall any app (packages, Flatpaks, snaps, AppImages, home installs), then sweep up its settings, caches and autostart entries</source>
-        <translation>Desinstale qualquer app (pacotes, Flatpaks, snaps, AppImages, instalações na pasta pessoal) e depois limpe as configurações, caches e itens de inicialização</translation>
+        <translation type="vanished">Desinstale qualquer app (pacotes, Flatpaks, snaps, AppImages, instalações na pasta pessoal) e depois limpe as configurações, caches e itens de inicialização</translation>
     </message>
 </context>
 <context>

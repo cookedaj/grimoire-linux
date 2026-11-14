@@ -339,13 +339,8 @@
     </message>
     <message>
         <location filename="../../grimoire/spells/cleanupl/view.py"/>
-        <source>Grimoire does these apps&apos; jobs now. Tick the ones you don&apos;t need: you see exactly what goes before anything changes, their settings are offered afterwards, and Reinstall brings any back.</source>
-        <translation>अब Grimoire इन ऐप्स का काम करता है। जिनकी ज़रूरत नहीं उन्हें टिक करें: कुछ भी बदलने से पहले आप ठीक-ठीक देखेंगे कि क्या हटेगा, बाद में उनकी सेटिंग्स दिखाई जाएँगी, और फिर से इंस्टॉल करें किसी को भी वापस ला सकता है।</translation>
-    </message>
-    <message>
-        <location filename="../../grimoire/spells/cleanupl/view.py"/>
-        <source>Every app on this PC: system packages, Flatpaks, snaps, AppImages and apps installed in your home. Uninstall, then sweep up what it left behind.</source>
-        <translation>इस पीसी के सभी ऐप्स: सिस्टम पैकेज, Flatpak, Snap, AppImage और आपके होम में इंस्टॉल ऐप्स। अनइंस्टॉल करें, फिर जो पीछे छूटा उसे साफ़ करें।</translation>
+        <source>Replaced by Grimoire</source>
+        <translation>Grimoire ने जिनकी जगह ली</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/cleanupl/view.py"/>
@@ -411,6 +406,16 @@
         <location filename="../../grimoire/spells/cleanupl/view.py"/>
         <source>Staying on purpose: {list}</source>
         <translation>जानबूझकर रखे गए: {list}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/cleanupl/view.py"/>
+        <source>Grimoire does these apps&apos; jobs now. Tick the ones you don&apos;t need: you see exactly what goes before anything changes, their settings are offered afterwards, and Reinstall brings any back.</source>
+        <translation>अब Grimoire इन ऐप्स का काम करता है। जिनकी ज़रूरत नहीं उन्हें टिक करें: कुछ भी बदलने से पहले आप ठीक-ठीक देखेंगे कि क्या हटेगा, बाद में उनकी सेटिंग्स दिखाई जाएँगी, और फिर से इंस्टॉल करें किसी को भी वापस ला सकता है।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/cleanupl/view.py"/>
+        <source>Every app on this PC: system packages, Flatpaks, snaps, AppImages and apps installed in your home. Uninstall, then sweep up what it left behind.</source>
+        <translation>इस पीसी के सभी ऐप्स: सिस्टम पैकेज, Flatpak, Snap, AppImage और आपके होम में इंस्टॉल ऐप्स। अनइंस्टॉल करें, फिर जो पीछे छूटा उसे साफ़ करें।</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/cleanupl/view.py"/>

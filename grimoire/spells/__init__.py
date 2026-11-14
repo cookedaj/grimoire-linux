@@ -410,23 +410,6 @@ SPELLS.append(Spell("settingl", "SettingL",
                     _settingl, "settingl", _settingl_status))
 
 
-def _cleanupl():
-    from grimoire.spells.cleanupl.view import RemovalPage
-    return RemovalPage("cleanup")
-
-
-def _cleanupl_status() -> str:
-    from grimoire.spells.cleanupl.engine import status_line
-    return status_line("cleanup")
-
-
-SPELLS.append(Spell("cleanupl", "CleanupL",
-                    tr_noop("grimoire.spells", "Removes the apps Grimoire replaces (Dolphin, Gwenview, Okular, "
-                                               "Konsole, Kate…) and what they left behind, with a preview first and "
-                                               "Reinstall after"),
-                    _cleanupl, "cleanupl", _cleanupl_status))
-
-
 def _uninstallerl():
     from grimoire.spells.cleanupl.view import RemovalPage
     return RemovalPage("all")
@@ -439,5 +422,23 @@ def _uninstallerl_status() -> str:
 
 SPELLS.append(Spell("uninstallerl", "UninstallerL",
                     tr_noop("grimoire.spells", "Uninstall any app (packages, Flatpaks, snaps, AppImages, home "
-                                               "installs), then sweep up its settings, caches and autostart entries"),
+                                               "installs) or the ones Grimoire replaces, then sweep up their "
+                                               "settings, caches and autostart entries"),
                     _uninstallerl, "uninstallerl", _uninstallerl_status))
+
+
+def _passwordl():
+    from grimoire.spells.passwordl.page import PasswordLPage
+    return PasswordLPage()
+
+
+def _passwordl_status() -> str:
+    from grimoire.spells.passwordl import vault
+    return tr("grimoire.spells", "Vault ready · locked") if vault.exists() else tr("grimoire.spells", "No vault yet")
+
+
+SPELLS.append(Spell("passwordl", "PasswordL",
+                    tr_noop("grimoire.spells", "Your passwords, cards, notes and two-factor codes in an encrypted "
+                                               "vault on this PC: generator, security audit, import from other "
+                                               "password managers"),
+                    _passwordl, "passwordl", _passwordl_status))

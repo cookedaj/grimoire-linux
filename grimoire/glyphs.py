@@ -590,6 +590,26 @@ def _draw(name: str, p: QPainter):
         p.drawEllipse(QPointF(12, 12), 8.5, 8.5)
         p.drawLine(QPointF(12, 11), QPointF(12, 16.5))
         p.drawPoint(QPointF(12, 7.8))
+    elif name == "passwordl":                              # a padlock with a keyhole
+        p.drawRoundedRect(r(5, 10.5, 14, 10), 2.5, 2.5)
+        shackle = QPainterPath(QPointF(8, 10.5)); shackle.lineTo(8, 7.5); shackle.arcTo(r(8, 3.5, 8, 8), 180, -180)
+        shackle.lineTo(16, 10.5); p.drawPath(shackle)
+        p.drawEllipse(QPointF(12, 14.5), 1.3, 1.3); p.drawLine(QPointF(12, 15.8), QPointF(12, 17.5))
+    elif name == "keys":                                   # a key: round bow, shaft, two bits
+        p.drawEllipse(QPointF(7.5, 12), 3.5, 3.5)
+        p.drawLine(QPointF(11, 12), QPointF(20.5, 12))
+        p.drawLine(QPointF(17.5, 12), QPointF(17.5, 15)); p.drawLine(QPointF(20.5, 12), QPointF(20.5, 15.5))
+    elif name == "shield":                                 # a shield with a check: the security audit
+        path = QPainterPath(QPointF(12, 3.5)); path.lineTo(19.5, 6.5); path.lineTo(19.5, 11.5)
+        path.cubicTo(19.5, 16.5, 16, 19.5, 12, 21); path.cubicTo(8, 19.5, 4.5, 16.5, 4.5, 11.5)
+        path.lineTo(4.5, 6.5); path.closeSubpath(); p.drawPath(path)
+        check = QPainterPath(QPointF(8.5, 12)); check.lineTo(11, 14.5); check.lineTo(15.5, 9.5); p.drawPath(check)
+    elif name == "dice":                                   # a die with five pips: the generator
+        p.drawRoundedRect(r(4, 4, 16, 16), 3, 3)
+        p.setBrush(p.pen().color())
+        for x, y in ((8.5, 8.5), (15.5, 8.5), (12, 12), (8.5, 15.5), (15.5, 15.5)):
+            p.drawEllipse(QPointF(x, y), 1.1, 1.1)
+        p.setBrush(Qt.BrushStyle.NoBrush)
     elif name == "cleanupl":                               # a broom: the handle, the binding, the bristles
         p.drawLine(QPointF(17.5, 3.5), QPointF(11.5, 11.5))
         p.drawRoundedRect(r(8, 11, 7, 3), 1, 1)

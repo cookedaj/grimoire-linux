@@ -3599,13 +3599,31 @@
     </message>
     <message>
         <location filename="../../grimoire/spells/__init__.py"/>
-        <source>Removes the apps Grimoire replaces (Dolphin, Gwenview, Okular, Konsole, Kate…) and what they left behind, with a preview first and Reinstall after</source>
-        <translation>Grimoire যেসব অ্যাপের জায়গা নেয় (Dolphin, Gwenview, Okular, Konsole, Kate…) সেগুলো ও তাদের রেখে যাওয়া জিনিস সরায়, আগে প্রিভিউ আর পরে আবার ইনস্টল</translation>
+        <source>Uninstall any app (packages, Flatpaks, snaps, AppImages, home installs) or the ones Grimoire replaces, then sweep up their settings, caches and autostart entries</source>
+        <translation>যেকোনো অ্যাপ (প্যাকেজ, Flatpak, Snap, AppImage, হোম ইনস্টল) বা Grimoire যেগুলোর জায়গা নেয় সেগুলো আনইনস্টল করুন, তারপর তাদের সেটিংস, ক্যাশে ও অটোস্টার্ট এন্ট্রি পরিষ্কার করুন</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/__init__.py"/>
+        <source>Vault ready · locked</source>
+        <translation>ভল্ট প্রস্তুত · লক করা</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/__init__.py"/>
+        <source>No vault yet</source>
+        <translation>এখনও কোনো ভল্ট নেই</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/__init__.py"/>
+        <source>Your passwords, cards, notes and two-factor codes in an encrypted vault on this PC: generator, security audit, import from other password managers</source>
+        <translation>আপনার পাসওয়ার্ড, কার্ড, নোট ও টু-ফ্যাক্টর কোড এই পিসিতে এনক্রিপ্টেড ভল্টে: জেনারেটর, নিরাপত্তা যাচাই, অন্য পাসওয়ার্ড ম্যানেজার থেকে ইমপোর্ট</translation>
+    </message>
+    <message>
+        <source>Removes the apps Grimoire replaces (Dolphin, Gwenview, Okular, Konsole, Kate…) and what they left behind, with a preview first and Reinstall after</source>
+        <translation type="vanished">Grimoire যেসব অ্যাপের জায়গা নেয় (Dolphin, Gwenview, Okular, Konsole, Kate…) সেগুলো ও তাদের রেখে যাওয়া জিনিস সরায়, আগে প্রিভিউ আর পরে আবার ইনস্টল</translation>
+    </message>
+    <message>
         <source>Uninstall any app (packages, Flatpaks, snaps, AppImages, home installs), then sweep up its settings, caches and autostart entries</source>
-        <translation>যেকোনো অ্যাপ আনইনস্টল করুন (প্যাকেজ, Flatpak, Snap, AppImage, হোম ইনস্টল), তারপর তার সেটিংস, ক্যাশে ও অটোস্টার্ট এন্ট্রি পরিষ্কার করুন</translation>
+        <translation type="vanished">যেকোনো অ্যাপ আনইনস্টল করুন (প্যাকেজ, Flatpak, Snap, AppImage, হোম ইনস্টল), তারপর তার সেটিংস, ক্যাশে ও অটোস্টার্ট এন্ট্রি পরিষ্কার করুন</translation>
     </message>
 </context>
 <context>

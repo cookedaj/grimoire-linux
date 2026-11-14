@@ -3569,13 +3569,31 @@
     </message>
     <message>
         <location filename="../../grimoire/spells/__init__.py"/>
-        <source>Removes the apps Grimoire replaces (Dolphin, Gwenview, Okular, Konsole, Kate…) and what they left behind, with a preview first and Reinstall after</source>
-        <translation>移除 Grimoire 替代的应用（Dolphin、Gwenview、Okular、Konsole、Kate…）及其残留，先预览，之后可重新安装</translation>
+        <source>Uninstall any app (packages, Flatpaks, snaps, AppImages, home installs) or the ones Grimoire replaces, then sweep up their settings, caches and autostart entries</source>
+        <translation>卸载任何应用（软件包、Flatpak、Snap、AppImage、主文件夹安装）或 Grimoire 替代的应用，然后清理它们的设置、缓存和自启动项</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/__init__.py"/>
+        <source>Vault ready · locked</source>
+        <translation>保险库已就绪 · 已锁定</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/__init__.py"/>
+        <source>No vault yet</source>
+        <translation>还没有保险库</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/__init__.py"/>
+        <source>Your passwords, cards, notes and two-factor codes in an encrypted vault on this PC: generator, security audit, import from other password managers</source>
+        <translation>你的密码、银行卡、笔记和双重验证码，保存在这台电脑上的加密保险库中：生成器、安全审查、从其他密码管理器导入</translation>
+    </message>
+    <message>
+        <source>Removes the apps Grimoire replaces (Dolphin, Gwenview, Okular, Konsole, Kate…) and what they left behind, with a preview first and Reinstall after</source>
+        <translation type="vanished">移除 Grimoire 替代的应用（Dolphin、Gwenview、Okular、Konsole、Kate…）及其残留，先预览，之后可重新安装</translation>
+    </message>
+    <message>
         <source>Uninstall any app (packages, Flatpaks, snaps, AppImages, home installs), then sweep up its settings, caches and autostart entries</source>
-        <translation>卸载任何应用（软件包、Flatpak、Snap、AppImage、主文件夹安装），然后清理它的设置、缓存和自启动项</translation>
+        <translation type="vanished">卸载任何应用（软件包、Flatpak、Snap、AppImage、主文件夹安装），然后清理它的设置、缓存和自启动项</translation>
     </message>
 </context>
 <context>

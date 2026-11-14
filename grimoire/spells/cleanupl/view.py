@@ -1,10 +1,9 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
-"""The page CleanupL and UninstallerL share: a table of apps with ticks, sizes and how each is installed, the
-Uninstall button (remover.py does the rest), Removed earlier with Reinstall, and a log of what ran.
-
-mode "cleanup": only the apps Grimoire replaces (and the settings already-removed ones left behind), plus the list
-of KDE apps that stay on purpose. mode "all": every app, with search, a source filter, Pick a window (click any
-window to find its app) and Leftovers only (for an app that's already gone or half-removed).
+"""UninstallerL's page: a table of apps with ticks, sizes and how each is installed, the Uninstall button
+(remover.py does the rest), Removed earlier with Reinstall, and a log of what ran. Two tabs (CleanupL's list was
+folded in): "All apps" (every app, with search, a source filter, Pick a window and Leftovers only) and "Replaced by
+Grimoire" (only the apps Grimoire does the job of, the settings already-removed ones left behind, and the KDE apps
+that stay on purpose).
 """
 
 from PySide6.QtCore import QObject, Qt, Signal
@@ -29,7 +28,7 @@ from grimoire.i18n import tr, tr_noop
 from grimoire.jobs import POOL, Job
 from grimoire.spells.cleanupl import engine, remover
 from grimoire.spells.cleanupl.engine import Found
-from grimoire.widgets import plain_tip
+from grimoire.widgets import plain_tip, segments
 
 SOURCES = (
     ("", tr_noop("grimoire.spells.cleanupl.view", "All apps")),
@@ -66,7 +65,7 @@ class _Signals(QObject):
 
 
 class RemovalPage(QWidget):
-    def __init__(self, mode: str):
+    def __init__(self, mode: str = "all"):
         super().__init__()
         self.setObjectName("Page")
         self.mode = mode
@@ -82,23 +81,22 @@ class RemovalPage(QWidget):
         lay = QVBoxLayout(self)
         lay.setContentsMargins(32, 26, 32, 18)
         lay.setSpacing(10)
-        lay.addWidget(_label("CleanupL" if mode == "cleanup" else "UninstallerL", "PageHeading"))
-        lay.addWidget(
-            _label(
-                tr(
-                    "grimoire.spells.cleanupl.view",
-                    "Grimoire does these apps' jobs now. Tick the ones you don't need: you see exactly what goes "
-                    "before anything changes, their settings are offered afterwards, and Reinstall brings any back.",
-                )
-                if mode == "cleanup"
-                else tr(
-                    "grimoire.spells.cleanupl.view",
-                    "Every app on this PC: system packages, Flatpaks, snaps, AppImages and apps installed in your "
-                    "home. Uninstall, then sweep up what it left behind.",
-                ),
-                "Muted",
-            )
-        )
+        head = QHBoxLayout()
+        head.addWidget(_label("UninstallerL", "PageHeading"), 1)
+        self.tabs = {}
+        for key, text in (("all", tr("grimoire.spells.cleanupl.view", "All apps")),
+                          ("cleanup", tr("grimoire.spells.cleanupl.view", "Replaced by Grimoire"))):
+            b = QPushButton(text)
+            b.setObjectName("Segment")
+            b.setCheckable(True)
+            b.setChecked(key == mode)
+            b.clicked.connect(lambda _=False, k=key: self.set_mode(k))
+            self.tabs[key] = b
+            head.addWidget(b)
+        segments(list(self.tabs.values()))
+        lay.addLayout(head)
+        self.lede = _label("", "Muted")
+        lay.addWidget(self.lede)
 
         bar = QHBoxLayout()
         bar.setSpacing(6)
@@ -115,12 +113,9 @@ class RemovalPage(QWidget):
             tr("grimoire.spells.cleanupl.view", "Click any open window to find the app it belongs to")
         )
         self.hunt_btn.clicked.connect(self._hunt)
-        if mode == "all":
-            bar.addWidget(self.search, 1)
-            bar.addWidget(self.source)
-            bar.addWidget(self.hunt_btn)
-        else:
-            bar.addStretch(1)
+        bar.addWidget(self.search, 1)
+        bar.addWidget(self.source)
+        bar.addWidget(self.hunt_btn)
         self.rescan = QPushButton(tr("grimoire.spells.cleanupl.view", "Rescan"))
         self.rescan.clicked.connect(self.load)
         bar.addWidget(self.rescan)
@@ -171,11 +166,9 @@ class RemovalPage(QWidget):
         self.restore_lay = QVBoxLayout(self.restore_box)
         self.restore_lay.setContentsMargins(16, 12, 16, 12)
         lay.addWidget(self.restore_box)
-        if mode == "cleanup":
-            kept = ", ".join(f"{name} ({tr('grimoire.spells.cleanupl.engine', why)})" for name, why in engine.KEPT)
-            lay.addWidget(
-                _label(tr("grimoire.spells.cleanupl.view", "Staying on purpose: {list}").format(list=kept), "Muted")
-            )
+        kept = ", ".join(f"{name} ({tr('grimoire.spells.cleanupl.engine', why)})" for name, why in engine.KEPT)
+        self.kept = _label(tr("grimoire.spells.cleanupl.view", "Staying on purpose: {list}").format(list=kept), "Muted")
+        lay.addWidget(self.kept)
         self.log = QPlainTextEdit()
         self.log.setReadOnly(True)
         self.log.setObjectName("Mono")
@@ -184,6 +177,35 @@ class RemovalPage(QWidget):
         self.log.hide()
         lay.addWidget(self.log)
         self._loaded_once = False
+        self._apply_mode()
+
+    def set_mode(self, mode: str):
+        for k, b in self.tabs.items():
+            b.setChecked(k == mode)
+        if mode != self.mode:
+            self.mode = mode
+            self._apply_mode()
+            self.load()
+
+    def _apply_mode(self):
+        cleanup = self.mode == "cleanup"
+        self.lede.setText(
+            tr(
+                "grimoire.spells.cleanupl.view",
+                "Grimoire does these apps' jobs now. Tick the ones you don't need: you see exactly what goes "
+                "before anything changes, their settings are offered afterwards, and Reinstall brings any back.",
+            )
+            if cleanup
+            else tr(
+                "grimoire.spells.cleanupl.view",
+                "Every app on this PC: system packages, Flatpaks, snaps, AppImages and apps installed in your "
+                "home. Uninstall, then sweep up what it left behind.",
+            )
+        )
+        for w in (self.source, self.hunt_btn):
+            w.setVisible(not cleanup)
+        self.kept.setVisible(cleanup)
+        self.table.clear()
 
     def showEvent(self, e):
         super().showEvent(e)

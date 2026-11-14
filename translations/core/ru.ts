@@ -3629,13 +3629,31 @@
     </message>
     <message>
         <location filename="../../grimoire/spells/__init__.py"/>
-        <source>Removes the apps Grimoire replaces (Dolphin, Gwenview, Okular, Konsole, Kate…) and what they left behind, with a preview first and Reinstall after</source>
-        <translation>Удаляет приложения, которые заменяет Grimoire (Dolphin, Gwenview, Okular, Konsole, Kate…), и их остатки: сначала предпросмотр, потом можно переустановить</translation>
+        <source>Uninstall any app (packages, Flatpaks, snaps, AppImages, home installs) or the ones Grimoire replaces, then sweep up their settings, caches and autostart entries</source>
+        <translation>Удаляйте любые приложения (пакеты, Flatpak, snap, AppImage, программы в домашней папке) или заменённые Grimoire, а затем их настройки, кэш и автозапуск</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/__init__.py"/>
+        <source>Vault ready · locked</source>
+        <translation>Хранилище готово · заблокировано</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/__init__.py"/>
+        <source>No vault yet</source>
+        <translation>Хранилища пока нет</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/__init__.py"/>
+        <source>Your passwords, cards, notes and two-factor codes in an encrypted vault on this PC: generator, security audit, import from other password managers</source>
+        <translation>Пароли, карты, заметки и коды 2FA в зашифрованном хранилище на этом ПК: генератор, проверка безопасности, импорт из других менеджеров</translation>
+    </message>
+    <message>
+        <source>Removes the apps Grimoire replaces (Dolphin, Gwenview, Okular, Konsole, Kate…) and what they left behind, with a preview first and Reinstall after</source>
+        <translation type="vanished">Удаляет приложения, которые заменяет Grimoire (Dolphin, Gwenview, Okular, Konsole, Kate…), и их остатки: сначала предпросмотр, потом можно переустановить</translation>
+    </message>
+    <message>
         <source>Uninstall any app (packages, Flatpaks, snaps, AppImages, home installs), then sweep up its settings, caches and autostart entries</source>
-        <translation>Удаляйте любые приложения (пакеты, Flatpak, snap, AppImage, программы в домашней папке), а затем их настройки, кэш и автозапуск</translation>
+        <translation type="vanished">Удаляйте любые приложения (пакеты, Flatpak, snap, AppImage, программы в домашней папке), а затем их настройки, кэш и автозапуск</translation>
     </message>
 </context>
 <context>

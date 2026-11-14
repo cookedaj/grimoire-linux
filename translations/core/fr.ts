@@ -3599,13 +3599,31 @@
     </message>
     <message>
         <location filename="../../grimoire/spells/__init__.py"/>
-        <source>Removes the apps Grimoire replaces (Dolphin, Gwenview, Okular, Konsole, Kate…) and what they left behind, with a preview first and Reinstall after</source>
-        <translation>Supprime les applis que Grimoire remplace (Dolphin, Gwenview, Okular, Konsole, Kate…) et ce qu&apos;elles laissent, avec un aperçu avant et Réinstaller après</translation>
+        <source>Uninstall any app (packages, Flatpaks, snaps, AppImages, home installs) or the ones Grimoire replaces, then sweep up their settings, caches and autostart entries</source>
+        <translation>Désinstallez n&apos;importe quelle appli (paquets, Flatpaks, snaps, AppImages, installations personnelles) ou celles que Grimoire remplace, puis balayez leurs réglages, caches et démarrages auto</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/__init__.py"/>
+        <source>Vault ready · locked</source>
+        <translation>Coffre prêt · verrouillé</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/__init__.py"/>
+        <source>No vault yet</source>
+        <translation>Pas encore de coffre</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/__init__.py"/>
+        <source>Your passwords, cards, notes and two-factor codes in an encrypted vault on this PC: generator, security audit, import from other password managers</source>
+        <translation>Vos mots de passe, cartes, notes et codes à deux facteurs dans un coffre chiffré sur ce PC : générateur, audit de sécurité, import depuis d&apos;autres gestionnaires</translation>
+    </message>
+    <message>
+        <source>Removes the apps Grimoire replaces (Dolphin, Gwenview, Okular, Konsole, Kate…) and what they left behind, with a preview first and Reinstall after</source>
+        <translation type="vanished">Supprime les applis que Grimoire remplace (Dolphin, Gwenview, Okular, Konsole, Kate…) et ce qu&apos;elles laissent, avec un aperçu avant et Réinstaller après</translation>
+    </message>
+    <message>
         <source>Uninstall any app (packages, Flatpaks, snaps, AppImages, home installs), then sweep up its settings, caches and autostart entries</source>
-        <translation>Désinstallez n&apos;importe quelle appli (paquets, Flatpaks, snaps, AppImages, installations personnelles), puis balayez ses réglages, caches et démarrages auto</translation>
+        <translation type="vanished">Désinstallez n&apos;importe quelle appli (paquets, Flatpaks, snaps, AppImages, installations personnelles), puis balayez ses réglages, caches et démarrages auto</translation>
     </message>
 </context>
 <context>
