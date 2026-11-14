@@ -81,7 +81,10 @@ done
 PLUGIN="$DATA/plasma/wallpapers/com.cookedaj.grimoire.mural"
 rm -rf "$PLUGIN"
 cp -r "$APP/plasma/com.cookedaj.grimoire.mural" "$PLUGIN"
-cp "$APP/grimoire/assets/clover5.svg" "$DATA/icons/hicolor/scalable/apps/grimoire.svg"
+cp "$APP/grimoire/assets/grimoire-icon.svg" "$DATA/icons/hicolor/scalable/apps/grimoire.svg"
+# newer than any icon-theme.cache left in there by another program (Steam, Chrome…): Qt trusts a cache that's
+# newer than its folders, and one made before this icon existed hides it (a generic icon in the title bar)
+touch "$DATA/icons/hicolor/scalable/apps" "$DATA/icons/hicolor"
 # the LaunchL panel widget, the same way (a panel already showing it picks the new version up when Plasma restarts)
 LAUNCHL="$DATA/plasma/plasmoids/com.cookedaj.grimoire.launchl"
 rm -rf "$LAUNCHL"

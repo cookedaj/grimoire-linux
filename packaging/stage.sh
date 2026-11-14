@@ -52,7 +52,7 @@ done
 # 3. wallpaper plugin and icons
 cp -r "$SRC/plasma/com.cookedaj.grimoire.mural" "$USR/share/plasma/wallpapers/"
 find "$USR/share/plasma/wallpapers" -type d -exec chmod 755 {} + -o -type f -exec chmod 644 {} +
-install -m644 "$SRC/grimoire/assets/clover5.svg" "$USR/share/icons/hicolor/scalable/apps/grimoire.svg"
+install -m644 "$SRC/grimoire/assets/grimoire-icon.svg" "$USR/share/icons/hicolor/scalable/apps/grimoire.svg"
 # each spell's black tile with its line glyph, drawn by the app itself (needs PySide6; offscreen, in a throwaway HOME
 # so importing the app doesn't create folders in the builder's home)
 VAULT_ICON=grimoire

@@ -357,7 +357,7 @@ def style_app(app: QApplication):
     """Grimoire's black & white look and the chosen language (also used by standalone spells, the tray and every
     other window that makes a QApplication)."""
     i18n.install(app)
-    app.setWindowIcon(QIcon(str(ASSETS / "clover5.svg")))
+    app.setWindowIcon(QIcon(str(ASSETS / "grimoire-icon.svg")))    # the menu icon: a tile that reads at 16 px
     app.setStyle("Fusion")
     app.setFont(QFont(FONT, 10))
     pal = app.palette()                      # monochrome highlight (Qt's default is blue)

@@ -87,8 +87,8 @@ def app_icon(glyph_name: str, size: int = 256) -> QPixmap:
     p.setRenderHint(QPainter.RenderHint.Antialiasing)
     p.setPen(QColor("#2a2a2a"))
     p.setBrush(QColor("#000000"))
-    p.drawRoundedRect(QRectF(size * .06, size * .06, size * .88, size * .88), size * .2, size * .2)
-    inner = int(size * .56)
+    p.drawRoundedRect(QRectF(size * .03, size * .03, size * .94, size * .94), size * .21, size * .21)
+    inner = int(size * .66)                                   # big enough to read in a 16 px title bar
     p.drawPixmap((size - inner) // 2, (size - inner) // 2, _pixmap(glyph_name, "#ffffff", inner))
     p.end()
     return pm
@@ -111,6 +111,8 @@ def install(sid: str, refresh: bool = True):
     global _app
     _app = QApplication.instance() or QApplication([])   # drawing the icon needs an app (CLI use)
     app_icon(spell.icon).save(str(icon))
+    for d in (icon.parent, icon.parent.parent.parent):  # newer than a stale icon-theme.cache (see install.sh)
+        os.utime(d)
     fields = {"Type": "Application", "Name": spell.name, "GenericName": "Grimoire Linux spell", "Comment": spell.tagline,
               "Exec": f"{cmd} %u" if sid in EXTRA else str(cmd), "Icon": f"grimoire-{sid}", "Terminal": "false",
               "Categories": "Utility;", "StartupWMClass": f"grimoire-{sid}"} | EXTRA.get(sid, {})

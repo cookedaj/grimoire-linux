@@ -307,7 +307,9 @@ class VaultLPage(QWidget):
                 it.setData(Qt.ItemDataRole.UserRole, str(p))
                 self.places.addItem(it)
         self.places.itemClicked.connect(lambda it: self.navigate(Path(it.data(Qt.ItemDataRole.UserRole))))
-        v.addWidget(self.places, 3)
+        self.places.setFixedHeight(self.places.count() * 36 + 4)    # every place in view, Trash too: no inner scroll
+        self.places.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+        v.addWidget(self.places)
         tl = QLabel(tr("grimoire.spells.vaultl.page", "TIDY"))
         tl.setObjectName("NavSection")
         v.addWidget(tl)
@@ -328,7 +330,7 @@ class VaultLPage(QWidget):
         self.drives.setObjectName("Places")
         self.drives.setIconSize(QSize(18, 18))
         self.drives.itemClicked.connect(lambda it: self.navigate(Path(it.data(Qt.ItemDataRole.UserRole))))
-        v.addWidget(self.drives, 2)
+        v.addWidget(self.drives, 1)                     # the drives take what's left (and scroll when many)
         self._fill_drives()
         return side
 

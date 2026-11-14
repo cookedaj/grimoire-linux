@@ -45,7 +45,8 @@ def _bus():
 def _icon() -> str:
     share = os.environ.get("XDG_DATA_HOME") or str(HOME / ".local/share")
     return "grimoire-focusl" if os.path.exists(f"{share}/icons/hicolor/256x256/apps/grimoire-focusl.png") else \
-        "grimoire" if os.path.exists(f"{share}/icons/hicolor/scalable/apps/grimoire.svg") else str(ASSETS / "clover5.svg")
+        "grimoire" if os.path.exists(f"{share}/icons/hicolor/scalable/apps/grimoire.svg") else \
+        str(ASSETS / "grimoire-icon.svg")
 
 
 def notify(title: str, body: str, urgent=False) -> bool:

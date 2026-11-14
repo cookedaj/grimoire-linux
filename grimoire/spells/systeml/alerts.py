@@ -277,7 +277,7 @@ def _icon() -> str:
     """Grimoire's icon by theme name when installed, else the file it's drawn from."""
     share = os.environ.get("XDG_DATA_HOME") or str(HOME / ".local/share")
     installed = os.path.exists(f"{share}/icons/hicolor/scalable/apps/grimoire.svg")
-    return "grimoire" if installed else str(ASSETS / "clover5.svg")
+    return "grimoire" if installed else str(ASSETS / "grimoire-icon.svg")
 
 
 def notify(title: str, body: str, urgent=False) -> bool:
