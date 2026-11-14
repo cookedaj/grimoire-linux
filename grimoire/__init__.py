@@ -7,4 +7,4 @@ the short name "grimoire" so existing installs keep working.
 
 NAME = "Grimoire Linux"
 
-__version__ = "0.3.1"
+__version__ = "0.3.2"

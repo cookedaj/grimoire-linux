@@ -1,6 +1,6 @@
 pkgbase = grimoire-linux-git
 	pkgdesc = Black & white toolkit for KDE Plasma 6: customization, files, system, updates, apps, media, games and more
-	pkgver = 0.3.1
+	pkgver = 0.3.2
 	pkgrel = 1
 	url = https://github.com/cookedaj/grimoire-linux
 	arch = any

@@ -1,3 +1,19 @@
+grimoire-linux (0.3.2) unstable; urgency=medium
+
+  * VaultL: the Type column speaks the user's language; sizes and dates read right in RTL
+  * MuraL: a video wallpaper's thumbnail can't hang its worker
+  * Names with "&" show the "&" in crumbs, tabs and menus
+  * SettingL: key repeat units are translated
+  * RTL: page headings sit on the start side, whatever the name in them
+  * Settings files holding the wrong kind of JSON no longer break pages
+  * Renames never replace something that appeared after the check
+  * Archives: extract and compress never replace a file that appears at the last moment
+  * Tooltips show other people's text as typed, never as HTML
+  * ViewL: the folder heading sits on the start side in RTL
+  * VaultL: file names keep their own direction in an RTL UI
+
+ -- cookedaj <285303240+cookedaj@users.noreply.github.com>  Sat, 14 Nov 2026 13:32:00 -0500
+
 grimoire-linux (0.3.1) unstable; urgency=medium
 
   * RTL: stat tile numbers align right like their labels
