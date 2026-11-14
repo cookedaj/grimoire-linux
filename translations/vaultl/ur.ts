@@ -575,6 +575,21 @@
     </message>
     <message>
         <location filename="../../grimoire/spells/vaultl/page.py"/>
+        <source>Open</source>
+        <translation>کھولیں</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/page.py"/>
+        <source>Open in new window</source>
+        <translation>نئی ونڈو میں کھولیں</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/page.py"/>
+        <source>Remove from Places</source>
+        <translation>مقامات سے ہٹائیں</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/page.py"/>
         <source>System</source>
         <translation>سسٹم</translation>
     </message>
@@ -675,11 +690,6 @@
     </message>
     <message>
         <location filename="../../grimoire/spells/vaultl/page.py"/>
-        <source>Open</source>
-        <translation>کھولیں</translation>
-    </message>
-    <message>
-        <location filename="../../grimoire/spells/vaultl/page.py"/>
         <source>Can&apos;t open {path}</source>
         <translation>‏{path} نہیں کھل سکا</translation>
     </message>
@@ -757,6 +767,11 @@
     </message>
     <message>
         <location filename="../../grimoire/spells/vaultl/page.py"/>
+        <source>New folder</source>
+        <translation>نیا فولڈر</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/page.py"/>
         <source>Items in the Trash can&apos;t be renamed. Restore them first.</source>
         <translation>کوڑے دان کی چیزوں کا نام نہیں بدلا جا سکتا۔ پہلے انہیں بحال کریں۔</translation>
     </message>
@@ -809,6 +824,22 @@
     </message>
     <message numerus="yes">
         <location filename="../../grimoire/spells/vaultl/page.py"/>
+        <source>Move %n item(s)</source>
+        <translation>
+            <numerusform>‏%n آئٹم منتقل کریں</numerusform>
+            <numerusform>‏%n آئٹم منتقل کریں</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../../grimoire/spells/vaultl/page.py"/>
+        <source>Copy %n item(s)</source>
+        <translation>
+            <numerusform>‏%n آئٹم کاپی کریں</numerusform>
+            <numerusform>‏%n آئٹم کاپی کریں</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../../grimoire/spells/vaultl/page.py"/>
         <source>Moved %n item(s).</source>
         <translation>
             <numerusform>‏%n چیز منتقل ہوئی۔</numerusform>
@@ -834,6 +865,14 @@
         <translation>
             <numerusform>‏%n چیز کوڑے دان میں جا رہی ہے…</numerusform>
             <numerusform>‏%n چیزیں کوڑے دان میں جا رہی ہیں…</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../../grimoire/spells/vaultl/page.py"/>
+        <source>Move %n item(s) to the Trash</source>
+        <translation>
+            <numerusform>‏%n آئٹم ردی میں منتقل کریں</numerusform>
+            <numerusform>‏%n آئٹم ردی میں منتقل کریں</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -938,6 +977,11 @@ This can&apos;t be undone.</source>
     </message>
     <message>
         <location filename="../../grimoire/spells/vaultl/page.py"/>
+        <source>Add to Places</source>
+        <translation>مقامات میں شامل کریں</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/page.py"/>
         <source>Restore</source>
         <translation>بحال کریں</translation>
     </message>
@@ -955,6 +999,11 @@ This can&apos;t be undone.</source>
         <location filename="../../grimoire/spells/vaultl/page.py"/>
         <source>Cut</source>
         <translation>کاٹیں</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/page.py"/>
+        <source>Duplicate</source>
+        <translation>نقل بنائیں</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/vaultl/page.py"/>
@@ -993,8 +1042,8 @@ This can&apos;t be undone.</source>
     </message>
     <message>
         <location filename="../../grimoire/spells/vaultl/page.py"/>
-        <source>New folder</source>
-        <translation>نیا فولڈر</translation>
+        <source>Undo: {what}</source>
+        <translation>واپس کریں: {what}</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/vaultl/page.py"/>
@@ -1013,6 +1062,36 @@ This can&apos;t be undone.</source>
     </message>
     <message>
         <location filename="../../grimoire/spells/vaultl/page.py"/>
+        <source>Sort by</source>
+        <translation>ترتیب بلحاظ</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/page.py"/>
+        <source>Name</source>
+        <translation>نام</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/page.py"/>
+        <source>Size</source>
+        <translation>سائز</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/page.py"/>
+        <source>Type</source>
+        <translation>قسم</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/page.py"/>
+        <source>Date modified</source>
+        <translation>ترمیم کی تاریخ</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/page.py"/>
+        <source>Reverse order</source>
+        <translation>الٹی ترتیب</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/page.py"/>
         <source>Properties</source>
         <translation>خصوصیات</translation>
     </message>
@@ -1025,6 +1104,39 @@ This can&apos;t be undone.</source>
         <location filename="../../grimoire/spells/vaultl/page.py"/>
         <source>No apps registered for this type</source>
         <translation>اس قسم کے لیے کوئی ایپ رجسٹر نہیں</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/page.py"/>
+        <source>Nothing to undo.</source>
+        <translation>واپس کرنے کو کچھ نہیں۔</translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../../grimoire/spells/vaultl/page.py"/>
+        <source>%n item(s) no longer in the Trash</source>
+        <translation>
+            <numerusform>‏%n آئٹم اب ردی میں نہیں</numerusform>
+            <numerusform>‏%n آئٹم اب ردی میں نہیں</numerusform>
+        </translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/page.py"/>
+        <source>it&apos;s gone</source>
+        <translation>یہ اب موجود نہیں</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/page.py"/>
+        <source>{name}: put back as {new}</source>
+        <translation>‏{name}: {new} کے نام سے واپس رکھا گیا</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/page.py"/>
+        <source>Undoing: {what}…</source>
+        <translation>واپس ہو رہا ہے: {what}…</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/page.py"/>
+        <source>Undone: {what}</source>
+        <translation>واپس کر دیا: {what}</translation>
     </message>
 </context>
 <context>

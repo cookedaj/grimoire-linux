@@ -611,6 +611,21 @@
     </message>
     <message>
         <location filename="../../grimoire/spells/vaultl/page.py"/>
+        <source>Open</source>
+        <translation>فتح</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/page.py"/>
+        <source>Open in new window</source>
+        <translation>فتح في نافذة جديدة</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/page.py"/>
+        <source>Remove from Places</source>
+        <translation>إزالة من الأماكن</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/page.py"/>
         <source>System</source>
         <translation>النظام</translation>
     </message>
@@ -711,11 +726,6 @@
     </message>
     <message>
         <location filename="../../grimoire/spells/vaultl/page.py"/>
-        <source>Open</source>
-        <translation>فتح</translation>
-    </message>
-    <message>
-        <location filename="../../grimoire/spells/vaultl/page.py"/>
         <source>Can&apos;t open {path}</source>
         <translation>تعذّر فتح {path}</translation>
     </message>
@@ -809,6 +819,11 @@
     </message>
     <message>
         <location filename="../../grimoire/spells/vaultl/page.py"/>
+        <source>New folder</source>
+        <translation>مجلد جديد</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/page.py"/>
         <source>Items in the Trash can&apos;t be renamed. Restore them first.</source>
         <translation>لا يمكن إعادة تسمية عناصر المهملات. استعدها أولًا.</translation>
     </message>
@@ -877,6 +892,30 @@
     </message>
     <message numerus="yes">
         <location filename="../../grimoire/spells/vaultl/page.py"/>
+        <source>Move %n item(s)</source>
+        <translation>
+            <numerusform>نقل %n عنصر</numerusform>
+            <numerusform>نقل عنصر واحد</numerusform>
+            <numerusform>نقل عنصرين</numerusform>
+            <numerusform>نقل %n عناصر</numerusform>
+            <numerusform>نقل %n عنصرًا</numerusform>
+            <numerusform>نقل %n عنصر</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../../grimoire/spells/vaultl/page.py"/>
+        <source>Copy %n item(s)</source>
+        <translation>
+            <numerusform>نسخ %n عنصر</numerusform>
+            <numerusform>نسخ عنصر واحد</numerusform>
+            <numerusform>نسخ عنصرين</numerusform>
+            <numerusform>نسخ %n عناصر</numerusform>
+            <numerusform>نسخ %n عنصرًا</numerusform>
+            <numerusform>نسخ %n عنصر</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../../grimoire/spells/vaultl/page.py"/>
         <source>Moved %n item(s).</source>
         <translation>
             <numerusform>نُقل لا عناصر.</numerusform>
@@ -914,6 +953,18 @@
             <numerusform>جارٍ نقل %n عناصر إلى المهملات…</numerusform>
             <numerusform>جارٍ نقل %n عنصرًا إلى المهملات…</numerusform>
             <numerusform>جارٍ نقل %n عنصر إلى المهملات…</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../../grimoire/spells/vaultl/page.py"/>
+        <source>Move %n item(s) to the Trash</source>
+        <translation>
+            <numerusform>نقل %n عنصر إلى المهملات</numerusform>
+            <numerusform>نقل عنصر واحد إلى المهملات</numerusform>
+            <numerusform>نقل عنصرين إلى المهملات</numerusform>
+            <numerusform>نقل %n عناصر إلى المهملات</numerusform>
+            <numerusform>نقل %n عنصرًا إلى المهملات</numerusform>
+            <numerusform>نقل %n عنصر إلى المهملات</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -1058,6 +1109,11 @@ This can&apos;t be undone.</source>
     </message>
     <message>
         <location filename="../../grimoire/spells/vaultl/page.py"/>
+        <source>Add to Places</source>
+        <translation>إضافة إلى الأماكن</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/page.py"/>
         <source>Restore</source>
         <translation>استعادة</translation>
     </message>
@@ -1075,6 +1131,11 @@ This can&apos;t be undone.</source>
         <location filename="../../grimoire/spells/vaultl/page.py"/>
         <source>Cut</source>
         <translation>قص</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/page.py"/>
+        <source>Duplicate</source>
+        <translation>تكرار</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/vaultl/page.py"/>
@@ -1113,8 +1174,8 @@ This can&apos;t be undone.</source>
     </message>
     <message>
         <location filename="../../grimoire/spells/vaultl/page.py"/>
-        <source>New folder</source>
-        <translation>مجلد جديد</translation>
+        <source>Undo: {what}</source>
+        <translation>تراجع: {what}</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/vaultl/page.py"/>
@@ -1133,6 +1194,36 @@ This can&apos;t be undone.</source>
     </message>
     <message>
         <location filename="../../grimoire/spells/vaultl/page.py"/>
+        <source>Sort by</source>
+        <translation>الفرز حسب</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/page.py"/>
+        <source>Name</source>
+        <translation>الاسم</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/page.py"/>
+        <source>Size</source>
+        <translation>الحجم</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/page.py"/>
+        <source>Type</source>
+        <translation>النوع</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/page.py"/>
+        <source>Date modified</source>
+        <translation>تاريخ التعديل</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/page.py"/>
+        <source>Reverse order</source>
+        <translation>عكس الترتيب</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/page.py"/>
         <source>Properties</source>
         <translation>الخصائص</translation>
     </message>
@@ -1145,6 +1236,43 @@ This can&apos;t be undone.</source>
         <location filename="../../grimoire/spells/vaultl/page.py"/>
         <source>No apps registered for this type</source>
         <translation>لا تطبيقات مسجّلة لهذا النوع</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/page.py"/>
+        <source>Nothing to undo.</source>
+        <translation>لا شيء للتراجع عنه.</translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../../grimoire/spells/vaultl/page.py"/>
+        <source>%n item(s) no longer in the Trash</source>
+        <translation>
+            <numerusform>‏%n عنصر لم يعد في المهملات</numerusform>
+            <numerusform>عنصر واحد لم يعد في المهملات</numerusform>
+            <numerusform>عنصران لم يعودا في المهملات</numerusform>
+            <numerusform>‏%n عناصر لم تعد في المهملات</numerusform>
+            <numerusform>‏%n عنصرًا لم يعد في المهملات</numerusform>
+            <numerusform>‏%n عنصر لم يعد في المهملات</numerusform>
+        </translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/page.py"/>
+        <source>it&apos;s gone</source>
+        <translation>لم يعد موجودًا</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/page.py"/>
+        <source>{name}: put back as {new}</source>
+        <translation>‏{name}: أُعيد باسم {new}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/page.py"/>
+        <source>Undoing: {what}…</source>
+        <translation>جارٍ التراجع: {what}…</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/page.py"/>
+        <source>Undone: {what}</source>
+        <translation>تم التراجع: {what}</translation>
     </message>
 </context>
 <context>

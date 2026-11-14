@@ -5,15 +5,20 @@ white interface. The sidebar's Tidy section swaps the file views for the tidy pa
 watched Downloads folder gets a bar with Tidy now and Undo.
 
 Shortcuts follow Dolphin: Alt+Left/Right/Up, Backspace, F2, Del, Ctrl+C/X/V, Ctrl+A, Ctrl+H, Ctrl+L, Ctrl+F,
-Ctrl+Shift+N, F5, F4 (terminal here), Enter to open.
+Ctrl+Shift+N, F5, F4 (terminal here), Enter to open; plus Ctrl+Z (undo the last trash, move, copy, rename or new
+folder), Ctrl+D (duplicate), Ctrl+N (new window), Ctrl+= / Ctrl+- / Ctrl+0 and Ctrl+wheel (icon size).
+Drag files onto a folder, a place or a drive to move them (Ctrl: copy, Shift: move; across drives: copy).
+The view (grid/details, hidden, preview, sort, icon size) and pinned places last between runs (prefs.py).
 """
 import os
 import stat
 import subprocess
+import time
 from pathlib import Path
 
-from PySide6.QtCore import (QDir, QItemSelectionModel, QMimeData, QMimeDatabase, QModelIndex,
-                            QObject, QRect, QRectF, QSize, QStorageInfo, Qt, QThreadPool, QTimer, QUrl, Signal)
+from PySide6.QtCore import (QDir, QEvent, QItemSelectionModel, QMimeData, QMimeDatabase, QModelIndex,
+                            QObject, QProcess, QRect, QRectF, QSize, QStorageInfo, Qt, QThreadPool, QTimer, QUrl,
+                            Signal)
 from PySide6.QtGui import (QAbstractFileIconProvider, QColor, QDesktopServices, QFont, QFontMetrics, QGuiApplication,
                            QIcon, QImage, QImageReader, QKeySequence, QPainter, QPainterPath, QPixmap, QShortcut)
 from PySide6.QtWidgets import (QAbstractItemView, QFileDialog, QFileSystemModel, QFrame, QHBoxLayout, QHeaderView,
@@ -21,14 +26,14 @@ from PySide6.QtWidgets import (QAbstractItemView, QFileDialog, QFileSystemModel,
                                QPushButton, QSplitter, QStackedWidget, QStyle, QStyledItemDelegate, QToolButton,
                                QTreeView, QVBoxLayout, QWidget)
 
-from grimoire.fsutil import human, tilde
+from grimoire.fsutil import human, rename_noreplace, tilde
 from grimoire.glyphs import glyph
 from grimoire.i18n import isolate, tr, tr_noop
 from grimoire.jobs import Job
-from grimoire.paths import CACHE, HOME
-from grimoire.spells.vaultl import archive, archiveview, launch, ops, runview
+from grimoire.paths import CACHE, HOME, command
+from grimoire.spells.vaultl import archive, archiveview, launch, ops, prefs, runview
 from grimoire.spells.vaultl.tidyview import PANELS, TidyPanel, ltr, when
-from grimoire.widgets import no_mnemonic
+from grimoire.widgets import no_mnemonic, plain_tip
 
 IMAGE_EXT = {".png", ".jpg", ".jpeg", ".webp", ".bmp", ".gif", ".avif", ".tif", ".tiff", ".svg"}
 TEXT_EXT = {".txt", ".md", ".py", ".lua", ".luau", ".json", ".toml", ".yaml", ".yml", ".sh", ".ini", ".cfg",
@@ -45,16 +50,33 @@ PLACES = [(tr_noop("grimoire.spells.vaultl.page", "Home"), "home", "~"),
 THUMBS = QThreadPool()
 EDIT_TRIGGERS = QAbstractItemView.EditTrigger.EditKeyPressed | QAbstractItemView.EditTrigger.SelectedClicked
 THUMBS.setMaxThreadCount(3)
-GRID = QSize(128, 132)
-ICON = 72
-THUMB_CACHE = 1500
+ICON = 72                                             # grid icon size before any zoom
+THUMB_SIDE = 192                                      # thumbnails sharp up to the 96 px zoom, fine at 128
+THUMB_CACHE = 800                                     # ~150 KB each: the newest 800 stay
 
 
 class _Signals(QObject):
     thumb = Signal(str, QImage)
-    transferred = Signal(int, list, bool)         # done, errors, moved (else copied)
+    transferred = Signal(int, list, bool, list)   # done, errors, moved (else copied), [(source, result)]
     trashed = Signal(int, list)
     sized = Signal(str, object, object, bool)     # sizes can exceed 32-bit ints; bool: counted to the end
+    undone = Signal(str, list)                    # what was undone, errors
+    trashed_paths = Signal(list)                  # the originals that went to the Trash (for Undo)
+
+
+def drop_moves(sources: list[Path], dest: Path, copy_asked: bool) -> bool:
+    """Move or copy for a drop, like Dolphin without its menu: Ctrl copies, Shift moves, otherwise a move on the
+    same drive and a copy onto another one (a USB stick keeps the original where it was)."""
+    mods = QGuiApplication.keyboardModifiers()
+    if mods & Qt.KeyboardModifier.ShiftModifier:
+        return True
+    if copy_asked or mods & Qt.KeyboardModifier.ControlModifier:
+        return False
+    try:
+        dev = dest.stat().st_dev
+        return all(src.lstat().st_dev == dev for src in sources)
+    except OSError:
+        return False
 
 
 class GridDelegate(QStyledItemDelegate):
@@ -65,9 +87,13 @@ class GridDelegate(QStyledItemDelegate):
         self.page = page
         self.cache: dict[str, QPixmap] = {}
         self.pending: set[str] = set()
+        self.icon = ICON                                  # the grid's zoom (prefs.ICON_SIZES)
+
+    def grid_size(self) -> QSize:
+        return QSize(self.icon + 56, self.icon + 60)      # 72 → 128 x 132, the original grid
 
     def sizeHint(self, option, index):
-        return GRID
+        return self.grid_size()
 
     def paint(self, p: QPainter, option, index):
         p.save()
@@ -81,20 +107,21 @@ class GridDelegate(QStyledItemDelegate):
             p.fillPath(path, QColor("#232323" if selected else "#141414"))
         model: QFileSystemModel = index.model()
         fpath = model.filePath(index)
-        icon_rect = QRect(r.center().x() - ICON // 2, r.y() + 8, ICON, ICON)
+        size = self.icon
+        icon_rect = QRect(r.center().x() - size // 2, r.y() + 8, size, size)
         pm = self._thumb(fpath) if Path(fpath).suffix.lower() in IMAGE_EXT else None
         if pm is not None:
             scaled = pm.scaled(icon_rect.size(), Qt.AspectRatioMode.KeepAspectRatio,
                                Qt.TransformationMode.SmoothTransformation)
-            p.drawPixmap(icon_rect.x() + (ICON - scaled.width()) // 2,
-                         icon_rect.y() + (ICON - scaled.height()) // 2, scaled)
+            p.drawPixmap(icon_rect.x() + (size - scaled.width()) // 2,
+                         icon_rect.y() + (size - scaled.height()) // 2, scaled)
         elif model.isDir(index):
-            glyph("folder", ICON).paint(p, icon_rect, mode=QIcon.Mode.Active if selected else QIcon.Mode.Normal)
+            glyph("folder", size).paint(p, icon_rect, mode=QIcon.Mode.Active if selected else QIcon.Mode.Normal)
         elif archive.is_archive(Path(fpath)):                 # zip, tar, 7z, rar: they open like folders here
-            glyph("archive", ICON).paint(p, icon_rect, mode=QIcon.Mode.Active if selected else QIcon.Mode.Normal)
+            glyph("archive", size).paint(p, icon_rect, mode=QIcon.Mode.Active if selected else QIcon.Mode.Normal)
         else:
             icon = model.fileIcon(index)
-            (icon if not icon.isNull() and icon.availableSizes() else glyph("document", ICON)).paint(p, icon_rect)
+            (icon if not icon.isNull() and icon.availableSizes() else glyph("document", size)).paint(p, icon_rect)
         p.setPen(QColor("#ffffff" if selected else "#d6d6d6"))
         f = QFont(option.font)
         p.setFont(f)
@@ -123,7 +150,7 @@ class GridDelegate(QStyledItemDelegate):
                 reader.setAutoTransform(True)
                 size = reader.size()
                 if size.isValid():
-                    reader.setScaledSize(size.scaled(QSize(ICON * 2, ICON * 2), Qt.AspectRatioMode.KeepAspectRatio))
+                    reader.setScaledSize(size.scaled(QSize(THUMB_SIDE, THUMB_SIDE), Qt.AspectRatioMode.KeepAspectRatio))
                 return reader.read()
 
             THUMBS.start(Job(work, lambda img: sig.thumb.emit(fpath, img)))
@@ -133,7 +160,7 @@ class GridDelegate(QStyledItemDelegate):
         self.pending.discard(fpath)
         if not img.isNull():
             self.cache[fpath] = QPixmap.fromImage(img)
-            while len(self.cache) > THUMB_CACHE:              # ~80 KB each: forget the oldest, not every photo seen
+            while len(self.cache) > THUMB_CACHE:              # forget the oldest, not every photo seen
                 del self.cache[next(iter(self.cache))]
             self.page.grid.viewport().update()
 
@@ -196,7 +223,8 @@ class FileModel(QFileSystemModel):
             return False
         if action in (Qt.DropAction.CopyAction, Qt.DropAction.MoveAction) and dest is not None:
             if sources and dest.is_dir():
-                self.transfer_drop.emit(sources, str(dest), action == Qt.DropAction.MoveAction)
+                self.transfer_drop.emit(sources, str(dest),
+                                        drop_moves(sources, dest, action == Qt.DropAction.CopyAction))
             return False                              # ops.transfer does the work in the background
         return super().dropMimeData(data, action, row, column, parent)
 
@@ -208,7 +236,9 @@ class VaultLPage(QWidget):
         self._sig = _Signals()
         self.history: list[Path] = []
         self.hist_i = -1
-        self.show_hidden = False
+        self.prefs = prefs.load()
+        self.show_hidden = self.prefs["hidden"]
+        self.undo_stack: list[tuple] = []                 # (kind, data, label), newest last
         self.standalone = standalone                      # own window: the title follows the folder
         self.cwd = HOME
 
@@ -217,7 +247,7 @@ class VaultLPage(QWidget):
         self.model.setIconProvider(self.type_names)
         self.model.trash_drop.connect(self._trash_paths)
         self.model.transfer_drop.connect(lambda srcs, dest, move: self._transfer(srcs, Path(dest), move))
-        self.model.refused.connect(lambda msg: self.status.setText(msg))
+        self.model.refused.connect(lambda msg: self._tell(msg))
         self.model.setRootPath("/")
         self.model.setReadOnly(False)                     # rename + drag & drop moves
         self.model.setNameFilterDisables(False)
@@ -257,6 +287,8 @@ class VaultLPage(QWidget):
         self.status = QLabel()
         self.status.setObjectName("Muted")
         self.status.setTextFormat(Qt.TextFormat.PlainText)     # file names and archive errors are anyone's
+        self._hold = 0.0
+        self._hold_timer = QTimer(self, singleShot=True, timeout=self._update_status)
         ml.addWidget(self.status)
         self.body = QStackedWidget()                      # 0: files, 1: tidy panels, 2: inside an archive
         self.body.addWidget(main)
@@ -278,8 +310,12 @@ class VaultLPage(QWidget):
         self._sig.transferred.connect(self._transfer_done)
         self._sig.sized.connect(self._folder_sized)
         self._sig.trashed.connect(self._trash_done)
+        self._sig.undone.connect(self._undone)
+        self._sig.trashed_paths.connect(self._trashed)
+        self.model.fileRenamed.connect(self._renamed)
         self.model.directoryLoaded.connect(lambda _: self._update_status())
         self._shortcuts()
+        self._restore_prefs()
         self.navigate(Path(start).expanduser() if start else HOME)
 
     # ================================================================== layout
@@ -300,15 +336,10 @@ class VaultLPage(QWidget):
         self.places = QListWidget()
         self.places.setObjectName("Places")
         self.places.setIconSize(QSize(18, 18))
-        for name, icon, path in PLACES:
-            p = Path(path).expanduser()
-            if p.exists() or icon == "trash":            # e.g. no Repos folder: no shortcut
-                it = QListWidgetItem(glyph(icon, 18), tr("grimoire.spells.vaultl.page", name))
-                it.setData(Qt.ItemDataRole.UserRole, str(p))
-                self.places.addItem(it)
-        self.places.itemClicked.connect(lambda it: self.navigate(Path(it.data(Qt.ItemDataRole.UserRole))))
-        self.places.setFixedHeight(self.places.count() * 36 + 4)    # every place in view, Trash too: no inner scroll
         self.places.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+        self.places.itemClicked.connect(lambda it: self.navigate(Path(it.data(Qt.ItemDataRole.UserRole))))
+        self._side_list(self.places)
+        self._fill_places()
         v.addWidget(self.places)
         tl = QLabel(tr("grimoire.spells.vaultl.page", "TIDY"))
         tl.setObjectName("NavSection")
@@ -330,9 +361,64 @@ class VaultLPage(QWidget):
         self.drives.setObjectName("Places")
         self.drives.setIconSize(QSize(18, 18))
         self.drives.itemClicked.connect(lambda it: self.navigate(Path(it.data(Qt.ItemDataRole.UserRole))))
+        self._side_list(self.drives)
         v.addWidget(self.drives, 1)                     # the drives take what's left (and scroll when many)
         self._fill_drives()
         return side
+
+    def _side_list(self, lst: QListWidget):
+        """Places and Drives: drop files on an entry to move them there (onto Trash: Move to Trash); right-click
+        for Open in new window and pinning."""
+        lst.setAcceptDrops(True)
+        lst.viewport().setAcceptDrops(True)
+        lst.viewport().installEventFilter(self)
+        lst.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
+        lst.customContextMenuRequested.connect(lambda pos, w=lst: self._side_menu(w, pos))
+
+    def _fill_places(self):
+        self.places.clear()
+        rows = [(tr("grimoire.spells.vaultl.page", name), icon, Path(path).expanduser(), False)
+                for name, icon, path in PLACES[:-1]]
+        rows += [(Path(p).name or p, "folder", Path(p), True) for p in self.prefs["places"]]
+        rows.append((tr("grimoire.spells.vaultl.page", PLACES[-1][0]), "trash", ops.TRASH_FILES, False))
+        for name, icon, path, pinned in rows:
+            if path.exists() or icon == "trash":        # e.g. no Repos folder: no shortcut
+                it = QListWidgetItem(glyph(icon, 18), name)
+                it.setData(Qt.ItemDataRole.UserRole, str(path))
+                it.setData(Qt.ItemDataRole.UserRole + 1, pinned)
+                if pinned:
+                    it.setToolTip(plain_tip(tilde(path)))
+                self.places.addItem(it)
+        self.places.setFixedHeight(self.places.count() * 36 + 4)    # every place in view, Trash too: no inner scroll
+        if hasattr(self, "cwd"):
+            self._mark_place()
+
+    def _mark_place(self):
+        for i in range(self.places.count()):
+            it = self.places.item(i)
+            it.setSelected(Path(it.data(Qt.ItemDataRole.UserRole)) == self.cwd)
+
+    def pin(self, path: Path):
+        if str(path) not in self.prefs["places"]:
+            self.prefs = prefs.update(places=[*prefs.load()["places"], str(path)][:prefs.MAX_PLACES])
+            self._fill_places()
+
+    def unpin(self, path: Path):
+        self.prefs = prefs.update(places=[p for p in prefs.load()["places"] if p != str(path)])
+        self._fill_places()
+
+    def _side_menu(self, lst: QListWidget, pos):
+        it = lst.itemAt(pos)
+        if not it:
+            return
+        path = Path(it.data(Qt.ItemDataRole.UserRole))
+        m = QMenu(self)
+        m.addAction(tr("grimoire.spells.vaultl.page", "Open"), lambda: self.navigate(path))
+        m.addAction(tr("grimoire.spells.vaultl.page", "Open in new window"), lambda: self.new_window(path))
+        if it.data(Qt.ItemDataRole.UserRole + 1):
+            m.addSeparator()
+            m.addAction(tr("grimoire.spells.vaultl.page", "Remove from Places"), lambda: self.unpin(path))
+        m.exec(lst.viewport().mapToGlobal(pos))
 
     def _fill_drives(self):
         self.drives.clear()
@@ -458,7 +544,7 @@ class VaultLPage(QWidget):
     def _tidy_action(self, slot):
         msg = slot()
         if isinstance(msg, str):
-            self.status.setText(msg)
+            self._tell(msg)
 
     def _refresh_tidy_bar(self):
         watched = self.body.currentIndex() == 0 and self.cwd == self.tidy.watch_dir()
@@ -490,13 +576,14 @@ class VaultLPage(QWidget):
         g.setViewMode(QListView.ViewMode.IconMode)
         g.setResizeMode(QListView.ResizeMode.Adjust)
         g.setMovement(QListView.Movement.Snap)
-        g.setGridSize(GRID)
+        self.grid_delegate = GridDelegate(self)
+        g.setGridSize(self.grid_delegate.grid_size())
         g.setUniformItemSizes(True)
         g.setWordWrap(True)
         g.setMouseTracking(True)
         g.setSpacing(4)
-        self.grid_delegate = GridDelegate(self)
         g.setItemDelegate(self.grid_delegate)
+        g.viewport().installEventFilter(self)             # Ctrl+wheel zooms
         self._common_view(g)
         g.setMovement(QListView.Movement.Static)
         return g
@@ -563,7 +650,7 @@ class VaultLPage(QWidget):
     def navigate(self, path: Path, record=True):
         path = Path(path)
         if not path.is_dir():
-            self.status.setText(tr("grimoire.spells.vaultl.page", "Can't open {path}").format(path=ltr(tilde(path))))
+            self._tell(tr("grimoire.spells.vaultl.page", "Can't open {path}").format(path=ltr(tilde(path))))
             return
         self.cwd = path
         try:                                              # TerminalL's "New tab in VaultL's folder" reads this
@@ -596,9 +683,7 @@ class VaultLPage(QWidget):
             v.setDragEnabled(not trash)
             v.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers if trash else EDIT_TRIGGERS)
         self._refresh_tidy_bar()
-        for i in range(self.places.count()):
-            it = self.places.item(i)
-            it.setSelected(Path(it.data(Qt.ItemDataRole.UserRole)) == path)
+        self._mark_place()
         self._update_preview()
         self._update_status()
         self._update_title()
@@ -666,8 +751,10 @@ class VaultLPage(QWidget):
 
     def back(self):
         if self.hist_i > 0:
+            came_from = self.cwd
             self.hist_i -= 1
             self.navigate(self.history[self.hist_i], record=False)
+            self._select_when_listed(came_from)
 
     def forward(self):
         if self.hist_i < len(self.history) - 1:
@@ -676,7 +763,19 @@ class VaultLPage(QWidget):
 
     def up(self):
         if self.cwd != self.cwd.parent:
+            came_from = self.cwd
             self.navigate(self.cwd.parent)
+            self._select_when_listed(came_from)
+
+    def _select_when_listed(self, path: Path, tries: int = 20):
+        """Up/Back: the folder you came out of is selected, so Enter goes straight back in (as in Dolphin).
+        QFileSystemModel lists in the background, so wait for the row."""
+        if path.parent != self.cwd:
+            return
+        if self.model.index(str(path)).isValid():
+            self._select([path])
+        elif tries:
+            QTimer.singleShot(50, lambda: self._select_when_listed(path, tries - 1))
 
     def _crumbs(self):
         while self.crumb_lay.count():
@@ -722,14 +821,31 @@ class VaultLPage(QWidget):
             self.navigate(p.parent)
             self.open_path(p)
         else:
-            self.status.setText(tr("grimoire.spells.vaultl.page", "No such folder: {path}").format(path=ltr(tilde(p))))
+            self._tell(tr("grimoire.spells.vaultl.page", "No such folder: {path}").format(path=ltr(tilde(p))))
 
     # ================================================================== view options
-    def set_view(self, i: int):
+    def set_view(self, i: int, save=True):
+        keep = self.selected()                            # the same items stay selected in the other view
         self.views.setCurrentIndex(i)
         self.grid_btn.setChecked(i == 0)
         self.list_btn.setChecked(i == 1)
         self.view().setRootIndex(self.model.index(str(self.cwd)))
+        self._select(keep)
+        if save:
+            self.prefs = prefs.update(view=i)
+
+    def _select(self, paths: list[Path]):
+        view = self.view()
+        sm = view.selectionModel()
+        flags = QItemSelectionModel.SelectionFlag.Select | QItemSelectionModel.SelectionFlag.Rows
+        sm.clearSelection()
+        for n, p in enumerate(paths):
+            idx = self.model.index(str(p))
+            if idx.isValid():
+                sm.select(idx, flags)
+                if n == 0:
+                    view.setCurrentIndex(idx)
+                    view.scrollTo(idx)
 
     def _apply_filter(self):
         """Hidden files show when asked, and always inside a hidden folder (the Trash is under ~/.local): once
@@ -747,10 +863,13 @@ class VaultLPage(QWidget):
         self.show_hidden = not self.show_hidden
         self.hidden_btn.setChecked(self.show_hidden)
         self._apply_filter()
+        self.prefs = prefs.update(hidden=self.show_hidden)
 
     def toggle_preview(self):
         self.preview.setVisible(not self.preview.isVisible())
         self.prev_btn.setChecked(self.preview.isVisible())
+        self.prefs = prefs.update(preview=self.preview.isVisible())
+        self._update_preview()
 
     def _filter_names(self, text: str):
         self.model.setNameFilters([f"*{text}*"] if text else [])
@@ -858,7 +977,16 @@ class VaultLPage(QWidget):
                                     "%n selected ({size})", n=len(sel)).format(size=ltr(human(size))) if size
                                  else tr("grimoire.spells.vaultl.page", "%n selected", n=len(sel)))
         text += "   ·   " + tr("grimoire.spells.vaultl.page", "{size} free").format(size=ltr(human(free)))
+        wait = self._hold - time.monotonic()
+        if wait > 0:                                      # a message ("Moved 3 items.") stays readable first
+            self._hold_timer.start(int(wait * 1000) + 50)
+            return
         self.status.setText(text)
+
+    def _tell(self, msg: str):
+        """A result or problem in the status line, kept for a few seconds before the item counts come back."""
+        self.status.setText(msg)
+        self._hold = time.monotonic() + 4
 
     # ================================================================== actions
     def open_index(self, index: QModelIndex):
@@ -880,9 +1008,10 @@ class VaultLPage(QWidget):
         try:
             made = ops.new_folder(self.cwd, tr("grimoire.spells.vaultl.page", "New Folder"))
         except OSError as e:
-            self.status.setText(tr("grimoire.spells.vaultl.page",
+            self._tell(tr("grimoire.spells.vaultl.page",
                                    "Couldn't create a folder: {error}").format(error=e.strerror or e))
             return
+        self._remember("new", [made], tr("grimoire.spells.vaultl.page", "New folder"))
         QTimer.singleShot(150, lambda: self._edit_new(made))
 
     def _edit_new(self, made: Path):
@@ -893,28 +1022,28 @@ class VaultLPage(QWidget):
 
     def rename(self):
         if ops.in_trash(self.cwd):
-            self.status.setText(tr("grimoire.spells.vaultl.page",
+            self._tell(tr("grimoire.spells.vaultl.page",
                                    "Items in the Trash can't be renamed. Restore them first."))
             return
         sel = self.selected()
         if len(sel) == 1:
             self.view().edit(self.model.index(str(sel[0])))
         elif len(sel) > 1:
-            self.status.setText(tr("grimoire.spells.vaultl.page", "Pick a single item to rename."))
+            self._tell(tr("grimoire.spells.vaultl.page", "Pick a single item to rename."))
 
     def copy(self, cut=False):
         sel = self.selected()
         if not sel:
             return
         if cut and any(ops.in_trash(p) for p in sel):     # a cut-paste would leave the .trashinfo behind
-            self.status.setText(tr("grimoire.spells.vaultl.page",
+            self._tell(tr("grimoire.spells.vaultl.page",
                                    "Items in the Trash can only be restored or deleted forever."))
             return
         data = QMimeData()
         data.setUrls([QUrl.fromLocalFile(str(p)) for p in sel])
         data.setData("application/x-kde-cutselection", b"1" if cut else b"0")   # understood by Dolphin too
         QGuiApplication.clipboard().setMimeData(data)
-        self.status.setText(tr("grimoire.spells.vaultl.page", "Cut %n item(s)", n=len(sel)) if cut
+        self._tell(tr("grimoire.spells.vaultl.page", "Cut %n item(s)", n=len(sel)) if cut
                             else tr("grimoire.spells.vaultl.page", "Copied %n item(s)", n=len(sel)))
 
     def paste(self):
@@ -922,7 +1051,7 @@ class VaultLPage(QWidget):
         if not data or not data.hasUrls():
             return
         if ops.in_trash(self.cwd):
-            self.status.setText(tr("grimoire.spells.vaultl.page",
+            self._tell(tr("grimoire.spells.vaultl.page",
                                    "Can't paste into the Trash. Use Move to Trash instead."))
             return
         sources = [Path(u.toLocalFile()) for u in data.urls() if u.isLocalFile()]
@@ -934,17 +1063,22 @@ class VaultLPage(QWidget):
     def _transfer(self, sources: list[Path], dest: Path, move: bool):
         """Paste and drag & drop: copy or move in the background, never over an existing name."""
         sig = self._sig
-        self.status.setText(tr("grimoire.spells.vaultl.page", "Moving %n item(s)…", n=len(sources)) if move
+        self._tell(tr("grimoire.spells.vaultl.page", "Moving %n item(s)…", n=len(sources)) if move
                             else tr("grimoire.spells.vaultl.page", "Copying %n item(s)…", n=len(sources)))
-        THUMBS.start(Job(lambda: ops.transfer(sources, dest, move),
-                          lambda r: sig.transferred.emit(r[0], r[1], move)))
+        made: list = []
+        THUMBS.start(Job(lambda: ops.transfer(sources, dest, move, made=made),
+                          lambda r: sig.transferred.emit(r[0], r[1], move, made)))
 
-    def _transfer_done(self, done: int, errors: list, moved: bool):
+    def _transfer_done(self, done: int, errors: list, moved: bool, made: list):
+        if made:
+            self._remember("move" if moved else "copy", made if moved else [m[1] for m in made],
+                           tr("grimoire.spells.vaultl.page", "Move %n item(s)", n=len(made)) if moved
+                           else tr("grimoire.spells.vaultl.page", "Copy %n item(s)", n=len(made)))
         msg = tr("grimoire.spells.vaultl.page", "Moved %n item(s).", n=done) if moved \
             else tr("grimoire.spells.vaultl.page", "Copied %n item(s).", n=done)
         if errors:
             msg += "  " + tr("grimoire.spells.vaultl.page", "Problems: {list}").format(list="; ".join(errors[:3]))
-        self.status.setText(msg)
+        self._tell(msg)
 
     def trash_selected(self):
         sel = self.selected()
@@ -953,24 +1087,36 @@ class VaultLPage(QWidget):
         if ops.in_trash(self.cwd):
             self.delete_forever()
             return
-        errors = ops.trash(sel)
-        self._trash_done(len(sel) - len(errors), errors)
+        self._trash_paths(sel)
 
     def _trash_paths(self, paths: list):
-        """A drop onto the Trash: gio trash in the background, like Move to Trash."""
+        """Move to Trash (the key, the menu, a drop onto the Trash): gio trash in the background, so a big
+        selection doesn't freeze the window; Ctrl+Z puts them back."""
         sig = self._sig
-        self.status.setText(tr("grimoire.spells.vaultl.page", "Moving %n item(s) to the Trash…", n=len(paths)))
-        THUMBS.start(Job(lambda: ops.trash(paths), lambda errors: sig.trashed.emit(len(paths) - len(errors), errors)))
+        paths = [Path(p) for p in paths]
+        self._tell(tr("grimoire.spells.vaultl.page", "Moving %n item(s) to the Trash…", n=len(paths)))
+
+        def done(errors):
+            failed = {e.split(":", 1)[0] for e in errors}
+            sig.trashed.emit(len(paths) - len(errors), errors)
+            sig.trashed_paths.emit([p for p in paths if p.name not in failed])
+
+        THUMBS.start(Job(lambda: ops.trash(paths), done))
+
+    def _trashed(self, gone: list):
+        if gone:
+            self._remember("trash", gone, tr("grimoire.spells.vaultl.page", "Move %n item(s) to the Trash",
+                                             n=len(gone)))
 
     def _trash_done(self, done: int, errors: list):
-        self.status.setText(tr("grimoire.spells.vaultl.page", "Moved %n item(s) to the Trash.", n=done)
+        self._tell(tr("grimoire.spells.vaultl.page", "Moved %n item(s) to the Trash.", n=done)
                             + ("  " + tr("grimoire.spells.vaultl.page",
                                          "Problems: {list}").format(list="; ".join(errors[:2])) if errors else ""))
 
     def delete_forever(self):
         sel = [p for p in self.selected() if p.parent.resolve() == ops.TRASH_FILES.resolve()]
         if not sel:
-            self.status.setText(tr("grimoire.spells.vaultl.page",
+            self._tell(tr("grimoire.spells.vaultl.page",
                                    "Pick items at the top of the Trash to delete forever."))
             return
         if QMessageBox.warning(self, tr("grimoire.spells.vaultl.page", "Delete forever?"),
@@ -980,7 +1126,7 @@ class VaultLPage(QWidget):
                                QMessageBox.StandardButton.Cancel) != QMessageBox.StandardButton.Yes:
             return
         errors = ops.delete_forever(sel)
-        self.status.setText(tr("grimoire.spells.vaultl.page", "Deleted %n item(s) forever.", n=len(sel) - len(errors))
+        self._tell(tr("grimoire.spells.vaultl.page", "Deleted %n item(s) forever.", n=len(sel) - len(errors))
                             + ("  " + tr("grimoire.spells.vaultl.page",
                                          "Couldn't delete: {list}").format(list="; ".join(errors[:2])) if errors
                                else ""))
@@ -990,14 +1136,14 @@ class VaultLPage(QWidget):
         if not sel:
             return
         errors = ops.restore(sel)
-        self.status.setText(tr("grimoire.spells.vaultl.page", "Restored %n item(s).", n=len(sel) - len(errors))
+        self._tell(tr("grimoire.spells.vaultl.page", "Restored %n item(s).", n=len(sel) - len(errors))
                             + ("  " + tr("grimoire.spells.vaultl.page",
                                          "Problems: {list}").format(list="; ".join(errors[:2])) if errors else ""))
 
     def empty_trash(self):
         n = len(list(ops.TRASH_FILES.iterdir())) if ops.TRASH_FILES.exists() else 0
         if not n:
-            self.status.setText(tr("grimoire.spells.vaultl.page", "The Trash is already empty."))
+            self._tell(tr("grimoire.spells.vaultl.page", "The Trash is already empty."))
             return
         if QMessageBox.warning(self, tr("grimoire.spells.vaultl.page", "Empty Trash?"),
                                tr("grimoire.spells.vaultl.page",
@@ -1006,17 +1152,22 @@ class VaultLPage(QWidget):
                                QMessageBox.StandardButton.Cancel) != QMessageBox.StandardButton.Yes:
             return
         errors = ops.empty_trash()
-        self.status.setText(tr("grimoire.spells.vaultl.page",
+        self._tell(tr("grimoire.spells.vaultl.page",
                                "Couldn't delete %n item(s), kept in the Trash: {list}", n=len(errors)).format(
             list="; ".join(errors[:3])) if errors else tr("grimoire.spells.vaultl.page", "Trash emptied."))
 
     def terminal_here(self):
-        subprocess.Popen(["konsole", "--workdir", str(self.cwd)], start_new_session=True)
+        """Grimoire's own TerminalL when it's there, else Konsole."""
+        term = command("grimoire-terminall")
+        if term.exists():
+            QProcess.startDetached(str(term), [str(self.cwd)])          # absolute: never read as an option
+        else:
+            subprocess.Popen(["konsole", "--workdir", str(self.cwd)], start_new_session=True)
 
     def copy_path(self):
         sel = self.selected() or [self.cwd]
         QGuiApplication.clipboard().setText("\n".join(str(p) for p in sel))
-        self.status.setText(tr("grimoire.spells.vaultl.page", "Path copied."))
+        self._tell(tr("grimoire.spells.vaultl.page", "Path copied."))
 
     def _menu(self, view, pos):
         idx = view.indexAt(pos)
@@ -1030,6 +1181,10 @@ class VaultLPage(QWidget):
             m.addAction(tr("grimoire.spells.vaultl.page", "Open"), lambda: [self.open_path(p) for p in sel])
             if len(sel) == 1 and sel[0].is_file():
                 self._open_with_menu(m.addMenu(tr("grimoire.spells.vaultl.page", "Open with")), sel[0])
+            if len(sel) == 1 and sel[0].is_dir() and not trash_mode:
+                m.addAction(tr("grimoire.spells.vaultl.page", "Open in new window"), lambda: self.new_window(sel[0]))
+                if str(sel[0]) not in self.prefs["places"]:
+                    m.addAction(tr("grimoire.spells.vaultl.page", "Add to Places"), lambda: self.pin(sel[0]))
             m.addSeparator()
             if trash_mode:
                 m.addAction(tr("grimoire.spells.vaultl.page", "Restore"), self.restore_selected)
@@ -1040,6 +1195,7 @@ class VaultLPage(QWidget):
             else:
                 m.addAction(tr("grimoire.spells.vaultl.page", "Cut") + "\tCtrl+X", lambda: self.copy(cut=True))
                 m.addAction(tr("grimoire.spells.vaultl.page", "Copy") + "\tCtrl+C", self.copy)
+                m.addAction(tr("grimoire.spells.vaultl.page", "Duplicate") + "\tCtrl+D", self.duplicate)
                 if len(sel) == 1:
                     m.addAction(tr("grimoire.spells.vaultl.page", "Rename") + "\tF2", self.rename)
                 m.addAction(tr("grimoire.spells.vaultl.page", "Copy path"), self.copy_path)
@@ -1055,6 +1211,10 @@ class VaultLPage(QWidget):
                 m.addAction(glyph("trash", 16), tr("grimoire.spells.vaultl.page", "Move to Trash") + "\tDel",
                             self.trash_selected)
         else:
+            if self.undo_stack:
+                m.addAction(tr("grimoire.spells.vaultl.page", "Undo: {what}").format(what=self.undo_stack[-1][2])
+                            + "\tCtrl+Z", self.undo)
+                m.addSeparator()
             m.addAction(glyph("newfolder", 16), tr("grimoire.spells.vaultl.page", "New folder") + "\tCtrl+Shift+N",
                         self.new_folder)
             paste = m.addAction(tr("grimoire.spells.vaultl.page", "Paste") + "\tCtrl+V", self.paste)
@@ -1068,6 +1228,23 @@ class VaultLPage(QWidget):
                                  self.toggle_hidden)
             hidden.setCheckable(True)
             hidden.setChecked(self.show_hidden)
+            sort = m.addMenu(tr("grimoire.spells.vaultl.page", "Sort by"))
+            col = self.details.header().sortIndicatorSection()
+            for i, name in enumerate((tr("grimoire.spells.vaultl.page", "Name"),
+                                      tr("grimoire.spells.vaultl.page", "Size"),
+                                      tr("grimoire.spells.vaultl.page", "Type"),
+                                      tr("grimoire.spells.vaultl.page", "Date modified"))):
+                a = sort.addAction(name, lambda i=i: self.sort_by(i))
+                a.setCheckable(True)
+                a.setChecked(i == col)
+            sort.addSeparator()
+            desc = sort.addAction(tr("grimoire.spells.vaultl.page", "Reverse order"), lambda: self.sort_by(col))
+            desc.setCheckable(True)
+            desc.setChecked(self.details.header().sortIndicatorOrder() == Qt.SortOrder.DescendingOrder)
+            m.addAction(tr("grimoire.spells.vaultl.page", "Open in new window") + "\tCtrl+N",
+                        lambda: self.new_window(self.cwd))
+            if str(self.cwd) not in self.prefs["places"] and not trash_mode:
+                m.addAction(tr("grimoire.spells.vaultl.page", "Add to Places"), lambda: self.pin(self.cwd))
             if trash_mode:
                 m.addSeparator()
                 m.addAction(tr("grimoire.spells.vaultl.page", "Empty Trash…"), self.empty_trash)
@@ -1103,6 +1280,147 @@ class VaultLPage(QWidget):
         subprocess.Popen(["kioclient", "openProperties", QUrl.fromLocalFile(str(target)).toString()],
                          start_new_session=True)
 
+    # ================================================================== drops on the sidebar, Ctrl+wheel zoom
+    def eventFilter(self, obj, e):
+        t = e.type()
+        if not hasattr(self, "drives") or not hasattr(self, "grid"):    # events while the page is being built
+            return super().eventFilter(obj, e)
+        if obj is self.grid.viewport() and t == QEvent.Type.Wheel \
+                and e.modifiers() & Qt.KeyboardModifier.ControlModifier:
+            self.zoom(1 if e.angleDelta().y() > 0 else -1)
+            return True
+        side = next((w for w in (self.places, self.drives) if obj is w.viewport()), None)
+        if side is not None and t in (QEvent.Type.DragEnter, QEvent.Type.DragMove, QEvent.Type.Drop):
+            it = side.itemAt(e.position().toPoint())
+            ok = e.mimeData().hasUrls() and it is not None
+            if not ok:
+                e.ignore()
+                return True
+            dest = Path(it.data(Qt.ItemDataRole.UserRole))
+            sources = [Path(u.toLocalFile()) for u in e.mimeData().urls() if u.isLocalFile()]
+            if t != QEvent.Type.Drop:
+                side.setCurrentItem(it)                       # shows where it'll land
+                e.acceptProposedAction()
+                return True
+            e.acceptProposedAction()
+            QTimer.singleShot(0, lambda: self._drop_on_place(sources, dest))   # after the drag has finished
+            return True
+        return super().eventFilter(obj, e)
+
+    def _drop_on_place(self, sources: list[Path], dest: Path):
+        if not sources:
+            return
+        if dest.resolve() == ops.TRASH_FILES.resolve():
+            self._trash_paths([p for p in sources if not ops.in_trash(p)])
+        elif any(ops.in_trash(p) for p in sources):
+            self._tell(tr("grimoire.spells.vaultl.page",
+                                   "Items in the Trash can't be dragged out. Use Restore to put them back."))
+        else:
+            self._transfer(sources, dest, drop_moves(sources, dest, False))
+        self._mark_place()
+
+    # ================================================================== how the window was left
+    def _restore_prefs(self):
+        self.hidden_btn.setChecked(self.show_hidden)
+        self.set_view(self.prefs["view"], save=False)
+        if not self.prefs["preview"]:
+            self.preview.setVisible(False)
+            self.prev_btn.setChecked(False)
+        order = Qt.SortOrder.DescendingOrder if self.prefs["sort_desc"] else Qt.SortOrder.AscendingOrder
+        self.details.sortByColumn(self.prefs["sort_col"], order)
+        self.details.header().sortIndicatorChanged.connect(
+            lambda col, o: setattr(self, "prefs", prefs.update(sort_col=col,
+                                                               sort_desc=o == Qt.SortOrder.DescendingOrder)))
+        self._set_icon(self.prefs["icon"], save=False)
+
+    def zoom(self, step: int):
+        sizes = prefs.ICON_SIZES
+        i = sizes.index(self.grid_delegate.icon) if self.grid_delegate.icon in sizes else 1
+        self._set_icon(sizes[max(0, min(len(sizes) - 1, i + step))] if step else 72)
+
+    def _set_icon(self, size: int, save=True):
+        self.grid_delegate.icon = size
+        self.grid.setGridSize(self.grid_delegate.grid_size())
+        self.grid.doItemsLayout()
+        if save:
+            self.prefs = prefs.update(icon=size)
+
+    def sort_by(self, col: int):
+        hh = self.details.header()
+        same = hh.sortIndicatorSection() == col
+        flip = Qt.SortOrder.DescendingOrder if hh.sortIndicatorOrder() == Qt.SortOrder.AscendingOrder \
+            else Qt.SortOrder.AscendingOrder
+        self.details.sortByColumn(col, flip if same else Qt.SortOrder.AscendingOrder)   # again: reverse
+
+    # ================================================================== undo
+    def _remember(self, kind: str, data, label: str):
+        self.undo_stack.append((kind, data, label))
+        del self.undo_stack[:-20]
+
+    def _renamed(self, folder: str, old: str, new: str):
+        if old != new:
+            self._remember("rename", (Path(folder) / old, Path(folder) / new),
+                           tr("grimoire.spells.vaultl.page", "Rename"))
+
+    def undo(self):
+        if not self.undo_stack:
+            self._tell(tr("grimoire.spells.vaultl.page", "Nothing to undo."))
+            return
+        kind, data, label = self.undo_stack.pop()
+        sig = self._sig
+
+        def work():
+            errors = []
+            if kind == "trash":                           # data: the original paths
+                found = ops.trashed_from(data)
+                errors = ops.restore(found)
+                if len(found) < len(data):
+                    errors.append(tr("grimoire.spells.vaultl.page", "%n item(s) no longer in the Trash",
+                                     n=len(data) - len(found)))
+            elif kind == "move":                          # data: [(original, where it went)]
+                for src, dest in data:
+                    try:
+                        if not (dest.exists() or dest.is_symlink()):
+                            raise OSError(tr("grimoire.spells.vaultl.page", "it's gone"))
+                        ops.transfer([dest], src.parent, True, made=(made := []))
+                        if made and made[0][1].name != src.name:       # the old name was taken meanwhile
+                            errors.append(tr("grimoire.spells.vaultl.page", "{name}: put back as {new}").format(
+                                name=src.name, new=made[0][1].name))
+                    except OSError as e:
+                        errors.append(f"{dest.name}: {e.strerror or e}")
+            elif kind in ("copy", "new"):                 # data: paths made; they go to the Trash, never deleted
+                errors = ops.trash([p for p in data if p.exists() or p.is_symlink()])
+            elif kind == "rename":
+                old, new = data
+                try:
+                    rename_noreplace(new, old)
+                except OSError as e:
+                    errors.append(f"{new.name}: {e.strerror or e}")
+            return errors
+
+        self._tell(tr("grimoire.spells.vaultl.page", "Undoing: {what}…").format(what=label))
+        THUMBS.start(Job(work, lambda errors: sig.undone.emit(label, errors)))
+
+    def _undone(self, label: str, errors: list):
+        msg = tr("grimoire.spells.vaultl.page", "Undone: {what}").format(what=label)
+        if errors:
+            msg += "  " + tr("grimoire.spells.vaultl.page", "Problems: {list}").format(list="; ".join(errors[:3]))
+        self._tell(msg)
+
+    # ================================================================== more ways to open
+    def new_window(self, path: Path | None = None):
+        """Another VaultL window on path (the selected folder, else this one)."""
+        if path is None:
+            sel = [p for p in self.selected() if p.is_dir()]
+            path = sel[0] if len(sel) == 1 else self.cwd
+        QProcess.startDetached(str(command("grimoire-vaultl")), ["--", str(path)])
+
+    def duplicate(self):
+        sel = self.selected()
+        if not sel or ops.in_trash(self.cwd):
+            return
+        self._transfer(sel, self.cwd, False)
+
     def _shortcuts(self):
         def sc(keys, fn):
             s = QShortcut(QKeySequence(keys), self)
@@ -1129,3 +1447,8 @@ class VaultLPage(QWidget):
         sc("F11", self.toggle_preview)
         sc("Alt+Return", self.properties)
         sc("Escape", lambda: (self.path_stack.setCurrentIndex(0), self.view().clearSelection()))
+        sc("Ctrl+Z", lambda: None if self.focusWidget() in (self.search, self.path_edit) else self.undo())
+        sc("Ctrl+D", lambda: None if self.focusWidget() in (self.search, self.path_edit) else self.duplicate())
+        sc("Ctrl+N", lambda: self.new_window(self.cwd))
+        for keys, step in (("Ctrl+=", 1), ("Ctrl++", 1), ("Ctrl+-", -1), ("Ctrl+0", 0)):
+            sc(keys, lambda step=step: self.zoom(step))

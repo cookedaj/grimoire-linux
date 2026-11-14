@@ -584,6 +584,21 @@
     </message>
     <message>
         <location filename="../../grimoire/spells/vaultl/page.py"/>
+        <source>Open</source>
+        <translation>Открыть</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/page.py"/>
+        <source>Open in new window</source>
+        <translation>Открыть в новом окне</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/page.py"/>
+        <source>Remove from Places</source>
+        <translation>Убрать из мест</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/page.py"/>
         <source>System</source>
         <translation>Система</translation>
     </message>
@@ -684,11 +699,6 @@
     </message>
     <message>
         <location filename="../../grimoire/spells/vaultl/page.py"/>
-        <source>Open</source>
-        <translation>Открыть</translation>
-    </message>
-    <message>
-        <location filename="../../grimoire/spells/vaultl/page.py"/>
         <source>Can&apos;t open {path}</source>
         <translation>Не удаётся открыть {path}</translation>
     </message>
@@ -770,6 +780,11 @@
     </message>
     <message>
         <location filename="../../grimoire/spells/vaultl/page.py"/>
+        <source>New folder</source>
+        <translation>Новая папка</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/page.py"/>
         <source>Items in the Trash can&apos;t be renamed. Restore them first.</source>
         <translation>Объекты в Корзине нельзя переименовать. Сначала восстановите их.</translation>
     </message>
@@ -826,6 +841,24 @@
     </message>
     <message numerus="yes">
         <location filename="../../grimoire/spells/vaultl/page.py"/>
+        <source>Move %n item(s)</source>
+        <translation>
+            <numerusform>Перемещение %n объекта</numerusform>
+            <numerusform>Перемещение %n объектов</numerusform>
+            <numerusform>Перемещение %n объектов</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../../grimoire/spells/vaultl/page.py"/>
+        <source>Copy %n item(s)</source>
+        <translation>
+            <numerusform>Копирование %n объекта</numerusform>
+            <numerusform>Копирование %n объектов</numerusform>
+            <numerusform>Копирование %n объектов</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../../grimoire/spells/vaultl/page.py"/>
         <source>Moved %n item(s).</source>
         <translation>
             <numerusform>Перемещено: %n элемент.</numerusform>
@@ -854,6 +887,15 @@
             <numerusform>Перемещение в Корзину: %n элемент…</numerusform>
             <numerusform>Перемещение в Корзину: %n элемента…</numerusform>
             <numerusform>Перемещение в Корзину: %n элементов…</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../../grimoire/spells/vaultl/page.py"/>
+        <source>Move %n item(s) to the Trash</source>
+        <translation>
+            <numerusform>Перемещение %n объекта в корзину</numerusform>
+            <numerusform>Перемещение %n объектов в корзину</numerusform>
+            <numerusform>Перемещение %n объектов в корзину</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -968,6 +1010,11 @@ This can&apos;t be undone.</source>
     </message>
     <message>
         <location filename="../../grimoire/spells/vaultl/page.py"/>
+        <source>Add to Places</source>
+        <translation>Добавить в места</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/page.py"/>
         <source>Restore</source>
         <translation>Восстановить</translation>
     </message>
@@ -985,6 +1032,11 @@ This can&apos;t be undone.</source>
         <location filename="../../grimoire/spells/vaultl/page.py"/>
         <source>Cut</source>
         <translation>Вырезать</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/page.py"/>
+        <source>Duplicate</source>
+        <translation>Дублировать</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/vaultl/page.py"/>
@@ -1023,8 +1075,8 @@ This can&apos;t be undone.</source>
     </message>
     <message>
         <location filename="../../grimoire/spells/vaultl/page.py"/>
-        <source>New folder</source>
-        <translation>Новая папка</translation>
+        <source>Undo: {what}</source>
+        <translation>Отменить: {what}</translation>
     </message>
     <message>
         <location filename="../../grimoire/spells/vaultl/page.py"/>
@@ -1043,6 +1095,36 @@ This can&apos;t be undone.</source>
     </message>
     <message>
         <location filename="../../grimoire/spells/vaultl/page.py"/>
+        <source>Sort by</source>
+        <translation>Сортировать по</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/page.py"/>
+        <source>Name</source>
+        <translation>Имя</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/page.py"/>
+        <source>Size</source>
+        <translation>Размер</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/page.py"/>
+        <source>Type</source>
+        <translation>Тип</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/page.py"/>
+        <source>Date modified</source>
+        <translation>Дата изменения</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/page.py"/>
+        <source>Reverse order</source>
+        <translation>Обратный порядок</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/page.py"/>
         <source>Properties</source>
         <translation>Свойства</translation>
     </message>
@@ -1055,6 +1137,40 @@ This can&apos;t be undone.</source>
         <location filename="../../grimoire/spells/vaultl/page.py"/>
         <source>No apps registered for this type</source>
         <translation>Нет приложений для этого типа</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/page.py"/>
+        <source>Nothing to undo.</source>
+        <translation>Нечего отменять.</translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../../grimoire/spells/vaultl/page.py"/>
+        <source>%n item(s) no longer in the Trash</source>
+        <translation>
+            <numerusform>%n объект больше не в корзине</numerusform>
+            <numerusform>%n объекта больше не в корзине</numerusform>
+            <numerusform>%n объектов больше не в корзине</numerusform>
+        </translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/page.py"/>
+        <source>it&apos;s gone</source>
+        <translation>его больше нет</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/page.py"/>
+        <source>{name}: put back as {new}</source>
+        <translation>{name}: возвращён как {new}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/page.py"/>
+        <source>Undoing: {what}…</source>
+        <translation>Отмена: {what}…</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/page.py"/>
+        <source>Undone: {what}</source>
+        <translation>Отменено: {what}</translation>
     </message>
 </context>
 <context>

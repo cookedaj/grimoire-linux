@@ -15,8 +15,10 @@ from grimoire.paths import HOME
 TRASH_FILES = HOME / ".local/share/Trash/files"
 
 
-def transfer(sources: list[Path], dest_dir: Path, move: bool, progress=None) -> tuple[int, list[str]]:
-    """Copy or move sources into dest_dir. Returns (done, errors). Refuses to put a folder inside itself."""
+def transfer(sources: list[Path], dest_dir: Path, move: bool, progress=None,
+             made: list | None = None) -> tuple[int, list[str]]:
+    """Copy or move sources into dest_dir. Returns (done, errors). Refuses to put a folder inside itself.
+    made, when given, gets (source, where it went) for each item done (so Undo can take it back)."""
     done, errors = 0, []
     for i, src in enumerate(sources):
         if progress:
@@ -34,6 +36,8 @@ def transfer(sources: list[Path], dest_dir: Path, move: bool, progress=None) -> 
             else:
                 shutil.copy2(src, target, follow_symlinks=False)
             done += 1
+            if made is not None:
+                made.append((src, target))
         except OSError as e:
             errors.append(f"{src.name}: {e.strerror or e}")
     return done, errors
@@ -79,6 +83,28 @@ def restore(paths: list[Path]) -> list[str]:
         except OSError as e:
             errors.append(f"{p.name}: {e.strerror or e}")
     return errors
+
+
+def trashed_from(originals: list[Path]) -> list[Path]:
+    """The Trash items that were these paths, newest deletion first for each (Undo of Move to Trash)."""
+    want = {str(p) for p in originals}
+    best: dict[str, tuple[str, Path]] = {}
+    info = TRASH_FILES.parent / "info"
+    try:
+        records = list(info.glob("*.trashinfo"))
+    except OSError:
+        return []
+    for rec in records:
+        try:
+            lines = rec.read_text(errors="replace").splitlines()
+        except OSError:
+            continue
+        where = next((unquote(line[5:]) for line in lines if line.startswith("Path=")), "")
+        when = next((line[13:] for line in lines if line.startswith("DeletionDate=")), "")
+        item = TRASH_FILES / rec.name[:-len(".trashinfo")]
+        if where in want and (item.exists() or item.is_symlink()) and when >= best.get(where, ("", None))[0]:
+            best[where] = (when, item)
+    return [best[w][1] for w in (str(p) for p in originals) if w in best]
 
 
 def _info_path(path: Path) -> Path:

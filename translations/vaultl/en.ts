@@ -144,6 +144,22 @@
     </message>
     <message numerus="yes">
         <location filename="../../grimoire/spells/vaultl/page.py"/>
+        <source>Move %n item(s)</source>
+        <translation>
+            <numerusform>Move %n item</numerusform>
+            <numerusform>Move %n items</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../../grimoire/spells/vaultl/page.py"/>
+        <source>Copy %n item(s)</source>
+        <translation>
+            <numerusform>Copy %n item</numerusform>
+            <numerusform>Copy %n items</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../../grimoire/spells/vaultl/page.py"/>
         <source>Moved %n item(s).</source>
         <translation>
             <numerusform>Moved %n item.</numerusform>
@@ -164,6 +180,14 @@
         <translation>
             <numerusform>Moving %n item to the Trash…</numerusform>
             <numerusform>Moving %n items to the Trash…</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../../grimoire/spells/vaultl/page.py"/>
+        <source>Move %n item(s) to the Trash</source>
+        <translation>
+            <numerusform>Move %n item to the Trash</numerusform>
+            <numerusform>Move %n items to the Trash</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -224,6 +248,14 @@ This can&apos;t be undone.</numerusform>
         <translation>
             <numerusform>Couldn&apos;t delete %n item, kept in the Trash: {list}</numerusform>
             <numerusform>Couldn&apos;t delete %n items, kept in the Trash: {list}</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../../grimoire/spells/vaultl/page.py"/>
+        <source>%n item(s) no longer in the Trash</source>
+        <translation>
+            <numerusform>%n item no longer in the Trash</numerusform>
+            <numerusform>%n items no longer in the Trash</numerusform>
         </translation>
     </message>
 </context>
