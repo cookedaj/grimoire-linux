@@ -442,3 +442,19 @@ SPELLS.append(Spell("passwordl", "PasswordL",
                                                "vault on this PC: generator, security audit, import from other "
                                                "password managers"),
                     _passwordl, "passwordl", _passwordl_status))
+
+
+def _calculatorl():
+    from grimoire.spells.calculatorl.page import CalculatorLPage
+    return CalculatorLPage()
+
+
+def _calculatorl_status() -> str:
+    from grimoire.spells.calculatorl.page import status_line
+    return status_line()
+
+
+SPELLS.append(Spell("calculatorl", "CalculatorL",
+                    tr_noop("grimoire.spells", "A calculator in black and white: standard and scientific, history, "
+                                               "and conversions of units and currencies, all from the keyboard"),
+                    _calculatorl, "calculatorl", _calculatorl_status))

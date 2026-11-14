@@ -590,6 +590,12 @@ def _draw(name: str, p: QPainter):
         p.drawEllipse(QPointF(12, 12), 8.5, 8.5)
         p.drawLine(QPointF(12, 11), QPointF(12, 16.5))
         p.drawPoint(QPointF(12, 7.8))
+    elif name == "calculatorl":                            # a calculator: screen and a 3x3 of keys
+        p.drawRoundedRect(r(5, 3, 14, 18), 2.5, 2.5)
+        p.drawRect(r(7.5, 5.5, 9, 4))
+        for y in (13, 16, 19):
+            for x in (8.5, 12, 15.5):
+                p.drawPoint(QPointF(x, y - 0.5))
     elif name == "passwordl":                              # a padlock with a keyhole
         p.drawRoundedRect(r(5, 10.5, 14, 10), 2.5, 2.5)
         shackle = QPainterPath(QPointF(8, 10.5)); shackle.lineTo(8, 7.5); shackle.arcTo(r(8, 3.5, 8, 8), 180, -180)

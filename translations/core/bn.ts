@@ -3618,6 +3618,11 @@
         <translation>আপনার পাসওয়ার্ড, কার্ড, নোট ও টু-ফ্যাক্টর কোড এই পিসিতে এনক্রিপ্টেড ভল্টে: জেনারেটর, নিরাপত্তা যাচাই, অন্য পাসওয়ার্ড ম্যানেজার থেকে ইমপোর্ট</translation>
     </message>
     <message>
+        <location filename="../../grimoire/spells/__init__.py"/>
+        <source>A calculator in black and white: standard and scientific, history, and conversions of units and currencies, all from the keyboard</source>
+        <translation>সাদাকালো ক্যালকুলেটর: স্ট্যান্ডার্ড ও বৈজ্ঞানিক, ইতিহাস, একক ও মুদ্রা রূপান্তর, সব কিবোর্ড থেকে</translation>
+    </message>
+    <message>
         <source>Removes the apps Grimoire replaces (Dolphin, Gwenview, Okular, Konsole, Kate…) and what they left behind, with a preview first and Reinstall after</source>
         <translation type="vanished">Grimoire যেসব অ্যাপের জায়গা নেয় (Dolphin, Gwenview, Okular, Konsole, Kate…) সেগুলো ও তাদের রেখে যাওয়া জিনিস সরায়, আগে প্রিভিউ আর পরে আবার ইনস্টল</translation>
     </message>

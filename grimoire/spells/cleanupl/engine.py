@@ -64,6 +64,7 @@ REPLACED = (
        ["config:dragonplayerrc"]),
     _r("vlc", "VLC", "PlayL", ["vlc"], ["org.videolan.VLC"], ["config:vlc", "data:vlc"]),
     _r("kcharselect", "KCharSelect", "GlyphL", ["kcharselect"], ["org.kde.kcharselect"], ["config:kcharselectrc"]),
+    _r("kcalc", "KCalc", "CalculatorL", ["kcalc"], ["org.kde.kcalc"], ["config:kcalcrc", "state:kcalcstaterc"]),
     _r("systemmonitor", "System Monitor", "SystemL", ["plasma-systemmonitor"], [],
        ["config:plasma-systemmonitorrc", "data:plasma-systemmonitor"]),
     _r("discover", "Discover", "StoreL + UpdateL",

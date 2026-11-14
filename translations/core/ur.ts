@@ -3618,6 +3618,11 @@
         <translation>آپ کے پاس ورڈ، کارڈ، نوٹس اور ٹو فیکٹر کوڈ اس پی سی پر انکرپٹڈ والٹ میں: جنریٹر، سیکیورٹی جانچ، دوسرے پاس ورڈ مینیجرز سے امپورٹ</translation>
     </message>
     <message>
+        <location filename="../../grimoire/spells/__init__.py"/>
+        <source>A calculator in black and white: standard and scientific, history, and conversions of units and currencies, all from the keyboard</source>
+        <translation>بلیک اینڈ وائٹ کیلکولیٹر: معیاری اور سائنسی، تاریخچہ، اور اکائیوں و کرنسیوں کی تبدیلی، سب کی بورڈ سے</translation>
+    </message>
+    <message>
         <source>Removes the apps Grimoire replaces (Dolphin, Gwenview, Okular, Konsole, Kate…) and what they left behind, with a preview first and Reinstall after</source>
         <translation type="vanished">‏Grimoire جن ایپس کی جگہ لیتا ہے (Dolphin، Gwenview، Okular، Konsole، Kate…) انہیں اور ان کی باقیات ہٹاتا ہے، پہلے پیش منظر اور بعد میں دوبارہ انسٹال</translation>
     </message>

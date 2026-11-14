@@ -3618,6 +3618,11 @@
         <translation>Tus contraseñas, tarjetas, notas y códigos de dos pasos en una bóveda cifrada en este PC: generador, auditoría de seguridad e importación desde otros gestores</translation>
     </message>
     <message>
+        <location filename="../../grimoire/spells/__init__.py"/>
+        <source>A calculator in black and white: standard and scientific, history, and conversions of units and currencies, all from the keyboard</source>
+        <translation>Una calculadora en blanco y negro: estándar y científica, historial y conversión de unidades y monedas, todo desde el teclado</translation>
+    </message>
+    <message>
         <source>Removes the apps Grimoire replaces (Dolphin, Gwenview, Okular, Konsole, Kate…) and what they left behind, with a preview first and Reinstall after</source>
         <translation type="vanished">Quita las apps que Grimoire sustituye (Dolphin, Gwenview, Okular, Konsole, Kate…) y lo que dejaron, con vista previa antes y Reinstalar después</translation>
     </message>

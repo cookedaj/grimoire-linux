@@ -3648,6 +3648,11 @@
         <translation>Пароли, карты, заметки и коды 2FA в зашифрованном хранилище на этом ПК: генератор, проверка безопасности, импорт из других менеджеров</translation>
     </message>
     <message>
+        <location filename="../../grimoire/spells/__init__.py"/>
+        <source>A calculator in black and white: standard and scientific, history, and conversions of units and currencies, all from the keyboard</source>
+        <translation>Чёрно-белый калькулятор: обычный и инженерный режимы, история, перевод единиц и валют, всё с клавиатуры</translation>
+    </message>
+    <message>
         <source>Removes the apps Grimoire replaces (Dolphin, Gwenview, Okular, Konsole, Kate…) and what they left behind, with a preview first and Reinstall after</source>
         <translation type="vanished">Удаляет приложения, которые заменяет Grimoire (Dolphin, Gwenview, Okular, Konsole, Kate…), и их остатки: сначала предпросмотр, потом можно переустановить</translation>
     </message>

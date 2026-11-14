@@ -3738,6 +3738,11 @@
         <translation>كلمات مرورك وبطاقاتك وملاحظاتك ورموز التحقق بخطوتين في خزنة مشفرة على هذا الحاسوب: مولّد وتدقيق أمان واستيراد من مديري كلمات مرور آخرين</translation>
     </message>
     <message>
+        <location filename="../../grimoire/spells/__init__.py"/>
+        <source>A calculator in black and white: standard and scientific, history, and conversions of units and currencies, all from the keyboard</source>
+        <translation>آلة حاسبة بالأبيض والأسود: قياسية وعلمية وسجل وتحويل الوحدات والعملات، كلها من لوحة المفاتيح</translation>
+    </message>
+    <message>
         <source>Removes the apps Grimoire replaces (Dolphin, Gwenview, Okular, Konsole, Kate…) and what they left behind, with a preview first and Reinstall after</source>
         <translation type="vanished">يزيل التطبيقات التي يحل Grimoire محلها (Dolphin وGwenview وOkular وKonsole وKate…) وما تركته، مع معاينة أولًا وإعادة تثبيت بعدها</translation>
     </message>

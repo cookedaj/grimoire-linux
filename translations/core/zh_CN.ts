@@ -3588,6 +3588,11 @@
         <translation>你的密码、银行卡、笔记和双重验证码，保存在这台电脑上的加密保险库中：生成器、安全审查、从其他密码管理器导入</translation>
     </message>
     <message>
+        <location filename="../../grimoire/spells/__init__.py"/>
+        <source>A calculator in black and white: standard and scientific, history, and conversions of units and currencies, all from the keyboard</source>
+        <translation>黑白计算器：标准与科学模式、历史记录、单位和货币换算，全部可用键盘操作</translation>
+    </message>
+    <message>
         <source>Removes the apps Grimoire replaces (Dolphin, Gwenview, Okular, Konsole, Kate…) and what they left behind, with a preview first and Reinstall after</source>
         <translation type="vanished">移除 Grimoire 替代的应用（Dolphin、Gwenview、Okular、Konsole、Kate…）及其残留，先预览，之后可重新安装</translation>
     </message>
