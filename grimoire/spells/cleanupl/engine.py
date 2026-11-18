@@ -304,6 +304,23 @@ def guess_leftovers(f: Found) -> list[tuple[Path, int]]:
     return out
 
 
+def surely_its(f: Found, path: Path) -> bool:
+    """A leftover that is this app's beyond doubt: on its REPLACED list, its Flatpak's own ~/.var/app folder, or
+    named exactly like its package, desktop id or program. Anything matched only by a word in a command (every
+    Steam game's menu entry says "steam") or by a loose name is a guess, offered unticked."""
+    known = next((r for r in REPLACED if f.key == r.key or f.source == "apt" and f.names and f.names[0] in r.apt
+                  or f.app_id and f.app_id in r.flatpak), None)
+    if known and path in {leftover_path(x) for x in known.leftovers}:
+        return True
+    if f.app_id and path == HOME / ".var/app" / f.app_id:
+        return True
+    stem = path.name.lower().removesuffix(".desktop").removesuffix(".service").removesuffix(".timer")
+    stem = stem.removesuffix("staterc").removesuffix("rc") if path.name.endswith("rc") else stem
+    exact = {n.lower() for n in (f.app_id, f.names[0] if f.source in ("apt", "snap") and f.names else "")
+             if isinstance(n, str) and n} | _own_names(f)
+    return stem in exact
+
+
 def _own_names(f: Found) -> set[str]:
     """An AppImage's or hand-made install's own names: its menu entry's id and its program's file name."""
     if f.source not in ("appimage", "user"):

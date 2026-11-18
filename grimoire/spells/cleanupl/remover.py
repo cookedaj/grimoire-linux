@@ -205,7 +205,7 @@ class LeftoverDialog(QDialog):
         self.tree.setRootIsDecorated(True)
         self.tree.setColumnWidth(0, 440)
         groups: dict[str, QTreeWidgetItem] = {}
-        for app, path, size in items:
+        for app, path, size, sure in items:
             g = engine.group_of(path)
             head = groups.get(g)
             if head is None:
@@ -216,7 +216,8 @@ class LeftoverDialog(QDialog):
             it.setToolTip(0, app)
             it.setData(0, Qt.ItemDataRole.UserRole, str(path))
             it.setFlags(it.flags() | Qt.ItemFlag.ItemIsUserCheckable)
-            it.setCheckState(0, Qt.CheckState.Checked if g in self.START_TICKED else Qt.CheckState.Unchecked)
+            # ticked only when it's surely this app's (named after it); a guess by a shared word stays unticked
+            it.setCheckState(0, Qt.CheckState.Checked if sure and g in self.START_TICKED else Qt.CheckState.Unchecked)
             head.addChild(it)
         self.tree.expandAll()
         lay.addWidget(self.tree, 1)
@@ -326,13 +327,13 @@ class Remover(QObject):
             for path, size in engine.guess_leftovers(f) + list(f.leftovers):
                 if path not in seen and path not in own:
                     seen.add(path)
-                    items.append((f.title, path, size))
+                    items.append((f.title, path, size, engine.surely_its(f, path)))
         if items:
             dlg = LeftoverDialog(self.page, items)
             if dlg.exec() == QDialog.DialogCode.Accepted:
                 picked = dlg.ticked()
                 errors = engine.trash_files(picked)
-                total = sum(s for _a, p, s in items if p in picked)
+                total = sum(s for _a, p, s, _sure in items if p in picked)
                 self.status.emit(
                     tr(
                         "grimoire.spells.cleanupl.remover",
