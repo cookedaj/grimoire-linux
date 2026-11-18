@@ -967,6 +967,11 @@ Isso não pode ser desfeito.</numerusform>
     </message>
     <message>
         <location filename="../../grimoire/spells/vaultl/page.py"/>
+        <source>No terminal found: install TerminalL from Grimoire&apos;s home.</source>
+        <translation>Nenhum terminal: instale o TerminalL pelo início do Grimoire.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/page.py"/>
         <source>Path copied.</source>
         <translation>Caminho copiado.</translation>
     </message>

@@ -967,6 +967,11 @@ This can&apos;t be undone.</source>
     </message>
     <message>
         <location filename="../../grimoire/spells/vaultl/page.py"/>
+        <source>No terminal found: install TerminalL from Grimoire&apos;s home.</source>
+        <translation>কোনো টার্মিনাল পাওয়া যায়নি: Grimoire-এর হোম থেকে TerminalL ইনস্টল করুন।</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/page.py"/>
         <source>Path copied.</source>
         <translation>পাথ কপি হয়েছে।</translation>
     </message>

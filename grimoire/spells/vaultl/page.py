@@ -11,6 +11,7 @@ Drag files onto a folder, a place or a drive to move them (Ctrl: copy, Shift: mo
 The view (grid/details, hidden, preview, sort, icon size) and pinned places last between runs (prefs.py).
 """
 import os
+import shutil
 import stat
 import subprocess
 import time
@@ -1161,8 +1162,10 @@ class VaultLPage(QWidget):
         term = command("grimoire-terminall")
         if term.exists():
             QProcess.startDetached(str(term), [str(self.cwd)])          # absolute: never read as an option
-        else:
+        elif shutil.which("konsole"):
             subprocess.Popen(["konsole", "--workdir", str(self.cwd)], start_new_session=True)
+        else:
+            self._tell(tr("grimoire.spells.vaultl.page", "No terminal found: install TerminalL from Grimoire's home."))
 
     def copy_path(self):
         sel = self.selected() or [self.cwd]
@@ -1251,14 +1254,18 @@ class VaultLPage(QWidget):
         m.addSeparator()
         m.addAction(tr("grimoire.spells.vaultl.page", "Properties") + "\tAlt+Return", self.properties)
         target = sel[0] if len(sel) == 1 else self.cwd
-        m.addAction(tr("grimoire.spells.vaultl.page", "Show in Dolphin"),
-                    lambda: subprocess.Popen(["dolphin", "--select", str(target)], start_new_session=True))
+        if shutil.which("dolphin"):                       # gone once UninstallerL removed it
+            m.addAction(tr("grimoire.spells.vaultl.page", "Show in Dolphin"),
+                        lambda: subprocess.Popen(["dolphin", "--select", str(target)], start_new_session=True))
         m.exec(view.viewport().mapToGlobal(pos))
 
     def _open_with_menu(self, menu: QMenu, p: Path):
         """Apps the system registers for this file type (gio mime), launched with gio."""
         mime = QMimeDatabase().mimeTypeForFile(str(p)).name()
-        out = subprocess.run(["gio", "mime", mime], capture_output=True, text=True).stdout
+        try:
+            out = subprocess.run(["gio", "mime", mime], capture_output=True, text=True, timeout=10).stdout
+        except (OSError, subprocess.TimeoutExpired):
+            out = ""
         apps = []
         for line in out.splitlines():
             line = line.strip()

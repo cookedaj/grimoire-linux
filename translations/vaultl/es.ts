@@ -967,6 +967,11 @@ No se puede deshacer.</numerusform>
     </message>
     <message>
         <location filename="../../grimoire/spells/vaultl/page.py"/>
+        <source>No terminal found: install TerminalL from Grimoire&apos;s home.</source>
+        <translation>No hay terminal: instala TerminalL desde el inicio de Grimoire.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/page.py"/>
         <source>Path copied.</source>
         <translation>Ruta copiada.</translation>
     </message>

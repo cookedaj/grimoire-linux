@@ -967,6 +967,11 @@ Cette action est irréversible.</numerusform>
     </message>
     <message>
         <location filename="../../grimoire/spells/vaultl/page.py"/>
+        <source>No terminal found: install TerminalL from Grimoire&apos;s home.</source>
+        <translation>Aucun terminal : installez TerminalL depuis l&apos;accueil de Grimoire.</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/page.py"/>
         <source>Path copied.</source>
         <translation>Chemin copié.</translation>
     </message>
