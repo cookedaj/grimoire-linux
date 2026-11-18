@@ -1,3 +1,24 @@
+grimoire-linux (0.3.4) unstable; urgency=medium
+
+  * Notes: icons come from Lucide SVGs now
+  * UninstallerL: leftovers it only guessed at start unticked
+  * PasswordL: an import with a huge or broken CSV field is refused with a message
+  * VaultL: no dead menu entries once KDE apps are uninstalled
+  * PasswordL: exporting no longer locks down the folder you save into
+  * UninstallerL: table columns fit their text in every language
+  * VaultL's status line says Default file manager only when it is
+  * VaultL: translate Couldn't undo
+  * VaultL: Undo says when nothing could be put back
+  * UninstallerL: a hand-made install never takes a shared folder with it
+  * CalculatorL: factorials and mod of out-of-range values give a message, not a crash
+  * Look: combo and spin box arrows, LaunchL header
+  * Look: one line-icon set, a calmer theme
+  * Sign-in screen: show only the providers turned on
+  * Accounts test: never reach the shipped project
+  * Accounts: connect the Grimoire Linux Supabase project
+
+ -- cookedaj <285303240+cookedaj@users.noreply.github.com>  Wed, 18 Nov 2026 03:32:16 -0500
+
 grimoire-linux (0.3.3) unstable; urgency=medium
 
   * CalculatorL: standard and scientific calculator with conversions
