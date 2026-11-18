@@ -22,7 +22,7 @@ sys.path[:0] = [str(Path(__file__).resolve().parent.parent), str(Path(__file__).
 
 from fake_supabase import FakeSupabase  # noqa: E402
 
-from grimoire import accounts, paths, session  # noqa: E402
+from grimoire import accounts, paths, session, supabase_app  # noqa: E402
 from grimoire.accounts import AccountError  # noqa: E402
 
 
@@ -60,6 +60,10 @@ def raises(fn, text):
     raise SystemExit(f"FAIL: expected AccountError {text!r}")
 
 
+# never the real project: blank the shipped URL/key, the fake server sets its own through the env
+supabase_app.SUPABASE_URL = supabase_app.SUPABASE_ANON_KEY = ""
+for k in ("GRIMOIRE_SUPABASE_URL", "GRIMOIRE_SUPABASE_ANON_KEY"):
+    os.environ.pop(k, None)
 b = accounts.BACKEND
 check(not b.configured(), "not configured without URL/key")
 raises(lambda: b.sign_in("alice", "x" * 12), "aren't set up")
