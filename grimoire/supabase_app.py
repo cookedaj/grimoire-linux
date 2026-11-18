@@ -11,8 +11,8 @@ import os
 import re
 import urllib.parse
 
-SUPABASE_URL = ""
-SUPABASE_ANON_KEY = ""
+SUPABASE_URL = "https://dvqkcrmeeorgsqyurryz.supabase.co"
+SUPABASE_ANON_KEY = "sb_publishable_rvJiMQYqsv2LytIMFmkD6g_g8Qa3qAk"
 # Username-only accounts sign in to Supabase Auth with a made-up address <username>@<this>: never mailed (the
 # .invalid top-level domain can't exist, RFC 2606). If Supabase ever refuses it, use a subdomain you own that has
 # no mail service; nothing else depends on it.
