@@ -17,6 +17,8 @@ SUPABASE_ANON_KEY = "sb_publishable_rvJiMQYqsv2LytIMFmkD6g_g8Qa3qAk"
 # .invalid top-level domain can't exist, RFC 2606). If Supabase ever refuses it, use a subdomain you own that has
 # no mail service; nothing else depends on it.
 SYNTHETIC_DOMAIN = "users.grimoire.invalid"
+# Sign-in buttons shown on the sign-in screen: only providers turned on in the Supabase dashboard (README 5-6).
+OAUTH_PROVIDERS = ("github",)
 LOOPBACK = {"127.0.0.1", "localhost", "::1"}
 
 

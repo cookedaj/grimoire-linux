@@ -13,7 +13,7 @@ from PySide6.QtGui import QDesktopServices, QFont, QGuiApplication
 from PySide6.QtWidgets import (QCheckBox, QDialog, QFileDialog, QFrame, QHBoxLayout, QLabel, QLineEdit, QPushButton,
                                QVBoxLayout, QWidget)
 
-from grimoire import NAME, accounts, i18n, paths, session
+from grimoire import NAME, accounts, i18n, paths, session, supabase_app
 from grimoire.glyphs import clover
 from grimoire.i18n import tr
 from grimoire.settingsview import _button, _label, run
@@ -223,9 +223,11 @@ class AuthCard(QFrame):
         self.github = _button(tr("grimoire.loginview", "Sign in with GitHub") if ready else
                               tr("grimoire.loginview", "Sign in with GitHub · not set up yet"),
                               lambda: self._oauth("github"))
-        for b in (self.google, self.github):
+        for name, b in (("google", self.google), ("github", self.github)):
             b.setEnabled(ready)
+            b.setVisible(name in supabase_app.OAUTH_PROVIDERS)
             ol.addWidget(b)
+        self.oauth.setVisible(bool(supabase_app.OAUTH_PROVIDERS))
         lay.addWidget(self.oauth)
 
         self.guest = None
