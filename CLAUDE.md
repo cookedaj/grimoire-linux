@@ -42,13 +42,15 @@ Tray: `grimoire/tray.py` (`grimoire-tray`, QSystemTrayIcon → StatusNotifierIte
 `$XDG_RUNTIME_DIR`, opt-in autostart `~/.config/autostart/grimoire-tray.desktop` (home page checkbox or its menu).
 Performance mode lives in `optimizel/perfmode.py` (flips `IDS` through `tweaks.apply`, records what it changed).
 
-Shell: `grimoire/app.py` (icon rail, home, `style_app()`), icons drawn in code in `grimoire/glyphs.py`, styles in
+Shell: `grimoire/app.py` (icon rail, home, `style_app()`), icons in `grimoire/glyphs.py` (Lucide SVGs in
+`grimoire/assets/icons/<name>.svg`, ISC, recolored at 1.75 px; names without one are drawn in `_draw()`), styles in
 `grimoire/theme.py` (QSS). New spells register in `grimoire/spells/__init__.py` (`Spell(id, name, tagline, page, icon,
 status)`). Folder names stay as-is when display names change (e.g. SightsL lives in `sightc/`).
 
 ## Style rules (the owner cares about these)
 - Strictly black & white: no accent colors, Fusion style + the monochrome palette in `style_app()`.
-- Sleek and simple; new icons are line glyphs in `glyphs.py`, never colored theme icons in Grimoire's own chrome.
+- Sleek and simple; new icons are Lucide line SVGs added to `grimoire/assets/icons/` under a glyph name (or drawn in
+  `glyphs.py`), never colored theme icons in Grimoire's own chrome.
 - New spells are named `<Word>L` (MuraL, SightsL, VaultL). Spells get a page, a rail icon and a status line.
 - Match surrounding code: small focused modules, short docstrings on the "why".
 
