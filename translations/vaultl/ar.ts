@@ -1274,6 +1274,11 @@ This can&apos;t be undone.</source>
         <source>Undone: {what}</source>
         <translation>تم التراجع: {what}</translation>
     </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/page.py"/>
+        <source>Couldn&apos;t undo: {what}</source>
+        <translation>تعذّر التراجع: {what}</translation>
+    </message>
 </context>
 <context>
     <name>grimoire.spells.vaultl.runview</name>

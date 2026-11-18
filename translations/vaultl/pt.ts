@@ -1138,6 +1138,11 @@ Isso não pode ser desfeito.</numerusform>
         <source>Undone: {what}</source>
         <translation>Desfeito: {what}</translation>
     </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/page.py"/>
+        <source>Couldn&apos;t undo: {what}</source>
+        <translation>Não deu para desfazer: {what}</translation>
+    </message>
 </context>
 <context>
     <name>grimoire.spells.vaultl.runview</name>

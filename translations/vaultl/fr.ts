@@ -1138,6 +1138,11 @@ Cette action est irréversible.</numerusform>
         <source>Undone: {what}</source>
         <translation>Annulé : {what}</translation>
     </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/page.py"/>
+        <source>Couldn&apos;t undo: {what}</source>
+        <translation>Impossible d&apos;annuler : {what}</translation>
+    </message>
 </context>
 <context>
     <name>grimoire.spells.vaultl.runview</name>

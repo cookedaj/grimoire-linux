@@ -1138,6 +1138,11 @@ No se puede deshacer.</numerusform>
         <source>Undone: {what}</source>
         <translation>Deshecho: {what}</translation>
     </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/page.py"/>
+        <source>Couldn&apos;t undo: {what}</source>
+        <translation>No se pudo deshacer: {what}</translation>
+    </message>
 </context>
 <context>
     <name>grimoire.spells.vaultl.runview</name>

@@ -1104,6 +1104,11 @@ This can&apos;t be undone.</source>
         <source>Undone: {what}</source>
         <translation>已撤销：{what}</translation>
     </message>
+    <message>
+        <location filename="../../grimoire/spells/vaultl/page.py"/>
+        <source>Couldn&apos;t undo: {what}</source>
+        <translation>无法撤销：{what}</translation>
+    </message>
 </context>
 <context>
     <name>grimoire.spells.vaultl.runview</name>
