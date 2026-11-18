@@ -46,8 +46,13 @@ def functions(degrees: bool) -> dict:
 
 
 def _fact(x):
+    if not math.isfinite(x):
+        raise CalcError("too big")
     if x != int(x) or x < 0:
-        return math.gamma(x + 1)
+        try:
+            return math.gamma(x + 1)                  # negative whole numbers have no factorial
+        except (ValueError, OverflowError) as e:
+            raise CalcError("no factorial for that") from e
     if x > MAX_FACT:
         raise CalcError("too big")
     return float(math.factorial(int(x)))
@@ -102,7 +107,10 @@ class _Parser:
                 y = self.unary()
                 if v in ("/", "÷", "mod") and y == 0:
                     raise CalcError("division by zero")
-                x = x * y if v in ("*", "×") else math.fmod(x, y) if v == "mod" else x / y
+                try:
+                    x = x * y if v in ("*", "×") else math.fmod(x, y) if v == "mod" else x / y
+                except (ValueError, OverflowError) as e:
+                    raise CalcError("out of range") from e
             elif kind == "num" or kind == "name" or v in ("(", "√"):     # 2π, 3(4+1), 2 sqrt(9)
                 x = x * self.power()
             else:
