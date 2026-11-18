@@ -60,7 +60,7 @@ class _Signals(QObject):
     transferred = Signal(int, list, bool, list)   # done, errors, moved (else copied), [(source, result)]
     trashed = Signal(int, list)
     sized = Signal(str, object, object, bool)     # sizes can exceed 32-bit ints; bool: counted to the end
-    undone = Signal(str, list)                    # what was undone, errors
+    undone = Signal(str, list, bool)              # what was undone, errors, whether anything came back
     trashed_paths = Signal(list)                  # the originals that went to the Trash (for Undo)
 
 
@@ -1399,10 +1399,12 @@ class VaultLPage(QWidget):
             return errors
 
         self._tell(tr("grimoire.spells.vaultl.page", "Undoing: {what}…").format(what=label))
-        THUMBS.start(Job(work, lambda errors: sig.undone.emit(label, errors)))
+        count = 1 if kind == "rename" else len(data)
+        THUMBS.start(Job(work, lambda errors: sig.undone.emit(label, errors, len(errors) < count)))
 
-    def _undone(self, label: str, errors: list):
-        msg = tr("grimoire.spells.vaultl.page", "Undone: {what}").format(what=label)
+    def _undone(self, label: str, errors: list, any_back: bool):
+        msg = tr("grimoire.spells.vaultl.page", "Undone: {what}").format(what=label) if any_back else \
+            tr("grimoire.spells.vaultl.page", "Couldn't undo: {what}").format(what=label)
         if errors:
             msg += "  " + tr("grimoire.spells.vaultl.page", "Problems: {list}").format(list="; ".join(errors[:3]))
         self._tell(msg)
