@@ -56,10 +56,27 @@ def _vaultl():
     return VaultLPage()
 
 
+def _default_file_manager() -> bool:
+    """Is VaultL what opens folders? Read from the user's mimeapps.list (no process started for a status line)."""
+    import configparser
+    import os
+    from pathlib import Path
+    for f in (Path(os.environ.get("XDG_CONFIG_HOME") or Path.home() / ".config") / "mimeapps.list",):
+        cp = configparser.RawConfigParser(strict=False, interpolation=None)
+        try:
+            cp.read(f, encoding="utf-8")
+            first = cp.get("Default Applications", "inode/directory", fallback="").split(";")[0].strip()
+        except (configparser.Error, OSError, UnicodeDecodeError):
+            continue
+        if first:
+            return first.startswith(("grimoire-vaultl", "grimoire-filel"))
+    return False
+
+
 def _vaultl_status() -> str:
     from grimoire.spells.vaultl import cli, tidy
     moved = sum(1 for e in tidy.history(2000) if e["action"] == "move")
-    return " · ".join([tr("grimoire.spells", "Default file manager"),
+    return " · ".join([*([tr("grimoire.spells", "Default file manager")] if _default_file_manager() else []),
                        tr("grimoire.spells", "Auto-tidy on") if cli.timer_active()
                        else tr("grimoire.spells", "Auto-tidy off"),
                        tr("grimoire.spells", "%n file(s) sorted so far", n=moved)])
