@@ -562,6 +562,11 @@
     </message>
     <message>
         <location filename="../../grimoire/spells/passwordl/tools.py"/>
+        <source>This CSV file can&apos;t be read: {err}</source>
+        <translation>এই CSV ফাইল পড়া যাচ্ছে না: {err}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/passwordl/tools.py"/>
         <source>The file is empty.</source>
         <translation>ফাইলটি খালি।</translation>
     </message>

@@ -559,6 +559,11 @@
     </message>
     <message>
         <location filename="../../grimoire/spells/passwordl/tools.py"/>
+        <source>This CSV file can&apos;t be read: {err}</source>
+        <translation>无法读取此 CSV 文件：{err}</translation>
+    </message>
+    <message>
+        <location filename="../../grimoire/spells/passwordl/tools.py"/>
         <source>The file is empty.</source>
         <translation>文件为空。</translation>
     </message>

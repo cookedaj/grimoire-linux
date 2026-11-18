@@ -225,7 +225,11 @@ def read_import(path: Path) -> tuple[str, list[dict]]:
         if isinstance(data, dict) and isinstance(data.get("records"), list):
             return "Keeper", _keeper_json(data)
         raise ValueError(tr("grimoire.spells.passwordl.tools", "Not an export PasswordL knows."))
-    rows = list(csv.reader(io.StringIO(raw)))
+    try:
+        rows = list(csv.reader(io.StringIO(raw)))
+    except csv.Error as e:                            # a field over csv's 128 KB limit, a stray quote…
+        raise ValueError(tr("grimoire.spells.passwordl.tools", "This CSV file can't be read: {err}").format(
+            err=e)) from e
     if not rows:
         raise ValueError(tr("grimoire.spells.passwordl.tools", "The file is empty."))
     head = [h.strip().lower() for h in rows[0]]
