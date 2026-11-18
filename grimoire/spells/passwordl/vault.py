@@ -261,7 +261,8 @@ class Vault:
 def _write_private(path: Path, blob: bytes, keep: int):
     """Atomic 0600 write in a 0700 folder; the previous file joins backups/ (newest `keep` kept)."""
     path.parent.mkdir(parents=True, exist_ok=True, mode=0o700)
-    os.chmod(path.parent, 0o700)
+    if keep:                                             # the vault's own folder; never an export's (~/Documents…)
+        os.chmod(path.parent, 0o700)
     if keep and path.exists():                           # at most one sealed copy an hour, the newest `keep` kept
         bdir = path.parent / "backups"
         bdir.mkdir(exist_ok=True, mode=0o700)
