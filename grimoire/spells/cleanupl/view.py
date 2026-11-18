@@ -136,8 +136,8 @@ class RemovalPage(QWidget):
         )
         h = self.table.header()
         h.setSectionResizeMode(0, QHeaderView.ResizeMode.Stretch)
-        for c, w in ((1, 150), (2, 190), (3, 90), (4, 90)):
-            self.table.setColumnWidth(c, w)
+        for c in (1, 2, 3, 4):                            # sizes like "1001.1 एमबी" need their width
+            h.setSectionResizeMode(c, QHeaderView.ResizeMode.ResizeToContents)
         self.table.itemChanged.connect(lambda *_: self._update())
         lay.addWidget(self.table, 1)
 
