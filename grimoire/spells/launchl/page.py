@@ -44,8 +44,7 @@ class LaunchLPage(QWidget):
         lay = QVBoxLayout(self)
         lay.setContentsMargins(56, 48, 56, 40)
         lay.setSpacing(6)
-        # aligned by the layout, which mirrors: a full-width label aligns Latin text left even right to left
-        lay.addWidget(_label("LaunchL", "PageHeading", wrap=False), 0, Qt.AlignmentFlag.AlignLeft)
+        lay.addWidget(_label("LaunchL", "PageHeading", wrap=False))     # RTL_QSS puts it on the start side
         lay.addWidget(_label(tr("grimoire.spells.launchl.page",
                                 "Your app launcher in the panel, in black and white: favorites, every app by "
                                 "category, places and recent files, search that also finds files, does sums and unit "
@@ -58,6 +57,7 @@ class LaunchLPage(QWidget):
         lay.addWidget(self.state)
         row = QHBoxLayout()
         self.install_btn = QPushButton()
+        self.install_btn.hide()                           # no text until the check says what it would do
         self.install_btn.clicked.connect(self._install)
         row.addWidget(self.install_btn)
         row.addStretch(1)
@@ -124,6 +124,7 @@ class LaunchLPage(QWidget):
             if info["update"]:
                 bits.append(tr("grimoire.spells.launchl.page", "an update is ready"))
         self.state.setText(" · ".join(bits))
+        self.install_btn.show()
         self.install_btn.setText(tr("grimoire.spells.launchl.page", "Install widget") if not installed else
                                  tr("grimoire.spells.launchl.page", "Update widget") if info["update"]
                                  else tr("grimoire.spells.launchl.page", "Reinstall widget"))

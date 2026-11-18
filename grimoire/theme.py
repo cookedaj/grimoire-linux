@@ -134,7 +134,18 @@ QSpinBox, QDoubleSpinBox, QComboBox, QLineEdit {
 QSpinBox:hover, QDoubleSpinBox:hover, QComboBox:hover, QLineEdit:hover { border-color: #3a3a3a; }
 QSpinBox:focus, QDoubleSpinBox:focus, QComboBox:focus, QLineEdit:focus { border-color: #8a8a8a; background: #141414; }
 QLineEdit:disabled, QComboBox:disabled { color: #4a4a4a; border-color: #1c1c1c; }
-QComboBox::drop-down { border: none; width: 22px; }
+QComboBox::drop-down { border: none; width: 24px; }
+QComboBox::down-arrow { image: url(@ASSETS@/chevron-down.svg); width: 12px; height: 12px; }
+QComboBox::down-arrow:disabled { image: none; }
+QSpinBox, QDoubleSpinBox { padding-right: 22px; }
+QSpinBox::up-button, QDoubleSpinBox::up-button, QSpinBox::down-button, QDoubleSpinBox::down-button {
+    subcontrol-origin: border; width: 20px; border: none; background: transparent; }
+QSpinBox::up-button, QDoubleSpinBox::up-button { subcontrol-position: top right; margin-top: 3px; }
+QSpinBox::down-button, QDoubleSpinBox::down-button { subcontrol-position: bottom right; margin-bottom: 3px; }
+QSpinBox::up-arrow, QDoubleSpinBox::up-arrow { image: url(@ASSETS@/chevron-up.svg); width: 10px; height: 10px; }
+QSpinBox::down-arrow, QDoubleSpinBox::down-arrow { image: url(@ASSETS@/chevron-down.svg); width: 10px; height: 10px; }
+QSpinBox::up-arrow:disabled, QSpinBox::down-arrow:disabled, QDoubleSpinBox::up-arrow:disabled,
+QDoubleSpinBox::down-arrow:disabled { image: none; }
 QPlainTextEdit, QTextEdit, QTextBrowser { background: #0e0e0e; border: 1px solid #1f1f1f; border-radius: 8px;
     selection-background-color: #e8e8e8; selection-color: #000000; }
 QPlainTextEdit:focus, QTextEdit:focus { border-color: #4a4a4a; }
