@@ -212,12 +212,35 @@ def user_apps() -> list[Found]:
                     f.title = e.get("Name") or f.title
             continue
         seen.add(real)
-        # an app in its own folder (~/.local/share/foo/bin/foo, ~/opt/foo/foo): the whole folder; else the file
-        home_dir = next((p for p in real.parents if p.parent in (HOME, DATA_HOME, HOME / "opt", HOME / "Applications")
-                         and p != HOME), None)
+        home_dir = _own_folder(real, {entry.stem, e.get("Name", ""), exe.name})
         files = [home_dir or real, entry]
         out.append(Found("user:" + entry.stem, e.get("Name") or entry.stem, "user", files, du(home_dir or real)))
     return out
+
+
+SHARED = {"flatpak", "steam", "applications", "icons", "trash", "fonts", "containers", "lutris", "bottles",
+          "jetbrains", "toolbox", "keyrings", "kio", "kservices6", "plasma", "grimoire", "share", "bin", "lib",
+          "mime", "nautilus", "dolphin", "heroic", "wineprefixes", "virtualenvs", "pipx", "cargo", "go", "nvm", "npm"}
+
+
+def _norm(text: str) -> str:
+    return re.sub(r"[^a-z0-9]", "", text.lower())
+
+
+def _own_folder(exe: Path, names: set) -> Path | None:
+    """The app's own folder (~/opt/foo, ~/Applications/foo, ~/.local/share/foo with foo/bin/foo inside) when its
+    name matches the app; never a folder other programs share (flatpak, Steam, a toolbox, a language's packages),
+    so Uninstall can't sweep up more than the one app. None: just the program file."""
+    wanted = {_norm(n) for n in names if n} - {""}
+    for p in exe.parents:
+        if p.parent in (DATA_HOME, HOME / "opt", HOME / "Applications") and p != HOME:
+            key = _norm(p.name)
+            if p.name.lower() in SHARED or key in SHARED or not key:
+                return None
+            if any(w and (w in key or key in w) for w in wanted):
+                return p
+            return None
+    return None
 
 
 def everything(have: dict | None = None) -> list[Found]:
