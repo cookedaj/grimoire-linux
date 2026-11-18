@@ -165,6 +165,7 @@ class RemovalPage(QWidget):
         self.restore_box.setObjectName("Card")
         self.restore_lay = QVBoxLayout(self.restore_box)
         self.restore_lay.setContentsMargins(16, 12, 16, 12)
+        self.restore_box.hide()                           # until Removed earlier has something in it
         lay.addWidget(self.restore_box)
         kept = ", ".join(f"{name} ({tr('grimoire.spells.cleanupl.engine', why)})" for name, why in engine.KEPT)
         self.kept = _label(tr("grimoire.spells.cleanupl.view", "Staying on purpose: {list}").format(list=kept), "Muted")

@@ -190,8 +190,11 @@ class CalculatorLPage(QWidget):
             for c, key in enumerate(row):
                 b = QPushButton(i18n.ltr(key))                 # RTL: "1/x" and "(" must not turn around
                 b.setObjectName("Primary" if key == primary else "CalcKey")
+                if key == primary:
+                    b.setStyleSheet("font-size: 20px; border-radius: 12px;")
                 b.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
                 b.setMinimumHeight(44)
+                b.setMaximumHeight(72)
                 b.setFocusPolicy(Qt.FocusPolicy.NoFocus)                  # typing stays in the expression line
                 b.clicked.connect(lambda _=False, k=key: self.key(k))
                 g.addWidget(b, r, c)

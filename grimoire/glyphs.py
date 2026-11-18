@@ -1,6 +1,10 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
-"""Grimoire's own monochrome line icons, drawn with QPainter so they stay black & white whatever icon
-theme is installed. glyph(name) -> QIcon with a gray normal state and a white active/checked state.
+"""Grimoire's monochrome line icons, so they stay black & white whatever icon theme is installed.
+glyph(name) -> QIcon with a gray normal state and a white active/checked state.
+
+Most names come from Lucide (assets/icons/<name>.svg, ISC license in assets/icons/LICENSE): one consistent 24px
+line set, recolored here and drawn a little lighter than Lucide's 2px so they sit well next to IBM Plex. Names
+without an SVG are drawn by _draw() below.
 """
 from functools import lru_cache
 
@@ -639,7 +643,32 @@ def _draw(name: str, p: QPainter):
         p.drawPath(path)
 
 
+ICONS = ASSETS / "icons"
+STROKE = "1.75"
+
+
+@lru_cache(maxsize=256)
+def _svg(name: str) -> str:
+    try:
+        return (ICONS / f"{name}.svg").read_text() if "/" not in name and name else ""
+    except OSError:
+        return ""
+
+
 def _pixmap(name: str, color: str, size: int) -> QPixmap:
+    svg = _svg(name)
+    if svg:
+        pm = QPixmap(size, size)
+        pm.fill(Qt.GlobalColor.transparent)
+        data = svg.replace("currentColor", color).replace('stroke-width="2"', f'stroke-width="{STROKE}"')
+        p = QPainter(pm)
+        p.setRenderHint(QPainter.RenderHint.Antialiasing)
+        if mirrored(name):                   # back/forward follow a right-to-left reading direction
+            p.translate(size, 0)
+            p.scale(-1, 1)
+        QSvgRenderer(data.encode()).render(p, QRectF(0, 0, size, size))
+        p.end()
+        return pm
     pm = QPixmap(size, size)
     pm.fill(Qt.GlobalColor.transparent)
     p = QPainter(pm)
