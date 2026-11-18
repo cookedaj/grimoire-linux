@@ -1,3 +1,14 @@
+grimoire-linux (0.3.3) unstable; urgency=medium
+
+  * CalculatorL: standard and scientific calculator with conversions
+  * PasswordL: a password manager with a local encrypted vault
+  * UninstallerL takes in CleanupL
+  * CleanupL and UninstallerL: remove what Grimoire replaces, or any app, and sweep up after
+  * VaultL: quality-of-life pass
+  * App icons read in a title bar; VaultL shows every place without scrolling
+
+ -- cookedaj <285303240+cookedaj@users.noreply.github.com>  Tue, 17 Nov 2026 22:35:49 -0500
+
 grimoire-linux (0.3.2) unstable; urgency=medium
 
   * VaultL: the Type column speaks the user's language; sizes and dates read right in RTL
